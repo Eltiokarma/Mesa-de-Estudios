@@ -162,12 +162,12 @@ test('cada error es de la unidad o nuevo, con su respaldo y su fuente; los nuevo
   }
 });
 
-test('cada explicación empieza por lo que el alumno hizo bien, muestra lo que da su error y no nombra una letra', () => {
+// Ya no se exige que empiecen por «Bien» (redacción, 26 nov): cada una es una oración completa que dice qué estuvo bien.
+test('cada explicación muestra lo que da su error y no nombra una letra', () => {
   for (let s = 0; s < 2000; s++) {
     const p = gen.generar(s);
     for (const a of p.alternativas.filter(x => x.error)) {
       const e = a.error.explicacion;
-      assert.match(e, /^Bien/, `semilla ${s}: ${e}`);
       assert.ok(e.includes(a.texto), `semilla ${s}: «${e}» no muestra ${a.texto}`);
       assert.ok(!/\b(alternativa|opción|letra) [A-E]\b|\([A-E]\)|\bla [A-E]\b/.test(e), `semilla ${s}: nombra una letra: ${e}`);
       assert.ok(e.split(/\s+/).length <= 40, `semilla ${s}: explicación larga: ${e}`);
@@ -327,4 +327,33 @@ test('el encuentro trae y = y_0 + …; frente al colegio, hasta 12 m/s; puentes 
     if (pu) assert.ok(num(pu[1]) <= 80, `semilla ${s}: ${t}`);
   }
   assert.ok(enc > 10, `${enc} encuentros`);
+});
+
+// Verificación de la pasada de redacción (26 nov 2026): con a = 2 m/s², la ecuación del alcance salía «1t² − 9t − 52 = 0»;
+// el coeficiente 1 no se escribe.
+test('redacción: ninguna ecuación escribe el coeficiente 1 («1t²», «1t»)', () => {
+  const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? String(x.t ?? '') : String(x ?? ''));
+  let vistos = 0;
+  for (let s = 0; s < 3000; s++) {
+    const p = gen.generar(s);
+    if (p._datos && p._datos.a === 2 && p._datos.V !== undefined && p._datos.t !== undefined) vistos++;
+    const todo = [p.enunciado, p.pregunta, ...p.solucion, ...p.alternativas.map(a => a.error ? a.error.explicacion : '')].map(plano).join(' | ');
+    // «½ · 1 · t²» reemplaza a = 1 en la fórmula y vale; «1t²» o «= 1 · t²» como coeficiente, no.
+    assert.doesNotMatch(todo, /(?<!· )(?<![\d,.])1( · )?t/, `semilla ${s}: ${todo}`);
+  }
+  assert.ok(vistos > 0, 'sale el alcance con a = 2');
+});
+
+// Verificación (26 nov): quedaban explicaciones en el molde «Bien X. Falta Y.», sin verbo en la primera parte, y una
+// que decía «pero salió con 19 m/s: falta v₀²» sin decir quién salió ni dónde falta.
+test('redacción: ninguna explicación queda en el molde «Bien X.» ni dice «pero salió con» sin sujeto', () => {
+  for (let s = 0; s < 3000; s++) {
+    for (const a of gen.generar(s).alternativas) {
+      if (!a.error) continue;
+      assert.doesNotMatch(a.error.explicacion, /^Bien /, `semilla ${s}: ${a.error.explicacion}`);
+      assert.doesNotMatch(a.error.explicacion, /pero salió con/, `semilla ${s}: ${a.error.explicacion}`);
+      // v₀ y g son datos: no se «calculan». Y «se acercan a 20 m/s, sin dividir» no decía de dónde sale el valor.
+      assert.doesNotMatch(a.error.explicacion, /Calculaste bien v₀ y g|, sin dividir; así sale/, `semilla ${s}: ${a.error.explicacion}`);
+    }
+  }
 });

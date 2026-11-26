@@ -287,17 +287,17 @@
       enunciado, pregunta: ['¿Cuánto vale su aceleración, con su signo?'],
       datos: [D.acel, D.eje], correcta: a, fmt: ms2, negativos: true,
       errores: [
-        v0 !== 0 && e('K4', v1 / dt, t => `Bien que dividas entre ${dt} s. Pero a usa el cambio de velocidad, ${v1} − ${v0}, no solo ${v1}; así sale ${t}.`),
-        e('K-SINDIV', dv, t => `Bien el cambio de velocidad, ${f(dv)} m/s. Pero ocurrió en ${dt} s: falta dividir entre el tiempo; ${t} no es.`),
-        e('K-POR', dv * dt, t => `Bien el cambio de velocidad, ${f(dv)} m/s. Pero se divide entre el tiempo, no se multiplica; así sale ${t}.`),
-        e('K-CUADRADO', dv / (dt * dt), t => `Bien el cambio de velocidad. Pero se divide entre ${dt} s, sin elevarlo al cuadrado; así sale ${t}.`),
-        v0 !== 0 && e('K-SUMA', (v1 + v0) / dt, t => `Bien que dividas entre el tiempo. Pero el cambio es la final menos la inicial, no la suma; así sale ${t}.`),
+        v0 !== 0 && e('K4', v1 / dt, t => `Es correcto que dividas entre ${dt} s, pero a usa el cambio de velocidad, ${v1} − ${v0}, no solo ${v1}; así sale ${t}.`),
+        e('K-SINDIV', dv, t => `El cambio de velocidad, ${f(dv)} m/s, está bien, pero ocurrió en ${dt} s: falta dividir entre el tiempo, y por eso ${t} no es la respuesta.`),
+        e('K-POR', dv * dt, t => `El cambio de velocidad, ${f(dv)} m/s, está bien, pero se divide entre el tiempo, no se multiplica; así sale ${t}.`),
+        e('K-CUADRADO', dv / (dt * dt), t => `El cambio de velocidad está bien, pero se divide entre ${dt} s, sin elevarlo al cuadrado; así sale ${t}.`),
+        v0 !== 0 && e('K-SUMA', (v1 + v0) / dt, t => `Es correcto que dividas entre el tiempo, pero el cambio es la final menos la inicial, no la suma; así sale ${t}.`),
         sub === 'frena'
-          ? e('K3', -a, t => `Bien: pierde ${f(-a)} m/s cada segundo. Pero la velocidad baja: a apunta al revés que v y es negativa; ${t} apunta hacia donde se mueve.`)
-          : e('K-SIGNO', -a, t => `Bien el valor, ${f(a)}. Pero la velocidad sube yendo hacia la derecha: a es positiva; ${t} tiene el signo al revés.`),
+          ? e('K3', -a, t => `Es cierto que pierde ${f(-a)} m/s cada segundo, pero la velocidad baja: a apunta al revés que v y es negativa; ${t} apunta hacia donde se mueve.`)
+          : e('K-SIGNO', -a, t => `El valor, ${f(a)}, está bien, pero la velocidad sube yendo hacia la derecha: a es positiva; ${t} tiene el signo al revés.`),
       ],
       solucion: [
-        ['El cambio de velocidad: ', V(`${v1} − ${v0} = ${f(dv)} m/s`), ', en ', T(sg(dt)), '.'],
+        ['La aceleración es el cambio de velocidad entre el tiempo. El cambio es la final menos la inicial: ', V(`${v1} − ${v0} = ${f(dv)} m/s`), ', en ', T(sg(dt)), '.'],
         ['a = ', V(f(dv)), ' ÷ ', T(f(dt)), ' = ', A(ms2(a)), sub === 'frena' ? ': negativa, porque frena yendo hacia el +.' : '.'],
       ],
       _datos: { sub, v0, v1, dt },
@@ -314,14 +314,14 @@
       pregunta: ['¿Qué velocidad tiene ', T(sg(t)), ' después?'],
       datos: [D.vt, D.eje], correcta: vf, fmt: ms,
       errores: [
-        e('K-TIEMPO', v0 + a, t2 => `Bien que partas de ${v0} m/s y uses a. Pero ${t2} es la velocidad después de un solo segundo; ${t - 1 === 1 ? 'falta 1 s más' : `faltan ${t - 1} s más`}.`),
-        e('K-CUADRADO', v0 + a * t * t, t2 => `Bien que partas de ${v0} m/s. Pero v cambia ${f(Math.abs(a))} m/s por segundo: a · t, sin elevar t; así sale ${t2}.`),
-        e('K-SIGNO', v0 - a * t, t2 => `Bien el cambio, ${f(Math.abs(a * t))} m/s. Pero ${frena ? 'frena: se resta' : 'acelera: se suma'}; con el signo al revés sale ${t2}.`),
-        e('K-SIN-V0', a * t, t2 => `Bien a · t = ${f(a * t)} m/s: lo que cambió. Pero se suma a los ${v0} m/s con que pasó por el grifo; ${t2} es solo el cambio.`),
+        e('K-TIEMPO', v0 + a, t2 => `Es correcto que partas de ${v0} m/s y uses a, pero ${t2} es la velocidad después de un solo segundo; ${t - 1 === 1 ? 'falta 1 s más' : `faltan ${t - 1} s más`}.`),
+        e('K-CUADRADO', v0 + a * t * t, t2 => `Es correcto que partas de ${v0} m/s, pero v cambia ${f(Math.abs(a))} m/s por segundo: a · t, sin elevar t; así sale ${t2}.`),
+        e('K-SIGNO', v0 - a * t, t2 => `El cambio, ${f(Math.abs(a * t))} m/s, está bien, pero ${frena ? 'frena: se resta' : 'acelera: se suma'}; con el signo al revés sale ${t2}.`),
+        e('K-SIN-V0', a * t, t2 => `Calculaste bien a · t = ${f(a * t)} m/s: lo que cambió, pero se suma a los ${v0} m/s con que pasó por el grifo; ${t2} es solo el cambio.`),
       ],
       solucion: [
-        ['En ', T(sg(t)), ` cambia `, A(f(a)), ' · ', T(f(t)), ` = ${f(a * t)} m/s.`],
-        ['v = ', V(f(v0)), ` ${a < 0 ? '−' : '+'} ${f(Math.abs(a * t))} = `, V(ms(vf)), '.'],
+        ['La velocidad cambia lo mismo cada segundo, así que en ', T(sg(t)), ` cambia `, A(f(a)), ' · ', T(f(t)), ` = ${f(a * t)} m/s.`],
+        ['Ese cambio se suma, con su signo, a la velocidad del grifo: v = ', V(f(v0)), ` ${a < 0 ? '−' : '+'} ${f(Math.abs(a * t))} = `, V(ms(vf)), '.'],
       ],
       _datos: { v0, a, t },
     };
@@ -338,13 +338,13 @@
       pregunta: ['¿Cuánto tarda en llegar a ', V(ms(v1)), '?'],
       datos: [D.acel, D.eje], correcta: res, fmt: sg,
       errores: [
-        v0 > 0 && e('K4', v1 / a, t => `Bien que dividas entre a. Pero la combi no parte de 0: tiene que ganar ${v1} − ${v0} = ${dv} m/s; ${t} cuenta los ${v1} enteros.`),
-        e('K-POR', dv * a, t => `Bien el cambio, ${dv} m/s. Pero gana ${f(a)} m/s cada segundo: se divide entre a, no se multiplica; así sale ${t}.`),
-        e('K-INVERSA', a / dv, t => `Bien el cambio, ${dv} m/s, y a. Pero el tiempo es el cambio entre a, no al revés; así sale ${t}.`),
-        v0 > 0 ? e('K-SUMA', (v1 + v0) / a, t => `Bien que dividas entre a. Pero lo que gana es ${v1} − ${v0}, no la suma; así sale ${t}.`)
-          : e('K-SINDIV', dv, t => `Bien el cambio, ${dv} m/s. Pero gana ${f(a)} m/s cada segundo: falta dividir entre a; ${t} no es.`),
+        v0 > 0 && e('K4', v1 / a, t => `Es correcto que dividas entre a, pero la combi no parte de 0: tiene que ganar ${v1} − ${v0} = ${dv} m/s; ${t} cuenta los ${v1} enteros.`),
+        e('K-POR', dv * a, t => `El cambio, ${dv} m/s, está bien, pero gana ${f(a)} m/s cada segundo: se divide entre a, no se multiplica; así sale ${t}.`),
+        e('K-INVERSA', a / dv, t => `El cambio de ${dv} m/s y la aceleración están bien, pero el tiempo es el cambio entre a, no al revés; así sale ${t}.`),
+        v0 > 0 ? e('K-SUMA', (v1 + v0) / a, t => `Es correcto que dividas entre a, pero lo que gana es ${v1} − ${v0}, no la suma; así sale ${t}.`)
+          : e('K-SINDIV', dv, t => `El cambio, ${dv} m/s, está bien, pero gana ${f(a)} m/s cada segundo: falta dividir entre a, y por eso ${t} no es la respuesta.`),
       ],
-      solucion: [['Tiene que ganar ', V(`${v1} − ${v0} = ${dv} m/s`), ' y gana ', A(f(a)), ' m/s cada segundo.'], ['Δt = ', V(f(dv)), ' ÷ ', A(f(a)), ' = ', T(sg(res)), '.']],
+      solucion: [['Tiene que ganar ', V(`${v1} − ${v0} = ${dv} m/s`), ' y gana ', A(f(a)), ' m/s cada segundo.'], ['El tiempo es lo que tiene que ganar entre lo que gana cada segundo: Δt = ', V(f(dv)), ' ÷ ', A(f(a)), ' = ', T(sg(res)), '.']],
       _datos: { v0, a, dt },
     };
   }
@@ -364,15 +364,15 @@
       pregunta: ['¿Cuánto vale su aceleración, en m/s²?'],
       datos: [D.acel, D.kmh, D.eje], correcta: a, fmt: ms2, negativos: true,
       errores: [
-        e('U1-kmh', (k1 - k0) / dt, t => `Bien el cambio entre el tiempo. Pero en km/h: falta pasar a m/s; así sale ${t}.`),
-        e('U1-al-reves', (k1 - k0) * 3.6 / dt, t => `Bien que conviertas los km/h. Pero a m/s se divide entre 3,6, no se multiplica; así sale ${t}.`),
-        sub === 'frena' && e('K4', v1 / dt, t => `Bien los m/s y el tiempo. Pero a usa el cambio, ${f(v1)} − ${f(v0)}, no solo la final; así sale ${t}.`),
-        e('K-SINDIV', dv, t => `Bien el cambio en m/s, ${f(dv)}. Pero ocurrió en ${dt} s: falta dividir; ${t} no es.`),
-        sub === 'frena' ? e('K3', -a, t => `Bien el valor en m/s². Pero la combi frena yendo hacia el +: a es negativa; ${t} apunta hacia donde se mueve.`)
-          : e('K-SIGNO', -a, t => `Bien el valor en m/s². Pero la velocidad sube yendo hacia el +: a es positiva; ${t} tiene el signo al revés.`),
+        e('U1-kmh', (k1 - k0) / dt, t => `El cambio entre el tiempo está bien, pero en km/h: falta pasar a m/s; así sale ${t}.`),
+        e('U1-al-reves', (k1 - k0) * 3.6 / dt, t => `Es correcto que conviertas los km/h, pero a m/s se divide entre 3,6, no se multiplica; así sale ${t}.`),
+        sub === 'frena' && e('K4', v1 / dt, t => `Los m/s y el tiempo están bien, pero a usa el cambio, ${f(v1)} − ${f(v0)}, no solo la final; así sale ${t}.`),
+        e('K-SINDIV', dv, t => `El cambio en m/s, ${f(dv)}, está bien, pero ocurrió en ${dt} s: falta dividir, y por eso ${t} no es la respuesta.`),
+        sub === 'frena' ? e('K3', -a, t => `El valor en m/s² está bien, pero la combi frena yendo hacia el +: a es negativa; ${t} apunta hacia donde se mueve.`)
+          : e('K-SIGNO', -a, t => `El valor en m/s² está bien, pero la velocidad sube yendo hacia el +: a es positiva; ${t} tiene el signo al revés.`),
       ],
       solucion: [
-        sub === 'arranca' ? ['En m/s: ', V(`${k1} km/h = ${k1} 000 m ÷ 3600 s = ${f(v1)} m/s`), '.'] : ['En m/s: ', V(`${k0} km/h = ${f(v0)} m/s`), ' y ', V(`${k1} km/h = ${f(v1)} m/s`), '.'],
+        sub === 'arranca' ? ['Primero se pasa a m/s, porque a se pide en m/s²: ', V(`${k1} km/h = ${k1} 000 m ÷ 3600 s = ${f(v1)} m/s`), '.'] : ['Primero se pasan las velocidades a m/s, porque a se pide en m/s²: ', V(`${k0} km/h = ${f(v0)} m/s`), ' y ', V(`${k1} km/h = ${f(v1)} m/s`), '.'],
         ['a = (', V(`${f(v1)} − ${f(v0)}`), ') ÷ ', T(f(dt)), ' = ', A(ms2(a)), '.'],
       ],
       _datos: { sub, k0, k1, dt },
@@ -391,11 +391,11 @@
       pregunta: ['¿Cuánto vale su aceleración, con su signo?'],
       datos: [D.acel, D.eje], correcta: a, fmt: ms2, negativos: true,
       errores: [
-        sub === 'frena' ? e('K3', -a, t => `Bien el valor, ${f(a)}. Pero frena: a apunta al revés que v, hacia el +; ${t} apunta hacia donde se mueve.`)
-          : e('K-SIGNO', -a, t => `Bien el valor, ${f(-a)}. Pero las velocidades son −${S0} y −${S1}: el cambio es negativo; con las rapideces sale ${t}.`),
-        e('K4', v1 / dt, t => `Bien que dividas entre ${dt} s. Pero a usa el cambio, (−${S1}) − (−${S0}), no solo la final; así sale ${t}.`),
-        e('K-SUMA', (v1 + v0) / dt, t => `Bien los signos de las dos velocidades. Pero el cambio es la final menos la inicial; sumarlas da ${t}.`),
-        e('K-SINDIV', dv, t => `Bien el cambio con su signo, ${f(dv)} m/s. Pero ocurrió en ${dt} s: falta dividir; ${t} no es.`),
+        sub === 'frena' ? e('K3', -a, t => `El valor, ${f(a)}, está bien, pero frena: a apunta al revés que v, hacia el +; ${t} apunta hacia donde se mueve.`)
+          : e('K-SIGNO', -a, t => `El valor, ${f(-a)}, está bien, pero las velocidades son −${S0} y −${S1}: el cambio es negativo; con las rapideces sale ${t}.`),
+        e('K4', v1 / dt, t => `Es correcto que dividas entre ${dt} s, pero a usa el cambio, (−${S1}) − (−${S0}), no solo la final; así sale ${t}.`),
+        e('K-SUMA', (v1 + v0) / dt, t => `Los signos de las dos velocidades están bien, pero el cambio es la final menos la inicial; sumarlas da ${t}.`),
+        e('K-SINDIV', dv, t => `El cambio con su signo, ${f(dv)} m/s, está bien, pero ocurrió en ${dt} s: falta dividir, y por eso ${t} no es la respuesta.`),
       ],
       solucion: [
         ['Hacia la izquierda las velocidades son negativas: ', V(`v_0 = −${S0} m/s`), ' y ', V(`v = −${S1} m/s`), '.'],
@@ -416,22 +416,22 @@
     const ok = sub === 'tramo2' ? a2 : aT;
     if (!limpio(a1) || !limpio(a2) || !limpio(aT)) return null;
     const errores = sub === 'tramo2' ? [
-      e('K4', v2 / (t1 + t2), t => `Bien los m/s. Pero el segundo tramo empieza en ${f(v1)} m/s a los ${t1} s: dividir la final entre el tiempo total da ${t}.`),
-      e('MED-SIN-RESTA', v2 / t2, t => `Bien los ${t2} s del segundo tramo. Pero su cambio es ${f(v2)} − ${f(v1)}, no solo la final; así sale ${t}.`),
-      e('MED-TRAMO', a1, t => `Bien la aceleración media del primer tramo, ${t}. Pero piden la del segundo, de ${f(v1)} a ${f(v2)} m/s.`),
-      e('U1-kmh', (k2 - k1) / t2, t => `Bien el cambio del segundo tramo entre su tiempo. Pero en km/h: falta pasar a m/s; así sale ${t}.`),
+      e('K4', v2 / (t1 + t2), t => `Los m/s están bien, pero el segundo tramo empieza en ${f(v1)} m/s a los ${t1} s: dividir la final entre el tiempo total da ${t}.`),
+      e('MED-SIN-RESTA', v2 / t2, t => `Los ${t2} s del segundo tramo están bien, pero su cambio es ${f(v2)} − ${f(v1)}, no solo la final; así sale ${t}.`),
+      e('MED-TRAMO', a1, t => `La aceleración media del primer tramo, ${t}, está bien, pero piden la del segundo, de ${f(v1)} a ${f(v2)} m/s.`),
+      e('U1-kmh', (k2 - k1) / t2, t => `El cambio del segundo tramo entre su tiempo está bien, pero en km/h: falta pasar a m/s; así sale ${t}.`),
     ] : [
-      e('MED-PROMEDIO-A', (a1 + a2) / 2, t => `Bien las dos aceleraciones, ${f(a1)} y ${f(a2)}. Pero no se promedian: los tramos duran distinto; así sale ${t}.`),
-      e('MED-SUMA-A', a1 + a2, t => `Bien las dos aceleraciones. Pero no se suman: se mira el cambio de todo el viaje entre todo el tiempo; sumarlas da ${t}.`),
-      e('MED-TRAMO', a2, t => `Bien la aceleración del segundo tramo, ${t}. Pero piden la media de los ${t1 + t2} s.`),
-      e('U1-kmh', k2 / (t1 + t2), t => `Bien el cambio de todo el viaje entre el tiempo total. Pero en km/h: falta pasar a m/s; así sale ${t}.`),
+      e('MED-PROMEDIO-A', (a1 + a2) / 2, t => `Las dos aceleraciones, ${f(a1)} y ${f(a2)}, están bien, pero no se promedian: los tramos duran distinto; así sale ${t}.`),
+      e('MED-SUMA-A', a1 + a2, t => `Las dos aceleraciones están bien, pero no se suman: se mira el cambio de todo el viaje entre todo el tiempo; sumarlas da ${t}.`),
+      e('MED-TRAMO', a2, t => `La aceleración del segundo tramo, ${t}, está bien, pero piden la media de los ${t1 + t2} s.`),
+      e('U1-kmh', k2 / (t1 + t2), t => `El cambio de todo el viaje entre el tiempo total está bien, pero en km/h: falta pasar a m/s; así sale ${t}.`),
     ];
     return {
       enunciado: ['Una moto arranca del reposo. A los ', T(sg(t1)), ' va a ', V(kmh(k1)), ' y, ', T(sg(t2)), ' después, a ', V(kmh(k2)), '.'],
       pregunta: [sub === 'tramo2' ? '¿Cuál es su aceleración media en el segundo tramo, en m/s²?' : '¿Cuál es su aceleración media en todo el viaje, en m/s²?'],
       datos: [D.media, D.kmh], correcta: ok, fmt: ms2, errores,
       solucion: [
-        ['En m/s: ', V(`${k1} km/h = ${f(v1)} m/s`), ' y ', V(`${k2} km/h = ${f(v2)} m/s`), '.'],
+        ['Primero se pasan las velocidades a m/s, porque la respuesta va en m/s²: ', V(`${k1} km/h = ${f(v1)} m/s`), ' y ', V(`${k2} km/h = ${f(v2)} m/s`), '.'],
         sub === 'tramo2' ? ['a_m = (', V(`${f(v2)} − ${f(v1)}`), ') ÷ ', T(f(t2)), ' = ', A(ms2(a2)), '.']
           : ['a_m = (', V(`${f(v2)} − 0`), ') ÷ ', T(`${t1 + t2}`), ' = ', A(ms2(aT)), '.'],
       ],
@@ -448,13 +448,13 @@
       pregunta: ['¿Qué marcaba su velocímetro, en km/h, a los ', T(sg(t)), '?'],
       datos: [D.acel, D.vt, D.kmh], correcta: vt, fmt: kmh,
       errores: [
-        e('K-RESTA-T', K * (Tt - t) / Tt, x => `Bien que la velocidad crezca parejo. Pero a los ${t} s ya ganó su parte; ${x} es lo que le faltaba ganar.`),
-        e('K-CUADRADO', K * t * t / (Tt * Tt), x => `Bien partir de 0 y llegar a ${K} km/h. Pero v crece igual cada segundo, sin elevar t al cuadrado; así sale ${x}.`),
-        e('U1-ms', vt / 3.6, x => `Bien la cuenta en m/s. Pero piden km/h: falta multiplicar por 3,6; ${x} es el número en m/s.`),
-        e('K-MITAD', K / 2, x => `Bien que vaya más lento que ${K} km/h. Pero la mitad sería a los ${f(Tt / 2)} s, no a los ${t} s; ${x} no es.`),
+        e('K-RESTA-T', K * (Tt - t) / Tt, x => `Es correcto que la velocidad crezca parejo, pero a los ${t} s ya ganó su parte; ${x} es lo que le faltaba ganar.`),
+        e('K-CUADRADO', K * t * t / (Tt * Tt), x => `Partir de 0 y llegar a ${K} km/h está bien, pero v crece igual cada segundo, sin elevar t al cuadrado; así sale ${x}.`),
+        e('U1-ms', vt / 3.6, x => `La cuenta en m/s está bien, pero piden km/h: falta multiplicar por 3,6; ${x} es el número en m/s.`),
+        e('K-MITAD', K / 2, x => `Es correcto que vaya más lento que ${K} km/h, pero la mitad sería a los ${f(Tt / 2)} s, no a los ${t} s, y por eso ${x} no es la respuesta.`),
       ],
       solucion: [
-        ['a = ', V(`${K} km/h = ${f(K / 3.6)} m/s`), ' ÷ ', T(f(Tt)), ` = ${f(K / 3.6 / Tt)} m/s².`],
+        ['En m/s, ', V(`${K} km/h = ${f(K / 3.6)} m/s`), ', así que la aceleración es ', `${f(K / 3.6)} ÷ `, T(f(Tt)), ` = ${f(K / 3.6 / Tt)} m/s².`],
         ['A los ', T(sg(t)), `: v = ${f(K / 3.6 / Tt)} · ${t} = ${f(vt / 3.6)} m/s = `, V(kmh(vt)), '.'],
       ],
       _datos: { K, T: Tt, t },
@@ -472,15 +472,15 @@
       pregunta: ['¿Cuántos metros avanzó en ese tiempo?'],
       datos: DB2, correcta: dx, fmt: mt,
       errores: [
-        e('DX-RECT', v1 * t, x => `Bien que multipliques por ${t} s. Pero no fue a ${v1} m/s todo el tiempo; así sale ${x}.`),
-        e('DX-INICIAL', v0 * t, x => `Bien que multipliques por ${t} s. Pero su velocidad cambió desde ${v0} m/s; así sale ${x}.`),
-        e('DX-SEMI', (v0 + v1) * t, x => `Bien la suma de las velocidades. Pero la media es la mitad de esa suma; sin dividir sale ${x}.`),
-        e('MRUV-RESTA', (v1 - v0) / 2 * t, x => `Bien la media entre dos y por ${t} s. Pero la media suma las velocidades, no las resta; así sale ${x}.`),
-        e('MRUV-ACEL', a, x => `Bien a = ${f(a)} m/s². Pero ese número es cuánto cambia v por segundo, no lo que avanzó: ${x} no es.`),
+        e('DX-RECT', v1 * t, x => `Es correcto que multipliques por ${t} s, pero no fue a ${v1} m/s todo el tiempo; así sale ${x}.`),
+        e('DX-INICIAL', v0 * t, x => `Es correcto que multipliques por ${t} s, pero su velocidad cambió desde ${v0} m/s; así sale ${x}.`),
+        e('DX-SEMI', (v0 + v1) * t, x => `La suma de las velocidades está bien, pero la media es la mitad de esa suma; sin dividir sale ${x}.`),
+        e('MRUV-RESTA', (v1 - v0) / 2 * t, x => `Dividir entre 2 y multiplicar por ${t} s está bien, pero la media suma las velocidades, no las resta; así sale ${x}.`),
+        e('MRUV-ACEL', a, x => `Calculaste bien a = ${f(a)} m/s², pero ese número es cuánto cambia v por segundo, no lo que avanzó, y por eso ${x} no es la respuesta.`),
       ],
       solucion: [
-        ['Velocidad media: (', V(`${v0} + ${v1}`), `) ÷ 2 = ${f((v0 + v1) / 2)} m/s.`],
-        ['Δx = ', V(f((v0 + v1) / 2)), ' · ', T(f(t)), ' = ', X(mt(dx)), '.'],
+        ['Como la velocidad cambia parejo, su media es la mitad de la suma: (', V(`${v0} + ${v1}`), `) ÷ 2 = ${f((v0 + v1) / 2)} m/s.`],
+        ['Lo que avanza es esa media por el tiempo: Δx = ', V(f((v0 + v1) / 2)), ' · ', T(f(t)), ' = ', X(mt(dx)), '.'],
       ],
       _datos: { v0, v1, t },
     };
@@ -500,13 +500,13 @@
       pregunta: ['¿Cuántos metros recorre mientras frena?'],
       datos: DB2, correcta: d, fmt: mt, negativos: true,
       errores: [
-        e('MRUV-VT', v0 * ts, x => `Bien los ${f(ts)} s de frenado. Pero no va a ${v0} m/s todo el tiempo: su media es ${f(v0 / 2)}; así sale ${x}.`),
-        e('MRUV-TIEMPO', ts, x => `Bien: tarda ${f(ts)} s en parar. Pero piden metros, no segundos; ${x} no es.`),
-        e('MRUV-SIGNO-D', -d, x => `Bien el valor. Pero avanza hacia adelante: Δx es positivo; la negativa es a. ${x} no es.`),
-        e('PR1', v0 / (2 * Af), x => `Bien la ecuación sin tiempo. Pero la velocidad va al cuadrado: ${v0}², no ${v0}; así sale ${x}.`),
+        e('MRUV-VT', v0 * ts, x => `Los ${f(ts)} s de frenado están bien, pero no va a ${v0} m/s todo el tiempo: su media es ${f(v0 / 2)}; así sale ${x}.`),
+        e('MRUV-TIEMPO', ts, x => `Es cierto que tarda ${f(ts)} s en parar, pero piden metros, no segundos, y por eso ${x} no es la respuesta.`),
+        e('MRUV-SIGNO-D', -d, x => `El valor está bien, pero avanza hacia adelante: Δx es positivo; la negativa es a, y por eso ${x} no es la respuesta.`),
+        e('PR1', v0 / (2 * Af), x => `La ecuación sin tiempo está bien, pero la velocidad va al cuadrado: ${v0}², no ${v0}; así sale ${x}.`),
       ],
       solucion: [
-        ['Al detenerse, v = 0: ', '0 = ', V(`${v0}²`), ' + 2 · (', A(`−${f(Af)}`), ') · Δx.'],
+        ['No dan el tiempo, así que se usa v² = v₀² + 2aΔx; al detenerse, v = 0: ', '0 = ', V(`${v0}²`), ' + 2 · (', A(`−${f(Af)}`), ') · Δx.'],
         ['Δx = ', `${v0 * v0} ÷ ${f(2 * Af)} = `, X(mt(d)), '.'],
       ],
       _datos: { v0, A: Af },
@@ -523,13 +523,13 @@
       pregunta: ['¿A cuántos metros del paradero está ', T(sg(t)), ' después?'],
       datos: DB2, correcta: x, fmt: mt,
       errores: [
-        x0 && e('MRU-X0', x - x0, y => `Bien lo que avanzó desde el grifo, ${y}. Pero el grifo ya estaba a ${x0} m del paradero.`),
-        e('MRUV-MEDIO', x0 + v0 * t + a * t * t, y => `Bien que partas ${x0 ? 'del grifo' : 'del paradero'}. Pero el término de a lleva un ½; sin él sale ${y}.`),
-        e('MRUV-SIN-A', x0 + v0 * t, y => `Bien ${x0 ? `${x0} + ` : ''}${v0} · ${t}. Pero eso sería sin acelerar: falta ½ · a · t²; así sale ${y}.`),
-        e('MRUV-SIN-CUADRADO', x0 + v0 * t + a * t / 2, y => `Bien el ½ · a. Pero el tiempo va al cuadrado en ½ · a · t²; sin elevarlo sale ${y}.`),
+        x0 && e('MRU-X0', x - x0, y => `Lo que avanzó desde el grifo, ${y}, está bien, pero el grifo ya estaba a ${x0} m del paradero.`),
+        e('MRUV-MEDIO', x0 + v0 * t + a * t * t, y => `Es correcto que partas ${x0 ? 'del grifo' : 'del paradero'}, pero el término de a lleva un ½; sin él sale ${y}.`),
+        e('MRUV-SIN-A', x0 + v0 * t, y => `Calculaste bien ${x0 ? `${x0} + ` : ''}${v0} · ${t}, pero eso sería sin acelerar: falta ½ · a · t², y sin ese término sale ${y}.`),
+        e('MRUV-SIN-CUADRADO', x0 + v0 * t + a * t / 2, y => `El ½ · a está bien, pero el tiempo va al cuadrado en ½ · a · t²; sin elevarlo sale ${y}.`),
       ],
       solucion: [
-        ['x = ', X(f(x0)), ' + ', V(f(v0)), ' · ', T(f(t)), ' + ½ · ', A(f(a)), ' · ', T(`${t}²`), '.'],
+        ['Con el paradero en el 0, la ecuación horaria parte del grifo y suma lo que avanza: x = ', X(f(x0)), ' + ', V(f(v0)), ' · ', T(f(t)), ' + ½ · ', A(f(a)), ' · ', T(`${t}²`), '.'],
         [`x = ${f(x0)} + ${f(v0 * t)} + ${f(a * t * t / 2)} = `, X(mt(x)), '.'],
       ],
       _datos: { x0, v0, a, t },
@@ -549,14 +549,14 @@
       pregunta: ['¿Qué velocidad lleva al llegar al grifo, ', X(mt(dx)), ' más adelante?'],
       datos: DB2, correcta: ok, fmt: ms,
       errores: [
-        e('MRUV-RAIZ', vf * vf, x => `Bien v_0² + 2 · a · Δx = ${vf * vf}. Pero eso es v²: falta sacar la raíz; ${x} no es.`),
-        e('MRUV-SIN-DOS', Math.sqrt(v0 * v0 + a * dx), x => `Bien la ecuación sin tiempo y la raíz. Pero lleva 2 · a · Δx; sin el 2 sale ${x}.`),
-        v0 && e('MRUV-SIN-V0', Math.sqrt(2 * a * dx), x => `Bien 2 · a · Δx y la raíz. Pero falta v_0² = ${v0 * v0}: no arranca quieta; así sale ${x}.`),
-        v0 && e('MRUV-SUMA-RAIZ', v0 + Math.sqrt(2 * a * dx), x => `Bien v_0 y 2 · a · Δx. Pero la raíz va sobre la suma de v_0² y 2aΔx; separadas dan ${x}.`),
+        e('MRUV-RAIZ', vf * vf, x => `Calculaste bien v₀² + 2 · a · Δx = ${vf * vf}, pero eso es v²: falta sacar la raíz, y por eso ${x} no es la respuesta.`),
+        e('MRUV-SIN-DOS', Math.sqrt(v0 * v0 + a * dx), x => `La ecuación sin tiempo y la raíz están bien, pero lleva 2 · a · Δx; sin el 2 sale ${x}.`),
+        v0 && e('MRUV-SIN-V0', Math.sqrt(2 * a * dx), x => `Calculaste bien 2 · a · Δx y la raíz, pero falta v₀² = ${v0 * v0}: no arranca quieta; así sale ${x}.`),
+        v0 && e('MRUV-SUMA-RAIZ', v0 + Math.sqrt(2 * a * dx), x => `Calculaste bien v₀ y 2 · a · Δx, pero la raíz va sobre la suma de v₀² y 2aΔx; separadas dan ${x}.`),
       ],
       solucion: [
-        ['v² = ', V(`${v0}²`), ' + 2 · ', A(f(a)), ' · ', X(f(dx)), ` = ${v0 * v0} + ${f(2 * a * dx)} = ${vf * vf}.`],
-        ['v = √', String(vf * vf), ' = ', V(ms(ok)), '.'],
+        ['No dan el tiempo, así que se usa la ecuación sin él: v² = ', V(`${v0}²`), ' + 2 · ', A(f(a)), ' · ', X(f(dx)), ` = ${v0 * v0} + ${f(2 * a * dx)} = ${vf * vf}.`],
+        ['Eso es v², así que se saca la raíz: v = √', String(vf * vf), ' = ', V(ms(ok)), '.'],
       ],
       _datos: { v0, a, dx },
     };
@@ -573,15 +573,15 @@
       pregunta: ['¿Cuántos metros recorre mientras frena?'],
       datos: [...DB2, D.kmh], correcta: d, fmt: mt, negativos: true,
       errores: [
-        e('U1-kmh', k0 * k0 / (2 * Af), x => `Bien la ecuación sin tiempo. Pero con los km/h: falta pasar a m/s; así sale ${x}.`),
-        e('MRUV-VT', v0 * ts, x => `Bien los ${f(v0)} m/s y los ${f(ts)} s de frenado. Pero su media es la mitad de ${f(v0)}; así sale ${x}.`),
-        e('MRUV-TIEMPO', ts, x => `Bien: tarda ${f(ts)} s en parar. Pero piden metros, no segundos; ${x} no es.`),
-        e('MRUV-SIGNO-D', -d, x => `Bien el valor. Pero avanza hacia adelante: Δx es positivo; la negativa es a. ${x} no es.`),
-        e('PR1', v0 / (2 * Af), x => `Bien pasar a ${f(v0)} m/s. Pero la velocidad va al cuadrado en v² = v_0² + 2aΔx; así sale ${x}.`),
+        e('U1-kmh', k0 * k0 / (2 * Af), x => `La ecuación sin tiempo está bien, pero con los km/h: falta pasar a m/s; así sale ${x}.`),
+        e('MRUV-VT', v0 * ts, x => `Los ${f(v0)} m/s y los ${f(ts)} s de frenado están bien, pero su media es la mitad de ${f(v0)}; así sale ${x}.`),
+        e('MRUV-TIEMPO', ts, x => `Es cierto que tarda ${f(ts)} s en parar, pero piden metros, no segundos, y por eso ${x} no es la respuesta.`),
+        e('MRUV-SIGNO-D', -d, x => `El valor está bien, pero avanza hacia adelante: Δx es positivo; la negativa es a, y por eso ${x} no es la respuesta.`),
+        e('PR1', v0 / (2 * Af), x => `Pasar a ${f(v0)} m/s está bien, pero la velocidad va al cuadrado en v² = v₀² + 2aΔx; así sale ${x}.`),
       ],
       solucion: [
-        ['En m/s: ', V(`${k0} km/h = ${f(v0)} m/s`), '.'],
-        ['0 = ', V(`${f(v0)}²`), ' + 2 · (', A(`−${f(Af)}`), ') · Δx, así que Δx = ', `${f(v0 * v0)} ÷ ${f(2 * Af)} = `, X(mt(d)), '.'],
+        ['Primero se pasa la velocidad a m/s: ', V(`${k0} km/h = ${f(v0)} m/s`), '.'],
+        ['Sin el tiempo, y con v = 0 al detenerse: 0 = ', V(`${f(v0)}²`), ' + 2 · (', A(`−${f(Af)}`), ') · Δx, así que Δx = ', `${f(v0 * v0)} ÷ ${f(2 * Af)} = `, X(mt(d)), '.'],
       ],
       _datos: { k0, A: Af },
     };
@@ -602,10 +602,10 @@
         enunciado, pregunta: ['¿Qué velocidad tiene en ', T(`t = ${sg(t)}`), '?'],
         datos: [D.horaria, D.vt, D.eje], correcta: ok, fmt: ms, negativos: true,
         errores: [
-          e('MRUV-MEDIO-A', B + s * C * t, x => `Bien la idea de v = v_0 + a · t, con v_0 = ${B}. Pero el ${s < 0 ? '−' : ''}${C} que acompaña a t² es ½ · a: a = ${s < 0 ? '−' : ''}${2 * C} m/s²; así sale ${x}.`),
-          e('MRUV-POSICION', X0(t), x => `Bien reemplazar t = ${t}. Pero ${x} es el valor de x a ese instante: una posición, no una velocidad.`),
-          e('MRUV-SIN-V0', 2 * s * C * t, x => `Bien a = ${s < 0 ? '−' : ''}${2 * C} m/s². Pero el carrito ya iba a ${B} m/s en t = 0; sin v_0 sale ${x}.`),
-          e('K-SIGNO', B - 2 * s * C * t, x => `Bien v_0 = ${B} y |a| = ${2 * C}. Pero el término de t² ${s < 0 ? 'resta: a es negativa' : 'suma: a es positiva'}; así sale ${x}.`),
+          e('MRUV-MEDIO-A', B + s * C * t, x => `Usar v = v₀ + a · t con v₀ = ${B} está bien, pero tomaste ${C === 1 ? `el coeficiente de t², ${s < 0 ? '−' : ''}1,` : `el ${s < 0 ? '−' : ''}${C} de t²`} como a y sale ${x}; ese número es ½ · a, y a = ${s < 0 ? '−' : ''}${2 * C} m/s².`),
+          e('MRUV-POSICION', X0(t), x => `Reemplazar t = ${t} está bien, pero ${x} es el valor de x a ese instante: una posición, no una velocidad.`),
+          e('MRUV-SIN-V0', 2 * s * C * t, x => `Calculaste bien a = ${s < 0 ? '−' : ''}${2 * C} m/s², pero el carrito ya iba a ${B} m/s en t = 0; sin v₀ sale ${x}.`),
+          e('K-SIGNO', B - 2 * s * C * t, x => `Calculaste bien v₀ = ${B} y |a| = ${2 * C}, pero el término de t² ${s < 0 ? 'resta: a es negativa' : 'suma: a es positiva'}; así sale ${x}.`),
         ],
         solucion: [
           ['Se compara con x = x_0 + v_0 · t + ½ · a · t²: ', V(`v_0 = ${B} m/s`), ' y ½ · a = ', `${s < 0 ? '−' : ''}${C}`, ', así que ', A(`a = ${s < 0 ? '−' : ''}${2 * C} m/s²`), '.'],
@@ -621,15 +621,15 @@
       enunciado, pregunta: ['¿Cuál es su desplazamiento entre ', T(`t = ${t1} s`), ' y ', T(`t = ${t2} s`), '?'],
       datos: [D.horaria, 'Desplazamiento: Δx = x final − x inicial', D.eje], correcta: ok, fmt: mt, negativos: true,
       errores: [
-        e('MRUV-POSICION-FINAL', X0(t2), x => `Bien x a los ${t2} s, ${x}. Pero esa es su posición; el desplazamiento resta la de los ${t1} s.`),
-        t1 > 0 && e('MRUV-DESDE-0', X0(t2) - A0, x => `Bien la resta. Pero desde t = ${t1} s, no desde t = 0; así sale ${x}.`),
-        e('MRUV-POS-INICIAL', X0(t1), x => `Bien x a los ${t1} s, ${x}. Pero esa es la posición inicial; falta restarla de la final.`),
-        d - Math.abs(ok) > 1e-9 && e('MRUV-DISTANCIA', d, x => `Bien que cuentes lo que se movió. Pero el carrito da la vuelta: ${x} es la distancia recorrida, no el desplazamiento.`),
-        e('DX-SIGNO', -ok, x => `Bien las dos posiciones. Pero Δx es la final menos la inicial; al revés sale ${x}.`),
+        e('MRUV-POSICION-FINAL', X0(t2), x => `Calculaste bien x a los ${t2} s, ${x}, pero esa es su posición; el desplazamiento resta la de los ${t1} s.`),
+        t1 > 0 && e('MRUV-DESDE-0', X0(t2) - A0, x => `La resta está bien, pero desde t = ${t1} s, no desde t = 0; así sale ${x}.`),
+        e('MRUV-POS-INICIAL', X0(t1), x => `Calculaste bien x a los ${t1} s, ${x}, pero esa es la posición inicial; falta restarla de la final.`),
+        d - Math.abs(ok) > 1e-9 && e('MRUV-DISTANCIA', d, x => `Es correcto que cuentes lo que se movió, pero el carrito da la vuelta: ${x} es la distancia recorrida, no el desplazamiento.`),
+        e('DX-SIGNO', -ok, x => `Las dos posiciones están bien, pero Δx es la final menos la inicial; al revés sale ${x}.`),
       ],
       solucion: [
-        ['x(', T(String(t2)), ') = ', X(mt(X0(t2))), ' y x(', T(String(t1)), ') = ', X(mt(X0(t1))), '.'],
-        ['Δx = ', `${f(X0(t2))} − ${f(X0(t1))} = `, X(mt(ok)), '.'],
+        ['Se reemplaza cada instante en la ecuación: x(', T(String(t2)), ') = ', X(mt(X0(t2))), ' y x(', T(String(t1)), ') = ', X(mt(X0(t1))), '.'],
+        ['El desplazamiento es la posición final menos la inicial: Δx = ', `${f(X0(t2))} − ${f(X0(t1))} = `, X(mt(ok)), '.'],
       ],
       _datos: { sub, A: A0, B, C, s, t1, t2 },
     };
@@ -645,10 +645,10 @@
       pregunta: ['Con el mismo freno, ¿cuántos metros necesita si va a ', V(kmh(k2)), '?'],
       datos: [...DB2, D.kmh], correcta: ok, fmt: mt,
       errores: [
-        e('PR1-frenado', d1 * k, x => `Bien que crezca: tarda ${k} veces más en parar. Pero en cada segundo también va ${k} veces más rápido; así sale ${x}.`),
-        e('MRUV-FRENO-IGUAL', d1, x => `Bien: el freno es el mismo. Pero tiene que quitar ${k} veces más velocidad; ${x} no alcanza.`),
-        e('MRUV-VT', 2 * ok, x => `Bien el freno que sale de los ${d1} m. Pero en el segundo caso, v_0 · t sin la mitad da ${x}.`),
-        e('MRUV-DIF-D', d1 * (k * k - 1), x => `Bien que v² crezca ${k * k} veces. Pero ${x} es cuánto más necesita, no el total.`),
+        e('PR1-frenado', d1 * k, x => `Es cierto que tarda ${k} veces más en parar, pero en cada segundo también va ${k} veces más rápido; así sale ${x}.`),
+        e('MRUV-FRENO-IGUAL', d1, x => `Es cierto que el freno es el mismo, pero tiene que quitar ${k} veces más velocidad, y por eso ${x} no alcanza.`),
+        e('MRUV-VT', 2 * ok, x => `El freno que sale de los ${d1} m está bien, pero en el segundo caso, v₀ · t sin la mitad da ${x}.`),
+        e('MRUV-DIF-D', d1 * (k * k - 1), x => `Es correcto que v² crezca ${k * k} veces, pero ${x} es cuánto más necesita, no el total.`),
       ],
       solucion: [
         ['Con el mismo a, v² = v_0² + 2aΔx da Δx proporcional a v_0²: ', V(`${k2} km/h`), ` es ${k} veces ${k1} km/h.`],
@@ -667,14 +667,14 @@
       pregunta: [`¿Cuántos metros avanza durante el ${ORD[n]} segundo?`],
       datos: [D.horaria, D.vt, D.enesimo], correcta: ok, fmt: mt,
       errores: [
-        e('MRUV-ENESIMO', m.x(n), x => `Bien x a los ${n} s, ${x}. Pero eso es lo que avanza en los ${n} s enteros; piden solo el último de ellos.`),
-        e('MRUV-VEL-N', m.v(n), x => `Bien la velocidad a los ${n} s. Pero ese número está en m/s; lo que avanza en ese segundo es ${f(ok)} m, no ${x}.`),
-        e('MRUV-ANTERIOR', m.x(n - 1), x => `Bien x a los ${n - 1} s, ${x}. Pero ahí empieza el ${ORD[n]} segundo: falta restarla de x a los ${n} s.`),
-        e('MRUV-OTRO-SEG', M.enesimoSegundo(v0, a, n - 1), x => `Bien la resta de dos posiciones. Pero ${x} es lo del segundo anterior, de ${n - 2} s a ${n - 1} s.`),
+        e('MRUV-ENESIMO', m.x(n), x => `Calculaste bien x a los ${n} s, ${x}, pero eso es lo que avanza en los ${n} s enteros; piden solo el último de ellos.`),
+        e('MRUV-VEL-N', m.v(n), x => `La velocidad a los ${n} s está bien, pero ese número está en m/s; lo que avanza en ese segundo es ${f(ok)} m, no ${x}.`),
+        e('MRUV-ANTERIOR', m.x(n - 1), x => `Calculaste bien x a los ${n - 1} s, ${x}, pero ahí empieza el ${ORD[n]} segundo: falta restarla de x a los ${n} s.`),
+        e('MRUV-OTRO-SEG', M.enesimoSegundo(v0, a, n - 1), x => `La resta de dos posiciones está bien, pero ${x} es lo del segundo anterior, de ${n - 2} s a ${n - 1} s.`),
       ],
       solucion: [
         [`El ${ORD[n]} segundo va de `, T(`${n - 1} s`), ' a ', T(`${n} s`), `: x(${n}) = ${f(m.x(n))} m y x(${n - 1}) = ${f(m.x(n - 1))} m.`],
-        [`${f(m.x(n))} − ${f(m.x(n - 1))} = `, X(mt(ok)), '.'],
+        ['Lo que avanza en ese segundo es la resta: ', `${f(m.x(n))} − ${f(m.x(n - 1))} = `, X(mt(ok)), '.'],
       ],
       _datos: { v0, a, n },
     };
@@ -694,12 +694,12 @@
       pregunta: ['¿Cuánto vale su aceleración, con su signo?'],
       datos: DB3, correcta: a, fmt: ms2, negativos: true,
       errores: [
-        e('G4', area, x => `Bien leer la recta. Pero ${x} es el área: lo que avanzó; la aceleración es la pendiente.`),
-        v1 && v2 && e('K4', v2 / Tt, x => `Bien dividir entre ${Tt} s. Pero la pendiente usa el cambio, ${v2} − ${v1}; solo con ${v2} sale ${x}.`),
-        e('K-SINDIV', dv, x => `Bien el cambio de v, ${f(dv)} m/s. Pero la pendiente lo divide entre los ${Tt} s; ${x} no es.`),
-        e('K-SIGNO', -a, x => `Bien el valor de la pendiente. Pero la recta ${sub}: a es ${sub === 'sube' ? 'positiva' : 'negativa'}; ${x} tiene el signo al revés.`),
+        e('G4', area, x => `Leer la recta está bien, pero ${x} es el área: lo que avanzó; la aceleración es la pendiente.`),
+        v1 && v2 && e('K4', v2 / Tt, x => `Dividir entre ${Tt} s está bien, pero la pendiente usa el cambio, ${v2} − ${v1}; solo con ${v2} sale ${x}.`),
+        e('K-SINDIV', dv, x => `El cambio de v, ${f(dv)} m/s, está bien, pero la pendiente lo divide entre los ${Tt} s, y por eso ${x} no es la respuesta.`),
+        e('K-SIGNO', -a, x => `El valor de la pendiente está bien, pero la recta ${sub}: a es ${sub === 'sube' ? 'positiva' : 'negativa'}; ${x} tiene el signo al revés.`),
       ],
-      solucion: [['Pendiente: (', V(`${v2} − ${v1}`), ') ÷ ', T(f(Tt)), ' = ', A(ms2(a)), '.']],
+      solucion: [['La aceleración es la pendiente: cuánto cambia v en cada segundo. Pendiente: (', V(`${v2} − ${v1}`), ') ÷ ', T(f(Tt)), ' = ', A(ms2(a)), '.']],
       _datos: { sub, v1, v2, T: Tt },
     };
   }
@@ -716,11 +716,11 @@
         pregunta: ['¿Cuántos metros avanza en ese tiempo?'],
         datos: DB3, correcta: ok, fmt: mt,
         errores: [
-          e('DX-TRIANGULO', V1 * Tt, x => `Bien la idea del área: base ${Tt} s, altura ${V1} m/s. Pero el triángulo es base por altura entre 2; así sale ${x}.`),
-          e('G4', V1 / Tt, x => `Bien leer la recta. Pero ${x} es la pendiente: la aceleración. Lo que avanzó es el área.`),
-          e('DX-ALTURA', V1, x => `Bien leer la velocidad final, ${V1} m/s. Pero lo que avanza es el área, no la altura; ${x} no es.`),
+          e('DX-TRIANGULO', V1 * Tt, x => `La idea del área, con base ${Tt} s y altura ${V1} m/s, está bien, pero el triángulo es base por altura entre 2; así sale ${x}.`),
+          e('G4', V1 / Tt, x => `Leer la recta está bien, pero ${x} es la pendiente: la aceleración. Lo que avanzó es el área.`),
+          e('DX-ALTURA', V1, x => `Leer la velocidad final, ${V1} m/s, está bien, pero lo que avanza es el área, no la altura, y por eso ${x} no es la respuesta.`),
         ],
-        solucion: [['El área es un triángulo: ', T(f(Tt)), ' · ', V(f(V1)), ' ÷ 2 = ', X(mt(ok)), '.']],
+        solucion: [['Lo que avanza es el área bajo la recta, que aquí es un triángulo: ', T(f(Tt)), ' · ', V(f(V1)), ' ÷ 2 = ', X(mt(ok)), '.']],
         _datos: { sub, V1, T: Tt },
       };
     }
@@ -731,12 +731,12 @@
       pregunta: ['¿Cuántos metros avanza en ese tiempo?'],
       datos: DB3, correcta: ok, fmt: mt,
       errores: [
-        e('DX-SEMI', (v1 + v2) * Tt, x => `Bien las dos bases del trapecio. Pero su suma se divide entre 2; sin dividir sale ${x}.`),
-        e('DX-RECT', v2 * Tt, x => `Bien que multipliques por ${Tt} s. Pero no fue a ${v2} m/s todo el tiempo; así sale ${x}.`),
-        e('DX-INICIAL', v1 * Tt, x => `Bien que multipliques por ${Tt} s. Pero su velocidad subió desde ${v1} m/s; así sale ${x}.`),
-        e('DX-ALTURA', v1 + v2, x => `Bien que uses las dos velocidades. Pero lo que avanza es el área, no la suma de las alturas; ${x} no es.`),
+        e('DX-SEMI', (v1 + v2) * Tt, x => `Las dos bases del trapecio están bien, pero su suma se divide entre 2; sin dividir sale ${x}.`),
+        e('DX-RECT', v2 * Tt, x => `Es correcto que multipliques por ${Tt} s, pero no fue a ${v2} m/s todo el tiempo; así sale ${x}.`),
+        e('DX-INICIAL', v1 * Tt, x => `Es correcto que multipliques por ${Tt} s, pero su velocidad subió desde ${v1} m/s; así sale ${x}.`),
+        e('DX-ALTURA', v1 + v2, x => `Es correcto que uses las dos velocidades, pero lo que avanza es el área, no la suma de las alturas, y por eso ${x} no es la respuesta.`),
       ],
-      solucion: [['El área es un trapecio: (', V(`${v1} + ${v2}`), ') ÷ 2 · ', T(f(Tt)), ' = ', X(mt(ok)), '.']],
+      solucion: [['Lo que avanza es el área bajo la recta, que aquí es un trapecio: (', V(`${v1} + ${v2}`), ') ÷ 2 · ', T(f(Tt)), ' = ', X(mt(ok)), '.']],
       _datos: { sub, v1, v2, T: Tt },
     };
   }
@@ -754,10 +754,10 @@
       enunciado, pregunta: ['¿Cuál es su desplazamiento, con su signo?'],
       datos: DB3, correcta: dx, fmt: mt, negativos: true,
       errores: [
-        e('DX-SUMA', d, x => `Bien las dos áreas. Pero la de abajo es hacia atrás: se resta; sumarlas da ${x}.`),
-        e('DX-IDA', A1, x => `Bien el tramo de ida, ${x}. Pero después retrocedió ${f(A2)} m.`),
-        e('DX-ALTURA', v1 - v2, x => `Bien restar lo de atrás. Pero lo que avanza es el área, no la altura de la gráfica; ${x} no es.`),
-        e('DX-SIGNO', -dx, x => `Bien la resta de las áreas. Pero el desplazamiento es lo de ida menos lo de vuelta; al revés sale ${x}.`),
+        e('DX-SUMA', d, x => `Las dos áreas están bien, pero la de abajo es hacia atrás: se resta; sumarlas da ${x}.`),
+        e('DX-IDA', A1, x => `El tramo de ida, ${x}, está bien, pero después retrocedió ${f(A2)} m.`),
+        e('DX-ALTURA', v1 - v2, x => `Restar lo de atrás está bien, pero lo que avanza es el área, no la altura de la gráfica, y por eso ${x} no es la respuesta.`),
+        e('DX-SIGNO', -dx, x => `La resta de las áreas está bien, pero el desplazamiento es lo de ida menos lo de vuelta; al revés sale ${x}.`),
       ],
       solucion: [...sol, ['Δx = ', `${f(A1)} − ${f(A2)} = `, X(mt(dx)), '.']],
       _datos: { sub, v1, t1, v2, t2 },
@@ -766,11 +766,11 @@
       enunciado, pregunta: ['¿Cuántos metros recorrió en total?'],
       datos: DB3, correcta: d, fmt: mt, negativos: true,
       errores: [
-        e('DX-RESTA', dx, x => `Bien las dos áreas. Pero ${x} es el desplazamiento; la distancia recorrida cuenta todo el camino, sin signo.`),
-        e('DX-IDA', A1, x => `Bien el tramo de ida, ${x}. Pero también recorrió los ${f(A2)} m de vuelta.`),
-        e('DX-ALTURA', v1 + v2, x => `Bien sumar sin signo. Pero lo que se recorre es el área, no la altura de la gráfica; ${x} no es.`),
-        e('DX-TRIANGULO', d / 2, x => `Bien sumar las dos áreas. Pero son rectángulos: base por altura, sin dividir entre 2; así sale ${x}.`),
-        e('DX-RECT', Math.max(v1, v2) * (t1 + t2), x => `Bien multiplicar por los ${t1 + t2} s. Pero no fue a ${f(Math.max(v1, v2))} m/s todo el tiempo; así sale ${x}.`),
+        e('DX-RESTA', dx, x => `Las dos áreas están bien, pero ${x} es el desplazamiento; la distancia recorrida cuenta todo el camino, sin signo.`),
+        e('DX-IDA', A1, x => `El tramo de ida, ${x}, está bien, pero también recorrió los ${f(A2)} m de vuelta.`),
+        e('DX-ALTURA', v1 + v2, x => `Sumar sin signo está bien, pero lo que se recorre es el área, no la altura de la gráfica, y por eso ${x} no es la respuesta.`),
+        e('DX-TRIANGULO', d / 2, x => `Sumar las dos áreas está bien, pero son rectángulos: base por altura, sin dividir entre 2; así sale ${x}.`),
+        e('DX-RECT', Math.max(v1, v2) * (t1 + t2), x => `Multiplicar por los ${t1 + t2} s está bien, pero no fue a ${f(Math.max(v1, v2))} m/s todo el tiempo; así sale ${x}.`),
       ],
       solucion: [...sol, ['d = ', `${f(A1)} + ${f(A2)} = ${mt(d)}`, '.']],
       _datos: { sub, v1, t1, v2, t2 },
@@ -787,14 +787,14 @@
       pregunta: ['¿Cuántos metros avanza en total?'],
       datos: DB3, correcta: ok, fmt: mt,
       errores: [
-        e('DX-TRAMO', V1 * t2, x => `Bien el tramo parejo, ${x}. Falta lo que avanzó mientras aceleraba.`),
-        e('DX-TRIANGULO', V1 * t1 + V1 * t2, x => `Bien las dos áreas. Pero la primera es un triángulo: base por altura entre 2; así sale ${x}.`),
-        e('DX-SOLO-TRI', V1 * t1 / 2, x => `Bien el triángulo de la salida, ${x}. Falta el rectángulo de los ${t2} s a ${V1} m/s.`),
-        e('DX-MEDIA-V', V1 / 2 * (t1 + t2), x => `Bien multiplicar por todo el tiempo. Pero no fue a ${f(V1 / 2)} m/s todo el viaje: solo al acelerar; así sale ${x}.`),
+        e('DX-TRAMO', V1 * t2, x => `El tramo parejo, ${x}, está bien, pero falta lo que avanzó mientras aceleraba.`),
+        e('DX-TRIANGULO', V1 * t1 + V1 * t2, x => `Las dos áreas están bien, pero la primera es un triángulo: base por altura entre 2; así sale ${x}.`),
+        e('DX-SOLO-TRI', V1 * t1 / 2, x => `El triángulo de la salida, ${x}, está bien, pero falta el rectángulo de los ${t2} s a ${V1} m/s.`),
+        e('DX-MEDIA-V', V1 / 2 * (t1 + t2), x => `Multiplicar por todo el tiempo está bien, pero no fue a ${f(V1 / 2)} m/s todo el viaje: solo al acelerar; así sale ${x}.`),
       ],
       solucion: [
         ['Triángulo: ', T(f(t1)), ' · ', V(f(V1)), ` ÷ 2 = ${f(V1 * t1 / 2)} m. Rectángulo: `, V(f(V1)), ' · ', T(f(t2)), ` = ${f(V1 * t2)} m.`],
-        ['En total, ', X(mt(ok)), '.'],
+        ['Lo que avanza en total es la suma de las dos áreas: ', X(mt(ok)), '.'],
       ],
       _datos: { V: V1, t1, t2 },
     };
@@ -813,10 +813,10 @@
       enunciado, pregunta: ['¿Cuál es su desplazamiento, con su signo?'],
       datos: DB3, correcta: dx, fmt: mt, negativos: true,
       errores: [
-        e('DX-SUMA', d, x => `Bien los dos triángulos. Pero el de abajo es hacia atrás: se resta; sumarlos da ${x}.`),
-        e('DX-IDA', A1, x => `Bien el triángulo de ida, ${x}. Pero después retrocedió ${f(A2)} m.`),
-        e('DX-TRIANGULO', 2 * dx, x => `Bien restar el de abajo. Pero cada triángulo es base por altura entre 2; así sale ${x}.`),
-        e('DX-SIGNO', -dx, x => `Bien la resta de las áreas. Pero es lo de arriba menos lo de abajo; al revés sale ${x}.`),
+        e('DX-SUMA', d, x => `Los dos triángulos están bien, pero el de abajo es hacia atrás: se resta; sumarlos da ${x}.`),
+        e('DX-IDA', A1, x => `El triángulo de ida, ${x}, está bien, pero después retrocedió ${f(A2)} m.`),
+        e('DX-TRIANGULO', 2 * dx, x => `Restar el de abajo está bien, pero cada triángulo es base por altura entre 2; así sale ${x}.`),
+        e('DX-SIGNO', -dx, x => `La resta de las áreas está bien, pero es lo de arriba menos lo de abajo; al revés sale ${x}.`),
       ],
       solucion: [...sol, ['Δx = ', `${f(A1)} − ${f(A2)} = `, X(mt(dx)), '.']],
       _datos: { sub, a: aa, t0, tb },
@@ -825,10 +825,10 @@
       enunciado, pregunta: ['¿Cuántos metros recorrió en total?'],
       datos: DB3, correcta: d, fmt: mt, negativos: true,
       errores: [
-        e('DX-RESTA', dx, x => `Bien los dos triángulos. Pero ${x} es el desplazamiento; la distancia recorrida suma todo, sin signo.`),
-        e('DX-IDA', A1, x => `Bien el triángulo de ida, ${x}. Pero también recorrió los ${f(A2)} m de reversa.`),
-        e('DX-TRIANGULO', 2 * d, x => `Bien sumar sin signo. Pero cada triángulo es base por altura entre 2; así sale ${x}.`),
-        e('DX-TRAPECIO', (V1 + V2) / 2 * Tt, x => `Bien la idea del área. Pero la recta cruza el eje: son dos triángulos, no un trapecio; así sale ${x}.`),
+        e('DX-RESTA', dx, x => `Los dos triángulos están bien, pero ${x} es el desplazamiento; la distancia recorrida suma todo, sin signo.`),
+        e('DX-IDA', A1, x => `El triángulo de ida, ${x}, está bien, pero también recorrió los ${f(A2)} m de reversa.`),
+        e('DX-TRIANGULO', 2 * d, x => `Sumar sin signo está bien, pero cada triángulo es base por altura entre 2; así sale ${x}.`),
+        e('DX-TRAPECIO', (V1 + V2) / 2 * Tt, x => `La idea del área está bien, pero la recta cruza el eje: son dos triángulos, no un trapecio; así sale ${x}.`),
       ],
       solucion: [...sol, ['d = ', `${f(A1)} + ${f(A2)} = ${mt(d)}`, '.']],
       _datos: { sub, a: aa, t0, tb },
@@ -848,10 +848,10 @@
       enunciado, pregunta: ['¿Cuál es el menor tiempo del viaje?'],
       datos: [...DB3.slice(0, 2), D.fig, D.horaria], correcta: ttot, fmt: sg,
       errores: [
-        e('MRUV-MITAD', k, x => `Bien el triángulo. Pero ${x} es solo el tiempo de acelerar; falta frenar.`),
-        e('MRUV-SOLO-ACELERA', Math.sqrt(2 * Dd / aa), x => `Bien ½ · a · t². Pero eso sería si acelerara todo el camino; también tiene que frenar. Así sale ${x}.`),
-        e('MRUV-DOBLE-TRAMO', 2 * Math.sqrt(2 * Dd / aa), x => `Bien que acelere y frene. Pero cada parte recorre la mitad del camino, no todo; así sale ${x}.`),
-        e('MRUV-VMAX', vmax, x => `Bien la rapidez máxima, ${f(vmax)} m/s. Pero piden segundos; ${x} no es el tiempo.`),
+        e('MRUV-MITAD', k, x => `El triángulo está bien, pero ${x} es solo el tiempo de acelerar; falta frenar.`),
+        e('MRUV-SOLO-ACELERA', Math.sqrt(2 * Dd / aa), x => `Calculaste bien ½ · a · t², pero eso sería si acelerara todo el camino; también tiene que frenar. Así sale ${x}.`),
+        e('MRUV-DOBLE-TRAMO', 2 * Math.sqrt(2 * Dd / aa), x => `Es correcto que acelere y frene, pero cada parte recorre la mitad del camino, no todo; así sale ${x}.`),
+        e('MRUV-VMAX', vmax, x => `La rapidez máxima, ${f(vmax)} m/s, está bien, pero piden segundos; ${x} no es el tiempo.`),
       ],
       solucion: [...sol, ['El viaje dura ', T(`2 · ${k} = ${sg(ttot)}`), '.']],
       _datos: { sub, a: aa, k },
@@ -860,9 +860,9 @@
       enunciado, pregunta: ['¿Cuál es la mayor rapidez que alcanza?'],
       datos: [...DB3.slice(0, 2), D.fig, D.horaria], correcta: vmax, fmt: ms,
       errores: [
-        e('MRUV-SOLO-ACELERA', Math.sqrt(2 * aa * Dd), x => `Bien v² = 2aΔx. Pero eso sería si acelerara todo el camino; acelera solo la mitad. Así sale ${x}.`),
-        e('MRUV-MEDIA-V', vmax / 2, x => `Bien la rapidez media del viaje, ${x}. Pero piden la mayor, la de la mitad del camino.`),
-        e('MRUV-TIEMPO', ttot, x => `Bien el tiempo del viaje, ${f(ttot)} s. Pero ese número está en segundos; ${x} no es la rapidez.`),
+        e('MRUV-SOLO-ACELERA', Math.sqrt(2 * aa * Dd), x => `Calculaste bien v² = 2aΔx, pero eso sería si acelerara todo el camino; acelera solo la mitad. Así sale ${x}.`),
+        e('MRUV-MEDIA-V', vmax / 2, x => `La rapidez media del viaje, ${x}, está bien, pero piden la mayor, la de la mitad del camino.`),
+        e('MRUV-TIEMPO', ttot, x => `El tiempo del viaje, ${f(ttot)} s, está bien, pero ese número está en segundos; ${x} no es la rapidez.`),
       ],
       solucion: sol,
       _datos: { sub, a: aa, k },
@@ -879,14 +879,14 @@
       pregunta: ['¿Cuánto vale su aceleración, con su signo?'],
       datos: DB3, correcta: ok, fmt: ms2, negativos: true,
       errores: [
-        e('K-SIGNO', -ok, x => `Bien el valor, ${f(-ok)}. Pero la recta baja: la pendiente es negativa; ${x} tiene el signo al revés.`),
-        e('DX-TRIANGULO', -V1 * V1 / Dd, x => `Bien la idea del área. Pero el triángulo es base por altura entre 2: la base es 2 · ${f(Dd)} ÷ ${V1}, no ${f(Dd)} ÷ ${V1}; así sale ${x}.`),
-        e('G4', -V1 / Dd, x => `Bien dividir la velocidad. Pero el área no es el tiempo: primero se despeja la base del triángulo; así sale ${x}.`),
-        e('G4-tiempo', t, x => `Bien despejar la base del triángulo: ${t} s. Pero ese es el tiempo de frenado; la aceleración es la pendiente. ${x} no es.`),
+        e('K-SIGNO', -ok, x => `El valor, ${f(-ok)}, está bien, pero la recta baja: la pendiente es negativa; ${x} tiene el signo al revés.`),
+        e('DX-TRIANGULO', -V1 * V1 / Dd, x => `La idea del área está bien, pero el triángulo es base por altura entre 2: la base es 2 · ${f(Dd)} ÷ ${V1}, no ${f(Dd)} ÷ ${V1}; así sale ${x}.`),
+        e('G4', -V1 / Dd, x => `Dividir la velocidad está bien, pero el área no es el tiempo: primero se despeja la base del triángulo; así sale ${x}.`),
+        e('G4-tiempo', t, x => `Despejar la base del triángulo, ${t} s, está bien, pero ese es el tiempo de frenado; la aceleración es la pendiente, y por eso ${x} no es la respuesta.`),
       ],
       solucion: [
-        ['Triángulo: ', X(f(Dd)), ' = base · ', V(f(V1)), ' ÷ 2, así que la base es ', T(sg(t)), '.'],
-        ['Pendiente: (0 − ', V(f(V1)), ') ÷ ', T(f(t)), ' = ', A(ms2(ok)), '.'],
+        ['El área es un triángulo cuya base es el tiempo de frenado: ', X(f(Dd)), ' = base · ', V(f(V1)), ' ÷ 2, así que la base es ', T(sg(t)), '.'],
+        ['La aceleración es la pendiente de la recta: (0 − ', V(f(V1)), ') ÷ ', T(f(t)), ' = ', A(ms2(ok)), '.'],
       ],
       _datos: { V: V1, t },
     };
@@ -904,10 +904,10 @@
       pregunta: ['¿Qué velocidad tiene al final?'],
       datos: [...DB4, D.fig], correcta: ok, fmt: ms, negativos: true,
       errores: [
-        e('K-SIN-V0', a * Tt, x => `Bien el área de a–t, ${x}: lo que cambió v. Pero se suma a los ${v0} m/s con que iba.`),
-        e('K-CUADRADO', v0 + a * Tt * Tt, x => `Bien partir de ${v0} m/s. Pero el área de a–t es base por altura, a · t, sin elevar t; así sale ${x}.`),
-        e('K-TIEMPO', v0 + a, x => `Bien partir de ${v0} m/s y usar a. Pero ${x} es la velocidad después de un segundo; dura ${Tt} s.`),
-        e('K-SIGNO', v0 - a * Tt, x => `Bien el área, ${f(Math.abs(a * Tt))} m/s. Pero a es ${a > 0 ? 'positiva: se suma' : 'negativa: se resta'}; así sale ${x}.`),
+        e('K-SIN-V0', a * Tt, x => `El área de a–t, ${x}, es lo que cambió v, pero se suma a los ${v0} m/s con que iba.`),
+        e('K-CUADRADO', v0 + a * Tt * Tt, x => `Partir de ${v0} m/s está bien, pero el área de a–t es base por altura, a · t, sin elevar t; así sale ${x}.`),
+        e('K-TIEMPO', v0 + a, x => `Partir de ${v0} m/s y usar a está bien, pero ${x} es la velocidad después de un segundo; dura ${Tt} s.`),
+        e('K-SIGNO', v0 - a * Tt, x => `El área, ${f(Math.abs(a * Tt))} m/s, está bien, pero a es ${a > 0 ? 'positiva: se suma' : 'negativa: se resta'}; así sale ${x}.`),
       ],
       solucion: [['El área de a–t: ', A(f(a)), ' · ', T(f(Tt)), ` = ${f(a * Tt)} m/s, lo que cambia v.`], ['v = ', V(f(v0)), ` ${a < 0 ? '−' : '+'} ${f(Math.abs(a * Tt))} = `, V(ms(ok)), '.']],
       _datos: { sub, v0, a, T: Tt },
@@ -929,10 +929,10 @@
       : mov === 'acelera' ? ['Una combi arranca del paradero y acelera parejo con ', A(`a = ${f(num)} m/s²`), '.']
         : ['Una combi frena parejo con ', A(`a = −${f(num)} m/s²`), ' hasta detenerse, sin retroceder.'];
     const errores = [
-      ...otras.map(o2 => et('G3', de(mov, o2), x => `Bien: «${x}» es la forma de su gráfica ${o2}. Pero piden la ${g}; cada gráfica tiene la suya.`)),
-      opuesto && et('G-SENTIDO', de(opuesto, g), x => `Bien el tipo de gráfica. Pero «${x}» sería la ${g} de una combi que ${opuesto}.`),
-      mov === 'constante' && g === 'x–t' && et('G1', 'Una horizontal, como la avenida', x => `Bien que la avenida sea plana. Pero la gráfica no es una foto del camino: «${x}» diría que la combi está quieta.`),
-      mov === 'constante' && g !== 'x–t' && et('G-SENTIDO', de('acelera', g), x => `Bien el tipo de gráfica. Pero «${x}» sería la ${g} de una combi que acelera; esta va pareja.`),
+      ...otras.map(o2 => et('G3', de(mov, o2), x => `Es cierto que «${x}» es la forma de su gráfica ${o2}, pero piden la ${g}; cada gráfica tiene la suya.`)),
+      opuesto && et('G-SENTIDO', de(opuesto, g), x => `El tipo de gráfica está bien, pero «${x}» sería la ${g} de una combi que ${opuesto}.`),
+      mov === 'constante' && g === 'x–t' && et('G1', 'Una horizontal, como la avenida', x => `Es correcto que la avenida sea plana, pero la gráfica no es una foto del camino: «${x}» diría que la combi está quieta.`),
+      mov === 'constante' && g !== 'x–t' && et('G-SENTIDO', de('acelera', g), x => `El tipo de gráfica está bien, pero «${x}» sería la ${g} de una combi que acelera; esta va pareja.`),
     ];
     return {
       enunciado, pregunta: [`¿Cómo es su gráfica ${g} mientras tanto?`],
@@ -958,9 +958,9 @@
       pregunta: ['¿A los cuántos segundos tienen la misma velocidad?'],
       datos: [...DB4, D.alcance], correcta: ok, fmt: sg,
       errores: [
-        e('K1-a', alc, x => `Bien: a los ${x} están en el mismo lugar. Pero ahí la combi ya va más rápido; la misma velocidad fue antes.`),
-        e('K-POR', Vm * aa, x => `Bien usar ${Vm} m/s y a. Pero la combi gana ${f(aa)} m/s cada segundo: se divide, no se multiplica; así sale ${x}.`),
-        e('K-INVERSA', aa / Vm, x => `Bien usar ${Vm} m/s y a. Pero el tiempo es la velocidad entre a, no al revés; así sale ${x}.`),
+        e('K1-a', alc, x => `Es cierto que a los ${x} están en el mismo lugar, pero ahí la combi ya va más rápido; la misma velocidad fue antes.`),
+        e('K-POR', Vm * aa, x => `Usar ${Vm} m/s y a está bien, pero la combi gana ${f(aa)} m/s cada segundo: se divide, no se multiplica; así sale ${x}.`),
+        e('K-INVERSA', aa / Vm, x => `Usar ${Vm} m/s y a está bien, pero el tiempo es la velocidad entre a, no al revés; así sale ${x}.`),
       ],
       solucion: [['La combi va a ', A(f(aa)), ' · ', T('t'), '; el mototaxi, siempre a ', V(f(Vm)), '.'], ['Iguales cuando ', T('t'), ` = ${Vm} ÷ ${f(aa)} = `, T(sg(ok)), ': ahí sus rectas x–t tienen la misma inclinación.']],
       _datos: { V: Vm, a: aa },
@@ -976,10 +976,10 @@
       pregunta: ['¿Qué velocidad tiene al final?'],
       datos: [...DB4, D.fig], correcta: ok, fmt: ms,
       errores: [
-        e('AT-TRAMO', a1 * t1, x => `Bien el área del primer tramo, ${x}. Falta el segundo: ${f(a2)} · ${t2}, que también cambia v.`),
-        e('AT-TODO', a1 * (t1 + t2), x => `Bien partir del reposo y usar áreas. Pero a vale ${f(a1)} solo los primeros ${t1} s; así sale ${x}.`),
-        e('AT-ALTURA', a1 + a2, x => `Bien juntar los dos tramos. Pero lo que cambia v es el área, no la altura de cada tramo; ${x} no es.`),
-        e('K-SIGNO', a1 * t1 - a2 * t2, x => `Bien las dos áreas. Pero el segundo tramo está ${a2 > 0 ? 'sobre el eje: se suma' : 'bajo el eje: se resta'}; así sale ${x}.`),
+        e('AT-TRAMO', a1 * t1, x => `El área del primer tramo, ${x}, está bien, pero falta la del segundo, ${f(a2)} · ${t2}, que también cambia v.`),
+        e('AT-TODO', a1 * (t1 + t2), x => `Partir del reposo y usar áreas está bien, pero a vale ${f(a1)} solo los primeros ${t1} s; así sale ${x}.`),
+        e('AT-ALTURA', a1 + a2, x => `Juntar los dos tramos está bien, pero lo que cambia v es el área, no la altura de cada tramo, y por eso ${x} no es la respuesta.`),
+        e('K-SIGNO', a1 * t1 - a2 * t2, x => `Las dos áreas están bien, pero el segundo tramo está ${a2 > 0 ? 'sobre el eje: se suma' : 'bajo el eje: se resta'}; así sale ${x}.`),
       ],
       solucion: [['Áreas de a–t: ', A(f(a1)), ' · ', T(f(t1)), ` = ${f(a1 * t1)} m/s y `, A(f(a2)), ' · ', T(f(t2)), ` = ${f(a2 * t2)} m/s.`], ['v = 0 + ', `${f(a1 * t1)} ${a2 < 0 ? '−' : '+'} ${f(Math.abs(a2 * t2))} = `, V(ms(ok)), '.']],
       _datos: { a1, t1, a2, t2 },
@@ -995,15 +995,15 @@
     const x = M.movil(moto).x(t), tv = Vm / aa;
     const enunciado = ['Un mototaxi pasa por el paradero a ', V(ms(Vm)), ' justo cuando una combi arranca de ahí con ', A(`a = ${f(aa)} m/s²`), '.'];
     const sol = [['Mototaxi: x = ', V(f(Vm)), ' · ', T('t'), '. Combi: x = ½ · ', A(f(aa)), ' · ', T('t²'), '.'],
-      ['Iguales: ', `${Vm} · t = ${f(aa / 2)} · t², así que t = `, T(sg(t)), ' (t = 0 es la salida) y ', X(`x = ${mt(x)}`), '.']];
+      ['Al igualar las dos posiciones, ', `${Vm} · t = ${aa === 2 ? '' : `${f(aa / 2)} · `}t², así que t = `, T(sg(t)), ' (t = 0 es la salida) y ', X(`x = ${mt(x)}`), '.']];
     if (sub === 'tiempo') return {
       enunciado, pregunta: ['¿A los cuántos segundos la combi alcanza al mototaxi?'],
       datos: [...DB4, D.alcance], correcta: t, fmt: sg,
       errores: [
-        e('K1-a', tv, y => `Bien que la combi lo vaya alcanzando. Pero a los ${y} solo van igual de rápido; ahí la combi aún va atrás.`),
-        e('K-INVERSA', 2 * aa / Vm, y => `Bien igualar las dos posiciones. Pero al despejar, t = 2 · ${Vm} ÷ ${f(aa)}, no al revés; así sale ${y}.`),
-        e('MRUV-MEDIO', Vm / aa, y => `Bien igualar las posiciones. Pero la combi avanza ½ · a · t²; sin el ½ sale ${y}.`),
-        e('K-POR', Vm * aa, y => `Bien usar ${Vm} m/s y a. Pero al despejar t se divide entre a; multiplicar da ${y}.`),
+        e('K1-a', tv, y => `Es correcto que la combi lo vaya alcanzando, pero a los ${y} solo van igual de rápido; ahí la combi aún va atrás.`),
+        e('K-INVERSA', 2 * aa / Vm, y => `Igualar las dos posiciones está bien, pero al despejar, t = 2 · ${Vm} ÷ ${f(aa)}, no al revés; así sale ${y}.`),
+        e('MRUV-MEDIO', Vm / aa, y => `Igualar las posiciones está bien, pero la combi avanza ½ · a · t²; sin el ½ sale ${y}.`),
+        e('K-POR', Vm * aa, y => `Usar ${Vm} m/s y a está bien, pero al despejar t se divide entre a; multiplicar da ${y}.`),
       ],
       solucion: sol, _datos: { sub, V: Vm, a: aa },
     };
@@ -1011,10 +1011,10 @@
       enunciado, pregunta: ['¿A cuántos metros del paradero la alcanza?'],
       datos: [...DB4, D.alcance], correcta: x, fmt: mt,
       errores: [
-        e('K1-a', Vm * tv, y => `Bien que el mototaxi avance ${Vm} m/s. Pero ${y} es donde está cuando van igual de rápido; la combi aún va atrás.`),
-        e('MRUV-MEDIO', aa * t * t, y => `Bien el tiempo del alcance, ${f(t)} s. Pero la combi avanza ½ · a · t²; sin el ½ sale ${y}.`),
-        e('K-ALC-TIEMPO', t, y => `Bien el tiempo del alcance, ${f(t)} s. Pero piden metros; ${y} no es.`),
-        e('K-ALC-SIN-D', 2 * x, y => `Bien el tiempo del alcance. Pero el mototaxi va a ${Vm} m/s, no al doble; así sale ${y}.`),
+        e('K1-a', Vm * tv, y => `Es correcto que el mototaxi avance ${Vm} m/s, pero ${y} es donde está cuando van igual de rápido; la combi aún va atrás.`),
+        e('MRUV-MEDIO', aa * t * t, y => `El tiempo del alcance, ${f(t)} s, está bien, pero la combi avanza ½ · a · t²; sin el ½ sale ${y}.`),
+        e('K-ALC-TIEMPO', t, y => `El tiempo del alcance, ${f(t)} s, está bien, pero piden metros, y por eso ${y} no es la respuesta.`),
+        e('K-ALC-SIN-D', 2 * x, y => `El tiempo del alcance está bien, pero el mototaxi va a ${Vm} m/s, no al doble; así sale ${y}.`),
       ],
       solucion: sol, _datos: { sub, V: Vm, a: aa },
     };
@@ -1031,10 +1031,10 @@
       pregunta: ['¿Cuántos metros recorre en total?'],
       datos: [...DB4, 'Área bajo v–t: Δx.', D.fig], correcta: ok, fmt: mt,
       errores: [
-        e('G4', a1 * t1 + a3 * t3, x => `Bien leer las áreas de a–t. Pero esas áreas son cambios de velocidad, en m/s; la distancia es el área de v–t. ${x} no es.`),
-        e('DX-TRAMO', vmax * t2, x => `Bien el tramo parejo, a ${vmax} m/s. Falta lo que avanzó mientras aceleraba y mientras frenaba; ${x} no alcanza.`),
-        e('DX-RECT', vmax * T3, x => `Bien la velocidad máxima, ${vmax} m/s. Pero no fue así todo el viaje: al acelerar y al frenar son triángulos; así sale ${x}.`),
-        e('G4-medio', vmax * T3 / 2, x => `Bien la idea del área. Pero el tramo parejo es un rectángulo entero, sin dividir entre 2; así sale ${x}.`),
+        e('G4', a1 * t1 + a3 * t3, x => `Leer las áreas de a–t está bien, pero esas áreas son cambios de velocidad, en m/s; la distancia es el área de v–t, y por eso ${x} no es la respuesta.`),
+        e('DX-TRAMO', vmax * t2, x => `El tramo parejo a ${vmax} m/s está bien, pero ${x} no alcanza: falta lo que avanzó mientras aceleraba y mientras frenaba.`),
+        e('DX-RECT', vmax * T3, x => `La velocidad máxima, ${vmax} m/s, está bien, pero no fue así todo el viaje: al acelerar y al frenar son triángulos; así sale ${x}.`),
+        e('G4-medio', vmax * T3 / 2, x => `La idea del área está bien, pero el tramo parejo es un rectángulo entero, sin dividir entre 2; así sale ${x}.`),
       ],
       solucion: [
         ['v sube a ', A(f(a1)), ' · ', T(f(t1)), ' = ', V(ms(vmax)), ', se queda así y baja a 0 en los últimos ', T(sg(t3)), '.'],
@@ -1056,14 +1056,15 @@
       pregunta: ['¿Cuántos metros recorre el mototaxi hasta que lo alcanzan?'],
       datos: [...DB4, D.alcance, D.cuadratica], correcta: ok, fmt: mt,
       errores: [
-        e('K-ALC-PERSEGUIDOR', Dd + ok, x => `Bien el tiempo del alcance, ${t} s. Pero ${x} es lo que recorre la combi: salió ${Dd} m más atrás.`),
-        e('K-ALC-D', Dd, x => `Bien que la combi tenga que cerrar la distancia. Pero ${x} es la separación al empezar; el mototaxi sigue avanzando.`),
-        e('K1-a', Vm * Vm / aa, x => `Bien la velocidad del mototaxi. Pero ${x} es lo que avanza hasta que van igual de rápido; ahí la combi aún va atrás.`),
-        e('K-ALC-SIN-D', 2 * Vm * Vm / aa, x => `Bien igualar las posiciones. Pero la combi sale ${Dd} m detrás, no del grifo; así sale ${x}.`),
+        e('K-ALC-PERSEGUIDOR', Dd + ok, x => `El tiempo del alcance, ${t} s, está bien, pero ${x} es lo que recorre la combi: salió ${Dd} m más atrás.`),
+        e('K-ALC-D', Dd, x => `Es correcto que la combi tenga que cerrar la distancia, pero ${x} es la separación al empezar; el mototaxi sigue avanzando.`),
+        e('K1-a', Vm * Vm / aa, x => `La velocidad del mototaxi está bien, pero ${x} es lo que avanza hasta que van igual de rápido; ahí la combi aún va atrás.`),
+        e('K-ALC-SIN-D', 2 * Vm * Vm / aa, x => `Igualar las posiciones está bien, pero la combi sale ${Dd} m detrás, no del grifo; así sale ${x}.`),
       ],
       solucion: [
         ['Desde el paradero: mototaxi x = ', X(f(Dd)), ' + ', V(f(Vm)), ' · ', T('t'), '; combi x = ½ · ', A(f(aa)), ' · ', T('t²'), '.'],
-        ['Iguales: ', `${f(aa / 2)}t² − ${Vm}t − ${Dd} = 0, con t = `, T(sg(t)), '. El mototaxi recorre ', V(f(Vm)), ' · ', T(f(t)), ' = ', X(mt(ok)), '.'],
+        // Sin «1t²»: el coeficiente 1 no se escribe (verificación, 26 nov).
+        ['Al igualar las dos posiciones queda ', `${aa === 2 ? '' : f(aa / 2)}t² − ${Vm}t − ${Dd} = 0, de donde t = `, T(sg(t)), '. En ese tiempo, el mototaxi recorre ', V(f(Vm)), ' · ', T(f(t)), ' = ', X(mt(ok)), '.'],
       ],
       _datos: { a: aa, V: Vm, t },
     };
@@ -1080,9 +1081,9 @@
       pregunta: ['Antes del alcance, ¿cuál es la mayor separación entre los dos?'],
       datos: [...DB4, D.separacion], correcta: ok, fmt: mt,
       errores: [
-        e('K-SEP-ALCANCE', moto.x(2 * tv), x => `Bien la posición del mototaxi. Pero ${x} es donde la combi lo alcanza; ahí la separación es 0.`),
-        e('K-SEP-TIEMPO', tv, x => `Bien: la separación es mayor cuando van igual de rápido, a los ${f(tv)} s. Pero piden metros; ${x} no es.`),
-        e('K-SEP-MOTO', moto.x(tv), x => `Bien el instante, ${f(tv)} s. Pero ${x} es lo que avanzó el mototaxi; falta restar lo de la combi.`),
+        e('K-SEP-ALCANCE', moto.x(2 * tv), x => `La posición del mototaxi está bien, pero ${x} es donde la combi lo alcanza; ahí la separación es 0.`),
+        e('K-SEP-TIEMPO', tv, x => `Es cierto que la separación es mayor cuando van igual de rápido, a los ${f(tv)} s, pero piden metros, y por eso ${x} no es la respuesta.`),
+        e('K-SEP-MOTO', moto.x(tv), x => `El instante, ${f(tv)} s, está bien, pero ${x} es lo que avanzó el mototaxi; falta restar lo de la combi.`),
       ],
       solucion: [
         ['La separación crece mientras el mototaxi va más rápido: la mayor es cuando la combi llega a ', V(ms(Vm)), ', a los ', T(sg(tv)), '.'],
@@ -1109,11 +1110,11 @@
       pregunta: ['¿Desde qué altura cayó?'],
       datos: DB5, correcta: h, fmt: mt,
       errores: [
-        e('C-MEDIO', G * t * t, x => `Bien g · t². Pero lo que cae lleva un ½: ½ · g · t²; sin él sale ${x}.`),
-        e('C-LINEAL', G * t / 2, x => `Bien el ½ · g. Pero el tiempo va al cuadrado; sin elevarlo sale ${x}.`),
-        e('C-VELOCIDAD', G * t, x => `Bien usar g y t. Pero g · t = ${x} en número es la velocidad al llegar; piden la altura.`),
+        e('C-MEDIO', G * t * t, x => `Calculaste bien g · t², pero lo que cae lleva un ½: ½ · g · t²; sin él sale ${x}.`),
+        e('C-LINEAL', G * t / 2, x => `El ½ · g está bien, pero el tiempo va al cuadrado; sin elevarlo sale ${x}.`),
+        e('C-VELOCIDAD', G * t, x => `Usar g y t está bien, pero g · t = ${x} en número es la velocidad al llegar; piden la altura.`),
       ],
-      solucion: [['h = ½ · ', A(f(G)), ' · ', T(`${f(t)}²`), ' = ', X(mt(h)), '.']],
+      solucion: [['Como sale del reposo, lo que cae es ½ · g · t²: h = ½ · ', A(f(G)), ' · ', T(`${f(t)}²`), ' = ', X(mt(h)), '.']],
       _datos: { t },
     };
   }
@@ -1128,11 +1129,11 @@
         pregunta: ['¿Con qué rapidez llega?'],
         datos: DB5, correcta: ok, fmt: ms,
         errores: [
-          e('C-MEDIO', G * t / 2, x => `Bien usar g y t. Pero el ½ va en lo que cae, no en la velocidad: v = g · t; así sale ${x}.`),
-          e('K-CUADRADO', G * t * t, x => `Bien partir del reposo con g. Pero v gana g cada segundo: g · t, sin elevar t; así sale ${x}.`),
-          e('C-ALTURA', h, x => `Bien ½ · g · t² = ${f(h)} m: la altura. Pero piden la velocidad, no los metros; ${x} no es.`),
+          e('C-MEDIO', G * t / 2, x => `Usar g y t está bien, pero el ½ va en lo que cae, no en la velocidad: v = g · t; así sale ${x}.`),
+          e('K-CUADRADO', G * t * t, x => `Partir del reposo con g está bien, pero v gana g cada segundo: g · t, sin elevar t; así sale ${x}.`),
+          e('C-ALTURA', h, x => `Calculaste bien ½ · g · t² = ${f(h)} m: la altura, pero piden la velocidad, no los metros, y por eso ${x} no es la respuesta.`),
         ],
-        solucion: [['v = ', A(f(G)), ' · ', T(f(t)), ' = ', V(ms(ok)), '.']],
+        solucion: [['Desde el reposo gana g en cada segundo: v = ', A(f(G)), ' · ', T(f(t)), ' = ', V(ms(ok)), '.']],
         _datos: { sub, t },
       };
     }
@@ -1143,11 +1144,11 @@
       pregunta: ['¿Con qué rapidez llega?'],
       datos: DB5, correcta: ok, fmt: ms,
       errores: [
-        e('C-RAIZ', 2 * G * h, x => `Bien 2 · g · h = ${f(2 * G * h)}. Pero eso es v²: falta sacar la raíz; ${x} no es.`),
-        e('C-MEDIO', Math.sqrt(G * h), x => `Bien la raíz. Pero v² = 2 · g · h: falta el 2; así sale ${x}.`),
-        e('C-TIEMPO', t, x => `Bien el tiempo de caída, ${f(t)} s. Pero piden la rapidez; ${x} no es.`),
+        e('C-RAIZ', 2 * G * h, x => `Calculaste bien 2 · g · h = ${f(2 * G * h)}, pero eso es v²: falta sacar la raíz, y por eso ${x} no es la respuesta.`),
+        e('C-MEDIO', Math.sqrt(G * h), x => `La raíz está bien, pero v² = 2 · g · h: falta el 2; así sale ${x}.`),
+        e('C-TIEMPO', t, x => `El tiempo de caída, ${f(t)} s, está bien, pero piden la rapidez, y por eso ${x} no es la respuesta.`),
       ],
-      solucion: [['v² = 2 · ', A(f(G)), ' · ', X(f(h)), ` = ${f(2 * G * h)}, así que v = `, V(ms(ok)), '.']],
+      solucion: [['No dan el tiempo, así que se usa v² = 2 · g · h: v² = 2 · ', A(f(G)), ' · ', X(f(h)), ` = ${f(2 * G * h)}, así que v = `, V(ms(ok)), '.']],
       _datos: { sub, t },
     };
   }
@@ -1159,11 +1160,11 @@
       pregunta: ['¿Cuánto tarda en llegar?'],
       datos: DB5, correcta: ok, fmt: sg,
       errores: [
-        e('C-MEDIO', Math.sqrt(h / G), x => `Bien la raíz. Pero h = ½ · g · t²: queda t² = 2h ÷ g; sin el 2 sale ${x}.`),
-        e('C-LINEAL', 2 * h / G, x => `Bien 2h ÷ g. Pero eso es t²: falta sacar la raíz; ${x} no es.`),
-        e('C-VELOCIDAD', Math.sqrt(2 * G * h), x => `Bien la raíz de 2 · g · h. Pero esa es la rapidez al llegar, en m/s; ${x} no es el tiempo.`),
+        e('C-MEDIO', Math.sqrt(h / G), x => `La raíz está bien, pero h = ½ · g · t²: queda t² = 2h ÷ g; sin el 2 sale ${x}.`),
+        e('C-LINEAL', 2 * h / G, x => `Calculaste bien 2h ÷ g, pero eso es t²: falta sacar la raíz, y por eso ${x} no es la respuesta.`),
+        e('C-VELOCIDAD', Math.sqrt(2 * G * h), x => `La raíz de 2 · g · h está bien, pero esa es la rapidez al llegar, en m/s; ${x} no es el tiempo.`),
       ],
-      solucion: [['', X(f(h)), ' = ½ · ', A(f(G)), ' · t², así que t² = ', `${f(2 * h / G)} y t = `, T(sg(ok)), '.']],
+      solucion: [['Se despeja t de lo que cae desde el reposo: ', X(f(h)), ' = ½ · ', A(f(G)), ' · t², así que t² = ', `${f(2 * h / G)} y t = `, T(sg(ok)), '.']],
       _datos: { t },
     };
   }
@@ -1175,9 +1176,9 @@
       pregunta: ['¿Cuánto tardaste en cerrar los dedos?'],
       datos: [...DB5, D.cm], correcta: ok, fmt: sg,
       errores: [
-        e('U2-cm', Math.sqrt(2 * dcm / G), x => `Bien t² = 2h ÷ g y la raíz. Pero h va en metros: ${f(dcm)} cm = ${f(dcm / 100, 4)} m; con los cm sale ${x}.`),
-        e('C-MEDIO', Math.sqrt(dcm / 100 / G), x => `Bien pasar a ${f(dcm / 100, 4)} m y sacar la raíz. Pero t² = 2h ÷ g: falta el 2; así sale ${x}.`),
-        e('C-LINEAL', 2 * dcm / 100 / G, x => `Bien 2h ÷ g con h en metros. Pero eso es t²: falta la raíz; ${x} no es.`),
+        e('U2-cm', Math.sqrt(2 * dcm / G), x => `Calculaste bien t² = 2h ÷ g y la raíz, pero h va en metros: ${f(dcm)} cm = ${f(dcm / 100, 4)} m; con los cm sale ${x}.`),
+        e('C-MEDIO', Math.sqrt(dcm / 100 / G), x => `Pasar a ${f(dcm / 100, 4)} m y sacar la raíz está bien, pero t² = 2h ÷ g: falta el 2; así sale ${x}.`),
+        e('C-LINEAL', 2 * dcm / 100 / G, x => `Calculaste bien 2h ÷ g con h en metros, pero eso es t²: falta la raíz, y por eso ${x} no es la respuesta.`),
       ],
       solucion: [['En metros: ', X(`${f(dcm)} cm = ${f(dcm / 100, 4)} m`), '.'], ['t² = 2 · ', `${f(dcm / 100, 4)} ÷ `, A(f(G)), ` = ${f(2 * dcm / 100 / G, 4)}, así que t = `, T(sg(ok)), '.']],
       _datos: { t },
@@ -1191,11 +1192,11 @@
       pregunta: ['¿Con qué rapidez llega al agua, en km/h?'],
       datos: [...DB5, D.kmh], correcta: ok, fmt: kmh,
       errores: [
-        e('U1-kmh', vms, x => `Bien la rapidez, ${f(vms)} m/s. Pero piden km/h: falta multiplicar por 3,6; ${x} es el número en m/s.`),
-        e('U1-al-reves', vms / 3.6, x => `Bien ${f(vms)} m/s. Pero para pasar a km/h se multiplica por 3,6, no se divide; así sale ${x}.`),
-        e('C-MEDIO', Math.sqrt(G * h) * 3.6, x => `Bien la raíz y los km/h. Pero v² = 2 · g · h: falta el 2; así sale ${x}.`),
-        e('C-TIEMPO', t * 3.6, x => `Bien multiplicar por 3,6. Pero ${t} s es el tiempo de caída, no la rapidez; así sale ${x}.`),
-        e('K-CUADRADO', G * t * t * 3.6, x => `Bien los ${t} s de caída y el 3,6. Pero v = g · t, sin elevar t al cuadrado; así sale ${x}.`),
+        e('U1-kmh', vms, x => `La rapidez, ${f(vms)} m/s, está bien, pero piden km/h: falta multiplicar por 3,6; ${x} es el número en m/s.`),
+        e('U1-al-reves', vms / 3.6, x => `Calculaste bien ${f(vms)} m/s, pero para pasar a km/h se multiplica por 3,6, no se divide; así sale ${x}.`),
+        e('C-MEDIO', Math.sqrt(G * h) * 3.6, x => `La raíz y los km/h están bien, pero v² = 2 · g · h: falta el 2; así sale ${x}.`),
+        e('C-TIEMPO', t * 3.6, x => `Multiplicar por 3,6 está bien, pero ${t} s es el tiempo de caída, no la rapidez; así sale ${x}.`),
+        e('K-CUADRADO', G * t * t * 3.6, x => `Los ${t} s de caída y el 3,6 están bien, pero v = g · t, sin elevar t al cuadrado; así sale ${x}.`),
       ],
       solucion: [['v² = 2 · ', A(f(G)), ' · ', X(f(h)), ` = ${2 * G * h}, así que v = `, V(ms(vms)), '.'], ['En km/h: ', `${f(vms)} · 3,6 = `, V(kmh(ok)), '.']],
       _datos: { t },
@@ -1211,9 +1212,9 @@
       pregunta: [`¿Cuánto tarda en caer desde ${veces}?`],
       datos: DB5, correcta: ok, fmt: sg,
       errores: [
-        e('C-LINEAL', k * t, x => `Bien que tarde más. Pero h va con t²: con ${k} veces la altura, t² es ${k} veces mayor, no t; así sale ${x}.`),
-        e('C-IGUAL', t, x => `Bien: g es la misma. Pero desde más alto tarda más; ${x} es el tiempo de antes.`),
-        e('C-CUADRADO', k * k * t, x => `Bien que h y t no crezcan igual. Pero t crece menos que h, no más; así sale ${x}.`),
+        e('C-LINEAL', k * t, x => `Es correcto que tarde más, pero h va con t²: con ${k} veces la altura, t² es ${k} veces mayor, no t; así sale ${x}.`),
+        e('C-IGUAL', t, x => `Es cierto que g es la misma, pero desde más alto tarda más; ${x} es el tiempo de antes.`),
+        e('C-CUADRADO', k * k * t, x => `Es correcto que h y t no crezcan igual, pero t crece menos que h, no más; así sale ${x}.`),
       ],
       solucion: [['h = ½ · g · t²: con ', `${k} veces la altura, t² es ${k} veces mayor y t, √${k} veces.`], ['t = ', T(f(t)), ` · √${k} = `, T(sg(ok)), '.']],
       _datos: { t, k },
@@ -1227,10 +1228,10 @@
       pregunta: [`¿Cuántos metros cae durante el ${ORD[n]} segundo?`],
       datos: [...DB5, D.enesimo], correcta: ok, fmt: mt,
       errores: [
-        e('C-ENESIMO', m.x(n), x => `Bien ½ · g · ${n}² = ${x}. Pero eso es lo que cae en los ${n} s enteros; piden solo el último de ellos.`),
-        e('C-VELOCIDAD', m.v(n), x => `Bien g · ${n}. Pero ese número es su velocidad a los ${n} s, en m/s; ${x} no es.`),
-        e('C-ANTERIOR', m.x(n - 1), x => `Bien lo que cayó hasta los ${n - 1} s, ${x}. Falta restarlo de lo que cayó hasta los ${n} s.`),
-        n > 2 && e('C-OTRO-SEG', M.enesimoSegundo(0, G, n - 1), x => `Bien restar dos alturas. Pero ${x} es lo del segundo anterior, de ${n - 2} s a ${n - 1} s.`),
+        e('C-ENESIMO', m.x(n), x => `Calculaste bien ½ · g · ${n}² = ${x}, pero eso es lo que cae en los ${n} s enteros; piden solo el último de ellos.`),
+        e('C-VELOCIDAD', m.v(n), x => `Calculaste bien g · ${n}, pero ese número es su velocidad a los ${n} s, en m/s, y por eso ${x} no es la respuesta.`),
+        e('C-ANTERIOR', m.x(n - 1), x => `Lo que cayó hasta los ${n - 1} s, ${x}, está bien, pero falta restarlo de lo que cayó hasta los ${n} s.`),
+        n > 2 && e('C-OTRO-SEG', M.enesimoSegundo(0, G, n - 1), x => `Restar dos alturas está bien, pero ${x} es lo del segundo anterior, de ${n - 2} s a ${n - 1} s.`),
       ],
       solucion: [[`Hasta los ${n} s cae ½ · `, A(f(G)), ' · ', T(`${n}²`), ` = ${f(m.x(n))} m; hasta los ${n - 1} s, ${f(m.x(n - 1))} m.`], [`${f(m.x(n))} − ${f(m.x(n - 1))} = `, X(mt(ok)), '.']],
       _datos: { n },
@@ -1248,12 +1249,12 @@
       pregunta: ['¿Cuántos segundos después de la primera llega la segunda al suelo?'],
       datos: DB5, correcta: ok, fmt: sg,
       errores: [
-        e('C-RESTA-ALTURAS', Math.sqrt(2 * (h2 - h1) / G), x => `Bien: la masa no cuenta. Pero ${x} es el tiempo de caer la diferencia desde el reposo; cada una sale del reposo.`),
-        e('C-SUMA-T', t1 + t2, x => `Bien los dos tiempos, ${f(t1)} s y ${f(t2)} s. Pero se pide la diferencia, no la suma; ${x} no es.`),
-        e('C-MEDIO', Math.sqrt(h2 / G) - Math.sqrt(h1 / G), x => `Bien restar los dos tiempos. Pero t² = 2h ÷ g: falta el 2 en cada uno; así sale ${x}.`),
-        e('C-SOLO-UNA', t2, x => `Bien el tiempo de la segunda, ${x}. Pero piden cuánto después de la primera llega.`),
+        e('C-RESTA-ALTURAS', Math.sqrt(2 * (h2 - h1) / G), x => `Es cierto que la masa no cuenta, pero ${x} es el tiempo de caer la diferencia desde el reposo; cada una sale del reposo.`),
+        e('C-SUMA-T', t1 + t2, x => `Los dos tiempos, ${f(t1)} s y ${f(t2)} s, están bien, pero se pide la diferencia, no la suma, y por eso ${x} no es la respuesta.`),
+        e('C-MEDIO', Math.sqrt(h2 / G) - Math.sqrt(h1 / G), x => `Restar los dos tiempos está bien, pero t² = 2h ÷ g: falta el 2 en cada uno; así sale ${x}.`),
+        e('C-SOLO-UNA', t2, x => `El tiempo de la segunda, ${x}, está bien, pero piden cuánto después de la primera llega.`),
       ],
-      solucion: [['Sin aire, la masa no cuenta. ', T(`t = √(2h ÷ g)`), ': ', T(sg(t1)), ' desde ', X(mt(h1)), ' y ', T(sg(t2)), ' desde ', X(mt(h2)), '.'], ['Diferencia: ', T(sg(ok)), '.']],
+      solucion: [['Sin aire, la masa no cuenta. ', T(`t = √(2h ÷ g)`), ': ', T(sg(t1)), ' desde ', X(mt(h1)), ' y ', T(sg(t2)), ' desde ', X(mt(h2)), '.'], ['La segunda llega después de la primera por la diferencia de los tiempos: ', T(sg(ok)), '.']],
       _datos: { k1, k2 },
     };
   }
@@ -1266,12 +1267,12 @@
       pregunta: ['¿Cuánto después de soltarla oyes el golpe en el fondo?'],
       datos: [...DB5, D.sonido], correcta: ok, fmt: sg,
       errores: [
-        e('C-SIN-SONIDO', tc, x => `Bien la caída, ${x}. Pero el sonido también tarda en subir.`),
-        e('C-VUELTA', 2 * tc, x => `Bien la caída. Pero el sonido sube a unos 340 m/s, no como la piedra; así sale ${x}.`),
-        e('C-SONIDO-DOBLE', tc + 2 * ts, x => `Bien la caída y el sonido a 340 m/s. Pero el sonido solo sube, una vez; así sale ${x}.`),
-        e('C-MEDIO', Math.sqrt(h / G) + ts, x => `Bien sumar lo del sonido. Pero en la caída t² = 2h ÷ g: falta el 2; así sale ${x}.`),
+        e('C-SIN-SONIDO', tc, x => `La caída, ${x}, está bien, pero el sonido también tarda en subir.`),
+        e('C-VUELTA', 2 * tc, x => `La caída está bien, pero el sonido sube a unos 340 m/s, no como la piedra; así sale ${x}.`),
+        e('C-SONIDO-DOBLE', tc + 2 * ts, x => `La caída y el sonido a 340 m/s están bien, pero el sonido solo sube, una vez; así sale ${x}.`),
+        e('C-MEDIO', Math.sqrt(h / G) + ts, x => `Sumar lo del sonido está bien, pero en la caída t² = 2h ÷ g: falta el 2; así sale ${x}.`),
       ],
-      solucion: [['La piedra baja en ', T(`√(2 · ${h} ÷ 10) = ${sg(tc)}`), '; el sonido sube en ', T(`${h} ÷ 340 = ${sg(ts)}`), '.'], ['En total, ', T(sg(ok)), '.']],
+      solucion: [['La piedra baja en ', T(`√(2 · ${h} ÷ 10) = ${sg(tc)}`), '; el sonido sube en ', T(`${h} ÷ 340 = ${sg(ts)}`), '.'], ['Oyes el golpe cuando pasaron los dos tiempos: ', T(sg(ok)), '.']],
       _datos: { t },
     };
   }
@@ -1286,11 +1287,11 @@
       pregunta: ['¿Cuánto tarda en llegar a lo más alto?'],
       datos: DB6, correcta: ok, fmt: sg,
       errores: [
-        e('C-ALTURA', L.H, x => `Bien que uses g. Pero el tiempo sale de v_0 entre g, no de la altura: ${f(L.H)} m es la altura máxima; ${x} no es.`),
-        e('C-VUELTA', 2 * ok, x => `Bien v_0 ÷ g para subir. Pero ${x} es subir y volver a bajar; piden solo hasta lo más alto.`),
-        e('C-MITAD-T', ok / 2, x => `Bien v_0 y g. Pero en lo más alto v = 0: 0 = v_0 − g · t, sin dividir entre 2; así sale ${x}.`),
+        e('C-ALTURA', L.H, x => `Es correcto que uses g, pero el tiempo sale de v₀ entre g, no de la altura: ${f(L.H)} m es la altura máxima, y por eso ${x} no es la respuesta.`),
+        e('C-VUELTA', 2 * ok, x => `Calculaste bien v₀ ÷ g para subir, pero ${x} es subir y volver a bajar; piden solo hasta lo más alto.`),
+        e('C-MITAD-T', ok / 2, x => `Usar v₀ y g está bien, pero en lo más alto v = 0, así que 0 = v₀ − g · t, sin dividir entre 2; dividiendo sale ${x}.`),
       ],
-      solucion: [['En lo más alto, v = 0: 0 = ', V(f(v0)), ' − ', A(f(G)), ' · t.'], ['t = ', `${v0} ÷ 10 = `, T(sg(ok)), '.']],
+      solucion: [['En lo más alto, v = 0: 0 = ', V(f(v0)), ' − ', A(f(G)), ' · t.'], ['Pierde 10 m/s cada segundo hasta quedar en 0: t = ', `${v0} ÷ 10 = `, T(sg(ok)), '.']],
       _datos: { v0 },
     };
   }
@@ -1303,9 +1304,9 @@
       pregunta: ['¿Qué altura máxima alcanza?'],
       datos: DB6, correcta: ok, fmt: mt,
       errores: [
-        e('C-MEDIO', 2 * ok, x => `Bien v_0². Pero se divide entre 2 · g: 0 = v_0² − 2 · g · H; sin el 2 sale ${x}.`),
-        e('C-TIEMPO', L.tSubida, x => `Bien v_0 ÷ g = ${f(L.tSubida)} s. Pero ese es el tiempo de subida; piden la altura. ${x} no es.`),
-        e('C-VUELTA', 2 * L.tSubida, x => `Bien usar v_0 y g. Pero ${f(2 * L.tSubida)} s es el tiempo de subir y bajar; ${x} no es la altura.`),
+        e('C-MEDIO', 2 * ok, x => `Calculaste bien v₀², pero se divide entre 2 · g: 0 = v₀² − 2 · g · H; sin el 2 sale ${x}.`),
+        e('C-TIEMPO', L.tSubida, x => `Calculaste bien v₀ ÷ g = ${f(L.tSubida)} s, pero ese es el tiempo de subida; piden la altura, y por eso ${x} no es la respuesta.`),
+        e('C-VUELTA', 2 * L.tSubida, x => `Usar v₀ y g está bien, pero ${f(2 * L.tSubida)} s es el tiempo de subir y bajar; ${x} no es la altura.`),
       ],
       solucion: [['En lo más alto, v = 0: 0 = ', V(`${v0}²`), ' − 2 · ', A(f(G)), ' · ', X('H'), '.'], ['', X('H'), ` = ${v0 * v0} ÷ 20 = `, X(mt(ok)), '.']],
       _datos: { v0 },
@@ -1320,12 +1321,12 @@
       pregunta: ['¿Qué velocidad tiene en ', T(`t = ${sg(t)}`), ', con su signo?'],
       datos: DB6, correcta: ok, fmt: ms, negativos: true,
       errores: [
-        e('K3', v0 + G * t, x => `Bien que uses g · t. Pero g tira hacia abajo: se resta; así sale ${x}.`),
-        e('K-SIGNO', -ok, x => `Bien el valor de la rapidez. Pero ${ok < 0 ? 'ya pasó lo más alto: va hacia abajo' : 'todavía sube: va hacia arriba'}; ${x} tiene el signo al revés.`),
-        e('K-TIEMPO', v0 - G, x => `Bien v_0 − g = ${x}. Pero esa es la velocidad después de un segundo; ${t - 1 === 1 ? 'falta 1 s más' : `faltan ${t - 1} s más`}.`),
-        e('C-SIN-V0', -G * t, x => `Bien −g · t = ${x}: lo que cambió. Pero salió con ${v0} m/s hacia arriba; falta sumarlos.`),
+        e('K3', v0 + G * t, x => `Es correcto que uses g · t, pero g tira hacia abajo: se resta; así sale ${x}.`),
+        e('K-SIGNO', -ok, x => `El valor de la rapidez está bien, pero ${ok < 0 ? 'ya pasó lo más alto: va hacia abajo' : 'todavía sube: va hacia arriba'}; ${x} tiene el signo al revés.`),
+        e('K-TIEMPO', v0 - G, x => `Calculaste bien v₀ − g = ${x}, pero esa es la velocidad después de un segundo; ${t - 1 === 1 ? 'falta 1 s más' : `faltan ${t - 1} s más`}.`),
+        e('C-SIN-V0', -G * t, x => `Calculaste bien lo que cambió la velocidad, −g · t = ${x}, pero la pelota salió con ${v0} m/s hacia arriba: falta sumarle ese cambio.`),
       ],
-      solucion: [['v = ', V(f(v0)), ' − ', A(f(G)), ' · ', T(f(t)), ' = ', V(ms(ok)), ok < 0 ? ': ya va hacia abajo.' : ': todavía sube.']],
+      solucion: [['La gravedad le quita 10 m/s cada segundo, también después de la cima: v = ', V(f(v0)), ' − ', A(f(G)), ' · ', T(f(t)), ' = ', V(ms(ok)), ok < 0 ? ': ya va hacia abajo.' : ': todavía sube.']],
       _datos: { v0, t },
     };
   }
@@ -1338,13 +1339,13 @@
       pregunta: ['¿A qué altura sobre el patio está en ', T(`t = ${sg(t)}`), '?'],
       datos: DB6, correcta: y, fmt: mt,
       errores: [
-        e('K3', v0 * t + G * t * t / 2, x => `Bien v_0 · t y ½ · g · t². Pero g tira hacia abajo: se resta; así sale ${x}.`),
-        e('C-MEDIO', v0 * t - G * t * t, x => `Bien restar el término de g. Pero lleva un ½: ½ · g · t²; sin él sale ${x}.`),
-        e('C-SIN-G', v0 * t, x => `Bien v_0 · t. Pero eso sería sin gravedad: falta restar ½ · g · t²; así sale ${x}.`),
-        igual(L.H, y) ? null : e('C-ALTURA', L.H, x => `Bien que la pelota suba. Pero ${x} es su altura máxima; a los ${f(t)} s está en otro lugar.`),
-        e('C-SOLO-G', G * t * t / 2, x => `Bien ½ · g · t² = ${x}. Pero eso es lo que le quitó la gravedad; falta v_0 · t.`),
+        e('K3', v0 * t + G * t * t / 2, x => `Calculaste bien v₀ · t y ½ · g · t², pero g tira hacia abajo: se resta; así sale ${x}.`),
+        e('C-MEDIO', v0 * t - G * t * t, x => `Restar el término de g está bien, pero lleva un ½: ½ · g · t²; sin él sale ${x}.`),
+        e('C-SIN-G', v0 * t, x => `Calculaste bien v₀ · t, pero eso sería sin gravedad: falta restar ½ · g · t²; así sale ${x}.`),
+        igual(L.H, y) ? null : e('C-ALTURA', L.H, x => `Es correcto que la pelota suba, pero ${x} es su altura máxima; a los ${f(t)} s está en otro lugar.`),
+        e('C-SOLO-G', G * t * t / 2, x => `Calculaste bien ½ · g · t² = ${x}, pero eso es lo que le quitó la gravedad; falta v₀ · t.`),
       ],
-      solucion: [['y = ', V(f(v0)), ' · ', T(f(t)), ' − ½ · ', A(f(G)), ' · ', T(`${f(t)}²`), ` = ${f(v0 * t)} − ${f(G * t * t / 2)} = `, X(mt(y)), t > L.tSubida ? ': ya va bajando.' : ': todavía sube.']],
+      solucion: [['La ecuación de la altura vale al subir y al bajar: y = ', V(f(v0)), ' · ', T(f(t)), ' − ½ · ', A(f(G)), ' · ', T(`${f(t)}²`), ` = ${f(v0 * t)} − ${f(G * t * t / 2)} = `, X(mt(y)), t > L.tSubida ? ': ya va bajando.' : ': todavía sube.']],
       _datos: { v0, t },
     };
   }
@@ -1359,12 +1360,12 @@
       pregunta: ['¿Qué velocidad tiene, con su signo, cuando pasa por ', X(mt(y)), ' al bajar?'],
       datos: DB6, correcta: ok, fmt: ms, negativos: true,
       errores: [
-        e('K-SIGNO', -ok, x => `Bien el valor de la rapidez. Pero al bajar va hacia el −; ${x} tiene el signo al revés.`),
-        e('K3', -Math.sqrt(v0 * v0 + 2 * G * y), x => `Bien la raíz y el signo de bajada. Pero al subir g quita velocidad: v_0² − 2 · g · y; con + sale ${x}.`),
-        e('C-SIN-V0', -Math.sqrt(2 * G * y), x => `Bien 2 · g · y y la raíz. Pero salió con ${v0} m/s: falta v_0²; así sale ${x}.`),
-        e('C-MEDIO', -Math.sqrt(v0 * v0 - G * y), x => `Bien v_0² y la raíz. Pero lleva 2 · g · y; sin el 2 sale ${x}.`),
+        e('K-SIGNO', -ok, x => `El valor de la rapidez está bien, pero al bajar va hacia el −; ${x} tiene el signo al revés.`),
+        e('K3', -Math.sqrt(v0 * v0 + 2 * G * y), x => `La raíz y el signo de bajada están bien, pero al subir g quita velocidad: v₀² − 2 · g · y; con + sale ${x}.`),
+        e('C-SIN-V0', -Math.sqrt(2 * G * y), x => `Calculaste bien 2 · g · y y la raíz, pero la pelota salió con ${v0} m/s: dentro de la raíz falta v₀², y sin él sale ${x}.`),
+        e('C-MEDIO', -Math.sqrt(v0 * v0 - G * y), x => `Calculaste bien v₀² y la raíz, pero lleva 2 · g · y; sin el 2 sale ${x}.`),
       ],
-      solucion: [['v² = ', V(`${v0}²`), ' − 2 · ', A(f(G)), ' · ', X(f(y)), ` = ${vb * vb}, así que |v| = ${vb} m/s.`], ['Al bajar va hacia el −: ', V(`v = ${ms(ok)}`), '.']],
+      solucion: [['Sin el tiempo, se usa v² = v₀² − 2 · g · y: v² = ', V(`${v0}²`), ' − 2 · ', A(f(G)), ' · ', X(f(y)), ` = ${vb * vb}, así que |v| = ${vb} m/s.`], ['Al bajar va hacia el −: ', V(`v = ${ms(ok)}`), '.']],
       _datos: { v0, vb },
     };
   }
@@ -1376,9 +1377,9 @@
       pregunta: ['¿Qué altura máxima alcanza?'],
       datos: [...DB6, D.kmh], correcta: ok, fmt: mt,
       errores: [
-        e('U1-kmh', k0 * k0 / (2 * G), x => `Bien 0 = v_0² − 2 · g · H. Pero con los km/h: falta pasar a m/s; así sale ${x}.`),
-        e('C-MEDIO', 2 * ok, x => `Bien ${f(v0)} m/s al cuadrado. Pero se divide entre 2 · g; sin el 2 sale ${x}.`),
-        e('C-TIEMPO', L.tSubida, x => `Bien ${f(v0)} m/s ÷ g. Pero ese es el tiempo de subida, en segundos; ${x} no es la altura.`),
+        e('U1-kmh', k0 * k0 / (2 * G), x => `Calculaste bien 0 = v₀² − 2 · g · H, pero con los km/h: falta pasar a m/s; así sale ${x}.`),
+        e('C-MEDIO', 2 * ok, x => `Calculaste bien ${f(v0)} m/s al cuadrado, pero se divide entre 2 · g; sin el 2 sale ${x}.`),
+        e('C-TIEMPO', L.tSubida, x => `Calculaste bien ${f(v0)} m/s ÷ g, pero ese es el tiempo de subida, en segundos; ${x} no es la altura.`),
       ],
       solucion: [['En m/s: ', V(`${k0} km/h = ${ms(v0)}`), '.'], ['', X('H'), ` = ${f(v0)}² ÷ (2 · 10) = `, X(mt(ok)), '.']],
       _datos: { k0 },
@@ -1396,10 +1397,10 @@
       pregunta: ['¿Cuánto tarda en llegar al patio?'],
       datos: [...DB6, D.cuadratica], correcta: ok, fmt: sg,
       errores: [
-        e('C-VUELTA', tv, x => `Bien la subida y la bajada. Pero ${x} es cuando vuelve a la altura de la azotea; todavía le falta bajar hasta el patio.`),
-        e('C-SOLTAR', tl, x => `Bien la caída de ${Y0} m. Pero ${x} sería si la soltaras desde la azotea; primero sube.`),
-        e('C-SUBIDA', v0 / G, x => `Bien v_0 ÷ g. Pero ${x} es solo el tiempo de subida hasta lo más alto; después baja todo.`),
-        e('C-VUELTA-SOLTAR', tv + tl, x => `Bien que suba, vuelva y caiga. Pero al pasar por la azotea ya baja a ${v0} m/s, no desde el reposo; así sale ${x}.`),
+        e('C-VUELTA', tv, x => `La subida y la bajada están bien, pero ${x} es cuando vuelve a la altura de la azotea; todavía le falta bajar hasta el patio.`),
+        e('C-SOLTAR', tl, x => `La caída de ${Y0} m está bien, pero ${x} sería si la soltaras desde la azotea; primero sube.`),
+        e('C-SUBIDA', v0 / G, x => `Calculaste bien v₀ ÷ g, pero ${x} es solo el tiempo de subida hasta lo más alto; después baja todo.`),
+        e('C-VUELTA-SOLTAR', tv + tl, x => `Es correcto que suba, vuelva y caiga, pero al pasar por la azotea ya baja a ${v0} m/s, no desde el reposo; así sale ${x}.`),
       ],
       solucion: [
         ['El patio está en y = ', X(`−${Y0} m`), ': −', `${Y0} = ${v0} · t − 5 · t².`],
@@ -1419,14 +1420,14 @@
     if (y <= 0 || y >= H) return null;
     const enunciado = ['Desde lo alto de un edificio de ', X(mt(H)), ' sueltas una piedra y, a la vez, desde el suelo lanzan una pelota hacia arriba con ', V(`v_0 = ${ms(v0)}`), ', en la misma vertical.'];
     const sol = [['Piedra, con y_0 = ', X(mt(H)), ' y v_0 = 0: y = ', X(f(H)), ' − 5 · ', T('t²'), '. Pelota: y = ', V(f(v0)), ' · ', T('t'), ' − 5 · ', T('t²'), '.'],
-      ['Iguales: ', `${f(H)} = ${v0} · t, así que t = `, T(sg(te)), ', a ', X(`y = ${mt(y)}`), ' del suelo.']];
+      ['Al igualar las dos alturas, el término − 5 · t² se va de los dos lados: ', `${f(H)} = ${v0} · t, así que t = `, T(sg(te)), ', a ', X(`y = ${mt(y)}`), ' del suelo.']];
     if (sub === 'tiempo') return {
       enunciado, pregunta: ['¿A los cuántos segundos se encuentran?'],
       datos: [...DB6, D.ly0], correcta: te, fmt: sg,
       errores: [
-        e('C-ENC-MITAD', te / 2, x => `Bien que se acerquen. Pero se acercan a la rapidez de la pelota, ${v0} m/s, sin dividir; así sale ${x}.`),
-        e('C-ENC-CAIDA', Math.sqrt(2 * H / G), x => `Bien la caída de la piedra. Pero ${x} es lo que tardaría en caer todo, sin encontrarse.`),
-        e('C-SUBIDA', v0 / G, x => `Bien v_0 ÷ g. Pero ${x} es el tiempo de subida de la pelota; se encuentran antes o después.`),
+        e('C-ENC-MITAD', te / 2, x => `Es correcto que se acerquen, pero se acercan a la rapidez de la pelota, ${v0} m/s, y no al doble; dividir entre el doble da ${x}.`),
+        e('C-ENC-CAIDA', Math.sqrt(2 * H / G), x => `La caída de la piedra está bien, pero ${x} es lo que tardaría en caer todo, sin encontrarse.`),
+        e('C-SUBIDA', v0 / G, x => `Calculaste bien v₀ ÷ g, pero ${x} es el tiempo de subida de la pelota; se encuentran antes o después.`),
       ],
       solucion: sol, _datos: { sub, v0, t },
     };
@@ -1434,10 +1435,10 @@
       enunciado, pregunta: ['¿A qué altura del suelo se encuentran?'],
       datos: [...DB6, D.ly0], correcta: y, fmt: mt,
       errores: [
-        e('C-ENC-CAIDO', H - y, x => `Bien el instante del encuentro, ${f(te)} s. Pero ${x} es lo que bajó la piedra; la altura es lo que le queda.`),
-        e('C-ENC-SIN-G', v0 * te, x => `Bien v_0 · t para la pelota. Pero también la frena g: falta restar ½ · g · t²; así sale ${x}.`),
-        igual(patea(v0).H, y) ? null : e('C-ALTURA', patea(v0).H, x => `Bien que la pelota suba. Pero ${x} es su altura máxima; se encuentran en otro lugar.`),
-        e('C-ENC-MITAD-H', H / 2, x => `Bien que se encuentren entre el suelo y el techo. Pero no a la mitad: la piedra gana velocidad y la pelota la pierde. ${x} no es.`),
+        e('C-ENC-CAIDO', H - y, x => `El instante del encuentro, ${f(te)} s, está bien, pero ${x} es lo que bajó la piedra; la altura es lo que le queda.`),
+        e('C-ENC-SIN-G', v0 * te, x => `Calculaste bien v₀ · t para la pelota, pero también la frena g: falta restar ½ · g · t²; así sale ${x}.`),
+        igual(patea(v0).H, y) ? null : e('C-ALTURA', patea(v0).H, x => `Es correcto que la pelota suba, pero ${x} es su altura máxima; se encuentran en otro lugar.`),
+        e('C-ENC-MITAD-H', H / 2, x => `Es correcto que se encuentren entre el suelo y el techo, pero no a la mitad: la piedra gana velocidad y la pelota la pierde, y por eso ${x} no es la respuesta.`),
       ],
       solucion: sol, _datos: { sub, v0, t },
     };
@@ -1455,9 +1456,9 @@
       enunciado, pregunta: ['¿Con qué rapidez salió?'],
       datos: DB6, correcta: v0, fmt: ms,
       errores: [
-        e('C-VUELTA', G * Tt, x => `Bien v_0 = g · t. Pero ${f(Tt)} s es subir y bajar; sube solo la mitad. Así sale ${x}.`),
-        e('C-CUARTO', G * Tt / 4, x => `Bien la mitad para subir. Pero no se divide otra vez; así sale ${x}.`),
-        e('C-ALTURA', L.H, x => `Bien el tiempo de subida. Pero ${x} es la altura que alcanza, en metros.`),
+        e('C-VUELTA', G * Tt, x => `Calculaste bien v₀ = g · t, pero ${f(Tt)} s es subir y bajar; sube solo la mitad. Así sale ${x}.`),
+        e('C-CUARTO', G * Tt / 4, x => `La mitad para subir está bien, pero no se divide otra vez; así sale ${x}.`),
+        e('C-ALTURA', L.H, x => `El tiempo de subida está bien, pero ${x} es la altura que alcanza, en metros.`),
       ],
       solucion: sol, _datos: { sub, T: Tt },
     };
@@ -1465,9 +1466,9 @@
       enunciado, pregunta: ['¿Qué altura alcanzó sobre tu mano?'],
       datos: DB6, correcta: L.H, fmt: mt,
       errores: [
-        e('C-VUELTA', G * Tt * Tt / 2, x => `Bien ½ · g · t². Pero ${f(Tt)} s es subir y bajar; baja solo la mitad del tiempo. Así sale ${x}.`),
-        e('C-MEDIO', G * (Tt / 2) ** 2, x => `Bien la mitad del tiempo para bajar. Pero lo que cae lleva un ½: ½ · g · t²; así sale ${x}.`),
-        e('C-VELOCIDAD', v0, x => `Bien v_0 = ${f(v0)} m/s. Pero ese número es la rapidez de salida; ${x} no es la altura.`),
+        e('C-VUELTA', G * Tt * Tt / 2, x => `Calculaste bien ½ · g · t², pero ${f(Tt)} s es subir y bajar; baja solo la mitad del tiempo. Así sale ${x}.`),
+        e('C-MEDIO', G * (Tt / 2) ** 2, x => `La mitad del tiempo para bajar está bien, pero lo que cae lleva un ½: ½ · g · t²; así sale ${x}.`),
+        e('C-VELOCIDAD', v0, x => `Calculaste bien v₀ = ${f(v0)} m/s, pero ese número es la rapidez de salida; ${x} no es la altura.`),
       ],
       solucion: [...sol, ['Baja desde el reposo en ', T(sg(Tt / 2)), ': ', X('H'), ` = ½ · 10 · ${f(Tt / 2)}² = `, X(mt(L.H)), '.']],
       _datos: { sub, T: Tt },

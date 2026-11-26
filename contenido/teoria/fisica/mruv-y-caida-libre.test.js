@@ -857,3 +857,27 @@ test('cabos: el tipo «frenado-distancia» de tipos.json es de MRUV (fis-mruv, s
   for (const f of ['contenido/ejercicios/LEEME.md', 'docs/ejercicios-7000.md', 'herramientas/validar-ejercicios.js', 'plantillas/fis-mruv/generador.js'])
     assert.ok(!fsT.readFileSync(path.join(raiz, f), 'utf8').includes('movimiento-rectilineo/frenado-distancia'), `${f} todavía nombra el tipo viejo`);
 });
+
+// Verificación de la pasada de redacción (26 nov 2026): «diez veces más aceleración» no da «la décima parte del tiempo»
+// (con h = ½ g t², el tiempo bajaría a 1/√10, unos 0,32). El error que da la décima parte es creer que cae diez veces
+// más rápido.
+test('redacción: el siFuera de «la décima parte del tiempo» modela el error que da ese valor', () => {
+  const o = def.ideas.find(i => i.predice.opciones.some(x => x.id === 'decima')).predice.opciones.find(x => x.id === 'decima');
+  assert.doesNotMatch(o.siFuera, /diez veces más aceleración/);
+  assert.match(o.siFuera, /diez veces más rápido/);
+});
+
+// Verificación (26 nov): en el tiempo de vuelo, el distractor `por` vale v₀ · g ÷ 10 = v₀: es tomar el número de la
+// rapidez como si fueran segundos, y su explicación lo dice (antes: «Ese número no sale de dividir»).
+test('redacción: el distractor `por` del tiempo de vuelo nombra su error', () => {
+  let vistos = 0;
+  for (let s = 0; s < 200; s++) {
+    const a = idea('caida-libre').ahoraTu.generar(s);
+    const o = (a.opciones || []).find(x => x.id === 'por' && /en el aire/.test(a.pregunta.map ? a.pregunta.map(y => (typeof y === 'string' ? y : y.t || '')).join('') : a.pregunta));
+    if (!o) continue;
+    vistos++;
+    const v0 = Number(o.texto.replace(/[^\d,]/g, '').replace(',', '.'));
+    assert.ok(o.siFuera.includes(`${String(v0).replace('.', ',')} m/s`), `semilla ${s}: ${o.siFuera}`);
+  }
+  assert.ok(vistos > 0);
+});

@@ -9,7 +9,7 @@
       "enunciado": "Una combi va a 10 m/s hacia la derecha y frena parejo: 2 s después va a 8 m/s, todavía hacia la derecha. ¿Cuánto vale su aceleración, con su signo? Datos: Aceleración: a = Δv/Δt, con Δv = v − v_0. + hacia la derecha y − hacia la izquierda. Alternativas: A) 4 m/s²   B) 1 m/s²   C) −1 m/s²   D) −2 m/s²   E) −4 m/s²",
       "respuesta": "C) −1 m/s²",
       "pasos": [
-        "El cambio de velocidad: 8 − 10 = −2 m/s, en 2 s.",
+        "La aceleración es el cambio de velocidad entre el tiempo. El cambio es la final menos la inicial: 8 − 10 = −2 m/s, en 2 s.",
         "a = −2 ÷ 2 = −1 m/s²: negativa, porque frena yendo hacia el +."
       ]
     },
@@ -19,7 +19,7 @@
       "enunciado": "Frente al colegio, una combi va a 9 m/s y frena parejo con a = −5 m/s² hasta detenerse. ¿Cuántos metros recorre mientras frena? Datos: Velocidad con aceleración constante: v = v_0 + a · t. Desplazamiento: Δx = (v_0 + v)/2 · t. Posición: x = x_0 + v_0 · t + ½ · a · t². Velocidad y desplazamiento: v² = v_0² + 2 · a · Δx. + hacia la derecha y − hacia la izquierda. Alternativas: A) 8,1 m   B) 16,2 m   C) 1,8 m   D) 0,9 m   E) −8,1 m",
       "respuesta": "A) 8,1 m",
       "pasos": [
-        "Al detenerse, v = 0: 0 = 9² + 2 · (−5) · Δx.",
+        "No dan el tiempo, así que se usa v² = v₀² + 2aΔx; al detenerse, v = 0: 0 = 9² + 2 · (−5) · Δx.",
         "Δx = 81 ÷ 10 = 8,1 m."
       ]
     },
@@ -29,7 +29,7 @@
       "enunciado": "Sueltas una piedra desde un puente y llega al río en 4 s. ¿Desde qué altura cayó? Datos: g = 10 m/s² (convención del examen); sin aire. Desde el reposo: v = g · t, h = ½ · g · t². Velocidad y lo que cayó: v² = 2 · g · h. h se mide hacia abajo, desde donde se suelta. Alternativas: A) 160 m   B) 40 m   C) 80 m   D) 20 m",
       "respuesta": "C) 80 m",
       "pasos": [
-        "h = ½ · 10 · 4² = 80 m."
+        "Como sale del reposo, lo que cae es ½ · g · t²: h = ½ · 10 · 4² = 80 m."
       ]
     },
     {
@@ -58,7 +58,7 @@
       "enunciado": "Pateas una pelota hacia arriba desde el patio con v_0 = 12 m/s. ¿A qué altura sobre el patio está en t = 2 s? Datos: g = 10 m/s² (convención del examen); sin aire. Eje hacia arriba: + al subir, − al bajar; la altura se mide desde donde sale. Velocidad: v = v_0 − g · t. Altura: y = v_0 · t − ½ · g · t². Velocidad y altura: v² = v_0² − 2 · g · y. Alternativas: A) 20 m   B) 7,2 m   C) 4 m   D) 44 m   E) 24 m",
       "respuesta": "C) 4 m",
       "pasos": [
-        "y = 12 · 2 − ½ · 10 · 2² = 24 − 20 = 4 m: ya va bajando."
+        "La ecuación de la altura vale al subir y al bajar: y = 12 · 2 − ½ · 10 · 2² = 24 − 20 = 4 m: ya va bajando."
       ]
     },
     {
@@ -78,7 +78,7 @@
       "respuesta": "B) 1,5 s",
       "pasos": [
         "Piedra, con y_0 = 18 m y v_0 = 0: y = 18 − 5 · t². Pelota: y = 12 · t − 5 · t².",
-        "Iguales: 18 = 12 · t, así que t = 1,5 s, a y = 6,75 m del suelo."
+        "Al igualar las dos alturas, el término − 5 · t² se va de los dos lados: 18 = 12 · t, así que t = 1,5 s, a y = 6,75 m del suelo."
       ]
     }
   ]
