@@ -121,6 +121,8 @@
     { q: 'Pot', ctx: 'La potencia Pot de una grúa que sube una carga con rapidez constante', fs: ['m', 'g', 'v'], e: [1, 1, 1] },
   ];
   const LETRAS = ['x', 'y', 'z'];
+  // La práctica no tiene nodo de exponente: las letras van en superíndice Unicode (Pˣ, ρʸ), no con «^».
+  const EXP = { x: 'ˣ', y: 'ʸ', z: 'ᶻ' };
   // «−3x + 2y + z», sin coeficientes 1 ni términos con 0.
   function lineal(cs) {
     let t = '';
@@ -184,15 +186,16 @@
       conRaiz ? hh('PR2-raiz', e.map(x => 2 * x), 'Te salió el doble: igualaste bien las bases pero olvidaste dividir al final (es como olvidar una raíz cuadrada). Revisa cada ecuación de M, L y T y despeja cada exponente hasta el final.', TRANS)
         : hh('AD-exponente-mitad', e.map(x => x / 2), 'Te salió la mitad: dividiste de más al despejar. Revisa cada ecuación de M, L y T; aquí los exponentes son enteros.', null),
       hh('AD-signo-T', conTvolteado, 'Escribiste el tiempo en el numerador en alguna dimensión (por ejemplo, [g] = LT² en vez de LT⁻²). Cuando el tiempo divide, su exponente es negativo.', null),
-      hh('AD-invierte', e.map(x => -x), 'Te salieron los exponentes con el signo cambiado: pusiste la magnitud que se pide en el otro lado de la ecuación. [Q] = Π[dato]^exp: las dimensiones de los datos, con sus exponentes, deben dar las de Q.', null),
+      hh('AD-invierte', e.map(x => -x), 'Te salieron los exponentes con el signo cambiado, porque pusiste la magnitud que se pide en el otro lado de la ecuación. Las dimensiones de los datos, cada una elevada a su exponente, deben dar la de la magnitud pedida.', null),
       sub === 'uno' && dfs.some(d => d.M) ? hh('AD-cruza-exponentes', cruzado, `Intercambiaste los exponentes de ${sim(F.fs[0])} y de ${sim(F.fs[1])}. Fíjate en qué base aparece cada magnitud: por ejemplo, la que trae masa es la única que puede equilibrar la M.`, null) : null,
     ].filter(Boolean);
-    const variables = { q: { nombre: nom(F.q), color: 'o' }, a: { nombre: nom(F.fs[0]), color: 'i' }, b: { nombre: nom(F.fs[1]), color: 'd' }, x: { nombre: 'lo que se pide', color: 'f' } };
-    // Los dos primeros factores llevan color; el tercero (si hay) va sin color, para no confundirlo con lo que se pide.
-    const col = i => (i === 0 ? 'a' : i === 1 ? 'b' : null);
+    // Sin verde (c-d): junto al naranja no se distingue con protanopía, y la unidad no lo usa (verificación, 26 nov).
+    const variables = { q: { nombre: nom(F.q), color: 'o' }, a: { nombre: nom(F.fs[0]), color: 'i' }, x: { nombre: 'lo que se pide', color: 'f' } };
+    // El primer factor lleva color; los demás van en tinta, para no confundirlos con lo que se pide.
+    const col = i => (i === 0 ? 'a' : null);
     const vc = (k, t) => (k ? v(k, t) : t);
     const kn = F.fs.includes('K') ? 'C' : 'k'; // no mezclar el número k con la constante del resorte K
-    const formula = [v('q', sim(F.q)), ` = ${kn}·`, ...F.fs.flatMap((k, i) => [i ? '·' : '', vc(col(i), `${sim(k)}^${LETRAS[i]}`)])];
+    const formula = [v('q', sim(F.q)), ` = ${kn}·`, ...F.fs.flatMap((k, i) => [i ? '·' : '', vc(col(i), `${sim(k)}${EXP[LETRAS[i]]}`)])];
     const lista = F.fs.map((k, i) => `${nom(k)} (${sim(k)})`);
     const enunciado = [`${F.ctx} depende ${(lista.slice(0, -1).join(', ') + ' y ' + lista[n - 1]).replace(/^el /, 'del ').replace(/^la /, 'de la ')}, según `, ...formula, `, donde ${kn} es un número sin dimensión.`];
     const pide = sub === 'suma' ? ['¿Cuánto vale ', v('x', LETRAS.slice(0, n).join(' + ')), '?'] : ['¿Cuánto vale el exponente ', v('x', LETRAS[j]), '?'];
@@ -200,7 +203,7 @@
       ['Por homogeneidad, las dimensiones de los dos lados son iguales: [', v('q', sim(F.q)), '] = ', texto(dq), ' y ', ...F.fs.flatMap((k, i) => [i ? ', ' : '', `[${sim(k)}] = ${texto(D(k))}`]), '.'],
       ['Se iguala el exponente de cada base: ' + BASES.filter(b => Math.abs(dq[b]) > 0 || dfs.some(d => Math.abs(d[b]) > 0)).map(b =>
         `${b}: ${lineal(dfs.map(d => d[b]))} = ${fr(dq[b])}`).join('; ') + '.'],
-      ['Resolviendo: ', ...e.flatMap((x, i) => [i ? ', ' : '', vc(col(i), `${LETRAS[i]} = ${fr(x)}`)]), sub === 'suma' ? [', y la suma es ', v('x', fr(correcta)), '.'] : ['. Entonces ', v('x', `${LETRAS[j]} = ${fr(correcta)}`), '.']].flat(),
+      ['Al resolver el sistema: ', ...e.flatMap((x, i) => [i ? ', ' : '', vc(col(i), `${LETRAS[i]} = ${fr(x)}`)]), sub === 'suma' ? [', y la suma es ', v('x', fr(correcta)), '.'] : ['. Entonces ', v('x', `${LETRAS[j]} = ${fr(correcta)}`), '.']].flat(),
     ];
     const o = { variables, enunciado, pregunta: pide, solucion, lineas: [...lineas([F.q, ...F.fs]), `${kn} es un número: no tiene dimensión.`],
       datos: { tipo: 'exponentes', sub, q: F.q, fs: F.fs, ...(sub === 'uno' ? { j } : {}) } };
@@ -233,7 +236,8 @@
 
   function constante(rng, semilla, sub) {
     const mk = rng.elegir(MIEMBROS), dm = D(mk);
-    const variables = { A: { nombre: 'constante A', color: 'o' }, B: { nombre: 'constante B', color: 'i' }, m: { nombre: PROCESOS[mk], color: 'd' }, x: { nombre: 'lo que se pide', color: 'f' } };
+    // El miembro izquierdo va en tinta: sin verde en esta unidad (protanopía).
+    const variables = { A: { nombre: 'constante A', color: 'o' }, B: { nombre: 'constante B', color: 'i' }, x: { nombre: 'lo que se pide', color: 'f' } };
     const hh = (id, d, explicacion, fuente = null) => (d ? { id, ...opcion(d), explicacion, respaldo: 'hipotesis', fuente } : null);
     let enunciado, pregunta, correcta, errores, solucion, datos, ls;
     if (sub === 'suma' || sub === 'combinada') {
@@ -241,11 +245,11 @@
       const dA = div(dm, t1.dim), dB = div(dm, t2.dim);
       if ([dA, dB, div(dA, dB), t1.dim, t2.dim].some(d => BASES.some(b => Math.abs(d[b]) > 5))) return null;
       const usados = [...t1.fs, ...t2.fs];
-      enunciado = [`En un laboratorio se propone que ${PROCESOS[mk]} cumple `, v('m', sim(mk)), ' = ', ...t1.segs, ' + ', ...t2.segs, `, donde ${lista(usados)}. La ecuación es dimensionalmente correcta.`];
+      enunciado = [`En un laboratorio se propone que ${PROCESOS[mk]} cumple `, sim(mk), ' = ', ...t1.segs, ' + ', ...t2.segs, `, donde ${lista(usados)}. La ecuación es dimensionalmente correcta.`];
       const base = [
-        ['Homogeneidad: cada término de la suma tiene la dimensión del miembro izquierdo, [', v('m', sim(mk)), `] = ${texto(dm)}.`],
-        ['Primer término: [', v('A', 'A'), `]·${texto(t1.dim)} = ${texto(dm)}, así que [`, v('A', 'A'), `] = ${texto(dA)}.`],
-        ['Segundo término: [', v('B', 'B'), `]·${texto(t2.dim)} = ${texto(dm)}, así que [`, v('B', 'B'), `] = ${texto(dB)}.`],
+        ['Por homogeneidad, cada término de la suma tiene la dimensión del miembro izquierdo, [', sim(mk), `] = ${texto(dm)}.`],
+        ['En el primer término, [', v('A', 'A'), `]·${texto(t1.dim)} = ${texto(dm)}, así que [`, v('A', 'A'), `] = ${texto(dA)}.`],
+        ['En el segundo término, [', v('B', 'B'), `]·${texto(t2.dim)} = ${texto(dm)}, así que [`, v('B', 'B'), `] = ${texto(dB)}.`],
       ];
       if (sub === 'suma') {
         pregunta = ['¿Cuál es la ', v('x', 'dimensión de A'), '?'];
@@ -254,7 +258,7 @@
           hh('AD-constante-igual-al-miembro', dm, `Le diste a A la dimensión de ${sim(mk)}. Es el término completo, A por sus factores, el que pesa lo mismo que ${sim(mk)}: hay que dividir entre la dimensión de los factores.`, BAL),
           hh('AD-multiplica', mul(dm, t1.dim), `Multiplicaste por la dimensión de los factores en vez de dividir. Si [A]·[factores] = [${sim(mk)}], entonces [A] = [${sim(mk)}]/[factores].`, BAL),
           t1.ex.some(x => x !== 1) ? hh('AD-sin-exponente', div(dm, t1.dimUno), 'Dividiste entre los factores sin su exponente. Un factor al cuadrado pesa dos veces; uno que divide pesa con exponente −1.', BAL) : null,
-          hh('AD-despeje-invertido', div(t1.dim, dm), `Despejaste al revés: [A] = [factores]/[${sim(mk)}]. Es [${sim(mk)}]/[factores].`),
+          hh('AD-despeje-invertido', div(t1.dim, dm), `Despejaste al revés, [A] = [factores]/[${sim(mk)}], y lo correcto es [A] = [${sim(mk)}]/[factores].`),
           hh('AD-otro-termino', dB, `Esa es la dimensión de B, la constante del otro término. Cada constante se despeja de su propio término.`),
         ];
         solucion = [...base.slice(0, 2), ['Respuesta: [', v('x', 'A'), '] = ', v('x', texto(dA)), '.']];
@@ -280,12 +284,12 @@
       const fun = rng.elegir(['sen', 'cos', 'exp', 'log']);
       const dX = pot(D(xk), a), dB = pot(dX, -1), pideAB = rng.moneda();
       const inner = [v('B', 'B'), `·${sim(xk)}${a === 1 ? '' : SUP[String(a)]}`];
-      const cuerpo = fun === 'exp' ? ['e^(−', ...inner, ')'] : fun === 'log' ? ['log(', ...inner, ')'] : [`${fun}(`, ...inner, ')'];
-      enunciado = [`Se propone que ${PROCESOS[mk]} cambia según `, v('m', sim(mk)), ' = ', v('A', 'A'), '·', ...cuerpo, `, donde ${lista([xk])}. La ecuación es dimensionalmente correcta.`];
+      const cuerpo = fun === 'exp' ? ['exp(−', ...inner, ')'] : fun === 'log' ? ['log(', ...inner, ')'] : [`${fun}(`, ...inner, ')'];
+      enunciado = [`Se propone que ${PROCESOS[mk]} cambia según `, sim(mk), ' = ', v('A', 'A'), '·', ...cuerpo, `, donde ${lista([xk])}. La ecuación es dimensionalmente correcta.`];
       const nombreFun = fun === 'exp' ? 'una exponencial' : fun === 'log' ? 'un logaritmo' : `un ${fun === 'sen' ? 'seno' : 'coseno'}`;
       const base = [
         [`Lo que va dentro de ${nombreFun} debe ser un número sin dimensión: [`, v('B', 'B'), `]·${texto(dX)} = 1, así que [`, v('B', 'B'), `] = ${texto(dB)}.`],
-        [`${nombreFun.replace(/^un[a]? /, (m) => m === 'una ' ? 'La ' : 'El ')} no tiene dimensión, así que [`, v('A', 'A'), '] = [', v('m', sim(mk)), `] = ${texto(dm)}.`],
+        [`${nombreFun.replace(/^un[a]? /, (m) => m === 'una ' ? 'La ' : 'El ')} no tiene dimensión, así que [`, v('A', 'A'), '] = [', sim(mk), `] = ${texto(dm)}.`],
       ];
       if (!pideAB) {
         pregunta = ['¿Cuál es la ', v('x', 'dimensión de B'), '?'];
@@ -310,7 +314,7 @@
         solucion = [...base, ['[', v('x', 'A·B'), `] = ${texto(dm)} · ${texto(dB)} = `, v('x', texto(dAB)), '.']];
       }
       datos = { tipo: 'constante', sub, miembro: mk, fun, x: xk, a, pide: pideAB ? 'AB' : 'B' };
-      ls = [...lineas([mk, xk]), 'Lo que va dentro de sen, cos, e^( ) o log es un número: no tiene dimensión.'];
+      ls = [...lineas([mk, xk]), 'exp(u) es el número e elevado a u. Lo que va dentro de sen, cos, exp o log es un número: no tiene dimensión.'];
     }
     const o = { variables, enunciado, pregunta, solucion, datos, lineas: ls };
     // Distractores con exponentes desmedidos (más de 6) no engañan a nadie: se dejan fuera.

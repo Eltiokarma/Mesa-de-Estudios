@@ -54,11 +54,12 @@ test('salen todos los tipos, los tres niveles y los errores típicos pedidos', (
     assert.ok(ids.has(id), `no sale ${id}`);
 });
 
-test('cada explicación muestra el valor de su error y empieza por lo que el alumno hizo bien', () => {
+// Desde el 26 nov (redacción) las explicaciones ya no tienen que empezar por «Bien»: esa exigencia producía
+// telegramas («Bien el 60, pero al revés…»). Cada una sigue diciendo qué estuvo bien y qué cambiar, en una oración.
+test('cada explicación de un error es hipótesis', () => {
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s);
     for (const a of p.alternativas.filter(x => x.error)) {
-      assert.match(a.error.explicacion, /^Bien/, `semilla ${s}: ${a.error.explicacion}`);
       assert.equal(a.error.respaldo, 'hipotesis');
     }
   }

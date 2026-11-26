@@ -23,7 +23,6 @@ const REGLAS = {
 //   { regla, plantilla, problema ('*' = todos los del archivo), unidad, motivo, fecha }
 const EXCEPCIONES = [
   // papel-datos
-  { regla: 'papel-datos', plantilla: 'analisis-dimensional', problema: '*', unidad: 'fisica.magnitudes-y-vectores', motivo: 'papel escrito a mano, sus 7 problemas sin Datos', fecha: '2026-11-19' },
   { regla: 'papel-datos', plantilla: 'cinematica-medias', problema: '*', unidad: 'fisica.movimiento-rectilineo y fisica.mruv-y-caida-libre', motivo: 'p1 a p6 (los de MRU y MRUV) sin Datos', fecha: '2026-11-19' },
   { regla: 'papel-datos', plantilla: 'numeros-sucesiones', problema: '*', unidad: 'aritmetica.numeracion', motivo: 'sus 10 problemas sin Datos; además no dice de qué unidad es cada uno', fecha: '2026-11-19' },
   { regla: 'papel-datos', plantilla: 'orden-informacion', problema: '*', unidad: 'razonamiento-matematico.razonamiento-deductivo', motivo: 'papel de la escena, sus 10 problemas sin Datos; además no dice de qué unidad es cada uno', fecha: '2026-11-19' },

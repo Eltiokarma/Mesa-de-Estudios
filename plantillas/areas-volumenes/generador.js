@@ -146,13 +146,13 @@
         pregunta: ['¿Cuánto es en ', v('x', NOM2[s.a]), '?'],
         datos: [eq], correcta, texto: conU(ua), unidad: ua,
         errores: [
-          h('U3-lineal', por10(x, kL), `Bien el ${F} de ${eq}, pero sin elevarlo: un área es largo por ancho, así que va ${F} × ${F} = ${F2}. Con ${F} da ${num(por10(x, kL))}.`, TRANS),
-          h('CONV-INVERSO', por10(x, -kA), `Bien el ${F2}, pero al revés: ${num(x)} ${sube ? '÷' : '×'} ${F2} = ${num(por10(x, -kA))}. El ${ua} es más ${sube ? 'chico' : 'grande'} que el ${ud}: el número tiene que ${sube ? 'subir' : 'bajar'}.`),
-          h('CONV-CUBO', por10(x, 3 * kL), `Bien elevar el ${F}, pero al cubo es para un volumen: ${F}³ = ${cifra(3 * kL)}. Un área lleva el factor dos veces.`),
-          h('CONV-COMA', por10(x, kA - Math.sign(kL)), `Bien la idea de ${sube ? 'multiplicar' : 'dividir'}, pero con un cero de menos: ${num(por10(x, kA - Math.sign(kL)))}. ${F} × ${F} = ${F2}.`),
+          h('U3-lineal', por10(x, kL), `Usaste el ${F} de ${eq}, pero sin elevarlo, y así sale ${num(por10(x, kL))}; un área es largo por ancho, así que el factor es ${F} × ${F} = ${F2}.`, TRANS),
+          h('CONV-INVERSO', por10(x, -kA), `Usaste el ${F2}, pero al revés: ${num(x)} ${sube ? '÷' : '×'} ${F2} = ${num(por10(x, -kA))}. Como el ${ua} es más ${sube ? 'chico' : 'grande'} que el ${ud}, el número tiene que ${sube ? 'subir' : 'bajar'}.`),
+          h('CONV-CUBO', por10(x, 3 * kL), `Elevar el ${F} estaba bien, pero al cubo se eleva para un volumen: ${F}³ = ${cifra(3 * kL)}. Un área lleva el factor solo dos veces.`),
+          h('CONV-COMA', por10(x, kA - Math.sign(kL)), `La idea de ${sube ? 'multiplicar' : 'dividir'} es correcta, pero con un cero de menos sale ${num(por10(x, kA - Math.sign(kL)))}; el factor es ${F} × ${F} = ${F2}.`),
         ],
         solucion: [
-          [`El dato de largo es ${eq}. Un área es largo por ancho: el factor entra dos veces.`],
+          [`La equivalencia que dan es de largo, ${eq}, y un área es largo por ancho: el factor entra dos veces.`],
           [unidad1, ' = ', v('k', lado), '.'],
           [v('d', `${num(x)} ${ud}`), ` ${op} ${F2} = `, v('x', `${num(correcta)} ${ua}`), '.'],
         ],
@@ -169,10 +169,10 @@
           pregunta: ['¿Cuántos ', v('x', 'metros cuadrados (m²)'), ' son?'],
           datos: [HA, CUADRADO], correcta, texto: conU('m²'), unidad: 'm²',
           errores: [
-            h('HA-LADO', por10(x, 2), `Bien el lado de 100 m de la hectárea, pero falta elevarlo: el área del cuadrado es 100 × 100. Con 100 da ${num(por10(x, 2))}.`),
-            h('AREA-PERIMETRO', limpio(x * 400), `Bien el cuadrado de 100 m de lado, pero 4 × 100 = 400 es su perímetro, no su área: ${num(x * 400)}.`),
-            h('CONV-INVERSO', por10(x, -4), `Bien el 10 000, pero al revés: ${num(x)} ÷ 10 000 = ${num(por10(x, -4))}. El m² es más chico que la hectárea: el número sube.`),
-            h('CONV-CUBO', por10(x, 6), `Bien elevar el 100, pero al cubo es para un volumen: 100³ = 1 000 000. Un área es lado por lado.`),
+            h('HA-LADO', por10(x, 2), `Usaste bien el lado de 100 m de la hectárea, pero sin elevarlo sale ${num(por10(x, 2))}; el área del cuadrado es 100 × 100.`),
+            h('AREA-PERIMETRO', limpio(x * 400), `El cuadrado de 100 m de lado está bien, pero 4 × 100 = 400 es su perímetro, no su área, y así sale ${num(x * 400)}.`),
+            h('CONV-INVERSO', por10(x, -4), `Usaste el 10 000, pero al revés: ${num(x)} ÷ 10 000 = ${num(por10(x, -4))}. Como el m² es más chico que la hectárea, el número sube.`),
+            h('CONV-CUBO', por10(x, 6), `Elevar el 100 estaba bien, pero al cubo se eleva para un volumen: 100³ = 1 000 000. Un área es lado por lado.`),
           ],
           solucion: [
             ['Una hectárea es un cuadrado de 100 m de lado: ', v('k', '1 ha = 100 m × 100 m = 10 000 m²'), '.'],
@@ -188,10 +188,10 @@
         pregunta: ['¿Cuántas ', v('x', 'hectáreas (ha)'), ' son?'],
         datos: [HA, CUADRADO], correcta, texto: conU('ha'), unidad: 'ha',
         errores: [
-          h('HA-LADO', por10(x, -2), `Bien el lado de 100 m, pero falta elevarlo: una hectárea son 100 × 100 m². Entre 100 da ${num(por10(x, -2))}.`),
-          h('CONV-INVERSO', por10(x, 4), `Bien el 10 000, pero al revés: ${num(x)} × 10 000 = ${num(por10(x, 4))}. La hectárea es más grande: el número baja.`),
-          h('CONV-COMA', por10(x, -3), `Bien dividir, pero entre 1000: un cero de menos. Una hectárea son 100 × 100 = 10 000 m². Da ${num(por10(x, -3))}.`),
-          h('AREA-PERIMETRO', limpio(x / 400), `Bien el cuadrado de 100 m de lado, pero 400 m es su perímetro, no su área: ${num(x / 400)}.`),
+          h('HA-LADO', por10(x, -2), `Usaste bien el lado de 100 m, pero sin elevarlo sale ${num(por10(x, -2))}; una hectárea son 100 × 100 m².`),
+          h('CONV-INVERSO', por10(x, 4), `Usaste el 10 000, pero al revés: ${num(x)} × 10 000 = ${num(por10(x, 4))}. Como la hectárea es más grande que el m², el número baja.`),
+          h('CONV-COMA', por10(x, -3), `Dividir estaba bien, pero entre 1000 falta un cero y sale ${num(por10(x, -3))}; una hectárea son 100 × 100 = 10 000 m².`),
+          h('AREA-PERIMETRO', limpio(x / 400), `El cuadrado de 100 m de lado está bien, pero 400 m es su perímetro, no su área, y así sale ${num(x / 400)}.`),
         ],
         solucion: [
           ['Una hectárea es un cuadrado de 100 m de lado: ', v('k', '1 ha = 100 m × 100 m = 10 000 m²'), '.'],
@@ -208,13 +208,13 @@
         pregunta: ['¿Cuántas ', v('x', 'hectáreas (ha)'), ' son?'],
         datos: [LARGO['km|m'], HA], correcta, texto: conU('ha'), unidad: 'ha', fuente: FUENTE_TITICACA,
         errores: [
-          h('U3-lineal', por10(x, -1), `Bien dividir entre 10 000 al final, pero el km² no se elevó: 1 km² son 1000 × 1000 m², no 1000. Da ${num(por10(x, -1))}.`, TRANS),
-          h('HA-LADO', por10(x, 4), `Bien: 1 km² = 1 000 000 m². Pero la hectárea no son 100 m²: es un cuadrado de 100 m de lado, 10 000 m². Da ${num(por10(x, 4))}.`),
-          h('CONV-INVERSO', por10(x, -2), `Bien el factor 100 entre km² y ha, pero al revés: ${num(x)} ÷ 100 = ${num(por10(x, -2))}. La hectárea es más chica: el número sube.`),
-          h('CONV-COMA', por10(x, 3), `Bien elevar, pero con un cero de más: 1 km² son 100 ha, no 1000. Da ${num(por10(x, 3))}.`),
+          h('U3-lineal', por10(x, -1), `Dividir entre 10 000 al final estaba bien, pero no elevaste el factor del km²: 1 km² son 1000 × 1000 m², no 1000. Así sale ${num(por10(x, -1))}.`, TRANS),
+          h('HA-LADO', por10(x, 4), `Pasaste bien 1 km² a 1 000 000 m², pero la hectárea no son 100 m²: es un cuadrado de 100 m de lado, 10 000 m². Así sale ${num(por10(x, 4))}.`),
+          h('CONV-INVERSO', por10(x, -2), `Usaste el factor 100 entre km² y ha, pero al revés: ${num(x)} ÷ 100 = ${num(por10(x, -2))}. Como la hectárea es más chica, el número sube.`),
+          h('CONV-COMA', por10(x, 3), `Elevar estaba bien, pero pusiste un cero de más: 1 km² son 100 ha, no 1000. Así sale ${num(por10(x, 3))}.`),
         ],
         solucion: [
-          ['El km² en m², elevando el 1000: ', v('k', '1 km² = (1000 m)² = 1 000 000 m²'), `. El lago: ${num(m2)} m².`],
+          ['Primero se pasa el km² a m², elevando el 1000: ', v('k', '1 km² = (1000 m)² = 1 000 000 m²'), `, así que el lago cubre ${num(m2)} m².`],
           ['La hectárea es un cuadrado de 100 m de lado: ', v('k', '1 ha = 100 m × 100 m = 10 000 m²'), '.'],
           [`${num(m2)} m² ÷ 10 000 = `, v('x', `${num(correcta)} ha`), '. Es decir, 1 km² = 100 ha.'],
         ],
@@ -230,15 +230,15 @@
       pregunta: ['¿', v('x', 'Cuántas losetas'), ' hacen falta?'],
       datos: [LARGO['m|cm'], RECT, CUADRADO], correcta, texto: x => num(x), unidad: '',
       errores: [
-        h('CONV-COMA', limpio(Am / (lm * lm / 100)), `Bien la idea de dividir las áreas, pero ${L} cm no son ${num(lm / 10)} m: la coma se corre dos lugares, ${num(lm)} m. Da ${num(Am / (lm * lm / 100))}.`),
-        h('AREA-LADO', limpio(Am / lm), `Bien el área del aula, ${num(Am)} m², pero se divide entre el área de una loseta, no entre su lado: ${num(Am)} ÷ ${num(lm)} = ${num(Am / lm)}.`),
-        h('U3-lineal', limpio(Am * 100 / (L * L)), `Bien las dos áreas, pero ${num(Am)} m² no son ${num(Am * 100)} cm²: 1 m² = 100 × 100 cm². Da ${num(Am * 100 / (L * L))}.`, TRANS),
-        h('CONV-UNIDAD-PEDIDA', limpio(Am / (L * L)), `Bien dividir las áreas, pero una está en m² y la otra en cm²: ${num(Am)} ÷ ${L * L} = ${num(Am / (L * L))}.`),
-        h('AREA-PERIMETRO', limpio(2 * (a + b) / lm), `Bien pasar el lado a ${num(lm)} m, pero ${num(2 * (a + b))} m es el borde del aula: así se cuentan solo las losetas de la orilla, ${num(2 * (a + b) / lm)}.`),
+        h('CONV-COMA', limpio(Am / (lm * lm / 100)), `La idea de dividir las áreas es correcta, pero ${L} cm no son ${num(lm / 10)} m: la coma se corre dos lugares, ${num(lm)} m. Así sale ${num(Am / (lm * lm / 100))}.`),
+        h('AREA-LADO', limpio(Am / lm), `El área del aula está bien, ${num(Am)} m², pero se divide entre el área de una loseta, no entre su lado: ${num(Am)} ÷ ${num(lm)} = ${num(Am / lm)}.`),
+        h('U3-lineal', limpio(Am * 100 / (L * L)), `Las dos áreas están bien, pero ${num(Am)} m² no son ${num(Am * 100)} cm², porque 1 m² = 100 × 100 cm². Así sale ${num(Am * 100 / (L * L))}.`, TRANS),
+        h('CONV-UNIDAD-PEDIDA', limpio(Am / (L * L)), `Dividir las áreas estaba bien, pero una está en m² y la otra en cm²: ${num(Am)} ÷ ${L * L} = ${num(Am / (L * L))}.`),
+        h('AREA-PERIMETRO', limpio(2 * (a + b) / lm), `Pasaste bien el lado a ${num(lm)} m, pero ${num(2 * (a + b))} m es el borde del aula, y así se cuentan solo las losetas de la orilla: ${num(2 * (a + b) / lm)}.`),
       ],
       solucion: [
-        ['Todo en metros: ', v('b', `${L} cm`), ` = ${num(lm)} m. Área de una loseta: ${num(lm)} m × ${num(lm)} m = ${num(Al)} m².`],
-        ['Área del aula: ', v('a', `${num(a)} m × ${num(b)} m`), ` = ${num(Am)} m².`],
+        ['Primero se pasa todo a metros: ', v('b', `${L} cm`), ` = ${num(lm)} m. El área de una loseta es ${num(lm)} m × ${num(lm)} m = ${num(Al)} m².`],
+        ['El área del aula es ', v('a', `${num(a)} m × ${num(b)} m`), ` = ${num(Am)} m².`],
         [`${num(Am)} m² ÷ ${num(Al)} m² = `, v('x', num(correcta)), ` losetas (${num(a / lm)} a lo largo por ${num(b / lm)} a lo ancho).`],
       ],
       _datos: { tipo: 'area', sub, nivel: 3, a, b, L },
@@ -268,15 +268,15 @@
       const conLitro = s.de === 'L' || s.a === 'L';
       const grande = sube ? s.de : s.a, chica = sube ? s.a : s.de;
       const errores = [
-        h('U3-lineal', por10(x, kL), `Bien el ${F} de ${eq}, pero sin elevarlo: un volumen es largo por ancho por alto, ${F} × ${F} × ${F} = ${F3}. Con ${F} da ${num(por10(x, kL))}.`, TRANS),
-        conLitro ? h('QU2-litro-como-100-cm3', por10(x, 2 * kL), `Bien elevar el ${F}, pero solo al cuadrado: 1 ${grande} no son ${cifra(2 * kL)} ${chica}. Un volumen lleva el factor tres veces: ${F3}.`, UNIS)
-          : h('U3-cuadrado', por10(x, 2 * kL), `Bien elevar el ${F}, pero solo al cuadrado: ${F}² = ${cifra(2 * kL)} es para un área. Un volumen lleva el factor tres veces: ${F3}.`, TRANS),
-        h('CONV-INVERSO', por10(x, -k), `Bien el ${F3}, pero al revés: ${num(x)} ${opMal} ${F3} = ${num(por10(x, -k))}. ${art(s.a)} es más ${sube ? 'chico' : 'grande'} que ${art(s.de).toLowerCase()}: el número tiene que ${sube ? 'subir' : 'bajar'}.`),
+        h('U3-lineal', por10(x, kL), `Usaste el ${F} de ${eq}, pero sin elevarlo, y así sale ${num(por10(x, kL))}; un volumen es largo por ancho por alto, así que el factor es ${F} × ${F} × ${F} = ${F3}.`, TRANS),
+        conLitro ? h('QU2-litro-como-100-cm3', por10(x, 2 * kL), `Elevar el ${F} estaba bien, pero solo lo elevaste al cuadrado: 1 ${grande} no son ${cifra(2 * kL)} ${chica}. Un volumen lleva el factor tres veces: ${F3}.`, UNIS)
+          : h('U3-cuadrado', por10(x, 2 * kL), `Elevar el ${F} estaba bien, pero solo lo elevaste al cuadrado, y ${F}² = ${cifra(2 * kL)} sirve para un área. Un volumen lleva el factor tres veces: ${F3}.`, TRANS),
+        h('CONV-INVERSO', por10(x, -k), `Usaste el ${F3}, pero al revés: ${num(x)} ${opMal} ${F3} = ${num(por10(x, -k))}. Como ${art(s.a).toLowerCase()} es más ${sube ? 'chico' : 'grande'} que ${art(s.de).toLowerCase()}, el número tiene que ${sube ? 'subir' : 'bajar'}.`),
       ];
       // Con litros, el error de elevar 100 cm en vez de 10 dm: salen cm³, no litros.
-      if (s.de === 'm³' && s.a === 'L') errores.push(h('CONV-L-COMO-CM3', por10(x, 6), `Bien elevar al cubo, pero con 100 cm: 1 m³ = 1 000 000 cm³. Esos son centímetros cúbicos; un litro es un dm³.`));
-      else if (s.de === 'L' && s.a === 'm³') errores.push(h('CONV-L-COMO-CM3', por10(x, -6), `Bien elevar al cubo, pero con 100 cm: así se pasa de cm³ a m³, no de litros. Un litro es un dm³: 1 m³ = 1000 L.`));
-      else errores.push(h('CONV-COMA', por10(x, k - Math.sign(k)), `Bien la idea de ${sube ? 'multiplicar' : 'dividir'}, pero con un cero de menos: ${num(por10(x, k - Math.sign(k)))}. ${F} × ${F} × ${F} = ${F3}.`));
+      if (s.de === 'm³' && s.a === 'L') errores.push(h('CONV-L-COMO-CM3', por10(x, 6), `Elevar al cubo estaba bien, pero lo hiciste con 100 cm: 1 m³ = 1 000 000 cm³ da centímetros cúbicos, y un litro es un dm³.`));
+      else if (s.de === 'L' && s.a === 'm³') errores.push(h('CONV-L-COMO-CM3', por10(x, -6), `Elevar al cubo estaba bien, pero con 100 cm se pasa de cm³ a m³, no de litros. Un litro es un dm³: 1 m³ = 1000 L.`));
+      else errores.push(h('CONV-COMA', por10(x, k - Math.sign(k)), `La idea de ${sube ? 'multiplicar' : 'dividir'} es correcta, pero con un cero de menos sale ${num(por10(x, k - Math.sign(k)))}; el factor es ${F} × ${F} × ${F} = ${F3}.`));
       const factor = conLitro
         ? (s.de === 'cm³' || s.a === 'cm³' ? '1 L = 1 dm³ = (10 cm)³ = 1000 cm³' : '1 m³ = (10 dm)³ = 1000 dm³ = 1000 L')
         : `1 ${grande} = (${F} ${chica.replace('³', '')})³ = ${F3} ${chica}`;
@@ -286,7 +286,7 @@
         pregunta: ['¿Cuánto es en ', v('x', NOMV[s.a]), '?'],
         datos: s.dat, correcta, texto: conU(s.a), unidad: s.a, errores,
         solucion: [
-          [`El dato de largo es ${eq}. Un volumen es largo por ancho por alto: el factor entra tres veces.`],
+          [`La equivalencia que dan es de largo, ${eq}, y un volumen es largo por ancho por alto: el factor entra tres veces.`],
           [v('k', factor), '.'],
           [v('d', `${num(x)} ${s.de}`), ` ${op} ${F3} = `, v('x', `${num(correcta)} ${s.a}`), '.'],
         ],
@@ -301,14 +301,14 @@
         pregunta: ['¿Cuántos ', v('x', 'litros (L)'), ' le caben?'],
         datos: [CUBO, '1 L = 1 dm³ (un cubo de 1 dm de lado)'], correcta, texto: conU('L'), unidad: 'L',
         errores: [
-          h('VOL-SIN-ELEVAR', L, `Bien: cada dm³ es un litro. Pero ${L} dm es el lado, no el volumen: caben ${L} × ${L} × ${L} cubos de 1 dm.`),
-          h('VOL-POR-TRES', 3 * L, `Bien que el lado va tres veces, pero se multiplica ${L} × ${L} × ${L}, no 3 × ${L} = ${3 * L}.`),
-          h('VOL-AL-CUADRADO', L * L, `Bien multiplicar el lado, pero ${L} × ${L} = ${L * L} es el área de una cara. Falta el alto: otra vez × ${L}.`),
-          h('VOL-SUPERFICIE', 6 * L * L, `Bien el área de una cara, ${L * L} dm², pero 6 × ${L * L} = ${6 * L * L} dm² es el cartón de las seis caras, no lo que cabe dentro.`),
+          h('VOL-SIN-ELEVAR', L, `Es cierto que cada dm³ es un litro, pero ${L} dm es el lado, no el volumen: caben ${L} × ${L} × ${L} cubos de 1 dm.`),
+          h('VOL-POR-TRES', 3 * L, `Es cierto que el lado va tres veces, pero se multiplica ${L} × ${L} × ${L}, no 3 × ${L} = ${3 * L}.`),
+          h('VOL-AL-CUADRADO', L * L, `Multiplicar el lado estaba bien, pero ${L} × ${L} = ${L * L} es el área de una cara; falta multiplicar otra vez por ${L}, el alto.`),
+          h('VOL-SUPERFICIE', 6 * L * L, `El área de una cara está bien, ${L * L} dm², pero 6 × ${L * L} = ${6 * L * L} dm² es el cartón de las seis caras, no lo que cabe dentro.`),
         ],
         solucion: [
           ['El volumen de un cubo es lado por lado por lado: ', v('d', `${L} dm`), ` × ${L} dm × ${L} dm = ${correcta} dm³.`],
-          ['Cada dm³ es un litro: ', v('k', '1 L = 1 dm³'), '. Caben ', v('x', `${correcta} L`), '.'],
+          ['Cada dm³ es un litro, ', v('k', '1 L = 1 dm³'), ', así que caben ', v('x', `${correcta} L`), '.'],
         ],
         _datos: { tipo: 'volumen', sub, nivel: 2, L },
       };
@@ -322,14 +322,14 @@
       pregunta: ['¿Cuántos ', v('x', 'litros (L)'), ' de agua le caben?'],
       datos: [CAJA, LARGO['dm|cm'], LITRO], correcta, texto: conU('L'), unidad: 'L',
       errores: [
-        h('QU2-litro-como-100-cm3', cm3 / 100, `Bien el volumen, ${num(cm3)} cm³, pero un litro no son 100 cm³: es un cubo de 10 cm de lado, 10 × 10 × 10 = 1000 cm³.`, UNIS),
-        h('VOL-SUMA', l + a + al, `Bien las tres medidas, pero el volumen se multiplica, no se suma: ${l} + ${a} + ${al} = ${l + a + al}.`),
-        h('CONV-L-COMO-CM3', cm3 / 1e6, `Bien el volumen, pero entre 1 000 000 da m³, no litros: un litro es un dm³, 1000 cm³.`),
-        h('U3-lineal', cm3 / 10, `Bien el volumen, ${num(cm3)} cm³, pero el 10 de 1 dm = 10 cm sin elevar al cubo: un litro son 1000 cm³. Da ${num(cm3 / 10)}.`, TRANS),
-        h('CONV-UNIDAD-PEDIDA', cm3, `Bien el volumen: ${num(cm3)} cm³. Pero se piden litros: falta pasar los cm³ a litros.`),
+        h('QU2-litro-como-100-cm3', cm3 / 100, `El volumen está bien, ${num(cm3)} cm³, pero un litro no son 100 cm³: es un cubo de 10 cm de lado, 10 × 10 × 10 = 1000 cm³.`, UNIS),
+        h('VOL-SUMA', l + a + al, `Las tres medidas están bien, pero el volumen se multiplica, no se suma: ${l} + ${a} + ${al} = ${l + a + al}.`),
+        h('CONV-L-COMO-CM3', cm3 / 1e6, `El volumen está bien, pero al dividir entre 1 000 000 salen m³, no litros: un litro es un dm³, 1000 cm³.`),
+        h('U3-lineal', cm3 / 10, `El volumen está bien, ${num(cm3)} cm³, pero usaste el 10 de 1 dm = 10 cm sin elevarlo al cubo, y un litro son 1000 cm³. Así sale ${num(cm3 / 10)}.`, TRANS),
+        h('CONV-UNIDAD-PEDIDA', cm3, `El volumen está bien, ${num(cm3)} cm³, pero se piden litros: falta pasar los cm³ a litros.`),
       ],
       solucion: [
-        ['El agua llena una caja: ', v('d', `${l} cm × ${a} cm × ${al} cm`), ` = ${num(cm3)} cm³.`],
+        ['El agua llena una caja, cuyo volumen es ', v('d', `${l} cm × ${a} cm × ${al} cm`), ` = ${num(cm3)} cm³.`],
         ['Un litro es un cubo de 10 cm de lado: ', v('k', '1 L = (10 cm)³ = 1000 cm³'), '.'],
         [`${num(cm3)} ÷ 1000 = `, v('x', `${num(correcta)} L`), '.'],
       ],
@@ -354,14 +354,14 @@
         pregunta: ['¿Cuánto es en ', v('x', 'kilogramos por metro cúbico (kg/m³)'), '?'],
         datos: [RHO, KG, LARGO['m|cm']], correcta, texto: conU('kg/m³'), unidad: 'kg/m³',
         errores: [
-          h('U3-cuadrado', limpio(rho * 10), `Bien los gramos a kg (÷ 1000), pero el 100 solo al cuadrado: 1 m³ = 1 000 000 cm³, no 10 000. Da ${num(rho * 10)}.`, TRANS),
-          h('U3-lineal', limpio(rho / 10), `Bien los gramos a kg, pero el 100 sin elevar: un m³ es (100 cm)³ = 1 000 000 cm³. Con 100 da ${num(rho / 10)}.`, TRANS),
-          h('CONV-INVERSO', limpio(rho / 1000), `Bien los dos factores, pero los dos al revés: ${num(rho)} ÷ 1000 = ${num(rho / 1000)}. Un m³ guarda muchísimos gramos.`),
-          h('U4-gramos', limpio(rho * 1e6), `Bien los cm³ a m³ (1 000 000 en un m³), pero quedaron gramos: ${num(rho * 1e6)} g/m³. Faltó pasar a kg.`, TRANS),
+          h('U3-cuadrado', limpio(rho * 10), `Pasaste bien los gramos a kg dividiendo entre 1000, pero elevaste el 100 solo al cuadrado: 1 m³ = 1 000 000 cm³, no 10 000. Así sale ${num(rho * 10)}.`, TRANS),
+          h('U3-lineal', limpio(rho / 10), `Pasaste bien los gramos a kg, pero no elevaste el 100, y así sale ${num(rho / 10)}; un m³ es (100 cm)³ = 1 000 000 cm³.`, TRANS),
+          h('CONV-INVERSO', limpio(rho / 1000), `Usaste los dos factores, pero los dos al revés: ${num(rho)} ÷ 1000 = ${num(rho / 1000)}, y un m³ guarda muchísimos gramos.`),
+          h('U4-gramos', limpio(rho * 1e6), `Pasaste bien los cm³ a m³, con 1 000 000 cm³ en un m³, pero quedaron gramos, ${num(rho * 1e6)} g/m³: faltó pasar a kg.`, TRANS),
         ],
         solucion: [
-          [`${num(rho)} g/cm³ dice cuántos gramos hay en cada cm³. Dos cambios: los g a kg y los cm³ a m³.`],
-          ['El dato de largo es 1 m = 100 cm; en un volumen va al cubo: ', v('k', '1 m³ = (100 cm)³ = 1 000 000 cm³'), '.'],
+          [`${num(rho)} g/cm³ dice cuántos gramos hay en cada cm³, y hay dos cambios: los g a kg y los cm³ a m³.`],
+          ['La equivalencia de largo es 1 m = 100 cm, y en un volumen va al cubo: ', v('k', '1 m³ = (100 cm)³ = 1 000 000 cm³'), '.'],
           [v('d', `${num(rho)} g/cm³`), ' × ', v('k', '(1 kg / 1000 g)'), ' × ', v('k', '(1 000 000 cm³ / 1 m³)'), ' = ', v('x', `${num(correcta)} kg/m³`), '.'],
         ],
         _datos: { tipo: 'densidad', sub, nivel: 2, rho },
@@ -383,15 +383,15 @@
         pregunta: ['¿Cuál es su ', v('x', 'masa en kilogramos (kg)'), '?'],
         datos: [CAJA, RHO, KG], correcta, texto: conU('kg'), unidad: 'kg',
         errores: [
-          h('U4-gramos', g, `Bien m = ρ × V = ${num(g)}, pero eso está en gramos. Se piden kilogramos: falta dividir entre 1000.`, TRANS),
-          h('DENS-DESPEJE', limpio(V / c.rho / 1000), `Bien el volumen, ${num(V)} cm³, pero de ρ = m / V sale m = ρ × V, no V ÷ ρ. Da ${num(V / c.rho / 1000)}.`),
-          h('CONV-PREFIJO', limpio(g / 100), `Bien m = ${num(g)} g, pero entre 100 no da kilogramos: 1 kg = 1000 g. Da ${num(g / 100)}.`),
-          h('CONV-COMA', limpio(g / 10000), `Bien m = ${num(g)} g, pero la coma se corrió un lugar de más al pasar a kg: ${num(g / 10000)}.`),
+          h('U4-gramos', g, `Calculaste bien m = ρ × V = ${num(g)}, pero eso está en gramos y se piden kilogramos: falta dividir entre 1000.`, TRANS),
+          h('DENS-DESPEJE', limpio(V / c.rho / 1000), `El volumen está bien, ${num(V)} cm³, pero de ρ = m / V sale m = ρ × V, no V ÷ ρ. Así sale ${num(V / c.rho / 1000)}.`),
+          h('CONV-PREFIJO', limpio(g / 100), `La masa está bien, m = ${num(g)} g, pero dividir entre 100 no da kilogramos, porque 1 kg = 1000 g. Así sale ${num(g / 100)}.`),
+          h('CONV-COMA', limpio(g / 10000), `La masa está bien, m = ${num(g)} g, pero al pasar a kg corriste la coma un lugar de más y salió ${num(g / 10000)}.`),
         ],
         solucion: [
-          ['Primero el volumen: ', v('a', med), ` = ${num(V)} cm³.`],
+          ['Primero se calcula el volumen: ', v('a', med), ` = ${num(V)} cm³.`],
           ['De ρ = m / V sale m = ρ × V: ', v('b', `${num(c.rho)} g/cm³`), ` × ${num(V)} cm³ = ${num(g)} g (los cm³ se tachan).`],
-          ['A kilogramos: ', `${num(g)} g × `, v('k', '(1 kg / 1000 g)'), ' = ', v('x', `${num(correcta)} kg`), '.'],
+          ['Al final se pasa a kilogramos: ', `${num(g)} g × `, v('k', '(1 kg / 1000 g)'), ' = ', v('x', `${num(correcta)} kg`), '.'],
         ],
         _datos: { tipo: 'densidad', sub, nivel: 3, dims: c.dims, rho: c.rho },
       };
@@ -410,13 +410,13 @@
         pregunta: ['¿Cuál es la ', v('x', 'masa en kilogramos (kg)'), ` del ${c.mat}?`],
         datos: [RHO, KG, LARGO['m|cm']], correcta, texto: conU('kg'), unidad: 'kg',
         errores: [
-          h('U3-cuadrado', limpio(c.rho * 10 * c.V), `Bien m = ρ × V, pero el 100 solo al cuadrado: así ρ queda en ${num(c.rho * 10)} kg/m³ y no en ${num(rhoSI)}. Da ${num(c.rho * 10 * c.V)}.`, TRANS),
-          h('U4-gramos', limpio(c.rho * 1e6 * c.V), `Bien los cm³ a m³, pero quedaron gramos: ${num(c.rho * 1e6 * c.V)} g. Faltó pasar a kilogramos.`, TRANS),
-          h('DENS-DESPEJE', limpio(c.V / rhoSI), `Bien ρ = ${num(rhoSI)} kg/m³, pero de ρ = m / V sale m = ρ × V, no V ÷ ρ: ${num(c.V / rhoSI)}.`),
-          h('CONV-UNIDAD-PEDIDA', limpio(c.rho * c.V), `Bien m = ρ × V, pero ρ está en g/cm³ y V en m³: hay que cambiar una antes de multiplicar. Da ${num(c.rho * c.V)}.`),
+          h('U3-cuadrado', limpio(c.rho * 10 * c.V), `La fórmula m = ρ × V está bien, pero elevaste el 100 solo al cuadrado, y así ρ queda en ${num(c.rho * 10)} kg/m³ y no en ${num(rhoSI)}. Sale ${num(c.rho * 10 * c.V)}.`, TRANS),
+          h('U4-gramos', limpio(c.rho * 1e6 * c.V), `Pasaste bien los cm³ a m³, pero quedaron gramos, ${num(c.rho * 1e6 * c.V)} g: faltó pasar a kilogramos.`, TRANS),
+          h('DENS-DESPEJE', limpio(c.V / rhoSI), `La densidad está bien, ρ = ${num(rhoSI)} kg/m³, pero de ρ = m / V sale m = ρ × V, no V ÷ ρ, que da ${num(c.V / rhoSI)}.`),
+          h('CONV-UNIDAD-PEDIDA', limpio(c.rho * c.V), `La fórmula m = ρ × V está bien, pero ρ está en g/cm³ y V en m³: hay que cambiar una antes de multiplicar. Así sale ${num(c.rho * c.V)}.`),
         ],
         solucion: [
-          ['La densidad en kg/m³, con 1 kg = 1000 g y ', v('k', '1 m³ = (100 cm)³ = 1 000 000 cm³'), ':'],
+          ['Primero se pasa la densidad a kg/m³, con 1 kg = 1000 g y ', v('k', '1 m³ = (100 cm)³ = 1 000 000 cm³'), ':'],
           [v('b', `${num(c.rho)} g/cm³`), ` × 1 000 000 ÷ 1000 = ${num(rhoSI)} kg/m³.`],
           ['De ρ = m / V sale m = ρ × V: ', `${num(rhoSI)} kg/m³ × `, v('a', `${num(c.V)} m³`), ' = ', v('x', `${num(correcta)} kg`), '.'],
         ],
@@ -436,13 +436,13 @@
       pregunta: ['¿Cuántos ', v('x', 'litros (L)'), ` de ${c.que} son?`],
       datos: [RHO, KG, LARGO['dm|cm'], LITRO], correcta, texto: conU('L'), unidad: 'L',
       errores: [
-        h('DENS-DESPEJE', limpio(c.m * c.rho), `Bien pasar a gramos, pero de ρ = m / V sale V = m ÷ ρ, no m × ρ: da ${num(c.m * c.rho)}.`),
-        h('QU2-litro-como-100-cm3', limpio(cm3 / 100), `Bien V = ${num(cm3)} cm³, pero un litro no son 100 cm³: son (10 cm)³ = 1000 cm³. Da ${num(cm3 / 100)}.`, UNIS),
-        h('U4-gramos', limpio(c.m / c.rho / 1000), `Bien V = m ÷ ρ, pero con la masa en kg y la densidad en g/cm³: ${num(c.m)} ÷ ${num(c.rho)} mezcla unidades. Da ${num(c.m / c.rho / 1000)}.`, TRANS),
-        h('CONV-UNIDAD-PEDIDA', cm3, `Bien V = ${num(cm3)} cm³, pero se piden litros: falta dividir entre 1000.`),
+        h('DENS-DESPEJE', limpio(c.m * c.rho), `Pasar a gramos estaba bien, pero de ρ = m / V sale V = m ÷ ρ, no m × ρ, que da ${num(c.m * c.rho)}.`),
+        h('QU2-litro-como-100-cm3', limpio(cm3 / 100), `El volumen está bien, V = ${num(cm3)} cm³, pero un litro no son 100 cm³: son (10 cm)³ = 1000 cm³. Así sale ${num(cm3 / 100)}.`, UNIS),
+        h('U4-gramos', limpio(c.m / c.rho / 1000), `La fórmula V = m ÷ ρ está bien, pero la masa está en kg y la densidad en g/cm³, así que ${num(c.m)} ÷ ${num(c.rho)} mezcla unidades. Sale ${num(c.m / c.rho / 1000)}.`, TRANS),
+        h('CONV-UNIDAD-PEDIDA', cm3, `El volumen está bien, V = ${num(cm3)} cm³, pero se piden litros: falta dividir entre 1000.`),
       ],
       solucion: [
-        ['La masa en gramos, como la densidad: ', v('a', `${num(c.m)} kg`), ` = ${num(g)} g.`],
+        ['Primero se pasa la masa a gramos, como en la densidad: ', v('a', `${num(c.m)} kg`), ` = ${num(g)} g.`],
         ['De ρ = m / V sale V = m ÷ ρ: ', `${num(g)} g ÷ `, v('b', `${num(c.rho)} g/cm³`), ` = ${num(cm3)} cm³.`],
         ['Un litro es un cubo de 10 cm de lado: ', v('k', '1 L = (10 cm)³ = 1000 cm³'), `. ${num(cm3)} ÷ 1000 = `, v('x', `${num(correcta)} L`), '.'],
       ],
@@ -462,15 +462,15 @@
         pregunta: ['¿Cuál es su caudal en ', v('x', 'litros por segundo (L/s)'), '?'],
         datos: [Q, LARGO['m|dm'], LITRO, '1 min = 60 s'], correcta, texto: conU('L/s'), unidad: 'L/s',
         errores: [
-          h('U6-minutos', limpio(L / t), `Bien Q = V / t con ${num(L)} L, pero dividiste entre minutos: ${num(L / t)} son litros por minuto.`, TRANS),
-          h('QU2-litro-como-100-cm3', limpio(V * 100 / s), `Bien Q = V / t, pero 1 m³ no son 100 L: un m³ es (10 dm)³ = 1000 dm³ = 1000 L. Da ${num(V * 100 / s)}.`, UNIS),
-          h('CAU-AL-REVES', limpio(s / L), `Bien pasar a litros y segundos, pero el caudal es volumen entre tiempo, no tiempo entre volumen: ${num(s / L)}.`),
-          h('CONV-BASE-100', limpio(L / (t * 100)), `Bien Q = V / t, pero un minuto tiene 60 s, no 100: ${num(L)} ÷ ${num(t * 100)} = ${num(L / (t * 100))}.`),
-          h('CONV-UNIDAD-PEDIDA', limpio(V / s), `Bien dividir entre ${s} s, pero ${num(V / s)} son m³ por segundo: falta pasar a litros.`),
+          h('U6-minutos', limpio(L / t), `La fórmula Q = V / t con ${num(L)} L está bien, pero dividiste entre minutos, y ${num(L / t)} son litros por minuto.`, TRANS),
+          h('QU2-litro-como-100-cm3', limpio(V * 100 / s), `La fórmula Q = V / t está bien, pero 1 m³ no son 100 L: un m³ es (10 dm)³ = 1000 dm³ = 1000 L. Así sale ${num(V * 100 / s)}.`, UNIS),
+          h('CAU-AL-REVES', limpio(s / L), `Pasaste bien a litros y segundos, pero el caudal es volumen entre tiempo, no tiempo entre volumen, que da ${num(s / L)}.`),
+          h('CONV-BASE-100', limpio(L / (t * 100)), `La fórmula Q = V / t está bien, pero un minuto tiene 60 s, no 100: ${num(L)} ÷ ${num(t * 100)} = ${num(L / (t * 100))}.`),
+          h('CONV-UNIDAD-PEDIDA', limpio(V / s), `Dividir entre ${s} s estaba bien, pero ${num(V / s)} son m³ por segundo: falta pasar a litros.`),
         ],
         solucion: [
-          ['El volumen en litros: ', v('k', '1 m³ = (10 dm)³ = 1000 dm³ = 1000 L'), '; ', v('a', `${num(V)} m³`), ` = ${num(L)} L.`],
-          ['El tiempo en segundos: ', v('b', `${t} min`), ` = ${t} × 60 = ${s} s.`],
+          ['Primero se pasa el volumen a litros: ', v('k', '1 m³ = (10 dm)³ = 1000 dm³ = 1000 L'), '; ', v('a', `${num(V)} m³`), ` = ${num(L)} L.`],
+          ['Luego se pasa el tiempo a segundos: ', v('b', `${t} min`), ` = ${t} × 60 = ${s} s.`],
           ['Q = V / t = ', `${num(L)} L ÷ ${s} s = `, v('x', `${num(correcta)} L/s`), '.'],
         ],
         _datos: { tipo: 'caudal', sub, nivel: 2, V, t },
@@ -485,16 +485,16 @@
         pregunta: ['¿Cuántos ', v('x', 'minutos (min)'), ' tarda en llenarse?'],
         datos: [Q, LARGO['m|dm'], LITRO, '1 min = 60 s'], correcta, texto: conU('min'), unidad: 'min',
         errores: [
-          h('CONV-UNIDAD-PEDIDA', s, `Bien t = V ÷ Q = ${num(s)}, pero eso está en segundos. Se piden minutos: falta dividir entre 60.`),
-          h('QU2-litro-como-100-cm3', limpio(V * 100 / q / 60), `Bien t = V ÷ Q, pero 1 m³ no son 100 L: son (10 dm)³ = 1000 L. Da ${num(V * 100 / q / 60)}.`, UNIS),
-          h('CAU-DESPEJE', limpio(L * q / 60), `Bien pasar a litros, pero de Q = V / t sale t = V ÷ Q, no V × Q: da ${num(L * q / 60)}.`),
-          h('CONV-BASE-100', limpio(s / 100), `Bien t = ${num(s)} s, pero un minuto tiene 60 s, no 100: ${num(s / 100)}.`),
-          h('CONV-L-COMO-CM3', limpio(V / q / 60), `Bien t = V ÷ Q, pero con el volumen en m³ y el caudal en L/s: ${num(V)} m³ no son ${num(V)} L. Da ${num(V / q / 60)}.`),
+          h('CONV-UNIDAD-PEDIDA', s, `Calculaste bien t = V ÷ Q = ${num(s)}, pero eso está en segundos y se piden minutos: falta dividir entre 60.`),
+          h('QU2-litro-como-100-cm3', limpio(V * 100 / q / 60), `La fórmula t = V ÷ Q está bien, pero 1 m³ no son 100 L: son (10 dm)³ = 1000 L. Así sale ${num(V * 100 / q / 60)}.`, UNIS),
+          h('CAU-DESPEJE', limpio(L * q / 60), `Pasar a litros estaba bien, pero de Q = V / t sale t = V ÷ Q, no V × Q, que da ${num(L * q / 60)}.`),
+          h('CONV-BASE-100', limpio(s / 100), `El tiempo está bien, t = ${num(s)} s, pero un minuto tiene 60 s, no 100, y así sale ${num(s / 100)}.`),
+          h('CONV-L-COMO-CM3', limpio(V / q / 60), `La fórmula t = V ÷ Q está bien, pero el volumen está en m³ y el caudal en L/s, y ${num(V)} m³ no son ${num(V)} L. Así sale ${num(V / q / 60)}.`),
         ],
         solucion: [
-          ['El volumen en litros: ', v('k', '1 m³ = (10 dm)³ = 1000 L'), '; ', v('b', `${num(V)} m³`), ` = ${num(L)} L.`],
+          ['Primero se pasa el volumen a litros: ', v('k', '1 m³ = (10 dm)³ = 1000 L'), '; ', v('b', `${num(V)} m³`), ` = ${num(L)} L.`],
           ['De Q = V / t sale t = V ÷ Q: ', `${num(L)} L ÷ `, v('a', `${num(q)} L/s`), ` = ${num(s)} s.`],
-          [`En minutos: ${num(s)} ÷ 60 = `, v('x', `${num(correcta)} min`), '.'],
+          [`Al final se pasa a minutos: ${num(s)} ÷ 60 = `, v('x', `${num(correcta)} min`), '.'],
         ],
         _datos: { tipo: 'caudal', sub, nivel: 3, q, V },
       };
@@ -507,15 +507,15 @@
         pregunta: ['¿Cuánto es en ', v('x', 'metros cúbicos por hora (m³/h)'), '?'],
         datos: [LARGO['m|dm'], LITRO, '1 h = 60 min'], correcta, texto: conU('m³/h'), unidad: 'm³/h',
         errores: [
-          h('QU2-litro-como-100-cm3', limpio(x * 60 / 100), `Bien × 60 por la hora, pero 1 m³ no son 100 L: son (10 dm)³ = 1000 L. Da ${num(x * 60 / 100)}.`, UNIS),
-          h('CONV-UNA-UNIDAD', x * 60, `Bien: en una hora hay 60 min. Pero ${num(x * 60)} son litros por hora; faltan los m³.`),
-          h('CONV-UNA-UNIDAD', limpio(x / 1000), `Bien: ${x} L son ${num(x / 1000)} m³. Pero son m³ por minuto; falta la hora.`),
-          h('CONV-INVERSO', limpio(x * 1000 / 60), `Bien los dos factores, pero los dos al revés: ${x} × 1000 ÷ 60 = ${num(x * 1000 / 60)}.`),
-          h('U3-lineal', limpio(x * 60 / 10), `Bien × 60, pero el 10 de 1 m = 10 dm sin elevar al cubo: un m³ son 1000 L. Da ${num(x * 60 / 10)}.`, TRANS),
+          h('QU2-litro-como-100-cm3', limpio(x * 60 / 100), `Multiplicar por los 60 min de la hora estaba bien, pero 1 m³ no son 100 L: son (10 dm)³ = 1000 L. Así sale ${num(x * 60 / 100)}.`, UNIS),
+          h('CONV-UNA-UNIDAD', x * 60, `Multiplicar por los 60 min de una hora estaba bien, pero ${num(x * 60)} son litros por hora: falta pasar los litros a m³.`),
+          h('CONV-UNA-UNIDAD', limpio(x / 1000), `Pasaste bien ${x} L a ${num(x / 1000)} m³, pero esos son m³ por minuto: falta pasar el minuto a horas.`),
+          h('CONV-INVERSO', limpio(x * 1000 / 60), `Usaste los dos factores, pero los dos al revés: ${x} × 1000 ÷ 60 = ${num(x * 1000 / 60)}.`),
+          h('U3-lineal', limpio(x * 60 / 10), `Multiplicar por 60 estaba bien, pero usaste el 10 de 1 m = 10 dm sin elevarlo al cubo, y un m³ son 1000 L. Así sale ${num(x * 60 / 10)}.`, TRANS),
         ],
         solucion: [
-          ['Dos cambios: los litros a m³ y los minutos a horas.'],
-          ['Un m³ es (10 dm)³ = 1000 dm³: ', v('k', '1 m³ = 1000 L'), '.'],
+          ['Hay dos cambios de unidad: los litros a m³ y los minutos a horas.'],
+          ['Un m³ es (10 dm)³ = 1000 dm³, así que ', v('k', '1 m³ = 1000 L'), '.'],
           [v('d', `${x} L/min`), ' × ', v('k', '(1 m³ / 1000 L)'), ' × ', v('k', '(60 min / 1 h)'), ` = ${x} × 60 ÷ 1000 = `, v('x', `${num(correcta)} m³/h`), '.'],
         ],
         _datos: { tipo: 'caudal', sub, nivel: 2, x },
@@ -530,15 +530,15 @@
       pregunta: ['¿Cuántos ', v('x', 'litros (L)'), ' de agua caen sobre el techo?'],
       datos: [`Lluvia de ${mm} mm: una capa de agua de ${mm} mm de alto`, CAJA, LARGO['m|mm'], LARGO['m|dm'], LITRO], correcta, texto: conU('L'), unidad: 'L',
       errores: [
-        h('CONV-UNIDAD-PEDIDA', m3, `Bien el volumen, ${num(m3)} m³, pero se piden litros: 1 m³ = (10 dm)³ = 1000 L.`),
-        h('CONV-PREFIJO', limpio(m3 * 10000), `Bien la capa de agua, pero ${mm} mm no son ${num(mm / 100)} m: eso sería en cm. Con 1 m = 1000 mm da ${num(m3 * 10000)}.`),
-        h('QU2-litro-como-100-cm3', limpio(m3 * 100), `Bien el volumen, ${num(m3)} m³, pero 1 m³ no son 100 L: son (10 dm)³ = 1000 L. Da ${num(m3 * 100)}.`, UNIS),
-        h('U2-mm', limpio(a * b * mm * 1000), `Bien V = largo × ancho × alto, pero con el alto en mm y lo demás en m: ${a} × ${b} × ${mm} mezcla unidades. Da ${num(a * b * mm * 1000)}.`, TRANS),
+        h('CONV-UNIDAD-PEDIDA', m3, `El volumen está bien, ${num(m3)} m³, pero se piden litros, y 1 m³ = (10 dm)³ = 1000 L.`),
+        h('CONV-PREFIJO', limpio(m3 * 10000), `La idea de la capa de agua es correcta, pero pasaste ${mm} mm a ${num(mm / 100)} m como si fueran centímetros, y así sale ${num(m3 * 10000)}; 1 m = 1000 mm.`),
+        h('QU2-litro-como-100-cm3', limpio(m3 * 100), `El volumen está bien, ${num(m3)} m³, pero 1 m³ no son 100 L: son (10 dm)³ = 1000 L. Así sale ${num(m3 * 100)}.`, UNIS),
+        h('U2-mm', limpio(a * b * mm * 1000), `La fórmula V = largo × ancho × alto está bien, pero el alto está en mm y lo demás en m, así que ${a} × ${b} × ${mm} mezcla unidades. Sale ${num(a * b * mm * 1000)}.`, TRANS),
       ],
       solucion: [
-        ['La lluvia es una capa de agua sobre el techo. Su alto en metros: ', v('b', `${mm} mm`), ` ÷ 1000 = ${num(mm / 1000)} m.`],
+        ['La lluvia es una capa de agua sobre el techo, y su alto se pasa a metros: ', v('b', `${mm} mm`), ` ÷ 1000 = ${num(mm / 1000)} m.`],
         ['V = largo × ancho × alto = ', v('a', `${a} m × ${b} m`), ` × ${num(mm / 1000)} m = ${num(m3)} m³.`],
-        ['En litros: ', v('k', '1 m³ = (10 dm)³ = 1000 L'), `; ${num(m3)} × 1000 = `, v('x', `${num(correcta)} L`), '.'],
+        ['Para pasar a litros, ', v('k', '1 m³ = (10 dm)³ = 1000 L'), `; ${num(m3)} × 1000 = `, v('x', `${num(correcta)} L`), '.'],
       ],
       _datos: { tipo: 'caudal', sub, nivel: 3, mm, a, b },
     };

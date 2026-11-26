@@ -31,7 +31,7 @@
       "enunciado": "Un microondas calienta la leche en 270 s. ¿Cuántos minutos (min) son? Datos: 1 min = 60 s. Alternativas: A) 4,3 min   B) 2,7 min   C) 16 200 min   D) 0,075 min   E) 4,5 min",
       "respuesta": "E) 4,5 min",
       "pasos": [
-        "Un minuto tiene 60 segundos: el minuto es más grande y el número baja.",
+        "Un minuto tiene 60 segundos; como el minuto es más grande, el número baja.",
         "270 s × (1 min / 60 s) = 270 ÷ 60 = 4,5 min.",
         "Comprobación: 4 min son 240 s, y faltan 30 s, que son 0,5 de minuto."
       ]
@@ -42,9 +42,9 @@
       "enunciado": "Una vicuña corre a unos 13 m/s. ¿Cuál es su rapidez en kilómetros por hora (km/h)? Datos: 1 km = 1000 m. 1 h = 3600 s. Alternativas: A) 0,78 km/h   B) 0,013 km/h   C) 46,8 km/h   D) 46 800 km/h   E) 3,611 km/h",
       "respuesta": "C) 46,8 km/h",
       "pasos": [
-        "13 m/s son 13 m en cada segundo. En una hora hay 3600 s y en un km, 1000 m.",
+        "13 m/s son 13 m en cada segundo; una hora tiene 3600 s y un km, 1000 m.",
         "13 m/s × (1 km / 1000 m) × (3600 s / 1 h) = 46 800 km / 1000 h.",
-        "46 800 ÷ 1000 = 46,8 km/h (por 3600 y entre 1000 es lo mismo que por 3,6)."
+        "46 800 ÷ 1000 = 46,8 km/h (multiplicar por 3600 y dividir entre 1000 es lo mismo que multiplicar por 3,6)."
       ]
     },
     {
@@ -54,8 +54,8 @@
       "respuesta": "A) 7 × 10⁻⁶ m",
       "pasos": [
         "El dato ya tiene una sola cifra antes de la coma: 7 μm.",
-        "El factor que vale 1: (1 m / 1 000 000 μm), que es multiplicar por 10⁻⁶.",
-        "Queda 7 × 10⁻⁶ m."
+        "El factor que vale 1 es (1 m / 1 000 000 μm), y usarlo es multiplicar por 10⁻⁶.",
+        "El resultado es 7 × 10⁻⁶ m."
       ]
     },
     {
@@ -65,7 +65,7 @@
       "respuesta": "B) 1,25 h",
       "pasos": [
         "15 min son 15 de los 60 min de una hora: 15/60 = 0,25 h.",
-        "Se suman las horas enteras: 1 h + 0,25 h = 1,25 h."
+        "Después se suman las horas enteras: 1 h + 0,25 h = 1,25 h."
       ]
     },
     {
@@ -75,7 +75,7 @@
       "respuesta": "B) 18 km/h",
       "pasos": [
         "La rapidez es distancia entre tiempo: v = 400 m ÷ 80 s = 5 m/s.",
-        "A km/h, con sus dos factores: 5 m/s × (1 km / 1000 m) × (3600 s / 1 h).",
+        "Luego se pasa a km/h con sus dos factores: 5 m/s × (1 km / 1000 m) × (3600 s / 1 h).",
         "5 × 3600 ÷ 1000 = 18 km/h."
       ]
     },
@@ -85,7 +85,7 @@
       "enunciado": "Un taller de 1 h 30 min se divide en turnos de 18 min cada uno. ¿Cuántos turnos son? Datos: 1 h = 60 min. Alternativas: A) 5   B) 4,333   C) 1,667   D) 0,08333   E) 7,222",
       "respuesta": "A) 5",
       "pasos": [
-        "Todo en minutos: 1 h 30 min = 1 × 60 + 30 = 90 min.",
+        "Primero se pasa todo a minutos: 1 h 30 min = 1 × 60 + 30 = 90 min.",
         "90 min ÷ 18 min = 5."
       ]
     }

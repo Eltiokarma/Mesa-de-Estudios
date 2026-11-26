@@ -154,3 +154,20 @@ test('papel.json: estructura y respuestas recalculadas', () => {
     }
   }
 });
+
+// Verificación de la pasada de redacción (26 nov 2026). La práctica no tiene nodo de exponente: «P^x» y «e^(» se veían con
+// el circunflejo crudo. El verde (c-d) no va en esta unidad (protanopía, cabecera de magnitudes-y-vectores.js). Y el
+// papel, escrito a mano, da sus datos en `datos` y no dentro del enunciado (regla papel-datos).
+test('redacción: sin «^» crudo, sin verde y el papel con sus datos en `datos`', () => {
+  const plano = x => (Array.isArray(x) ? x.map(plano).join(' ') : x && typeof x === 'object' ? String(x.t ?? Object.values(x).map(plano).join(' ')) : String(x ?? ''));
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    const todo = [p.enunciado, p.pregunta, p.solucion, p.lineas, p.alternativas.map(a => [a.texto, a.error && a.error.explicacion])];
+    assert.ok(!plano(todo).includes('^'), `semilla ${s}: ${plano(p.enunciado)}`);
+    for (const [k, v] of Object.entries(p.variables)) assert.notEqual(v.color, 'd', `semilla ${s}: la variable ${k} va en verde`);
+  }
+  for (const p of papel.problemas) {
+    assert.ok(Array.isArray(p.datos) && p.datos.length, `${p.id}: sin datos`);
+    assert.ok(!/\^|\bUsa \[|Ojo:/.test(p.enunciado + p.datos.join(' ')), `${p.id}: ${p.enunciado}`);
+  }
+});

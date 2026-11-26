@@ -164,17 +164,17 @@
     const hacer = sube ? `multiplicar por ${F}` : `dividir entre ${F}`;
     const lug = m => `${m} ${m === 1 ? 'lugar' : 'lugares'}`;
     const errores = [
-      h('CONV-INVERSO', por10(x, -k), `Bien el factor ${F}, pero al revés: ${num(x)} ${opMal} ${F} = ${num(por10(x, -k))}. ${masGrande}`),
+      h('CONV-INVERSO', por10(x, -k), `Usaste el factor ${F}, pero al revés: ${num(x)} ${opMal} ${F} = ${num(por10(x, -k))}. ${masGrande}`),
     ];
     // Un cero menos: el factor de otro prefijo (100 en vez de 1000). Con k = ±1 eso es no convertir.
-    if (n > 1) errores.push(h('CONV-PREFIJO', por10(x, k - dir), `Bien ${sube ? 'multiplicar' : 'dividir'}, pero con ${cifra(n - 1)}: ${num(x)} ${op} ${cifra(n - 1)} = ${num(por10(x, k - dir))}. La equivalencia es ${eqc}.`));
-    else errores.push(h('U2-sin-prefijo', x, `Bien el número, pero sin cambiar de unidad: ${num(x)} ${s.de} no son ${num(x)} ${s.a}. La equivalencia es ${eqc}.`, TRANS));
+    if (n > 1) errores.push(h('CONV-PREFIJO', por10(x, k - dir), `${sube ? 'Multiplicar' : 'Dividir'} estaba bien, pero ${cifra(n - 1)} es el factor de otro prefijo: ${num(x)} ${op} ${cifra(n - 1)} = ${num(por10(x, k - dir))}. La equivalencia es ${eqc}.`));
+    else errores.push(h('U2-sin-prefijo', x, `Dejaste el número sin cambiar, pero ${num(x)} ${s.de} no son ${num(x)} ${s.a}: la equivalencia es ${eqc}.`, TRANS));
     // Un cero de más: con 1000 en vez de 100 (otro prefijo) o la coma corrida un lugar de más.
     errores.push(h(n === 2 ? 'CONV-PREFIJO' : 'CONV-COMA', por10(x, k + dir), n === 2
-      ? `Bien ${sube ? 'multiplicar' : 'dividir'}, pero con 1000, el factor de los milímetros: ${num(x)} ${op} 1000 = ${num(por10(x, k + dir))}. La equivalencia es ${eqc}.`
-      : `Bien la idea de ${hacer}, pero la coma se corrió ${lug(n + 1)}: ${num(por10(x, k + dir))}. Con ${F}, se corre ${lug(n)}.`));
+      ? `${sube ? 'Multiplicar' : 'Dividir'} estaba bien, pero usaste 1000, que es el factor de los milímetros: ${num(x)} ${op} 1000 = ${num(por10(x, k + dir))}. La equivalencia es ${eqc}.`
+      : `La idea de ${hacer} es correcta, pero corriste la coma ${lug(n + 1)} y salió ${num(por10(x, k + dir))}; con ${F}, la coma se corre ${lug(n)}.`));
     // La coma corrida de menos, para que la correcta no quede en un extremo.
-    if (n > 2) errores.push(h('CONV-COMA', por10(x, k - 2 * dir), `Bien la idea de ${hacer}, pero la coma se corrió solo ${lug(n - 2)}: ${num(por10(x, k - 2 * dir))}. Con ${F}, se corre ${lug(n)}.`));
+    if (n > 2) errores.push(h('CONV-COMA', por10(x, k - 2 * dir), `La idea de ${hacer} es correcta, pero corriste la coma solo ${lug(n - 2)} y salió ${num(por10(x, k - 2 * dir))}; con ${F}, la coma se corre ${lug(n)}.`));
     const eq = equiv(s.de, s.a);
     const factor = sube ? `(${F} ${s.a} / 1 ${s.de})` : `(1 ${s.a} / ${F} ${s.de})`;
     return {
@@ -205,12 +205,12 @@
         pregunta: ['¿Cuántos ', v('x', 'segundos (s)'), ' son?'],
         datos: ['1 min = 60 s'], correcta, texto: conU('s'), unidad: 's',
         errores: [
-          h('CONV-BASE-100', x * 100, `Bien multiplicar, pero un minuto tiene 60 segundos, no 100: ${x} × 100 = ${num(x * 100)}.`),
-          h('CONV-INVERSO', x / 60, `Bien el 60, pero al revés: ${x} ÷ 60 = ${num(x / 60)} son horas. El segundo es más chico: el número sube.`),
-          h('CONV-FACTOR-HORA', x * 3600, `Bien multiplicar, pero 3600 es para las horas: ${x} × 3600 = ${num(x * 3600)}. Un minuto tiene 60 s.`),
+          h('CONV-BASE-100', x * 100, `Multiplicar estaba bien, pero un minuto tiene 60 segundos, no 100: ${x} × 100 = ${num(x * 100)}.`),
+          h('CONV-INVERSO', x / 60, `Usaste el 60, pero al revés: ${x} ÷ 60 = ${num(x / 60)} son horas, y como el segundo es más chico que el minuto, el número tiene que subir.`),
+          h('CONV-FACTOR-HORA', x * 3600, `Multiplicar estaba bien, pero 3600 es el factor de las horas: ${x} × 3600 = ${num(x * 3600)}, y un minuto tiene solo 60 s.`),
         ],
         solucion: [
-          ['Un minuto tiene 60 segundos: el segundo es más chico y el número sube.'],
+          ['Un minuto tiene 60 segundos; como el segundo es más chico, el número sube.'],
           [v('d', `${x} min`), ' × ', v('k', '(60 s / 1 min)'), ` = ${x} × 60 = `, v('x', `${num(correcta)} s`), '.'],
         ],
         _datos: { tipo: 'tiempo', sub, nivel: 1, x, de: 'min', a: 's' },
@@ -225,13 +225,13 @@
         pregunta: ['¿Cuántos ', v('x', 'minutos (min)'), ' son?'],
         datos: ['1 min = 60 s'], correcta, texto: conU('min'), unidad: 'min',
         errores: [
-          h('CONV-BASE-100', x / 100, `Bien dividir, pero un minuto tiene 60 segundos, no 100: ${x} ÷ 100 = ${num(x / 100)}.`),
-          h('AU4-hora-decimal', mm + ss / 100, `Bien: son ${mm} min y ${ss} s. Pero ${ss} s no son ${f(ss / 100, 2)} min: son ${ss} de los 60 s de un minuto.`, UNIS),
-          h('CONV-INVERSO', x * 60, `Bien el 60, pero al revés: ${x} × 60 = ${num(x * 60)}. El minuto es más grande: el número baja.`),
-          h('CONV-FACTOR-HORA', x / 3600, `Bien dividir, pero 3600 es para las horas: ${x} ÷ 3600 = ${num(x / 3600)}. Un minuto tiene 60 s.`),
+          h('CONV-BASE-100', x / 100, `Dividir estaba bien, pero un minuto tiene 60 segundos, no 100: ${x} ÷ 100 = ${num(x / 100)}.`),
+          h('AU4-hora-decimal', mm + ss / 100, `Separaste bien ${mm} min y ${ss} s, pero ${ss} s no son ${f(ss / 100, 2)} min: son ${ss} de los 60 s de un minuto.`, UNIS),
+          h('CONV-INVERSO', x * 60, `Usaste el 60, pero al revés: ${x} × 60 = ${num(x * 60)}, y como el minuto es más grande que el segundo, el número tiene que bajar.`),
+          h('CONV-FACTOR-HORA', x / 3600, `Dividir estaba bien, pero 3600 es el factor de las horas: ${x} ÷ 3600 = ${num(x / 3600)}, y un minuto tiene solo 60 s.`),
         ],
         solucion: [
-          ['Un minuto tiene 60 segundos: el minuto es más grande y el número baja.'],
+          ['Un minuto tiene 60 segundos; como el minuto es más grande, el número baja.'],
           [v('d', `${x} s`), ' × ', v('k', '(1 min / 60 s)'), ` = ${x} ÷ 60 = `, v('x', `${num(correcta)} min`), '.'],
           [`Comprobación: ${mm} min son ${mm * 60} s, y faltan ${ss} s, que son ${f(ss / 60, 2)} de minuto.`],
         ],
@@ -247,13 +247,13 @@
         pregunta: ['¿Cuántos ', v('x', 'segundos (s)'), ' son?'],
         datos: ['1 h = 60 min', '1 min = 60 s'], correcta, texto: conU('s'), unidad: 's',
         errores: [
-          h('CONV-UN-FACTOR', x * 60, `Bien el primer paso: ${x} h = ${x * 60} min. Faltó pasar los minutos a segundos (× 60 otra vez).`),
-          h('CONV-BASE-100', x * 10000, `Bien multiplicar dos veces, pero con 100: ${x} × 100 × 100 = ${num(x * 10000)}. Una hora tiene 60 min y un minuto, 60 s.`),
-          h('CONV-INVERSO', x / 3600, `Bien los dos factores, pero al revés: ${x} ÷ 60 ÷ 60 = ${num(x / 3600)}. El segundo es más chico: el número sube.`),
-          h('CONV-SUMA-FACTORES', x * 120, `Bien usar dos veces el 60, pero los factores se multiplican, no se suman: ${x} × (60 + 60) = ${num(x * 120)}.`),
+          h('CONV-UN-FACTOR', x * 60, `El primer paso está bien, ${x} h = ${x * 60} min, pero faltó pasar los minutos a segundos multiplicando otra vez por 60.`),
+          h('CONV-BASE-100', x * 10000, `Multiplicar dos veces estaba bien, pero por 100 y no por 60: ${x} × 100 × 100 = ${num(x * 10000)}. Una hora tiene 60 min y un minuto, 60 s.`),
+          h('CONV-INVERSO', x / 3600, `Usaste los dos factores, pero al revés: ${x} ÷ 60 ÷ 60 = ${num(x / 3600)}, y como el segundo es más chico que la hora, el número tiene que subir.`),
+          h('CONV-SUMA-FACTORES', x * 120, `Usar dos veces el 60 estaba bien, pero los factores se multiplican, no se suman: ${x} × (60 + 60) = ${num(x * 120)}.`),
         ],
         solucion: [
-          ['Dos factores que valen 1: de horas a minutos y de minutos a segundos.'],
+          ['Se usan dos factores que valen 1: uno de horas a minutos y otro de minutos a segundos.'],
           [v('d', `${x} h`), ' × ', v('k', '(60 min / 1 h)'), ' × ', v('k', '(60 s / 1 min)'), ` = ${x} × 60 × 60 = `, v('x', `${num(correcta)} s`), '.'],
         ],
         _datos: { tipo: 'tiempo', sub, nivel: 2, x, de: 'h', a: 's' },
@@ -268,14 +268,14 @@
       pregunta: ['¿Cuántas ', v('x', 'horas (h)'), ' son, escritas con decimales?'],
       datos: ['1 h = 60 min'], correcta, texto: conU('h'), unidad: 'h',
       errores: [
-        h('AU4-hora-decimal', hh + mi / 100, `Bien las ${hh} h, pero ${mi} min no son ${f(mi / 100, 2)} h: son ${mi} de los 60 min de una hora.`, UNIS),
-        h('CONV-BASE-100', (hh * 60 + mi) / 100, `Bien: son ${hh * 60 + mi} min. Pero una hora tiene 60 min, no 100: ${hh * 60 + mi} ÷ 100 = ${num((hh * 60 + mi) / 100)}.`),
-        h('CONV-UNIDAD-PEDIDA', hh * 60 + mi, `Bien: son ${hh * 60 + mi} minutos. Pero se piden horas: falta dividir entre 60.`),
-        h('CONV-INVERSO', hh + 60 / mi, `Bien sumar las ${hh} h, pero la fracción va al revés: ${mi} min son ${mi}/60 de hora, no 60/${mi} = ${num(60 / mi)}.`),
+        h('AU4-hora-decimal', hh + mi / 100, `Las ${hh} h están bien, pero ${mi} min no son ${f(mi / 100, 2)} h: son ${mi} de los 60 min de una hora.`, UNIS),
+        h('CONV-BASE-100', (hh * 60 + mi) / 100, `Pasaste bien todo a minutos, ${hh * 60 + mi} min, pero una hora tiene 60 min, no 100: ${hh * 60 + mi} ÷ 100 = ${num((hh * 60 + mi) / 100)}.`),
+        h('CONV-UNIDAD-PEDIDA', hh * 60 + mi, `Pasaste bien todo a minutos, ${hh * 60 + mi} min, pero se piden horas: falta dividir entre 60.`),
+        h('CONV-INVERSO', hh + 60 / mi, `Sumar las ${hh} h estaba bien, pero la fracción va al revés: ${mi} min son ${mi}/60 de hora, no 60/${mi} = ${num(60 / mi)}.`),
       ],
       solucion: [
         [`${mi} min son ${mi} de los 60 min de una hora: `, v('k', `${mi}/60`), ` = ${f(mi / 60, 2)} h.`],
-        ['Se suman las horas enteras: ', `${hh} h + ${f(mi / 60, 2)} h = `, v('x', `${num(correcta)} h`), '.'],
+        ['Después se suman las horas enteras: ', `${hh} h + ${f(mi / 60, 2)} h = `, v('x', `${num(correcta)} h`), '.'],
       ],
       _datos: { tipo: 'tiempo', sub, nivel: 2, h: hh, min: mi, a: 'h' },
     };
@@ -296,15 +296,15 @@
         pregunta: ['¿Cuál es su rapidez en ', v('x', 'metros por segundo (m/s)'), '?'],
         datos: DATOS_RAPIDEZ, correcta, texto: conU('m/s'), unidad: 'm/s',
         errores: [
-          h('U1-al-reves', x * 3.6, `Bien los factores 1000 y 3600, pero al revés: ${x} × 3,6 = ${num(x * 3.6)}. De km/h a m/s el número baja.`, TRANS),
-          h('CONV-UNA-UNIDAD', x * 1000, `Bien: ${x} km son ${num(x * 1000)} m. Pero son los metros de una hora; falta pasar la hora a segundos.`),
-          h('CONV-UNA-UNIDAD', x / 3600, `Bien: una hora tiene 3600 s. Pero ${num(x / 3600)} son kilómetros por segundo; falta pasar los km a metros.`),
-          h('U6-minutos', x * 1000 / 60, `Bien los km a metros, pero dividiste entre 60: ${num(x * 1000 / 60)} son metros por minuto. Una hora tiene 3600 s.`, TRANS),
+          h('U1-al-reves', x * 3.6, `Usaste los factores 1000 y 3600, pero al revés: ${x} × 3,6 = ${num(x * 3.6)}. De km/h a m/s, el número tiene que bajar.`, TRANS),
+          h('CONV-UNA-UNIDAD', x * 1000, `Pasaste bien ${x} km a ${num(x * 1000)} m, pero esos son los metros de una hora: falta pasar la hora a segundos.`),
+          h('CONV-UNA-UNIDAD', x / 3600, `Dividir entre los 3600 s de una hora estaba bien, pero ${num(x / 3600)} son kilómetros por segundo: falta pasar los km a metros.`),
+          h('U6-minutos', x * 1000 / 60, `Pasaste bien los km a metros, pero dividiste entre 60, y ${num(x * 1000 / 60)} son metros por minuto; una hora tiene 3600 s.`, TRANS),
         ],
         solucion: [
-          [`${x} km/h son ${x} km en cada hora. Se cambian las dos unidades, cada una con su factor.`],
+          [`${x} km/h son ${x} km en cada hora, y se cambian las dos unidades, cada una con su factor.`],
           [v('d', `${x} km/h`), ' × ', v('k', '(1000 m / 1 km)'), ' × ', v('k', '(1 h / 3600 s)'), ` = ${num(x * 1000)} m / 3600 s.`],
-          [`${num(x * 1000)} ÷ 3600 = `, v('x', `${num(correcta)} m/s`), ' (por 1000 y entre 3600 es lo mismo que entre 3,6).'],
+          [`${num(x * 1000)} ÷ 3600 = `, v('x', `${num(correcta)} m/s`), ' (multiplicar por 1000 y dividir entre 3600 es lo mismo que dividir entre 3,6).'],
         ],
         _datos: { tipo: 'rapidez', nivel: 2, x, de: 'km/h', a: 'm/s' },
       };
@@ -316,15 +316,15 @@
       pregunta: ['¿Cuál es su rapidez en ', v('x', 'kilómetros por hora (km/h)'), '?'],
       datos: DATOS_RAPIDEZ, correcta, texto: conU('km/h'), unidad: 'km/h',
       errores: [
-        h('U1-al-reves', x / 3.6, `Bien los factores 1000 y 3600, pero al revés: ${x} ÷ 3,6 = ${num(x / 3.6)}. De m/s a km/h el número sube.`, TRANS),
-        h('CONV-UNA-UNIDAD', x * 3600, `Bien: en una hora hay 3600 s. Pero ${num(x * 3600)} son metros por hora; falta pasar los metros a km.`),
-        h('CONV-UNA-UNIDAD', x / 1000, `Bien: ${x} m son ${num(x / 1000)} km. Pero son km por segundo; falta pasar el segundo a horas.`),
-        h('U6-minutos', limpio(x * 60 / 1000), `Bien los metros a km, pero multiplicaste por 60: ${num(x * 60 / 1000)} son km por minuto. Una hora tiene 3600 s.`, TRANS),
+        h('U1-al-reves', x / 3.6, `Usaste los factores 1000 y 3600, pero al revés: ${x} ÷ 3,6 = ${num(x / 3.6)}. De m/s a km/h, el número tiene que subir.`, TRANS),
+        h('CONV-UNA-UNIDAD', x * 3600, `Multiplicar por los 3600 s de una hora estaba bien, pero ${num(x * 3600)} son metros por hora: falta pasar los metros a km.`),
+        h('CONV-UNA-UNIDAD', x / 1000, `Pasaste bien ${x} m a ${num(x / 1000)} km, pero esos son km por segundo: falta pasar el segundo a horas.`),
+        h('U6-minutos', limpio(x * 60 / 1000), `Pasaste bien los metros a km, pero multiplicaste por 60, y ${num(x * 60 / 1000)} son km por minuto; una hora tiene 3600 s.`, TRANS),
       ],
       solucion: [
-        [`${x} m/s son ${x} m en cada segundo. En una hora hay 3600 s y en un km, 1000 m.`],
+        [`${x} m/s son ${x} m en cada segundo; una hora tiene 3600 s y un km, 1000 m.`],
         [v('d', `${x} m/s`), ' × ', v('k', '(1 km / 1000 m)'), ' × ', v('k', '(3600 s / 1 h)'), ` = ${num(x * 3600)} km / 1000 h.`],
-        [`${num(x * 3600)} ÷ 1000 = `, v('x', `${num(correcta)} km/h`), ' (por 3600 y entre 1000 es lo mismo que por 3,6).'],
+        [`${num(x * 3600)} ÷ 1000 = `, v('x', `${num(correcta)} km/h`), ' (multiplicar por 3600 y dividir entre 1000 es lo mismo que multiplicar por 3,6).'],
       ],
       _datos: { tipo: 'rapidez', nivel: 2, x, de: 'm/s', a: 'km/h' },
     };
@@ -353,12 +353,12 @@
     const sinCero = e => (e === 0 ? NaN : con(e)); // «2 × 10⁰» confunde más de lo que enseña
     const dosPasos = s.de === 'mg';
     const errores = [];
-    if (dosPasos) errores.push(h('U4-gramos', con(E + 3), `Bien de mg a g (entre 1000), pero se piden kilogramos: falta dividir otra vez entre 1000.`, TRANS));
-    errores.push(h('CONV-INVERSO', sinCero(e0 - k), `Bien el factor, pero al revés: ${k > 0 ? 'dividiste' : 'multiplicaste'} y salió ${cient(con(e0 - k))}. El ${s.a === 'm' ? 'metro' : 'kilogramo'} es más ${k > 0 ? 'chico' : 'grande'}: el número tiene que ${k > 0 ? 'subir' : 'bajar'}.`));
-    if (E !== 0) errores.push(h('CONV-EXP-SIGNO', con(-E), `Bien el ${f(m, 3)} y el tamaño del exponente, pero con el signo cambiado. Un número ${E < 0 ? 'menor que 1 lleva exponente negativo' : 'mayor que 10 lleva exponente positivo'}.`));
-    errores.push(h('CONV-COMA', sinCero(E - 1), `Bien el ${f(m, 3)} de adelante, pero el exponente quedó en ${menos(E - 1)} y no en ${menos(E)}: cuenta otra vez cuántos lugares se corre la coma.`));
-    if (!dosPasos) errores.push(h('U2-sin-prefijo', sinCero(e0), `Bien la notación científica, pero sin cambiar de unidad: ${cient(con(e0))} es la medida en ${s.de}, no en ${s.a}.`, TRANS));
-    errores.push(h('CONV-COMA', sinCero(E + 1), `Bien el ${f(m, 3)} de adelante, pero el exponente quedó en ${menos(E + 1)} y no en ${menos(E)}: cuenta otra vez cuántos lugares se corre la coma.`));
+    if (dosPasos) errores.push(h('U4-gramos', con(E + 3), `Pasaste bien de mg a g, dividiendo entre 1000, pero se piden kilogramos: falta dividir otra vez entre 1000.`, TRANS));
+    errores.push(h('CONV-INVERSO', sinCero(e0 - k), `Usaste el factor, pero al revés: ${k > 0 ? 'dividiste' : 'multiplicaste'} y salió ${cient(con(e0 - k))}. Como el ${s.a === 'm' ? 'metro' : 'kilogramo'} es más ${k > 0 ? 'chico' : 'grande'}, el número tiene que ${k > 0 ? 'subir' : 'bajar'}.`));
+    if (E !== 0) errores.push(h('CONV-EXP-SIGNO', con(-E), `El ${f(m, 3)} y el tamaño del exponente están bien, pero el signo está cambiado: un número ${E < 0 ? 'menor que 1 lleva exponente negativo' : 'mayor que 10 lleva exponente positivo'}.`));
+    errores.push(h('CONV-COMA', sinCero(E - 1), `El ${f(m, 3)} de adelante está bien, pero el exponente quedó en ${menos(E - 1)} y no en ${menos(E)}: cuenta otra vez cuántos lugares se corre la coma.`));
+    if (!dosPasos) errores.push(h('U2-sin-prefijo', sinCero(e0), `La notación científica está bien, pero no cambiaste de unidad: ${cient(con(e0))} es la medida en ${s.de}, no en ${s.a}.`, TRANS));
+    errores.push(h('CONV-COMA', sinCero(E + 1), `El ${f(m, 3)} de adelante está bien, pero el exponente quedó en ${menos(E + 1)} y no en ${menos(E)}: cuenta otra vez cuántos lugares se corre la coma.`));
     const datos = s.de === 'μm' ? [equiv('m', 'μm'), NOTA, POT] : s.de === 'mm' ? [equiv('m', 'mm'), NOTA, POT]
       : s.de === 'km' ? [equiv('km', 'm'), NOTA, POT] : [equiv('kg', 'g'), equiv('g', 'mg'), NOTA, POT];
     const fx = s.x >= 1e4 ? f(s.x, 0) : num(s.x);
@@ -372,10 +372,10 @@
       errores,
       solucion: [
         e0 === 0 ? ['El dato ya tiene una sola cifra antes de la coma: ', v('d', `${fx} ${s.de}`), '.']
-          : ['Primero el dato en notación científica: ', v('d', `${fx} ${s.de} = ${cient(s.x)} ${s.de}`), '.'],
-        ['El factor que vale 1: ', v('k', factor[0]), `, que es multiplicar por ${factor[1]}.`],
-        e0 === 0 ? null : [`${cient(s.x)} × ${factor[1]}: los exponentes se suman, ${menos(e0)} + ${par(k)} = ${menos(E)}.`],
-        ['Queda ', v('x', `${cient(correcta)} ${s.a}`), '.'],
+          : ['Primero se escribe el dato en notación científica: ', v('d', `${fx} ${s.de} = ${cient(s.x)} ${s.de}`), '.'],
+        ['El factor que vale 1 es ', v('k', factor[0]), `, y usarlo es multiplicar por ${factor[1]}.`],
+        e0 === 0 ? null : [`Al multiplicar ${cient(s.x)} × ${factor[1]}, los exponentes se suman: ${menos(e0)} + ${par(k)} = ${menos(E)}.`],
+        ['El resultado es ', v('x', `${cient(correcta)} ${s.a}`), '.'],
       ].filter(Boolean),
       _datos: { tipo: 'notacion', nivel: 2, x: s.x, de: s.de, a: s.a },
     };
@@ -399,27 +399,27 @@
       let errores;
       if (c.a === 'm/s') {
         errores = [
-          h('CONV-SIN-CAMBIAR', c.d / c.t, `Bien v = d / t: ${c.d} ÷ ${c.t} = ${num(c.d / c.t)}. Pero son km por minuto; faltan los dos cambios de unidad.`),
-          h('CONV-UNA-UNIDAD', c.d * 1000 / c.t, `Bien los km a metros: ${num(c.d * 1000)} m. Pero ${num(c.d * 1000 / c.t)} son metros por minuto; faltan los segundos.`),
-          h('CONV-BASE-100', c.d * 1000 / (c.t * 100), `Bien los dos cambios, pero un minuto tiene 60 s, no 100: ${num(c.d * 1000)} ÷ ${num(c.t * 100)} = ${num(c.d * 1000 / (c.t * 100))}.`),
-          h('CONV-RAPIDEZ-AL-REVES', c.t * 60 / (c.d * 1000), `Bien pasar a metros y segundos, pero la rapidez es distancia entre tiempo, no al revés: ${num(c.t * 60 / (c.d * 1000))}.`),
+          h('CONV-SIN-CAMBIAR', c.d / c.t, `La fórmula v = d / t está bien, pero ${c.d} ÷ ${c.t} = ${num(c.d / c.t)} son km por minuto: faltan los dos cambios de unidad.`),
+          h('CONV-UNA-UNIDAD', c.d * 1000 / c.t, `Pasaste bien los km a metros, ${num(c.d * 1000)} m, pero ${num(c.d * 1000 / c.t)} son metros por minuto: falta pasar los minutos a segundos.`),
+          h('CONV-BASE-100', c.d * 1000 / (c.t * 100), `Hacer los dos cambios de unidad estaba bien, pero un minuto tiene 60 s, no 100: ${num(c.d * 1000)} ÷ ${num(c.t * 100)} = ${num(c.d * 1000 / (c.t * 100))}.`),
+          h('CONV-RAPIDEZ-AL-REVES', c.t * 60 / (c.d * 1000), `Pasaste bien a metros y segundos, pero la rapidez es distancia entre tiempo, no tiempo entre distancia, que da ${num(c.t * 60 / (c.d * 1000))}.`),
         ];
       } else {
         errores = [
-          h('CONV-UNIDAD-PEDIDA', ms, `Bien v = d / t = ${num(ms)}. Pero eso está en m/s y se piden km/h: falta el cambio de unidad.`),
-          h('U1-al-reves', ms / 3.6, `Bien v = ${num(ms)} m/s, pero el cambio va al revés: ${num(ms)} ÷ 3,6 = ${num(ms / 3.6)}. De m/s a km/h el número sube.`, TRANS),
-          h('CONV-UNA-UNIDAD', ms * 3600, `Bien: una hora tiene 3600 s. Pero ${num(ms * 3600)} son metros por hora; faltan los km.`),
-          h('U6-minutos', limpio(ms * 60), `Bien v = ${num(ms)} m/s, pero por 60 da ${num(ms * 60)} metros por minuto. Se piden km/h.`, TRANS),
+          h('CONV-UNIDAD-PEDIDA', ms, `Calculaste bien v = d / t = ${num(ms)}, pero eso está en m/s y se piden km/h: falta el cambio de unidad.`),
+          h('U1-al-reves', ms / 3.6, `Calculaste bien v = ${num(ms)} m/s, pero el cambio va al revés: ${num(ms)} ÷ 3,6 = ${num(ms / 3.6)}. De m/s a km/h, el número sube.`, TRANS),
+          h('CONV-UNA-UNIDAD', ms * 3600, `Multiplicar por los 3600 s de una hora estaba bien, pero ${num(ms * 3600)} son metros por hora: falta pasar los metros a km.`),
+          h('U6-minutos', limpio(ms * 60), `Calculaste bien v = ${num(ms)} m/s, pero al multiplicar por 60 salen ${num(ms * 60)} metros por minuto, y se piden km/h.`, TRANS),
         ];
       }
       const fd = `${num(c.d)} ${c.ud}`, ft = `${num(c.t)} ${c.ut}`;
       const solucion = c.a === 'm/s' ? [
-        ['Todo a metros y segundos: ', v('d', fd), ` = ${num(c.d * 1000)} m y `, v('d', ft), ` = ${num(c.t)} × 60 = ${num(c.t * 60)} s.`],
+        ['Primero se pasa todo a metros y segundos: ', v('d', fd), ` = ${num(c.d * 1000)} m y `, v('d', ft), ` = ${num(c.t)} × 60 = ${num(c.t * 60)} s.`],
         ['La rapidez es distancia entre tiempo: v = d / t.'],
         [`v = ${num(c.d * 1000)} m ÷ ${num(c.t * 60)} s = `, v('x', `${num(correcta)} m/s`), '.'],
       ] : [
         ['La rapidez es distancia entre tiempo: ', `v = `, v('d', fd), ' ÷ ', v('d', ft), ` = ${num(ms)} m/s.`],
-        ['A km/h, con sus dos factores: ', `${num(ms)} m/s × `, v('k', '(1 km / 1000 m)'), ' × ', v('k', '(3600 s / 1 h)'), '.'],
+        ['Luego se pasa a km/h con sus dos factores: ', `${num(ms)} m/s × `, v('k', '(1 km / 1000 m)'), ' × ', v('k', '(3600 s / 1 h)'), '.'],
         [`${num(ms)} × 3600 ÷ 1000 = `, v('x', `${num(correcta)} km/h`), '.'],
       ];
       return {
@@ -444,26 +444,26 @@
     if (c.de === 'm/min') {
       correcta = limpio(c.x * 60 / 1000);
       errores = [
-        h('CONV-UNA-UNIDAD', c.x * 60, `Bien: en una hora hay 60 min. Pero ${num(c.x * 60)} son metros por hora; faltan los km.`),
-        h('CONV-UNA-UNIDAD', c.x / 1000, `Bien: ${c.x} m son ${num(c.x / 1000)} km. Pero son km por minuto; falta la hora.`),
-        h('U1-al-reves', limpio(c.x * 3.6), `Bien pensar en el 3,6, pero ese factor es para m/s, no para m/min: ${c.x} × 3,6 = ${num(c.x * 3.6)}.`, TRANS),
-        h('CONV-INVERSO', c.x * 1000 / 60, `Bien los dos factores, pero los dos al revés: ${c.x} × 1000 ÷ 60 = ${num(c.x * 1000 / 60)}.`),
+        h('CONV-UNA-UNIDAD', c.x * 60, `Multiplicar por los 60 min de una hora estaba bien, pero ${num(c.x * 60)} son metros por hora: falta pasar los metros a km.`),
+        h('CONV-UNA-UNIDAD', c.x / 1000, `Pasaste bien ${c.x} m a ${num(c.x / 1000)} km, pero esos son km por minuto: falta pasar el minuto a horas.`),
+        h('U1-al-reves', limpio(c.x * 3.6), `Pensar en el 3,6 tiene sentido, pero ese factor es para m/s, no para m/min: ${c.x} × 3,6 = ${num(c.x * 3.6)}.`, TRANS),
+        h('CONV-INVERSO', c.x * 1000 / 60, `Usaste los dos factores, pero los dos al revés: ${c.x} × 1000 ÷ 60 = ${num(c.x * 1000 / 60)}.`),
       ];
       solucion = [
-        [`${c.x} m/min son ${c.x} m en cada minuto. Una hora tiene 60 min y un km, 1000 m.`],
+        [`${c.x} m/min son ${c.x} m en cada minuto; una hora tiene 60 min y un km, 1000 m.`],
         [v('d', `${c.x} m/min`), ' × ', v('k', '(1 km / 1000 m)'), ' × ', v('k', '(60 min / 1 h)'), ` = ${num(c.x * 60)} km / 1000 h.`],
         [`${num(c.x * 60)} ÷ 1000 = `, v('x', `${num(correcta)} km/h`), '.'],
       ];
     } else {
       correcta = limpio(c.x * 1000 / 60);
       errores = [
-        h('CONV-UNA-UNIDAD', c.x * 1000, `Bien: ${c.x} km son ${num(c.x * 1000)} m. Pero son metros por hora; falta pasar la hora a minutos.`),
-        h('CONV-UNA-UNIDAD', c.x / 60, `Bien: una hora tiene 60 min. Pero ${num(c.x / 60)} son km por minuto; faltan los metros.`),
-        h('U6-minutos', c.x / 3.6, `Bien los km a metros, pero entre 3600 da metros por segundo: ${num(c.x / 3.6)}. Se piden metros por minuto.`, TRANS),
-        h('CONV-INVERSO', limpio(c.x * 60 / 1000), `Bien los dos factores, pero los dos al revés: ${c.x} × 60 ÷ 1000 = ${num(c.x * 60 / 1000)}.`),
+        h('CONV-UNA-UNIDAD', c.x * 1000, `Pasaste bien ${c.x} km a ${num(c.x * 1000)} m, pero esos son metros por hora: falta pasar la hora a minutos.`),
+        h('CONV-UNA-UNIDAD', c.x / 60, `Dividir entre los 60 min de una hora estaba bien, pero ${num(c.x / 60)} son km por minuto: falta pasar los km a metros.`),
+        h('U6-minutos', c.x / 3.6, `Pasaste bien los km a metros, pero al dividir entre 3600 salen ${num(c.x / 3.6)} metros por segundo, y se piden metros por minuto.`, TRANS),
+        h('CONV-INVERSO', limpio(c.x * 60 / 1000), `Usaste los dos factores, pero los dos al revés: ${c.x} × 60 ÷ 1000 = ${num(c.x * 60 / 1000)}.`),
       ];
       solucion = [
-        [`${c.x} km/h son ${c.x} km en cada hora. Un km tiene 1000 m y una hora, 60 min.`],
+        [`${c.x} km/h son ${c.x} km en cada hora; un km tiene 1000 m y una hora, 60 min.`],
         [v('d', `${c.x} km/h`), ' × ', v('k', '(1000 m / 1 km)'), ' × ', v('k', '(1 h / 60 min)'), ` = ${num(c.x * 1000)} m / 60 min.`],
         [`${num(c.x * 1000)} ÷ 60 = `, v('x', `${num(correcta)} m/min`), '.'],
       ];
@@ -494,13 +494,13 @@
         pregunta: ['¿', v('x', 'Cuántas veces'), ` más rápido va ${el(A[1])}?`],
         datos: DATOS_RAPIDEZ, correcta, texto: x => num(x), unidad: '',
         errores: [
-          h('U1-sin-convertir', limpio(A[0] / B[0]), `Bien dividir una rapidez entre la otra, pero sin pasarlas a la misma unidad: ${A[0]} ÷ ${B[0]} = ${num(A[0] / B[0])}.`, TRANS),
-          h('U1-al-reves', limpio(A[0] * 3.6 / B[0]), `Bien igualar las unidades, pero el cambio va al revés: ${A[0]} × 3,6 = ${num(A[0] * 3.6)} no son m/s. Da ${num(A[0] * 3.6 / B[0])}.`, TRANS),
-          h('CONV-COCIENTE-AL-REVES', limpio(B[0] / enMs), `Bien pasar a m/s (${num(enMs)} m/s), pero dividiste la menor entre la mayor: ${num(B[0] / enMs)} es una fracción.`),
-          h('CONV-UNA-UNIDAD', limpio(A[0] * 1000 / B[0]), `Bien los km a metros, pero faltó pasar la hora a segundos: ${num(A[0] * 1000)} ÷ ${B[0]} = ${num(A[0] * 1000 / B[0])}.`),
+          h('U1-sin-convertir', limpio(A[0] / B[0]), `Dividir una rapidez entre la otra estaba bien, pero antes hay que pasarlas a la misma unidad: ${A[0]} ÷ ${B[0]} = ${num(A[0] / B[0])}.`, TRANS),
+          h('U1-al-reves', limpio(A[0] * 3.6 / B[0]), `Igualar las unidades estaba bien, pero el cambio va al revés: ${A[0]} × 3,6 = ${num(A[0] * 3.6)} no son m/s, y así sale ${num(A[0] * 3.6 / B[0])}.`, TRANS),
+          h('CONV-COCIENTE-AL-REVES', limpio(B[0] / enMs), `Pasaste bien a m/s, ${num(enMs)} m/s, pero dividiste la rapidez menor entre la mayor, y ${num(B[0] / enMs)} es una fracción.`),
+          h('CONV-UNA-UNIDAD', limpio(A[0] * 1000 / B[0]), `Pasaste bien los km a metros, pero faltó pasar la hora a segundos: ${num(A[0] * 1000)} ÷ ${B[0]} = ${num(A[0] * 1000 / B[0])}.`),
         ],
         solucion: [
-          ['Para comparar, las dos rapideces en la misma unidad. ', v('a', `${A[0]} km/h`), ' a m/s, con 1000 m / 1 km y 1 h / 3600 s:'],
+          ['Para comparar, las dos rapideces deben estar en la misma unidad, así que se pasa ', v('a', `${A[0]} km/h`), ' a m/s, con 1000 m / 1 km y 1 h / 3600 s:'],
           [`${A[0]} × 1000 ÷ 3600 = ${num(enMs)} m/s.`],
           [`${num(enMs)} m/s ÷ `, v('b', `${B[0]} m/s`), ' = ', v('x', num(correcta)), ': las unidades se tachan y queda un número.'],
         ],
@@ -516,14 +516,14 @@
         pregunta: [`¿Cuánto más rápido va ${el(A[1])}, en `, v('x', 'metros por segundo (m/s)'), '?'],
         datos: DATOS_RAPIDEZ, correcta, texto: conU('m/s'), unidad: 'm/s',
         errores: [
-          h('U1-sin-convertir', A[0] - B[0], `Bien restar, pero ${A[0]} está en km/h y ${B[0]} en m/s: ${A[0]} − ${B[0]} = ${A[0] - B[0]} mezcla unidades.`, TRANS),
-          h('CONV-RESTA-SIN-CONVERTIR', limpio((A[0] - B[0]) / 3.6), `Bien el cambio con 3,6, pero se aplicó a la resta: (${A[0]} − ${B[0]}) ÷ 3,6 = ${num((A[0] - B[0]) / 3.6)}. Solo ${A[0]} está en km/h.`),
-          h('U1-al-reves', limpio(A[0] * 3.6 - B[0]), `Bien pasar antes de restar, pero al revés: ${A[0]} × 3,6 = ${num(A[0] * 3.6)} no son m/s.`, TRANS),
-          h('CONV-DOS-VECES', limpio((enMs - B[0]) / 3.6), `Bien la resta en m/s, ${num(enMs - B[0])} m/s; pero después la dividiste otra vez entre 3,6: ${num((enMs - B[0]) / 3.6)}.`),
-          h('CONV-SUMA', limpio(enMs + B[0]), `Bien pasar a m/s (${num(enMs)} m/s), pero se pide cuánto más: es una resta, no una suma.`),
+          h('U1-sin-convertir', A[0] - B[0], `Restar estaba bien, pero ${A[0]} está en km/h y ${B[0]} en m/s, así que ${A[0]} − ${B[0]} = ${A[0] - B[0]} mezcla unidades.`, TRANS),
+          h('CONV-RESTA-SIN-CONVERTIR', limpio((A[0] - B[0]) / 3.6), `El cambio con 3,6 estaba bien, pero lo aplicaste a la resta: (${A[0]} − ${B[0]}) ÷ 3,6 = ${num((A[0] - B[0]) / 3.6)}, y solo ${A[0]} está en km/h.`),
+          h('U1-al-reves', limpio(A[0] * 3.6 - B[0]), `Pasar a m/s antes de restar estaba bien, pero el cambio va al revés: ${A[0]} × 3,6 = ${num(A[0] * 3.6)} no son m/s.`, TRANS),
+          h('CONV-DOS-VECES', limpio((enMs - B[0]) / 3.6), `La resta en m/s estaba bien, ${num(enMs - B[0])} m/s, pero después la dividiste otra vez entre 3,6 y salió ${num((enMs - B[0]) / 3.6)}.`),
+          h('CONV-SUMA', limpio(enMs + B[0]), `Pasaste bien a m/s, ${num(enMs)} m/s, pero se pide cuánto más rápido va: es una resta, no una suma.`),
         ],
         solucion: [
-          ['Antes de restar, las dos en m/s. ', v('a', `${A[0]} km/h`), ` × 1000 ÷ 3600 = ${num(enMs)} m/s.`],
+          ['Antes de restar, las dos rapideces se pasan a m/s: ', v('a', `${A[0]} km/h`), ` × 1000 ÷ 3600 = ${num(enMs)} m/s.`],
           [`${num(enMs)} m/s − `, v('b', `${B[0]} m/s`), ' = ', v('x', `${num(correcta)} m/s`), '.'],
         ],
         _datos: { tipo: 'comparar', sub, nivel: 3, a: A[0], ua: 'km/h', b: B[0], ub: 'm/s' },
@@ -546,13 +546,13 @@
       ta = `${hh} h ${mi} min`;
       correcta = total / c.b;
       errores = [
-        h('CONV-BASE-100', (hh * 100 + mi) / c.b, `Bien pasar a minutos, pero una hora tiene 60 min, no 100: ${hh * 100 + mi} ÷ ${c.b} = ${num((hh * 100 + mi) / c.b)}.`),
-        h('AU4-hora-decimal', limpio((hh + mi / 100) * 60 / c.b), `Bien multiplicar por 60, pero ${ta} no son ${f(hh + mi / 100, 2)} h: son ${f(hh + mi / 60, 2)} h.`, UNIS),
-        h('CONV-SOLO-HORAS', mi / c.b, `Bien dividir minutos entre minutos, pero ${hh === 1 ? 'faltó la hora: son 60 min más' : `faltaron las ${hh} h: son ${hh * 60} min más`}.`),
-        h('U6-minutos', limpio((hh + mi / 60) / c.b), `Bien: son ${f(hh + mi / 60, 2)} h. Pero dividir horas entre minutos mezcla unidades: ${num((hh + mi / 60) / c.b)}.`, TRANS),
+        h('CONV-BASE-100', (hh * 100 + mi) / c.b, `Pasar a minutos estaba bien, pero una hora tiene 60 min, no 100: ${hh * 100 + mi} ÷ ${c.b} = ${num((hh * 100 + mi) / c.b)}.`),
+        h('AU4-hora-decimal', limpio((hh + mi / 100) * 60 / c.b), `Multiplicar por 60 estaba bien, pero ${ta} no son ${f(hh + mi / 100, 2)} h: son ${f(hh + mi / 60, 2)} h.`, UNIS),
+        h('CONV-SOLO-HORAS', mi / c.b, `Dividir minutos entre minutos estaba bien, pero ${hh === 1 ? 'faltó la hora: son 60 min más' : `faltaron las ${hh} h: son ${hh * 60} min más`}.`),
+        h('U6-minutos', limpio((hh + mi / 60) / c.b), `Pasaste bien el tiempo a ${f(hh + mi / 60, 2)} h, pero dividir horas entre minutos mezcla unidades y da ${num((hh + mi / 60) / c.b)}.`, TRANS),
       ];
       solucion = [
-        ['Todo en minutos: ', v('a', ta), ` = ${hh} × 60 + ${mi} = ${total} min.`],
+        ['Primero se pasa todo a minutos: ', v('a', ta), ` = ${hh} × 60 + ${mi} = ${total} min.`],
         [`${total} min ÷ `, v('b', tb), ' = ', v('x', num(correcta)), '.'],
       ];
     } else {
@@ -561,13 +561,13 @@
       ta = `${num(c.a)} ${c.ua}`;
       correcta = limpio(grande / c.b);
       errores = [
-        h(c.ua === 'kg' ? 'U4-gramos' : 'U2-sin-prefijo', limpio(c.a / c.b), `Bien dividir, pero ${num(c.a)} está en ${c.ua} y ${num(c.b)} en ${c.ub}: ${num(c.a)} ÷ ${c.b} = ${num(c.a / c.b)}.`, TRANS),
-        h('CONV-PREFIJO', limpio(por10(c.a, 2) / c.b), `Bien pasar a ${c.ub}, pero con 100: ${num(por10(c.a, 2))} ÷ ${c.b} = ${num(por10(c.a, 2) / c.b)}. La equivalencia es ${c.eq[0]}.`),
-        h('CONV-COCIENTE-AL-REVES', limpio(c.b / grande), `Bien pasar a ${c.ub} (${num(grande)} ${c.ub}), pero dividiste la menor entre la mayor.`),
-        h('CONV-COMA', limpio(por10(c.a, 4) / c.b), `Bien pasar a ${c.ub}, pero con un cero de más: ${num(por10(c.a, 4))} ÷ ${c.b} = ${num(por10(c.a, 4) / c.b)}.`),
+        h(c.ua === 'kg' ? 'U4-gramos' : 'U2-sin-prefijo', limpio(c.a / c.b), `Dividir estaba bien, pero ${num(c.a)} está en ${c.ua} y ${num(c.b)} en ${c.ub}, así que ${num(c.a)} ÷ ${c.b} = ${num(c.a / c.b)} mezcla unidades.`, TRANS),
+        h('CONV-PREFIJO', limpio(por10(c.a, 2) / c.b), `Pasar a ${c.ub} estaba bien, pero multiplicaste por 100: ${num(por10(c.a, 2))} ÷ ${c.b} = ${num(por10(c.a, 2) / c.b)}. La equivalencia es ${c.eq[0]}.`),
+        h('CONV-COCIENTE-AL-REVES', limpio(c.b / grande), `Pasaste bien a ${c.ub}, ${num(grande)} ${c.ub}, pero dividiste la cantidad menor entre la mayor.`),
+        h('CONV-COMA', limpio(por10(c.a, 4) / c.b), `Pasar a ${c.ub} estaba bien, pero pusiste un cero de más: ${num(por10(c.a, 4))} ÷ ${c.b} = ${num(por10(c.a, 4) / c.b)}.`),
       ];
       solucion = [
-        ['Las dos cantidades en la misma unidad. ', v('a', ta), ` = ${num(c.a)} × 1000 = ${num(grande)} ${c.ub}.`],
+        ['Primero, las dos cantidades se pasan a la misma unidad: ', v('a', ta), ` = ${num(c.a)} × 1000 = ${num(grande)} ${c.ub}.`],
         [`${num(grande)} ${c.ub} ÷ `, v('b', tb), ' = ', v('x', num(correcta)), ': las unidades se tachan.'],
       ];
     }
