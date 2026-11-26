@@ -28,3 +28,4 @@ contra los límites semanales de los planes.
 | trigonometria.reduccion-al-primer-cuadrante | lector en frío A (ideas 1–3) | 127 516 | 2 min 36 s | 34 herramientas |
 | razonamiento-verbal.cohesion-y-coherencia | auditoría y correcciones (cierre) | 328 158 | 30 min | 110 herramientas |
 | fisica.impulso-y-choques | redactor (Escribidor Escribano) | 424 129 | 33 min | 117 herramientas |
+| quimica.reacciones-y-balance | lector en frío A (ideas 1–3) | 125 990 | 2 min 16 s | 33 herramientas |
