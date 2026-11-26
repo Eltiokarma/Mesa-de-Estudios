@@ -9,8 +9,8 @@
       "enunciado": "Sobre un trineo de arena de 5 kg, en un piso liso, tú lo empujas con 40 N hacia la derecha y tu amigo con 30 N hacia la izquierda. ¿Cuánto acelera? Datos: Segunda ley: ΣF = m · a, con las fuerzas sumadas con su sentido. Alternativas: A) 2 m/s²   B) 14 m/s²   C) 50 m/s²   D) 0,5 m/s²   E) 8 m/s²",
       "respuesta": "A) 2 m/s²",
       "pasos": [
-        "La fuerza neta: 40 − 30 = 10 N, a la derecha.",
-        "Entre la masa: a = 10 ÷ 5 = 2 m/s²."
+        "Las fuerzas se oponen, así que se restan y gana la mayor; la fuerza neta es 40 − 30 = 10 N, a la derecha.",
+        "Esa fuerza neta, dividida entre la masa, da la aceleración: a = 10 ÷ 5 = 2 m/s²."
       ]
     },
     {
@@ -19,8 +19,8 @@
       "enunciado": "Un saco de quinua pesa 90 N en la Tierra. ¿Cuánto pesa en la Luna? Datos: Peso: P = m · g, con g = 10 m/s² en la Tierra (convención del examen). g en la Luna: unos 1,6 m/s²; en Marte: unos 3,7 m/s². Alternativas: A) 90 N   B) 9 N   C) 14,4 N   D) 144 N   E) 56,25 N",
       "respuesta": "C) 14,4 N",
       "pasos": [
-        "Su masa: m = 90 ÷ 10 = 9 kg.",
-        "En la Luna: P = 9 · 1,6 = 14,4 N."
+        "La masa no cambia de lugar, así que primero se saca con la g de la Tierra: m = 90 ÷ 10 = 9 kg.",
+        "Esa misma masa, con la g de la Luna, da el peso allá: P = 9 · 1,6 = 14,4 N."
       ]
     },
     {
@@ -29,8 +29,8 @@
       "enunciado": "Jalas con una cuerda horizontal un costal de papas de 50 kg que ya desliza. La cuerda jala con 120 N y entre el piso y él, μ_k = 0,2. ¿Cuánto acelera? Datos: Peso: P = m · g, con g = 10 m/s² en la Tierra (convención del examen). Rozamiento cinético: f_k = μ_k · N mientras desliza, contra el deslizamiento. Segunda ley: ΣF = m · a, con las fuerzas sumadas con su sentido. Alternativas: A) 4,4 m/s²   B) 0,4 m/s²   C) 2,4 m/s²   D) 2,2 m/s²   E) 2 m/s²",
       "respuesta": "B) 0,4 m/s²",
       "pasos": [
-        "El rozamiento: f_k = 0,2 · 500 = 100 N.",
-        "Lo que sobra, entre la masa: a = (120 − 100) ÷ 50 = 0,4 m/s²."
+        "La cuerda es horizontal, así que la normal iguala al peso, y el rozamiento es μ_k por esa normal: f_k = 0,2 · 500 = 100 N.",
+        "El jalón le gana al rozamiento; lo que sobra, dividido entre la masa, da la aceleración: a = (120 − 100) ÷ 50 = 0,4 m/s²."
       ]
     },
     {
@@ -39,8 +39,8 @@
       "enunciado": "En una máquina de Atwood cuelgan 9 kg de un lado y 1 kg del otro, y se sueltan. ¿Con qué fuerza jala la cuerda? Datos: Peso: P = m · g, con g = 10 m/s² en la Tierra (convención del examen). Unidos por una cuerda tensa: la misma aceleración; para el sistema, ΣF de afuera = (m₁ + m₂) · a. Para un solo bloque: ΣF sobre él = m · a. Una cuerda ideal jala con la misma tensión T en sus dos puntas. Alternativas: A) 90 N   B) 10 N   C) 18 N   D) 50 N   E) 8 N",
       "respuesta": "C) 18 N",
       "pasos": [
-        "La aceleración: a = (90 − 10) ÷ (9 + 1) = 8 m/s².",
-        "El liviano sube acelerando: T = 1 · (10 + 8) = 18 N."
+        "Primero, la aceleración del sistema: la diferencia de pesos entre la masa total, a = (90 − 10) ÷ (9 + 1) = 8 m/s².",
+        "Después, el DCL del liviano: sube acelerando, así que la cuerda jala su peso más su masa por la aceleración: T = 1 · (10 + 8) = 18 N."
       ]
     },
     {
@@ -49,8 +49,8 @@
       "enunciado": "Una persona de 60 kg está sobre una balanza en un ascensor que baja y frena con 1 m/s². ¿Cuánto marca la balanza? Datos: Peso: P = m · g, con g = 10 m/s² en la Tierra (convención del examen). Sobre la persona o el bloque: lo de arriba menos lo de abajo = m · a. Hacia arriba es positivo: a > 0 si la aceleración apunta hacia arriba. Alternativas: A) 60 N   B) 660 N   C) 540 N   D) 600 N",
       "respuesta": "B) 660 N",
       "pasos": [
-        "Baja y frena: la aceleración apunta hacia arriba, a = +1 m/s².",
-        "N = 60 · (10 + 1) = 660 N."
+        "Baja y frena, así que la aceleración apunta hacia arriba: con hacia arriba positivo, a = +1 m/s².",
+        "La balanza marca la normal, el peso más la masa por esa aceleración con su signo: N = 60 · (10 + 1) = 660 N."
       ]
     },
     {
@@ -59,8 +59,8 @@
       "enunciado": "Un auto de 800 kg pasa por la cima de una loma de 50 m de radio a 5 m/s. ¿Con qué fuerza lo empuja la pista? Datos: Peso: P = m · g, con g = 10 m/s² en la Tierra (convención del examen). Aceleración centrípeta: a_c = v² / r = ω² · r, hacia el centro. En una curva: la suma de fuerzas hacia el centro = m · a_c. Alternativas: A) 8 000 N   B) 7 600 N   C) 400 N   D) 8 400 N",
       "respuesta": "B) 7 600 N",
       "pasos": [
-        "a_c = 5² ÷ 50 = 0,5 m/s², hacia el centro: abajo.",
-        "El peso le gana a la normal: N = 800 · (10 − 0,5) = 7 600 N."
+        "En la cima, el centro de la curva está abajo, y la aceleración centrípeta apunta hacia allá: a_c = 5² ÷ 50 = 0,5 m/s².",
+        "El peso apunta al centro y la normal se aleja, así que el peso le gana a la normal: N = 800 · (10 − 0,5) = 7 600 N."
       ]
     },
     {
@@ -69,8 +69,8 @@
       "enunciado": "Un bloque de 10 kg desliza jalado con 100 N por una cuerda a 37° sobre la horizontal. Entre el bloque y el piso, μ_k = 0,25. ¿Cuánto acelera? Datos: Peso: P = m · g, con g = 10 m/s² en la Tierra (convención del examen). Una fuerza F a θ sobre la horizontal: F · cos θ de lado y F · sen θ hacia arriba. sen 37° = 3/5 y cos 37° = 4/5 (convención del examen). Rozamiento cinético: f_k = μ_k · N mientras desliza, contra el deslizamiento. Segunda ley: ΣF = m · a, con las fuerzas sumadas con su sentido. Alternativas: A) 5,5 m/s²   B) 8 m/s²   C) 4 m/s²   D) 9 m/s²   E) 7 m/s²",
       "respuesta": "E) 7 m/s²",
       "pasos": [
-        "La normal baja: N = 100 − 60 = 40 N.",
-        "De lado: a = (80 − 0,25 · 40) ÷ 10 = 7 m/s²."
+        "La cuerda levanta con F · sen 37°, así que la normal es el peso menos eso: N = 100 − 60 = 40 N.",
+        "De lado jala F · cos 37°; se le resta el rozamiento, μ_k por esa normal, y lo que sobra, entre la masa: a = (80 − 0,25 · 40) ÷ 10 = 7 m/s²."
       ]
     },
     {
@@ -79,8 +79,8 @@
       "enunciado": "Un carrito de 300 kg de la montaña rusa pasa de cabeza por lo alto de un rizo de 4 m de radio, a 10 m/s. ¿Con qué fuerza lo empuja la pista? Datos: Peso: P = m · g, con g = 10 m/s² en la Tierra (convención del examen). Aceleración centrípeta: a_c = v² / r = ω² · r, hacia el centro. En una curva: la suma de fuerzas hacia el centro = m · a_c. Alternativas: A) 10 500 N   B) 7 500 N   C) 4 500 N   D) 3 000 N   E) 750 N",
       "respuesta": "C) 4 500 N",
       "pasos": [
-        "Arriba, pista y peso apuntan al centro: N + 3000 = 300 · 10² ÷ 4 = 7 500 N.",
-        "N = 4 500 N."
+        "Arriba del rizo, el carrito va de cabeza: la pista lo empuja hacia abajo y el peso también, los dos hacia el centro, y juntos dan m · v²/r: N + 3000 = 300 · 10² ÷ 4 = 7 500 N.",
+        "El peso ya pone su parte, así que la pista pone lo que falta: N = 4 500 N."
       ]
     }
   ]

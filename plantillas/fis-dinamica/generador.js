@@ -162,12 +162,12 @@
       enunciado: [`Sobre ${cosa} de ${m} kg, en un piso liso, tú ${lo} empujas con `, Tt(nw(F1)), ' hacia la derecha y tu amigo con ', Tt(nw(F2)), ' hacia la izquierda.'],
       pregunta: ['¿Cuánto acelera?'], datos: [D.segunda], correcta: a, fmt: ms2,
       errores: [
-        e('DN-SUMA', (F1 + F2) / m, x => `Bien dividir entre la masa. Pero las fuerzas se oponen: se restan; sumando sale ${x}.`),
-        e('DN-UNA', F1 / m, x => `Bien la fuerza mayor. Pero la otra también actúa; con una sola sale ${x}.`),
-        e('DN-INV', m / (F1 - F2), x => `Bien la fuerza neta. Pero a es la fuerza entre la masa; al revés sale ${x}.`),
-        e('DN-POR', (F1 - F2) * m, x => `Bien la fuerza neta. Pero se divide entre la masa; multiplicando sale ${x}.`),
+        e('DN-SUMA', (F1 + F2) / m, x => `Bien dividir entre la masa, pero sumaste las dos fuerzas como si empujaran juntas. Tu amigo empuja en contra, así que su fuerza se resta; sumando sale ${x}.`),
+        e('DN-UNA', F1 / m, x => `Bien la fuerza mayor, pero la usaste sola, como si tu amigo no empujara. Su fuerza también actúa, en contra, y la neta es la resta; con una sola sale ${x}.`),
+        e('DN-INV', m / (F1 - F2), x => `Bien la fuerza neta, pero dividiste la masa entre ella. La aceleración es la fuerza neta entre la masa, porque más masa acelera menos; al revés sale ${x}.`),
+        e('DN-POR', (F1 - F2) * m, x => `Bien la fuerza neta, pero la multiplicaste por la masa. Se divide, porque con más masa la misma fuerza acelera menos; multiplicando sale ${x}.`),
       ],
-      solucion: [['La fuerza neta: ', `${F1} − ${F2} = ${F1 - F2} N, a la derecha.`], [`Entre la masa: a = ${F1 - F2} ÷ ${m} = ${ms2(a)}.`]],
+      solucion: [['Las fuerzas se oponen, así que se restan y gana la mayor; la fuerza neta es ', `${F1} − ${F2} = ${F1 - F2} N, a la derecha.`], [`Esa fuerza neta, dividida entre la masa, da la aceleración: a = ${F1 - F2} ÷ ${m} = ${ms2(a)}.`]],
       _datos: { m, F1, F2 },
     };
   }
@@ -179,11 +179,11 @@
       enunciado: [`Una caja de ${m} kg está quieta en un piso liso. La empujas con `, Tt(nw(Fv)), ` horizontales durante ${t} s.`],
       pregunta: ['¿Qué rapidez tiene al terminar?'], datos: [D.segunda, D.reposo], correcta: vf, fmt: ms,
       errores: [
-        e('DN-SOLO-A', Fv / m, x => `Bien la aceleración. Falta multiplicarla por el tiempo: ${x} es solo a.`),
-        e('DN-SIN-M', Fv * t, x => `Bien usar la fuerza y el tiempo. Falta dividir entre la masa; sin ella sale ${x}.`),
-        e('DN-MEDIO', Fv * t / (2 * m), x => `Bien la aceleración. Pero el medio es de la distancia: v = a · t; con el medio sale ${x}.`),
+        e('DN-SOLO-A', Fv / m, x => `Bien la aceleración, pero te quedaste ahí. La aceleración es lo que gana de rapidez en cada segundo, y falta multiplicarla por el tiempo: ${x} es solo a.`),
+        e('DN-SIN-M', Fv * t, x => `Bien usar la fuerza y el tiempo, pero no pasaste por la masa. La rapidez que gana depende de la aceleración, la fuerza entre la masa; sin dividir sale ${x}.`),
+        e('DN-MEDIO', Fv * t / (2 * m), x => `Bien la aceleración, pero dividiste entre 2. El medio va en la distancia, d = a · t² / 2; la rapidez desde el reposo es v = a · t; con el medio sale ${x}.`),
       ],
-      solucion: [[`a = ${Fv} ÷ ${m} = ${ms2(Fv / m)}.`], [`Desde el reposo: v = ${f(Fv / m)} · ${t} = ${ms(vf)}.`]],
+      solucion: [[`La segunda ley da la aceleración, la fuerza entre la masa: a = ${Fv} ÷ ${m} = ${ms2(Fv / m)}.`], [`Parte del reposo y gana esa rapidez en cada segundo, así que v = a · t = ${f(Fv / m)} · ${t} = ${ms(vf)}.`]],
       _datos: { m, F: Fv, t },
     };
   }
@@ -195,12 +195,12 @@
       enunciado: [`Una caja de ${m} kg parte del reposo en un piso liso. Una sola fuerza horizontal constante la hace recorrer ${mt(d)} en ${t} s.`],
       pregunta: ['¿Cuánto vale esa fuerza?'], datos: [D.segunda, D.reposo], correcta: Fv, fmt: nw,
       errores: [
-        e('DN-VMEDIA', m * d / t, x => `Bien multiplicar por la masa. Pero d ÷ t es la velocidad media, no la aceleración; así sale ${x}.`),
-        e('DN-SIN-DOS', m * d / (t * t), x => `Bien despejar a. Pero d = a · t² / 2: sin el 2 sale ${x}.`),
-        e('DN-VFINAL', 2 * m * d / t, x => `Bien: 2d ÷ t es la rapidez final. Pero la fuerza pide la aceleración; así sale ${x}.`),
-        e('DN-POR-D', m * d, x => `Bien usar la masa. Pero va por la aceleración, no por la distancia; así sale ${x}.`),
+        e('DN-VMEDIA', m * d / t, x => `Bien multiplicar por la masa, pero d ÷ t es la velocidad media, en m/s, no la aceleración. La aceleración sale de d = a · t² / 2; así sale ${x}.`),
+        e('DN-SIN-DOS', m * d / (t * t), x => `Bien usar d = a · t² / 2, pero al despejar perdiste el 2: como a está dividida entre 2, el 2 pasa multiplicando; sin el 2 sale ${x}.`),
+        e('DN-VFINAL', 2 * m * d / t, x => `Bien: 2d ÷ t es la rapidez con que termina. Pero la segunda ley pide la aceleración, y falta dividir otra vez entre el tiempo; así sale ${x}.`),
+        e('DN-POR-D', m * d, x => `Bien usar la masa, pero la multiplicaste por la distancia. La segunda ley la multiplica por la aceleración, que hay que sacar antes; así sale ${x}.`),
       ],
-      solucion: [[`De d = a · t² / 2: a = 2 · ${f(d)} ÷ ${t}² = ${ms2(a)}.`], ['La fuerza: ', Tt(`F = ${m} · ${a} = ${nw(Fv)}`), '.']],
+      solucion: [[`Parte del reposo, así que la aceleración se despeja de d = a · t² / 2: a = 2 · ${f(d)} ÷ ${t}² = ${ms2(a)}.`], ['Con esa aceleración, la segunda ley da la fuerza, masa por aceleración: ', Tt(`F = ${m} · ${a} = ${nw(Fv)}`), '.']],
       _datos: { m, d, t },
     };
   }
@@ -214,12 +214,12 @@
       enunciado: [`${cosa} pesa `, Pp(nw(PT)), ' en la Tierra.'],
       pregunta: [`¿Cuánto pesa en ${lugar}?`], datos: [D.peso, D.lugares], correcta: P2, fmt: nw,
       errores: [
-        e('MP-IGUAL', PT, x => `Bien que la masa no cambia. Pero el peso sí, con la g del lugar: ${x} es el de la Tierra.`),
-        e('MP-DIV', PT / g2, x => `Bien usar la g del lugar. Pero primero se saca la masa; dividiendo el peso sale ${x}.`),
-        e('MP-POR', PT * g2, x => `Bien multiplicar por la nueva g. Pero va la masa, no el peso; así sale ${x}.`),
-        e('MP-MASA', mm, x => `Bien: ${x} es su masa, en kilos. Falta multiplicarla por la g del lugar.`),
+        e('MP-IGUAL', PT, x => `Bien que la masa no cambia, pero el peso sí cambia: es la masa por la g del lugar. Dejaste el peso de aquí: ${x} es el de la Tierra.`),
+        e('MP-DIV', PT / g2, x => `Bien usar la g del lugar, pero dividiste entre ella el peso de la Tierra. Primero se saca la masa, el peso entre 10, y esa masa se multiplica por la nueva g; dividiendo el peso sale ${x}.`),
+        e('MP-POR', PT * g2, x => `Bien multiplicar por la nueva g, pero multiplicaste el peso, que ya lleva dentro la g de la Tierra. Lo que se multiplica es la masa; así sale ${x}.`),
+        e('MP-MASA', mm, x => `Bien: ${x} es su masa, en kilogramos. Pero te piden un peso, en newtons, y falta multiplicar esa masa por la g del lugar.`),
       ],
-      solucion: [[`Su masa: m = ${PT} ÷ 10 = ${kg(mm)}.`], [`En ${lugar}: `, Pp(`P = ${f(mm)} · ${f(g2)} = ${nw(P2)}`), '.']],
+      solucion: [[`La masa no cambia de lugar, así que primero se saca con la g de la Tierra: m = ${PT} ÷ 10 = ${kg(mm)}.`], [`Esa misma masa, con la g de ${lugar}, da el peso allá: `, Pp(`P = ${f(mm)} · ${f(g2)} = ${nw(P2)}`), '.']],
       _datos: { PT, g2 },
     };
   }
@@ -229,12 +229,12 @@
       enunciado: [`En ${l1}, una balanza de resorte marca `, Pp(nw(P1)), ' con una roca colgada y quieta.'],
       pregunta: [`¿Cuánto marcaría con la misma roca en ${l2}?`], datos: [D.peso, D.lugares, 'Colgada y quieta, la balanza de resorte marca el peso'], correcta: P2, fmt: nw,
       errores: [
-        e('MP-IGUAL', P1, x => `Bien que es la misma roca. Pero el peso cambia con el lugar: ${x} es el de ${l1}.`),
-        e('MP-G-TIERRA', P1 / G * g2, x => `Bien cambiar de g. Pero la masa sale con la g de ${l1}, no la de la Tierra; así sale ${x}.`),
-        e('MP-MASA', mm, x => `Bien: ${x} es su masa, en kilos. Falta el peso en ${l2}.`),
-        e('MP-POR', P1 * g2, x => `Bien usar la nueva g. Pero va por la masa, no por el peso; así sale ${x}.`),
+        e('MP-IGUAL', P1, x => `Bien que es la misma roca, pero su peso cambia con el lugar, porque depende de la g de cada uno. Dejaste el peso de antes: ${x} es el de ${l1}.`),
+        e('MP-G-TIERRA', P1 / G * g2, x => `Bien cambiar de g, pero sacaste la masa con la g de la Tierra. La balanza estaba en ${l1} y marcaba el peso de allá, así que la masa sale con la g de ${l1}; así sale ${x}.`),
+        e('MP-MASA', mm, x => `Bien: ${x} es su masa, en kilogramos. Pero te piden lo que marca la balanza, un peso, y falta multiplicar esa masa por la g de ${l2}.`),
+        e('MP-POR', P1 * g2, x => `Bien usar la nueva g, pero la multiplicaste por el peso, que ya trae la g de ${l1}. Va por la masa; así sale ${x}.`),
       ],
-      solucion: [[`La masa, con la g de ${l1}: m = ${f(P1)} ÷ ${f(g1)} = ${kg(mm)}.`], [`En ${l2}: `, Pp(`P = ${mm} · ${f(g2)} = ${nw(P2)}`), '.']],
+      solucion: [[`La balanza marcaba el peso en ${l1}, así que la masa sale con la g de allá: m = ${f(P1)} ÷ ${f(g1)} = ${kg(mm)}.`], [`La masa no cambia; en ${l2}, la balanza marca esa masa por la g de ese lugar: `, Pp(`P = ${mm} · ${f(g2)} = ${nw(P2)}`), '.']],
       _datos: { m: mm, g1, g2 },
     };
   }
@@ -247,12 +247,12 @@
       enunciado: [`En ${lugar} levantas con una cuerda una caja de ${mm} kg: la cuerda la jala hacia arriba con `, Tt(nw(Tv)), '.'],
       pregunta: ['¿Cuánto acelera la caja?'], datos: [D.peso, D.lugares, D.segunda], correcta: a, fmt: ms2,
       errores: [
-        e('MP-SIN-PESO', Tv / mm, x => `Bien dividir entre la masa. Pero el peso también actúa, hacia abajo; sin él sale ${x}.`),
-        e('MP-SUMA-PESO', (Tv + Pv) / mm, x => `Bien contar el peso. Pero apunta hacia abajo: se resta; sumando sale ${x}.`),
-        e('MP-DIV', Tv / (mm * G), x => `Bien usar la cuerda. Pero se divide entre la masa, no entre el peso en la Tierra; así sale ${x}.`),
-        e('MP-DIV2', (Tv - Pv) / Pv, x => `Bien la fuerza neta. Pero se divide entre la masa, no entre el peso; así sale ${x}.`),
+        e('MP-SIN-PESO', Tv / mm, x => `Bien dividir entre la masa, pero contaste solo la cuerda. El peso también actúa, hacia abajo, y le quita parte de su jalón; sin él sale ${x}.`),
+        e('MP-SUMA-PESO', (Tv + Pv) / mm, x => `Bien contar el peso, pero lo sumaste a la cuerda. El peso apunta hacia abajo y la cuerda hacia arriba, así que se restan; sumando sale ${x}.`),
+        e('MP-DIV', Tv / (mm * G), x => `Bien usar la cuerda, pero dividiste su jalón entre el peso en la Tierra. La segunda ley divide la fuerza neta entre la masa, en kilogramos; así sale ${x}.`),
+        e('MP-DIV2', (Tv - Pv) / Pv, x => `Bien la fuerza neta, pero la dividiste entre el peso. La aceleración es la fuerza neta entre la masa, en kilogramos, no entre otra fuerza; así sale ${x}.`),
       ],
-      solucion: [[`El peso en ${lugar}: `, Pp(`P = ${mm} · ${f(g2)} = ${nw(Pv)}`), '.'], [`Lo que sobra, entre la masa: a = (${Tv} − ${f(Pv)}) ÷ ${mm} = ${ms2(a)}.`]],
+      solucion: [[`El peso se calcula con la g de ${lugar}: `, Pp(`P = ${mm} · ${f(g2)} = ${nw(Pv)}`), '.'], [`La cuerda jala más que ese peso; lo que sobra hacia arriba es la fuerza neta, y dividida entre la masa da a = (${Tv} − ${f(Pv)}) ÷ ${mm} = ${ms2(a)}.`]],
       _datos: { m: mm, T: Tv, g2 },
     };
   }
@@ -267,12 +267,12 @@
       enunciado: [`Jalas con una cuerda horizontal ${cosa} de ${mm} kg que ya desliza. La cuerda jala con `, Tt(nw(Fv)), ` y entre el piso y ${el}, μ_k = ${f(mu)}.`],
       pregunta: ['¿Cuánto acelera?'], datos: [D.peso, D.cin, D.segunda], correcta: r.a, fmt: ms2,
       errores: [
-        e('RM-SIN-ROCE', Fv / mm, x => `Bien dividir entre la masa. Pero el piso frena: sin el rozamiento sale ${x}.`),
-        e('RM-SUMA', (Fv + fk) / mm, x => `Bien contar el rozamiento. Pero va contra el jalón: se resta; sumando sale ${x}.`),
-        e('RM-MASA', (Fv - mu * mm) / mm, x => `Bien restar el rozamiento. Pero es μ_k por la normal, en newtons; con la masa sale ${x}.`),
-        e('RM-SOLO-ROCE', fk / mm, x => `Bien el rozamiento. Pero la fuerza neta es lo que sobra del jalón; así sale ${x}.`),
+        e('RM-SIN-ROCE', Fv / mm, x => `Bien dividir entre la masa, pero dividiste el jalón entero. Mientras desliza, el piso lo frena, así que primero se resta el rozamiento; sin él sale ${x}.`),
+        e('RM-SUMA', (Fv + fk) / mm, x => `Bien contar el rozamiento, pero lo sumaste como si ayudara. El rozamiento va contra el deslizamiento, al revés que la cuerda, así que se resta; sumando sale ${x}.`),
+        e('RM-MASA', (Fv - mu * mm) / mm, x => `Bien restar el rozamiento, pero lo calculaste con la masa, en kilogramos. El rozamiento es μ_k por la normal, que aquí es el peso en newtons; con la masa sale ${x}.`),
+        e('RM-SOLO-ROCE', fk / mm, x => `Bien calcular el rozamiento, pero lo usaste como fuerza neta. La neta es lo que sobra del jalón después de restarle el rozamiento; así sale ${x}.`),
       ],
-      solucion: [['El rozamiento: ', Ff(`f_k = ${f(mu)} · ${mm * G} = ${nw(fk)}`), '.'], [`Lo que sobra, entre la masa: a = (${Fv} − ${f(fk)}) ÷ ${mm} = ${ms2(r.a)}.`]],
+      solucion: [['La cuerda es horizontal, así que la normal iguala al peso, y el rozamiento es μ_k por esa normal: ', Ff(`f_k = ${f(mu)} · ${mm * G} = ${nw(fk)}`), '.'], [`El jalón le gana al rozamiento; lo que sobra, dividido entre la masa, da la aceleración: a = (${Fv} − ${f(fk)}) ÷ ${mm} = ${ms2(r.a)}.`]],
       _datos: { m: mm, F: Fv, mu },
     };
   }
@@ -283,12 +283,12 @@
       enunciado: [`Una caja de ${mm} kg sale deslizando a ${ms(v0)} por un piso con μ_k = ${f(mu)}, sin que nadie la empuje.`],
       pregunta: ['¿Qué distancia recorre hasta detenerse?'], datos: [D.peso, D.cin, D.segunda, D.mruv], correcta: d, fmt: mt,
       errores: [
-        e('RM-SIN-DOS', v0 * v0 / a, x => `Bien la aceleración, ${ms2(a)}. Pero en v² = v₀² + 2 · a · d falta el 2; así sale ${x}.`),
-        e('RM-TIEMPO', v0 / a, x => `Bien la aceleración. Pero v₀ ÷ a es lo que tarda en segundos; como distancia daría ${x}.`),
-        e('RM-MASA-FRENA', d / mm, x => `Bien la frenada. Pero la masa se cancela: no se vuelve a dividir; así sale ${x}.`),
-        e('RM-G', v0 * v0 / (2 * G), x => `Bien la fórmula de MRUV. Pero la aceleración es μ_k · g, no g; así sale ${x}.`),
+        e('RM-SIN-DOS', v0 * v0 / a, x => `Bien la aceleración, ${ms2(a)}, pero al despejar la distancia perdiste el 2. Con v = 0, d es v₀² dividido entre 2 · a; así sale ${x}.`),
+        e('RM-TIEMPO', v0 / a, x => `Bien la aceleración, pero v₀ ÷ a es lo que tarda en detenerse, en segundos. La distancia sale de v² = v₀² + 2 · a · d; como distancia daría ${x}.`),
+        e('RM-MASA-FRENA', d / mm, x => `Bien la frenada, pero después dividiste entre la masa. La masa ya se canceló al sacar la aceleración, μ_k · g, y no se vuelve a dividir; así sale ${x}.`),
+        e('RM-G', v0 * v0 / (2 * G), x => `Bien la fórmula de MRUV, pero usaste g como aceleración, como si cayera. Lo que frena es el rozamiento, y la aceleración es μ_k · g, no g; así sale ${x}.`),
       ],
-      solucion: [[`El rozamiento es la fuerza neta: a = ${f(mu)} · 10 = ${ms2(a)}, contra el avance.`], [`Con v = 0: d = ${v0}² ÷ (2 · ${f(a)}) = ${mt(d)}.`]],
+      solucion: [[`Nadie empuja, así que el rozamiento es la fuerza neta; al dividirlo entre la masa, la masa se cancela: a = ${f(mu)} · 10 = ${ms2(a)}, contra el avance.`], [`Al final está quieto, v = 0, y no dan el tiempo, así que d = ${v0}² ÷ (2 · ${f(a)}) = ${mt(d)}.`]],
       _datos: { m: mm, v0, mu },
     };
   }
@@ -301,12 +301,12 @@
       enunciado: [`Un bloque de ${mm} kg desliza jalado con `, Tt(nw(Fv)), ` por una cuerda a 37° sobre la horizontal. Entre el bloque y el piso, μ_k = ${f(mu)}.`],
       pregunta: ['¿Cuánto acelera?'], datos: [D.peso, D.comp, D.trig, D.cin, D.segunda], correcta: r.a, fmt: ms2,
       errores: [
-        e('N-MG', (Fv * 0.8 - mu * mm * G) / mm, x => `Bien descomponer el jalón. Pero la cuerda levanta: la normal es menos que el peso; con N = P sale ${x}.`),
-        e('RM-SIN-COS', (Fv - mu * Nv) / mm, x => `Bien la normal. Pero de lado jala solo F · cos 37°; con F entera sale ${x}.`),
-        e('RM-SIGNO-N', (Fv * 0.8 - mu * (mm * G + Fv * 0.6)) / mm, x => `Bien que la cuerda cambia la normal. Pero jala hacia arriba: se resta; sumando sale ${x}.`),
-        e('RM-SIN-ROCE', Fv * 0.8 / mm, x => `Bien la parte horizontal. Pero el piso frena; sin rozamiento sale ${x}.`),
+        e('N-MG', (Fv * 0.8 - mu * mm * G) / mm, x => `Bien descomponer el jalón, pero tomaste la normal igual al peso. La cuerda inclinada levanta un poco el bloque, así que el piso empuja menos; con N = P sale ${x}.`),
+        e('RM-SIN-COS', (Fv - mu * Nv) / mm, x => `Bien la normal, pero usaste el jalón entero de lado. Como la cuerda está inclinada, solo F · cos 37° jala hacia adelante; con F entera sale ${x}.`),
+        e('RM-SIGNO-N', (Fv * 0.8 - mu * (mm * G + Fv * 0.6)) / mm, x => `Bien que la cuerda cambia la normal, pero le sumaste su parte vertical. La cuerda jala hacia arriba, así que la normal es el peso menos esa parte; sumando sale ${x}.`),
+        e('RM-SIN-ROCE', Fv * 0.8 / mm, x => `Bien la parte horizontal, pero olvidaste el rozamiento. El bloque desliza, así que el piso lo frena; sin rozamiento sale ${x}.`),
       ],
-      solucion: [['La normal baja: ', Nn(`N = ${mm * G} − ${f(Fv * 0.6)} = ${nw(Nv)}`), '.'], [`De lado: a = (${f(Fv * 0.8)} − ${f(mu)} · ${f(Nv)}) ÷ ${mm} = ${ms2(r.a)}.`]],
+      solucion: [['La cuerda levanta con F · sen 37°, así que la normal es el peso menos eso: ', Nn(`N = ${mm * G} − ${f(Fv * 0.6)} = ${nw(Nv)}`), '.'], [`De lado jala F · cos 37°; se le resta el rozamiento, μ_k por esa normal, y lo que sobra, entre la masa: a = (${f(Fv * 0.8)} − ${f(mu)} · ${f(Nv)}) ÷ ${mm} = ${ms2(r.a)}.`]],
       _datos: { m: mm, F: Fv, mu },
     };
   }
@@ -318,12 +318,12 @@
       enunciado: [`Lanzas un ladrillo hacia arriba por una rampa de 37°, a ${ms(v0)}. Entre el ladrillo y la rampa, μ_k = ${f(mu)}.`],
       pregunta: ['¿Qué distancia sube hasta detenerse?'], datos: [D.rampa, D.cin, D.trig, D.mruv], correcta: d, fmt: mt,
       errores: [
-        e('RM-RAMPA-RESTA', v0 * v0 / (2 * G * (0.6 - 0.8 * mu)), x => `Bien contar el rozamiento. Pero al subir apunta hacia abajo, como el peso: se suman; restando sale ${x}.`),
-        e('RM-SIN-ROCE', v0 * v0 / (2 * G * 0.6), x => `Bien la parte del peso. Pero el rozamiento también lo frena; sin él sale ${x}.`),
-        e('N-MG', v0 * v0 / (2 * G * (0.6 + mu)), x => `Bien sumar las dos. Pero en la rampa la normal es P · cos 37°; con N = P sale ${x}.`),
-        e('RM-SIN-DOS', v0 * v0 / a, x => `Bien la aceleración. Pero en v² = 2 · a · d falta el 2; así sale ${x}.`),
+        e('RM-RAMPA-RESTA', v0 * v0 / (2 * G * (0.6 - 0.8 * mu)), x => `Bien contar el rozamiento, pero lo restaste. Al subir, el rozamiento apunta hacia abajo de la rampa, como la parte del peso, y frenan juntos; restando sale ${x}.`),
+        e('RM-SIN-ROCE', v0 * v0 / (2 * G * 0.6), x => `Bien la parte del peso a lo largo, pero olvidaste el rozamiento. La rampa es áspera y también lo frena mientras sube; sin él sale ${x}.`),
+        e('N-MG', v0 * v0 / (2 * G * (0.6 + mu)), x => `Bien sumar las dos, pero tomaste la normal igual al peso. En la rampa, el piso solo empuja contra la parte del peso que la aprieta, P · cos 37°; con N = P sale ${x}.`),
+        e('RM-SIN-DOS', v0 * v0 / a, x => `Bien la aceleración, pero al despejar la distancia perdiste el 2. Con v = 0, d es v₀² dividido entre 2 · a; así sale ${x}.`),
       ],
-      solucion: [[`Peso y rozamiento frenan juntos: a = 10 · (0,6 + ${f(mu)} · 0,8) = ${ms2(a)}.`], [`Con v = 0: d = ${v0}² ÷ (2 · ${f(a)}) = ${mt(d)}.`]],
+      solucion: [[`Al subir, la parte del peso a lo largo y el rozamiento apuntan hacia abajo de la rampa y frenan juntos; la masa se cancela: a = 10 · (0,6 + ${f(mu)} · 0,8) = ${ms2(a)}.`], [`Sube hasta quedar quieto, v = 0, así que d = ${v0}² ÷ (2 · ${f(a)}) = ${mt(d)}.`]],
       _datos: { mu, v0 },
     };
   }
@@ -338,12 +338,12 @@
       enunciado: [`Un costal de ${m1} kg está sobre una mesa lisa, unido por una cuerda a un balde de ${m2} kg que cuelga de una polea.`],
       pregunta: ['¿Cuánto aceleran?'], datos: [D.peso, D.juntos], correcta: r.a, fmt: ms2,
       errores: [
-        e('PL-G', G, x => `Así caería el balde solo, ${x}. Pero arrastra también el costal.`),
-        e('PL-M1', m2 * G / m1, x => `Bien el peso del balde. Pero mueve las dos masas; entre la del costal sola sale ${x}.`),
-        e('PL-INV', (m1 + m2) * G / m2, x => `Bien la masa total. Pero se divide el peso del balde entre ella; al revés sale ${x}.`),
-        e('PL-PESO-TOTAL', m2 / (m1 + m2), x => `Bien dividir entre todo. Pero va entre la masa, no entre el peso total; así sale ${x}.`),
+        e('PL-G', G, x => `Así caería el balde solo, sin cuerda, ${x}. Pero está atado y arrastra también el costal, así que su peso tiene que acelerar las dos masas.`),
+        e('PL-M1', m2 * G / m1, x => `Bien el peso del balde, pero lo dividiste solo entre el costal. El balde también acelera, así que su peso mueve las dos masas; entre la del costal sola sale ${x}.`),
+        e('PL-INV', (m1 + m2) * G / m2, x => `Bien la masa total, pero dividiste al revés. La aceleración es la fuerza entre la masa: el peso del balde entre la masa total; al revés sale ${x}.`),
+        e('PL-PESO-TOTAL', m2 / (m1 + m2), x => `Bien dividir entre todo, pero usaste masas donde iba el peso. Arriba va la fuerza que mueve, el peso del balde, y abajo la masa total; así sale ${x}.`),
       ],
-      solucion: [['Lo único de afuera que los mueve es el peso del balde: ', Pp(`${nw(m2 * G)}`), '.'], [`Entre las dos masas: a = ${m2 * G} ÷ ${m1 + m2} = ${ms2(r.a)}.`]],
+      solucion: [['La mesa es lisa y la tensión queda adentro del sistema, así que lo único de afuera que los mueve es el peso del balde: ', Pp(`${nw(m2 * G)}`), '.'], [`Ese peso mueve las dos masas, que aceleran juntas: a = ${m2 * G} ÷ ${m1 + m2} = ${ms2(r.a)}.`]],
       _datos: { m1, m2 },
     };
   }
@@ -355,12 +355,12 @@
       enunciado: [`En una máquina de Atwood cuelgan ${m1} kg de un lado y ${m2} kg del otro, y se sueltan.`],
       pregunta: ['¿Con qué fuerza jala la cuerda?'], datos: [D.peso, D.juntos, D.bloque, D.cuerda], correcta: r.T, fmt: nw,
       errores: [
-        e('PL-TPESO', m2 * G, x => `Bien mirar el liviano. Pero sube acelerando: la cuerda jala más que su peso, ${x}.`),
-        e('PL-TPESO2', m1 * G, x => `Bien mirar el pesado. Pero baja acelerando: la cuerda jala menos que su peso, ${x}.`),
-        e('PL-PROMEDIO', (m1 + m2) * G / 2, x => `Bien que está entre los dos pesos. Pero sale del DCL de un bloque, no del promedio, ${x}.`),
-        e('PL-NETA', m2 * r.aModulo, x => `Bien la aceleración. Pero ${x} es la fuerza neta del liviano; la cuerda también sostiene su peso.`),
+        e('PL-TPESO', m2 * G, x => `Bien mirar el liviano, pero igualaste la cuerda a su peso. Ese bloque sube acelerando, así que la cuerda jala más que su peso, ${x}.`),
+        e('PL-TPESO2', m1 * G, x => `Bien mirar el pesado, pero igualaste la cuerda a su peso. Ese bloque baja acelerando, así que la cuerda jala menos que su peso, ${x}.`),
+        e('PL-PROMEDIO', (m1 + m2) * G / 2, x => `Bien que la tensión está entre los dos pesos, pero no es su promedio, ${x}. Sale del DCL de un bloque y depende de las masas.`),
+        e('PL-NETA', m2 * r.aModulo, x => `Bien la aceleración, pero ${x} es la fuerza neta del liviano. La cuerda, además de acelerarlo, sostiene su peso, así que hay que sumárselo.`),
       ],
-      solucion: [[`La aceleración: a = (${m1 * G} − ${m2 * G}) ÷ (${m1} + ${m2}) = ${ms2(r.aModulo)}.`], ['El liviano sube acelerando: ', Tt(`T = ${m2} · (10 + ${f(r.aModulo)}) = ${nw(r.T)}`), '.']],
+      solucion: [[`Primero, la aceleración del sistema: la diferencia de pesos entre la masa total, a = (${m1 * G} − ${m2 * G}) ÷ (${m1} + ${m2}) = ${ms2(r.aModulo)}.`], ['Después, el DCL del liviano: sube acelerando, así que la cuerda jala su peso más su masa por la aceleración: ', Tt(`T = ${m2} · (10 + ${f(r.aModulo)}) = ${nw(r.T)}`), '.']],
       _datos: { m1, m2 },
     };
   }
@@ -374,12 +374,12 @@
       enunciado: [`Un bloque de ${m1} kg desliza sobre una mesa con μ_k = ${f(mu)}, unido por una cuerda a otro de ${m2} kg que cuelga de una polea.`],
       pregunta: ['¿Con qué fuerza jala la cuerda?'], datos: [D.peso, D.cin, D.juntos, D.bloque], correcta: r.T, fmt: nw,
       errores: [
-        e('PL-TPESO', m2 * G, x => `Bien mirar el que cuelga. Pero baja acelerando: la cuerda jala menos que su peso, ${x}.`),
-        e('PL-SIN-ROCE-T', m1 * r.a, x => `Bien la aceleración. Pero sobre el de la mesa también actúa el rozamiento; sin él sale ${x}.`),
-        e('PL-LISA', m2 * (G - aLisa), x => `Bien el DCL del que cuelga. Pero la aceleración descuenta el rozamiento; sin él sale ${x}.`),
-        e('PL-NETA-SIS', m2 * G - mu * m1 * G, x => `Bien: ${x} es la fuerza neta del sistema. La cuerda sale del DCL de un bloque.`),
+        e('PL-TPESO', m2 * G, x => `Bien mirar el que cuelga, pero igualaste la cuerda a su peso. Ese bloque baja acelerando, así que la cuerda jala menos que su peso, ${x}.`),
+        e('PL-SIN-ROCE-T', m1 * r.a, x => `Bien la aceleración, pero en el DCL del de la mesa contaste solo la cuerda. Sobre ese bloque también actúa el rozamiento, en contra; sin él sale ${x}.`),
+        e('PL-LISA', m2 * (G - aLisa), x => `Bien el DCL del que cuelga, pero sacaste la aceleración como si la mesa fuera lisa. El rozamiento frena al sistema y se resta antes de dividir; sin él sale ${x}.`),
+        e('PL-NETA-SIS', m2 * G - mu * m1 * G, x => `Bien: ${x} es la fuerza neta del sistema, lo que sobra después del rozamiento. Pero la tensión es una fuerza entre los bloques y sale del DCL de uno solo.`),
       ],
-      solucion: [[`El sistema: a = (${m2 * G} − ${f(mu * m1 * G)}) ÷ ${m1 + m2} = ${ms2(r.a)}.`], ['El que cuelga: ', Tt(`T = ${m2} · (10 − ${f(r.a)}) = ${nw(r.T)}`), '.']],
+      solucion: [[`En el sistema, el peso que cuelga mueve y el rozamiento de la mesa frena; lo que sobra, entre la masa total: a = (${m2 * G} − ${f(mu * m1 * G)}) ÷ ${m1 + m2} = ${ms2(r.a)}.`], ['Después, el que cuelga: baja acelerando, así que la cuerda es su peso menos su masa por la aceleración: ', Tt(`T = ${m2} · (10 − ${f(r.a)}) = ${nw(r.T)}`), '.']],
       _datos: { m1, m2, mu },
     };
   }
@@ -395,11 +395,11 @@
       enunciado: [`Una persona de ${mm} kg está sobre una balanza en un ascensor que ${que} con ${ms2(a)}.`],
       pregunta: ['¿Cuánto marca la balanza?'], datos: [D.peso, D.vertical, D.eje], correcta: Nv, fmt: nw,
       errores: [
-        e('AS-SIGNO', mm * (G - s * a), x => `Bien usar la aceleración. Pero apunta hacia ${s > 0 ? 'arriba: se suma' : 'abajo: se resta'}; al revés sale ${x}.`),
-        e('N-MG', mm * G, x => `Así marcaría a velocidad constante, ${x}. Pero aquí la velocidad cambia.`),
-        e('AS-MA', mm * a, x => `Bien la cuenta m · a, ${x}. Pero la balanza también sostiene el peso.`),
+        e('AS-SIGNO', mm * (G - s * a), x => `Bien usar la aceleración, pero con el signo al revés. Aquí apunta hacia ${s > 0 ? 'arriba, así que la balanza empuja más que el peso: se suma' : 'abajo, así que la balanza empuja menos que el peso: se resta'}; al revés sale ${x}.`),
+        e('N-MG', mm * G, x => `Así marcaría quieto o a velocidad constante, ${x}. Pero aquí la velocidad cambia, así que hay aceleración y la balanza ya no iguala el peso.`),
+        e('AS-MA', mm * a, x => `Bien la cuenta m · a, ${x}, pero esa es solo la fuerza neta. La balanza también sostiene el peso de la persona.`),
       ],
-      solucion: [[`${que[0].toUpperCase()}${que.slice(1)}: la aceleración apunta hacia ${s > 0 ? 'arriba' : 'abajo'}, a = ${s > 0 ? '+' : '−'}${a} m/s².`], ['', Nn(`N = ${mm} · (10 ${s > 0 ? '+' : '−'} ${a}) = ${nw(Nv)}`), '.']],
+      solucion: [[`${que[0].toUpperCase()}${que.slice(1)}, así que la aceleración apunta hacia ${s > 0 ? 'arriba' : 'abajo'}: con hacia arriba positivo, a = ${s > 0 ? '+' : '−'}${a} m/s².`], ['La balanza marca la normal, el peso más la masa por esa aceleración con su signo: ', Nn(`N = ${mm} · (10 ${s > 0 ? '+' : '−'} ${a}) = ${nw(Nv)}`), '.']],
       _datos: { m: mm, a: s * a },
     };
   }
@@ -410,11 +410,11 @@
       enunciado: [`El cable de una grúa ${sube ? 'sube' : 'baja'} un bloque de ${mm} kg con una aceleración de ${ms2(a)} hacia ${sube ? 'arriba' : 'abajo'}.`],
       pregunta: ['¿Con qué fuerza jala el cable?'], datos: [D.peso, D.vertical, D.eje], correcta: Tv, fmt: nw,
       errores: [
-        e('AS-SIGNO', mm * (G - s * a), x => `Bien usar la aceleración. Pero apunta hacia ${sube ? 'arriba: el cable jala más que el peso' : 'abajo: el cable jala menos que el peso'}; al revés sale ${x}.`),
-        e('N-MG', mm * G, x => `Así jalaría a velocidad constante, ${x}. Pero el bloque acelera.`),
-        e('AS-MA', mm * a, x => `Bien la cuenta m · a, ${x}. Pero el cable también sostiene el peso.`),
+        e('AS-SIGNO', mm * (G - s * a), x => `Bien usar la aceleración, pero con el signo al revés. Apunta hacia ${sube ? 'arriba, así que el cable jala más que el peso' : 'abajo, así que el cable jala menos que el peso'}; al revés sale ${x}.`),
+        e('N-MG', mm * G, x => `Así jalaría a velocidad constante, ${x}. Pero el bloque acelera, y para eso el cable no puede igualar su peso.`),
+        e('AS-MA', mm * a, x => `Bien la cuenta m · a, ${x}, pero esa es solo la fuerza neta. El cable, además de acelerar el bloque, sostiene su peso.`),
       ],
-      solucion: [['Sobre el bloque, hacia arriba positivo: ', Tt(`T − ${mm * G} = ${mm} · (${sube ? '+' : '−'}${f(a)})`), '.'], ['', Tt(`T = ${nw(Tv)}`), '.']],
+      solucion: [['Sobre el bloque tiran el cable, hacia arriba, y el peso, hacia abajo; con hacia arriba positivo, su diferencia es la masa por la aceleración: ', Tt(`T − ${mm * G} = ${mm} · (${sube ? '+' : '−'}${f(a)})`), '.'], ['Al despejar, el cable resulta ', Tt(`T = ${nw(Tv)}`), '.']],
       _datos: { m: mm, a: s * a },
     };
   }
@@ -424,11 +424,11 @@
       enunciado: ['En un ascensor, la balanza marca ', Nn(nw(Nv)), ` bajo una persona de ${mm} kg.`],
       pregunta: ['¿Cuánto vale la aceleración del ascensor?'], datos: [D.peso, D.vertical, D.eje], correcta: a, fmt: ms2,
       errores: [
-        e('AS-G', Nv / mm, x => `Bien dividir entre la masa. Pero eso da g + a: falta restar g; así sale ${x}.`),
-        e('AS-SIN-M', Math.abs(Nv - mm * G), x => `Bien restar el peso. Pero falta dividir entre la masa; así sale ${x}.`),
-        e('AS-PESO', Math.abs(Nv - mm * G) / (mm * G), x => `Bien lo que sobra. Pero se divide entre la masa, no entre el peso; así sale ${x}.`),
+        e('AS-G', Nv / mm, x => `Bien dividir entre la masa, pero dividiste lo que marca la balanza. Eso da g + a, no la aceleración: falta restar g; así sale ${x}.`),
+        e('AS-SIN-M', Math.abs(Nv - mm * G), x => `Bien restar el peso, pero lo que sobra es una fuerza, en newtons. Para tener la aceleración falta dividir entre la masa; así sale ${x}.`),
+        e('AS-PESO', Math.abs(Nv - mm * G) / (mm * G), x => `Bien lo que sobra, pero lo dividiste entre el peso. La aceleración es esa fuerza entre la masa, en kilogramos; así sale ${x}.`),
       ],
-      solucion: [['', Nn(`N − P = m · a`), `: ${f(Nv)} − ${mm * G} = ${mm} · a.`], [`a = ${s > 0 ? '+' : '−'}${ms2(a)}: apunta hacia ${s > 0 ? 'arriba (sube acelerando o baja frenando)' : 'abajo (sube frenando o baja acelerando)'}.`]],
+      solucion: [['Sobre la persona, lo que marca la balanza menos su peso es la masa por la aceleración: ', Nn(`N − P = m · a`), `, es decir, ${f(Nv)} − ${mm * G} = ${mm} · a.`], [`Sale a = ${s > 0 ? '+' : '−'}${ms2(a)}, así que apunta hacia ${s > 0 ? 'arriba: el ascensor sube acelerando o baja frenando' : 'abajo: el ascensor sube frenando o baja acelerando'}.`]],
       _datos: { m: mm, N: Nv },
     };
   }
@@ -442,11 +442,11 @@
       enunciado: [`Un auto de ${mm} kg pasa por la cima de una loma de ${R} m de radio a ${ms(vv)}.`],
       pregunta: ['¿Con qué fuerza lo empuja la pista?'], datos: [D.peso, D.ac, D.centro], correcta: r.N, fmt: nw,
       errores: [
-        e('DC-SUMA', mm * (G + ac), x => `Bien la parte hacia el centro. Pero en la cima el centro está abajo: la normal resta; sumando sale ${x}.`),
-        e('N-MG', mm * G, x => `Así sería en un tramo recto, ${x}. En la curva, la suma apunta al centro.`),
-        e('DC-SOLO', mm * ac, x => `Bien la cuenta m · v²/r, ${x}. Pero también actúa el peso.`),
+        e('DC-SUMA', mm * (G + ac), x => `Bien la parte hacia el centro, pero la sumaste al peso. En la cima, el centro está abajo: el peso apunta al centro y la normal se aleja, así que se resta; sumando sale ${x}.`),
+        e('N-MG', mm * G, x => `Así sería en un tramo recto, ${x}, donde la normal iguala al peso. En la curva, la suma de las fuerzas tiene que apuntar al centro, así que no pueden anularse.`),
+        e('DC-SOLO', mm * ac, x => `Bien la cuenta m · v²/r, ${x}, pero esa es la fuerza neta hacia el centro, no la normal. El peso también actúa, y la normal es lo que le falta al peso para dar esa neta.`),
       ],
-      solucion: [[`a_c = ${vv}² ÷ ${R} = ${ms2(ac)}, hacia el centro: abajo.`], ['El peso le gana a la normal: ', Nn(`N = ${mm} · (10 − ${f(ac)}) = ${nw(r.N)}`), '.']],
+      solucion: [[`En la cima, el centro de la curva está abajo, y la aceleración centrípeta apunta hacia allá: a_c = ${vv}² ÷ ${R} = ${ms2(ac)}.`], ['El peso apunta al centro y la normal se aleja, así que el peso le gana a la normal: ', Nn(`N = ${mm} · (10 − ${f(ac)}) = ${nw(r.N)}`), '.']],
       _datos: { m: mm, r: R, v: vv },
     };
   }
@@ -461,11 +461,11 @@
       enunciado: [`Una plataforma gira a ${w} rad/s. Entre ${quien} y su piso, μ_s = ${f(mu)}.`],
       pregunta: ['¿A qué distancia máxima del eje se queda sin resbalar?'], datos: [D.peso, D.ac, D.centro, D.est], correcta: R, fmt: mt,
       errores: [
-        e('DC-INV', w * w / (mu * G), x => `Bien igualar el tope a la centrípeta. Pero al despejar r la fracción va al revés; así sale ${x}.`),
-        e('DC-W', mu * G / w, x => `Bien la idea. Pero la aceleración centrípeta es ω² · r: sin el cuadrado sale ${x}.`),
-        e('DC-SIN-G', mu / (w * w), x => `Bien despejar r. Pero el tope es μ_s · m · g: sin g sale ${x}.`),
+        e('DC-INV', w * w / (mu * G), x => `Bien igualar el tope del rozamiento a la centrípeta, pero al despejar r diste vuelta la fracción: r es μ_s · g entre ω²; así sale ${x}.`),
+        e('DC-W', mu * G / w, x => `Bien la idea, pero usaste ω sin elevarla al cuadrado. La aceleración centrípeta es ω² · r; sin el cuadrado sale ${x}.`),
+        e('DC-SIN-G', mu / (w * w), x => `Bien despejar r, pero olvidaste g. El tope del rozamiento es μ_s · m · g, porque la normal es el peso; sin g sale ${x}.`),
       ],
-      solucion: [['El tope del rozamiento estático hace de centrípeta: ', Ff(`μ_s · m · 10 = m · ${w}² · r`), '.'], [`r = ${f(mu)} · 10 ÷ ${w}² = ${mt(R)}.`]],
+      solucion: [['Justo antes de resbalar, el rozamiento estático llega a su tope, y ese tope es lo único que lleva la caja al centro: ', Ff(`μ_s · m · 10 = m · ${w}² · r`), '.'], [`La masa se cancela y se despeja el radio: r = ${f(mu)} · 10 ÷ ${w}² = ${mt(R)}.`]],
       _datos: { w, mu },
     };
   }
@@ -477,12 +477,12 @@
       enunciado: [`Un carrito de ${mm} kg de la montaña rusa pasa de cabeza por lo alto de un rizo de ${R} m de radio, a ${ms(vv)}.`],
       pregunta: ['¿Con qué fuerza lo empuja la pista?'], datos: [D.peso, D.ac, D.centro], correcta: r.N, fmt: nw,
       errores: [
-        e('DC-SUMA', mm * (ac + G), x => `Bien la parte hacia el centro. Pero arriba el peso también apunta al centro: se resta; sumando sale ${x}.`),
-        e('DC-SOLO', mm * ac, x => `Bien la cuenta m · v²/r, ${x}. Pero el peso ya pone una parte.`),
-        e('N-MG', mm * G, x => `Bien que el peso cuenta, ${x}. Pero la pista empuja lo que falta para m · v²/r.`),
-        e('DC-SIN-CUADRADO', mm * vv / R, x => `Bien la idea. Pero la centrípeta va con v², no con v, y el peso también apunta al centro; así sale ${x}.`),
+        e('DC-SUMA', mm * (ac + G), x => `Bien la parte hacia el centro, pero le sumaste el peso. Arriba del rizo, el peso también apunta al centro y ya pone una parte, así que se resta; sumando sale ${x}.`),
+        e('DC-SOLO', mm * ac, x => `Bien la cuenta m · v²/r, ${x}, pero esa es toda la fuerza hacia el centro. Arriba del rizo, el peso ya pone una parte, así que la pista empuja menos.`),
+        e('N-MG', mm * G, x => `Bien que el peso cuenta, ${x}, pero la pista no tiene por qué empujar lo mismo que él. Empuja lo que le falta al peso para llegar a m · v²/r.`),
+        e('DC-SIN-CUADRADO', mm * vv / R, x => `Bien la idea, pero usaste v sin elevarla al cuadrado y olvidaste el peso. La centrípeta es m · v²/r, y arriba el peso también apunta al centro; así sale ${x}.`),
       ],
-      solucion: [[`Arriba, pista y peso apuntan al centro: N + ${mm * G} = ${mm} · ${vv}² ÷ ${R} = ${nw(mm * ac)}.`], ['', Nn(`N = ${nw(r.N)}`), '.']],
+      solucion: [[`Arriba del rizo, el carrito va de cabeza: la pista lo empuja hacia abajo y el peso también, los dos hacia el centro, y juntos dan m · v²/r: N + ${mm * G} = ${mm} · ${vv}² ÷ ${R} = ${nw(mm * ac)}.`], ['El peso ya pone su parte, así que la pista pone lo que falta: ', Nn(`N = ${nw(r.N)}`), '.']],
       _datos: { m: mm, r: R, v: vv },
     };
   }

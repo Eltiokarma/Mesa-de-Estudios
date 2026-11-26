@@ -1,11 +1,11 @@
 {
   "titulo": "Dinámica: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Primero dibuja el diagrama de cuerpo libre: cada fuerza con quién la ejerce (la Tierra, el piso, la cuerda, tu mano). Después elige un eje a lo largo del movimiento y otro perpendicular. En el eje perpendicular, si el cuerpo no se hunde ni se levanta, las fuerzas se cancelan; en el eje del movimiento, la suma de fuerzas es m·a. Toma g = 10 m/s², sen 37° = 3/5 y cos 37° = 4/5. El roce estático vale lo que haga falta hasta μs·N; el cinético vale μk·N.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Primero dibuja el diagrama de cuerpo libre: cada fuerza con quién la ejerce (la Tierra, el piso, la cuerda, tu mano). Después elige un eje a lo largo del movimiento y otro perpendicular. En el eje perpendicular, si el cuerpo no se hunde ni se levanta, las fuerzas se cancelan; en el eje del movimiento, la suma de fuerzas es m·a. Toma g = 10 m/s², sen 37° = 3/5 y cos 37° = 4/5. El rozamiento estático vale lo que haga falta hasta μs·N; el cinético vale μk·N.",
   "problemas": [
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "En el mercado, un cargador empuja una carretilla de 20 kg por un piso liso (sin roce) con una fuerza horizontal de 60 N. ¿Qué aceleración tiene la carretilla y cuánto vale la fuerza normal del piso?",
+      "enunciado": "En el mercado, un cargador empuja una carretilla de 20 kg por un piso liso (sin rozamiento) con una fuerza horizontal de 60 N. ¿Qué aceleración tiene la carretilla y cuánto vale la fuerza normal del piso?",
       "respuesta": "La aceleración es 3 m/s² y la normal, 200 N.",
       "pasos": [
         "Fuerzas sobre la carretilla: el peso (la Tierra), 20·10 = 200 N hacia abajo; la normal (el piso), hacia arriba; y el empuje (el cargador), 60 N hacia adelante.",
@@ -74,13 +74,13 @@
     {
       "id": "p3",
       "nivel": "intermedio",
-      "enunciado": "Sobre un carrito de 5 kg que rueda sin roce por el piso hay una caja de 3 kg. Entre la caja y el carrito, μs = 0,5 y μk = 0,4. Jalas el carrito con una fuerza horizontal. a) Con 24 N, ¿la caja se mueve junto con el carrito? ¿Cuánto vale el roce sobre la caja? b) ¿Cuál es la mayor fuerza con la que la caja todavía no resbala? c) Con 60 N, ¿qué aceleración tiene cada uno?",
-      "respuesta": "a) Sí, van juntos con 3 m/s²; el roce sobre la caja vale 9 N, hacia adelante. b) 40 N. c) La caja, 4 m/s²; el carrito, 9,6 m/s².",
+      "enunciado": "Sobre un carrito de 5 kg que rueda sin rozamiento por el piso hay una caja de 3 kg. Entre la caja y el carrito, μs = 0,5 y μk = 0,4. Jalas el carrito con una fuerza horizontal. a) Con 24 N, ¿la caja se mueve junto con el carrito? ¿Cuánto vale el rozamiento sobre la caja? b) ¿Cuál es la mayor fuerza con la que la caja todavía no resbala? c) Con 60 N, ¿qué aceleración tiene cada uno?",
+      "respuesta": "a) Sí, van juntos con 3 m/s²; el rozamiento sobre la caja vale 9 N, hacia adelante. b) 40 N. c) La caja, 4 m/s²; el carrito, 9,6 m/s².",
       "pasos": [
-        "Juntos: a = 24/8 = 3 m/s². A la caja solo la empuja el roce del carrito: 3·3 = 9 N, hacia adelante. Es menos que μs·N = 0,5·30 = 15 N, así que no resbala.",
+        "Juntos: a = 24/8 = 3 m/s². A la caja solo la empuja el rozamiento del carrito: 3·3 = 9 N, hacia adelante. Es menos que μs·N = 0,5·30 = 15 N, así que no resbala.",
         "La caja puede acelerar como máximo 15/3 = 5 m/s². Para que los dos juntos lleguen a eso hace falta F = 8·5 = 40 N.",
-        "Con 60 N la caja resbala y su roce pasa a ser cinético: 0,4·30 = 12 N. Caja: 12/3 = 4 m/s². Carrito: (60 − 12)/5 = 9,6 m/s². La caja también avanza, pero se queda atrás sobre el carrito.",
-        "Ojo: el roce sobre la caja no vale siempre μs·N (15 N). Vale lo que haga falta, hasta ese máximo. Y es el roce el que la empuja hacia adelante: se opone a que las superficies resbalen entre sí, no al movimiento."
+        "Con 60 N la caja resbala y su rozamiento pasa a ser cinético: 0,4·30 = 12 N. Caja: 12/3 = 4 m/s². Carrito: (60 − 12)/5 = 9,6 m/s². La caja también avanza, pero se queda atrás sobre el carrito.",
+        "Cuidado: el rozamiento sobre la caja no vale siempre μs·N (15 N). Vale lo que haga falta, hasta ese máximo. Y es el rozamiento el que la empuja hacia adelante: se opone a que las superficies resbalen entre sí, no al movimiento."
       ],
       "verificar": [
         {
@@ -125,14 +125,14 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Un saco de papa de 50 kg está en el piso de un almacén. Los coeficientes de rozamiento son μs = 0,4 y μk = 0,3. Si lo empujas horizontalmente con 120 N, ¿se mueve? ¿Cuánto vale el roce? ¿Y si lo empujas con 250 N? Por último, ya en movimiento, ¿con qué fuerza hay que empujarlo para que siga a velocidad constante?",
-      "respuesta": "Con 120 N no se mueve y el roce vale 120 N. Con 250 N se mueve con una aceleración de 2 m/s². Para que siga a velocidad constante basta empujarlo con 150 N.",
+      "enunciado": "Un saco de papa de 50 kg está en el piso de un almacén. Los coeficientes de rozamiento son μs = 0,4 y μk = 0,3. Si lo empujas horizontalmente con 120 N, ¿se mueve? ¿Cuánto vale el rozamiento? ¿Y si lo empujas con 250 N? Por último, ya en movimiento, ¿con qué fuerza hay que empujarlo para que siga a velocidad constante?",
+      "respuesta": "Con 120 N no se mueve y el rozamiento vale 120 N. Con 250 N se mueve con una aceleración de 2 m/s². Para que siga a velocidad constante basta empujarlo con 150 N.",
       "pasos": [
-        "En vertical: N = 50·10 = 500 N. El roce estático puede llegar hasta μs·N = 0,4·500 = 200 N.",
-        "Con 120 N: como 120 < 200, el roce estático alcanza para impedir que se mueva. El saco no se mueve, así que la suma de fuerzas es cero y el roce vale 120 N: ni 200 N (su máximo) ni 150 N (el cinético, que solo actúa cuando desliza). El roce estático vale lo que haga falta, hasta su máximo.",
-        "Con 250 N: 250 > 200, el saco desliza. Ahora el roce es cinético: μk·N = 0,3·500 = 150 N.",
+        "En vertical: N = 50·10 = 500 N. El rozamiento estático puede llegar hasta μs·N = 0,4·500 = 200 N.",
+        "Con 120 N: como 120 < 200, el rozamiento estático alcanza para impedir que se mueva. El saco no se mueve, así que la suma de fuerzas es cero y el rozamiento vale 120 N: ni 200 N (su máximo) ni 150 N (el cinético, que solo actúa cuando desliza). El rozamiento estático vale lo que haga falta, hasta su máximo.",
+        "Con 250 N: 250 > 200, el saco desliza. Ahora el rozamiento es cinético: μk·N = 0,3·500 = 150 N.",
         "250 − 150 = 50·a, así que a = 2 m/s².",
-        "Ya en movimiento, a velocidad constante la aceleración es cero: la suma de fuerzas debe ser cero. Basta empujar con 150 N, lo mismo que el roce cinético. No hace falta una fuerza «extra» para mantener el movimiento: la fuerza que sobra no mantiene la velocidad, la cambia."
+        "Ya en movimiento, a velocidad constante la aceleración es cero: la suma de fuerzas debe ser cero. Basta empujar con 150 N, lo mismo que el rozamiento cinético. No hace falta una fuerza «extra» para mantener el movimiento: la fuerza que sobra no mantiene la velocidad, la cambia."
       ],
       "verificar": [
         {
@@ -193,7 +193,7 @@
     {
       "id": "p5",
       "nivel": "avanzado",
-      "enunciado": "Un balde de 2 kg cuelga de una polea móvil. La cuerda está atada al techo, pasa por la polea móvil, sube a una polea fija y en el otro extremo cuelga otro balde, también de 2 kg. Poleas y cuerda ligeras, sin roce. Se sueltan desde el reposo. ¿Qué balde baja? ¿Con qué aceleración se mueve cada uno y cuánto vale la tensión? ¿Qué masa debería tener el balde del extremo para que todo quede quieto?",
+      "enunciado": "Un balde de 2 kg cuelga de una polea móvil. La cuerda está atada al techo, pasa por la polea móvil, sube a una polea fija y en el otro extremo cuelga otro balde, también de 2 kg. Poleas y cuerda ligeras, sin rozamiento. Se sueltan desde el reposo. ¿Qué balde baja? ¿Con qué aceleración se mueve cada uno y cuánto vale la tensión? ¿Qué masa debería tener el balde del extremo para que todo quede quieto?",
       "respuesta": "Baja el del extremo, con 4 m/s²; el de la polea sube con 2 m/s²; la tensión es 12 N. Para que todo quede quieto, el del extremo debería tener 1 kg.",
       "pasos": [
         "Llama a₂ a la aceleración del balde del extremo y a₁ a la de la polea con su balde. Ligadura: si el extremo baja x, cada uno de los dos tramos que sostienen la polea se acorta x/2, así que la polea sube x/2. Por eso a₁ = a₂/2.",
@@ -242,9 +242,9 @@
       "pasos": [
         "Descompón la fuerza de la soga: horizontal, 100·cos 37° = 80 N; vertical, 100·sen 37° = 60 N hacia arriba.",
         "En vertical no se mueve: N + 60 = 200, así que N = 140 N. La soga ayuda a sostener la caja, por eso la normal es menor que el peso.",
-        "Roce: μ·N = 0,25·140 = 35 N. Como 80 N > 35 N, la caja desliza.",
+        "Rozamiento: μ·N = 0,25·140 = 35 N. Como 80 N > 35 N, la caja desliza.",
         "En horizontal: 80 − 35 = 20·a, así que a = 45/20 = 2,25 m/s².",
-        "Si usas N = 200 N, el roce te sale 50 N y la aceleración 1,5 m/s²: es el error de creer que la normal siempre es el peso."
+        "Si usas N = 200 N, el rozamiento te sale 50 N y la aceleración 1,5 m/s²: es el error de creer que la normal siempre es el peso."
       ],
       "verificar": [
         {
@@ -273,8 +273,8 @@
       "enunciado": "Una caja de 6 kg está sobre una mesa, con μ = 0,5. Una cuerda horizontal la une, pasando por una polea en el borde, a una pesa de 4 kg que cuelga. ¿Se mueve el sistema? Si se mueve, ¿con qué aceleración, y cuánto vale la tensión?",
       "respuesta": "Sí se mueve: a = 1 m/s² y T = 36 N.",
       "pasos": [
-        "Sobre la caja, en vertical: N = 60 N. El roce puede llegar a 0,5·60 = 30 N.",
-        "La pesa tira con su peso, 40 N, que es más que 30 N: el sistema se mueve. El roce cinético es 30 N.",
+        "Sobre la caja, en vertical: N = 60 N. El rozamiento puede llegar a 0,5·60 = 30 N.",
+        "La pesa tira con su peso, 40 N, que es más que 30 N: el sistema se mueve. El rozamiento cinético es 30 N.",
         "Para todo el sistema (10 kg): 40 − 30 = 10·a, así que a = 1 m/s².",
         "Pesa sola: 40 − T = 4·1, así que T = 36 N. Comprueba con la caja: T − 30 = 6·1, T = 36 N.",
         "La tensión es menor que el peso de la pesa (40 N) porque la pesa está acelerando hacia abajo."
@@ -304,11 +304,11 @@
       "enunciado": "Se lanza un bloque de 2 kg hacia arriba por una rampa de 37°, con una velocidad de 12 m/s a lo largo de ella. El coeficiente de rozamiento es μ = 0,25. ¿Con qué desaceleración sube, cuánto tiempo y cuántos metros sube, y qué pasa después de detenerse?",
       "respuesta": "Sube frenando con 8 m/s², durante 1,5 s, y recorre 9 m. Después baja con una aceleración de 4 m/s².",
       "pasos": [
-        "Peso: 20 N. A lo largo de la rampa, 20·3/5 = 12 N hacia abajo; perpendicular, 20·4/5 = 16 N, así que N = 16 N y el roce cinético es 0,25·16 = 4 N.",
-        "Mientras sube, el roce va contra el movimiento: hacia abajo, igual que la componente del peso. Las dos frenan: 12 + 4 = 2·a, así que a = 8 m/s² hacia abajo de la rampa.",
+        "Peso: 20 N. A lo largo de la rampa, 20·3/5 = 12 N hacia abajo; perpendicular, 20·4/5 = 16 N, así que N = 16 N y el rozamiento cinético es 0,25·16 = 4 N.",
+        "Mientras sube, el rozamiento va contra el movimiento: hacia abajo, igual que la componente del peso. Las dos frenan: 12 + 4 = 2·a, así que a = 8 m/s² hacia abajo de la rampa.",
         "No hay ninguna fuerza hacia arriba que lo empuje: sube solo porque ya venía con velocidad.",
         "Tiempo de subida: 12/8 = 1,5 s. Distancia: v² = v₀² − 2·a·d, 0 = 144 − 16d, así que d = 9 m.",
-        "Arriba, quieto: la componente del peso (12 N) es mayor que el roce máximo (4 N), así que baja. Ahora el roce apunta hacia arriba: 12 − 4 = 2·a, a = 4 m/s². Al bajar acelera con 4 m/s², la mitad de lo que frenaba al subir; por eso tarda más en bajar que en subir."
+        "Arriba, quieto: la componente del peso (12 N) es mayor que el rozamiento máximo (4 N), así que baja. Ahora el rozamiento apunta hacia arriba: 12 − 4 = 2·a, a = 4 m/s². Al bajar acelera con 4 m/s², la mitad de lo que frenaba al subir; por eso tarda más en bajar que en subir."
       ],
       "verificar": [
         {
@@ -338,8 +338,8 @@
       "enunciado": "Dos cajas están juntas sobre el piso, una de 6 kg y otra de 4 kg, con μk = 0,2 para las dos. Empujas la de 6 kg con 60 N horizontales y las dos avanzan juntas. ¿Con qué aceleración se mueven y con qué fuerza se empujan entre sí? ¿Cambia esa fuerza si empujas desde el otro lado, sobre la de 4 kg?",
       "respuesta": "Se mueven con 4 m/s² y se empujan con 24 N, la una a la otra por igual. Si empujas desde el otro lado, se empujan con 36 N.",
       "pasos": [
-        "Las dos juntas (10 kg): roce total 0,2·100 = 20 N. 60 − 20 = 10·a, así que a = 4 m/s².",
-        "Caja de 4 kg sola: la empuja la de 6 kg con una fuerza C, y el roce la frena con 0,2·40 = 8 N. C − 8 = 4·4, así que C = 24 N.",
+        "Las dos juntas (10 kg): rozamiento total 0,2·100 = 20 N. 60 − 20 = 10·a, así que a = 4 m/s².",
+        "Caja de 4 kg sola: la empuja la de 6 kg con una fuerza C, y el rozamiento la frena con 0,2·40 = 8 N. C − 8 = 4·4, así que C = 24 N.",
         "Caja de 6 kg sola: 60 − C − 12 = 6·4, así que C = 24 N. La caja de 4 kg empuja a la de 6 kg con los mismos 24 N, hacia atrás: son un par de acción y reacción, iguales aunque las masas sean distintas.",
         "Empujando la de 4 kg: la aceleración sigue siendo 4 m/s², pero ahora C es lo que mueve a la de 6 kg: C − 12 = 6·4, así que C = 36 N. La fuerza entre las cajas depende de a cuál empujas; que las dos fuerzas del par sean iguales, no."
       ],

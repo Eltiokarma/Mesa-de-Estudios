@@ -288,3 +288,12 @@ test('lector en frío: el texto dice lo que el dibujo muestra y lo previo no ade
   // «Ahora tú» de masa y peso trae su dibujo
   for (let s = 0; s < 400; s++) { const c = def.ideas[1].ahoraTu.generar(s); if (!/astronauta/.test(plano(c.pregunta))) assert.ok(c.dibujo, `semilla ${s}`); }
 });
+test('verificación 26 nov: si un texto dice que g da los newtons de cada kilogramo, no le pone m/s² a esa cuenta sin decir que 1 m/s² es 1 N/kg', () => {
+  for (const i of def.ideas) for (const t of i.lee.tarjetas) {
+    const x = plano(t.texto);
+    if (/newtons pesa.*cada kilogramo/.test(x)) assert.match(x, /1 m\/s² es lo mismo que 1 N\/kg/, `${i.id} «${t.titulo}»: ${x}`);
+  }
+  // la D del astronauta (VVF) dice que I es verdadera: la masa baja
+  const ast = def.ideas[1].ejemplos.find(e => /astronauta/.test(e.titulo));
+  assert.match(plano(ast.solucion[ast.solucion.length - 1].texto), /D, si crees que la masa baja/);
+});
