@@ -1,0 +1,247 @@
+{
+  "plantilla": "binomio-practica",
+  "nota": "Un caso por tipo (24 tipos, seis ideas). entrada: la idea y el tipo que da generar(semilla, { idea }); esperado.texto: el texto de la alternativa correcta.",
+  "verificacion": "Script aparte (26 nov 2026, python3 con sympy, fuera del repo: scratchpad de la sesión, e9-algebra/cuentas-practica.py), que no usa el generador ni el núcleo: arma el binomio o el trinomio del enunciado con sympy y recalcula (expand, coeff_monomial, series, solve): los 24 valores cuadran. generador.test.js rehace además 2400 problemas (400 por idea) con un desarrollador de polinomios propio. Auditoría (26 nov): al vetar los ejemplos de la teoría cambiaron dos casos (cenefas, semilla 1: C(5, 3) = 10; indep, semilla 0: (x + 3/x²)³ da 9), rehechos con sympy aparte.",
+  "casos": [
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "pascal-elecciones",
+        "tipo": "coef"
+      },
+      "esperado": {
+        "texto": "252"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "pascal-elecciones",
+        "tipo": "fila"
+      },
+      "esperado": {
+        "texto": "36"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "pascal-elecciones",
+        "tipo": "cenefas"
+      },
+      "esperado": {
+        "texto": "10"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "pascal-elecciones",
+        "tipo": "iguales"
+      },
+      "esperado": {
+        "texto": "13"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "termino-general",
+        "tipo": "termino"
+      },
+      "esperado": {
+        "texto": "28x²"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "termino-general",
+        "tipo": "coef-signo"
+      },
+      "esperado": {
+        "texto": "−8"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "termino-general",
+        "tipo": "lugar"
+      },
+      "esperado": {
+        "texto": "lugar 5"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "termino-general",
+        "tipo": "n-termino"
+      },
+      "esperado": {
+        "texto": "9"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "termino-buscado",
+        "tipo": "existe"
+      },
+      "esperado": {
+        "texto": "No tiene"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "termino-buscado",
+        "tipo": "indep"
+      },
+      "esperado": {
+        "texto": "9"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "termino-buscado",
+        "tipo": "coef-xm"
+      },
+      "esperado": {
+        "texto": "12"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "termino-buscado",
+        "tipo": "param"
+      },
+      "esperado": {
+        "texto": "3"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "suma-coeficientes",
+        "tipo": "cuantos"
+      },
+      "esperado": {
+        "texto": "15"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "suma-coeficientes",
+        "tipo": "central"
+      },
+      "esperado": {
+        "texto": "5 670x⁸"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "suma-coeficientes",
+        "tipo": "suma"
+      },
+      "esperado": {
+        "texto": "1"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "suma-coeficientes",
+        "tipo": "n-suma"
+      },
+      "esperado": {
+        "texto": "6"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "exponente-no-natural",
+        "tipo": "termina"
+      },
+      "esperado": {
+        "texto": "7"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "exponente-no-natural",
+        "tipo": "x2"
+      },
+      "esperado": {
+        "texto": "−1/9"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "exponente-no-natural",
+        "tipo": "x3"
+      },
+      "esperado": {
+        "texto": "−5/16"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "exponente-no-natural",
+        "tipo": "aprox"
+      },
+      "esperado": {
+        "texto": "0,9616"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "potencia-trinomio",
+        "tipo": "multi"
+      },
+      "esperado": {
+        "texto": "12"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "potencia-trinomio",
+        "tipo": "terminos"
+      },
+      "esperado": {
+        "texto": "78"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "potencia-trinomio",
+        "tipo": "tri-num"
+      },
+      "esperado": {
+        "texto": "120"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "potencia-trinomio",
+        "tipo": "indep-tri"
+      },
+      "esperado": {
+        "texto": "252"
+      }
+    }
+  ]
+}

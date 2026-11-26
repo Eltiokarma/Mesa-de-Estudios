@@ -319,6 +319,26 @@
     "TAL-BICUAD-NINGUNA-descarta-todo": {
       "respaldo": "hipotesis",
       "describe": "Ve un valor de u negativo y cree que la ecuación no tiene raíces reales"
+    },
+    "SIG-pierde-el-signo": {
+      "respaldo": "parcial",
+      "describe": "Pierde el signo de (−q)ᵏ con k impar (Burroughs y colaboradores, ejemplo didáctico; docs/investigacion/etapa9/algebra.binomio-de-newton.md §3)"
+    },
+    "BLO-no-eleva-el-numero": {
+      "respaldo": "parcial",
+      "describe": "Eleva la letra pero no el número que la acompaña: pone b una sola vez (Burroughs y colaboradores, ejemplo didáctico)"
+    },
+    "IDX-usa-k-mas-uno": {
+      "respaldo": "hipotesis",
+      "describe": "Usa como k el número de veces que sale a, o el lugar: toma el término vecino"
+    },
+    "IDX-usa-k-menos-uno": {
+      "respaldo": "hipotesis",
+      "describe": "Usa una b menos de las que pide el exponente 0: toma el término anterior"
+    },
+    "TAL-BN-SINC-olvida-el-numero-de-b": {
+      "respaldo": "hipotesis",
+      "describe": "Da solo el número combinatorio C(n, k) y olvida el número que trae b, elevado a k"
     }
   },
   "pares": [
@@ -2158,6 +2178,148 @@
             "texto": "1",
             "valor": 1,
             "error": "TAL-BICUAD-POSITIVA-solo-la-positiva"
+          }
+        ]
+      }
+    },
+    {
+      "par": "bn-01",
+      "plantilla": "binomio-practica",
+      "unidad": "algebra.binomio-de-newton",
+      "mide": "Término general con signo: el coeficiente de xᵐ en (x − q)ⁿ sale con k = n − m y (−q)ᵏ (San Marcos 2026-I pide leer el término por su lugar)",
+      "A": {
+        "enunciado": "¿Cuál es el coeficiente de x⁴ en el desarrollo de (x − 2)⁷?",
+        "datos": {
+          "modelo": {
+            "n": 7,
+            "q": 2,
+            "m": 4
+          }
+        },
+        "opciones": [
+          {
+            "texto": "280",
+            "valor": 280,
+            "error": "SIG-pierde-el-signo"
+          },
+          {
+            "texto": "−280",
+            "valor": -280,
+            "correcta": true
+          },
+          {
+            "texto": "−70",
+            "valor": -70,
+            "error": "BLO-no-eleva-el-numero"
+          },
+          {
+            "texto": "560",
+            "valor": 560,
+            "error": "IDX-usa-k-mas-uno"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuál es el coeficiente de x³ en el desarrollo de (x − 3)⁶?",
+        "datos": {
+          "modelo": {
+            "n": 6,
+            "q": 3,
+            "m": 3
+          }
+        },
+        "opciones": [
+          {
+            "texto": "−60",
+            "valor": -60,
+            "error": "BLO-no-eleva-el-numero"
+          },
+          {
+            "texto": "1 215",
+            "valor": 1215,
+            "error": "IDX-usa-k-mas-uno"
+          },
+          {
+            "texto": "540",
+            "valor": 540,
+            "error": "SIG-pierde-el-signo"
+          },
+          {
+            "texto": "−540",
+            "valor": -540,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "bn-02",
+      "plantilla": "binomio-practica",
+      "unidad": "algebra.binomio-de-newton",
+      "mide": "Término independiente: el exponente de x del término general se iguala a 0 y el número de b se eleva a k",
+      "A": {
+        "enunciado": "¿Cuál es el término independiente del desarrollo de (x³ + 2/x)⁴?",
+        "datos": {
+          "modelo": {
+            "p": 3,
+            "q": 1,
+            "c": 2,
+            "n": 4
+          }
+        },
+        "opciones": [
+          {
+            "texto": "4",
+            "valor": 4,
+            "error": "TAL-BN-SINC-olvida-el-numero-de-b"
+          },
+          {
+            "texto": "8",
+            "valor": 8,
+            "error": "BLO-no-eleva-el-numero"
+          },
+          {
+            "texto": "32",
+            "valor": 32,
+            "correcta": true
+          },
+          {
+            "texto": "24",
+            "valor": 24,
+            "error": "IDX-usa-k-menos-uno"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuál es el término independiente del desarrollo de (x + 3/x)⁴?",
+        "datos": {
+          "modelo": {
+            "p": 1,
+            "q": 1,
+            "c": 3,
+            "n": 4
+          }
+        },
+        "opciones": [
+          {
+            "texto": "12",
+            "valor": 12,
+            "error": "IDX-usa-k-menos-uno"
+          },
+          {
+            "texto": "54",
+            "valor": 54,
+            "correcta": true
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "TAL-BN-SINC-olvida-el-numero-de-b"
+          },
+          {
+            "texto": "18",
+            "valor": 18,
+            "error": "BLO-no-eleva-el-numero"
           }
         ]
       }

@@ -1,0 +1,87 @@
+{
+  "titulo": "Binomio de Newton: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se desarrolla (a + b)¹⁰ y se juntan los términos semejantes. ¿Cuál es el coeficiente de a⁶b⁴? Datos: Cada término de (a + b)ⁿ sale de elegir a o b en cada uno de los n paréntesis. Número combinatorio, las maneras de elegir k cosas entre n sin importar el orden: C(n, k) = n!/(k!(n − k)!). n! = 1 · 2 · 3 · … · n, y 0! = 1. Alternativas: A) 0   B) 210   C) 5 040   D) 120   E) 24",
+      "respuesta": "B) 210",
+      "pasos": [
+        "Se eligen, entre los 10 paréntesis, los 4 que dan b.",
+        "C(10, 4) = 210."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Se desarrolla (x − 3)⁵ de x⁵ hacia abajo. ¿Cuál es el término de lugar 3? Datos: Término de lugar k + 1 de (a + b)ⁿ: tₖ₊₁ = C(n, k)aⁿ⁻ᵏbᵏ. Número combinatorio, las maneras de elegir k cosas entre n sin importar el orden: C(n, k) = n!/(k!(n − k)!). Un negativo con exponente par da positivo; con exponente impar, negativo. Alternativas: A) −15x⁴   B) −90x³   C) −30x³   D) 90x³   E) −270x²",
+      "respuesta": "D) 90x³",
+      "pasos": [
+        "El lugar 3 tiene k = 2, así que b = −3 sale 2 veces.",
+        "C(5, 2) · x³ · (−3)² = 90x³."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Se desarrolla (x + 3/x)⁶. ¿Cuál es el término independiente? Datos: Término de lugar k + 1 de (a + b)ⁿ: tₖ₊₁ = C(n, k)aⁿ⁻ᵏbᵏ. Número combinatorio, las maneras de elegir k cosas entre n sin importar el orden: C(n, k) = n!/(k!(n − k)!). 1/x = x⁻¹, y 1/x² = x⁻². (xᵐ)ⁿ = xᵐⁿ. Término independiente: el que no tiene x (exponente 0). Alternativas: A) 1 215   B) 20   C) 135   D) 540   E) 60",
+      "respuesta": "D) 540",
+      "pasos": [
+        "El exponente de x es (6 − k) − k, y al igualarlo a 0 sale k = 3.",
+        "C(6, 3) · 3³ = 540."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Se desarrolla (2x − 1)³. ¿Cuánto suman sus coeficientes? Datos: Suma de coeficientes de P: el valor de P con cada letra igual a 1. (a + b)ⁿ tiene n + 1 términos, de k = 0 a k = n. Alternativas: A) −1   B) 1   C) 8   D) 27",
+      "respuesta": "B) 1",
+      "pasos": [
+        "Con x = 1, cada término vale su coeficiente, y el binomio da la suma de una vez.",
+        "(2 − 1)³ = 1."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Se desarrolla (1 + x) elevado a 3/2. ¿Cuál es el coeficiente de x²? Datos: Coeficiente de xᵏ en (1 + x) elevado a α: α(α − 1)…(α − k + 1)/k! n! = 1 · 2 · 3 · … · n, y 0! = 1. Alternativas: A) −3/8   B) 3/2   C) 3/4   D) 0   E) 3/8",
+      "respuesta": "E) 3/8",
+      "pasos": [
+        "Con k = 2, el coeficiente es α(α − 1)/2!, y aquí α = 3/2.",
+        "(3/2)(1/2)/2 = 3/8."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se desarrolla (a + b + c)⁴. ¿Cuál es el coeficiente de ab²c? Datos: En (a + b + c)ⁿ, el término con a p veces, b q veces y c r veces: n!/(p! q! r!). n! = 1 · 2 · 3 · … · n, y 0! = 1. Alternativas: A) 12   B) 4   C) 24   D) 6",
+      "respuesta": "A) 12",
+      "pasos": [
+        "Se reparten los 4 paréntesis: 1 para a, 2 para b y 1 para c.",
+        "4!/(1! 2! 1!) = 12."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En el desarrollo de (x + 2)ⁿ, el término de lugar 2 es 18x⁸. ¿Cuánto vale n? Datos: Término de lugar k + 1 de (a + b)ⁿ: tₖ₊₁ = C(n, k)aⁿ⁻ᵏbᵏ. Número combinatorio, las maneras de elegir k cosas entre n sin importar el orden: C(n, k) = n!/(k!(n − k)!). Alternativas: A) 10   B) 9   C) 8   D) 2",
+      "respuesta": "B) 9",
+      "pasos": [
+        "El lugar 2 tiene k = 1, así que x sale n − 1 veces, y eso tiene que dar 8.",
+        "n − 1 = 8, así que n = 9."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "El término independiente de (x² + m/x)³, con m positivo, es 27. ¿Cuánto vale m? Datos: Término de lugar k + 1 de (a + b)ⁿ: tₖ₊₁ = C(n, k)aⁿ⁻ᵏbᵏ. Número combinatorio, las maneras de elegir k cosas entre n sin importar el orden: C(n, k) = n!/(k!(n − k)!). 1/x = x⁻¹, y 1/x² = x⁻². (xᵐ)ⁿ = xᵐⁿ. Término independiente: el que no tiene x (exponente 0). Alternativas: A) −3   B) 9   C) 3   D) 5",
+      "respuesta": "C) 3",
+      "pasos": [
+        "El término sin x tiene k = 2, y vale C(3, 2)m² = 3m².",
+        "m² = 9, así que m = 3."
+      ]
+    }
+  ]
+}

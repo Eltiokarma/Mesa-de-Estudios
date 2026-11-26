@@ -5,6 +5,9 @@
   "unidades": [
     "algebra.binomio-de-newton"
   ],
+  "rehacer": [
+    "algebra.binomio-de-newton"
+  ],
   "estado": "borrador",
   "version": "0.1.0",
   "escena": "index.html",

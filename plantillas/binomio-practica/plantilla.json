@@ -1,0 +1,20 @@
+{
+  "id": "binomio-practica",
+  "titulo": "Binomio de Newton",
+  "formato": "predicciones",
+  "unidades": [
+    "algebra.binomio-de-newton"
+  ],
+  "temas": [
+    "Desarrollo del binomio",
+    "Término general",
+    "Binomio con exponente no natural",
+    "Potencia de un polinomio"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
