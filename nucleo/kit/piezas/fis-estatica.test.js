@@ -42,6 +42,12 @@ test('las fuerzas son flechas con su color; los rótulos con subíndice y con fl
   // la caja con fig: true no deja que un rótulo la pise
   for (const r of g.rotulos) for (const o of g.objetos.filter(x => x.fig)) assert.ok(!pisa(r, o), `«${r.texto}» pisa la caja`);
 });
+test('subíndices compuestos: «v_f,x», «P_total,x» y «x_CM(t)» van enteros abajo (impulso y choques, 26 nov)', () => {
+  const { s } = revisar('subindices', { alto: 120, textos: [{ x: 12, y: 20, texto: 'v_f,x = 2 m/s' }, { x: 12, y: 50, texto: 'P_total,x = 6 kg·m/s' }, { x: 12, y: 80, texto: 'x_CM(t) = ?' }] });
+  assert.match(s, /<tspan font-size="72%" dy="\.35em">f,x<\/tspan>/);
+  assert.match(s, /<tspan font-size="72%" dy="\.35em">total,x<\/tspan>/);
+  assert.match(s, /<tspan font-size="72%" dy="\.35em">CM\(t\)<\/tspan>/);
+});
 test('cortes y pasos: «Mira» agrega lo de cada corte, y un elemento con paso aparece desde ese paso', () => {
   const d = { alto: 200, objetos: [{ tipo: 'nudo', en: [160, 100] }], flechas: [{ de: [160, 100], ang: 90, largo: 40, texto: 'A', paso: 1 }], cortes: [{ textos: [] }, { textos: [{ x: 8, y: 30, texto: 'segundo' }] }] };
   assert.equal(P.geometria(d, { paso: 0, corte: 0 }).flechas.length, 0);

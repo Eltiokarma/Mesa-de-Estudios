@@ -463,7 +463,8 @@
     return { W, M, H, s, rotulos: rot, objetos, flechas };
   }
 
-  const SUB = /([A-Za-zμτθ])_([A-Za-z0-9]{1,3})/g;
+  // Subíndice: «N_A», «v_f,x», «P_total,x», «x_CM(t)» (compuestos con coma y paréntesis: impulso y choques, 26 nov).
+  const SUB = /([A-Za-zμτθ])_([A-Za-z0-9]{1,14}(?:,[A-Za-z0-9]{1,14})*(?:\([A-Za-z0-9]{1,3}\))?)/g;
   function conSubindices(t) {
     SUB.lastIndex = 0;
     if (!SUB.test(t)) { SUB.lastIndex = 0; return null; }

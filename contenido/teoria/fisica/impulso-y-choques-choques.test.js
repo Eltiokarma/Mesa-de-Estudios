@@ -29,10 +29,11 @@ function cerca(a, b, lugar, tolerancia = 1e-8) {
   assert.ok(Number.isFinite(a) && Number.isFinite(b), lugar + ': valor no finito');
   assert.ok(Math.abs(a - b) <= tolerancia, `${lugar}: ${a} no coincide con ${b}`);
 }
-function valorMostrado(n, original, lugar) {
+// Auditoría (26 nov): las alternativas ya no llevan «≈» (delataba la correcta); se exige solo en explicaciones.
+function valorMostrado(n, original, lugar, exigeAprox = true) {
   const t = texto(original), red = Math.round(n * 1000) / 1000;
   cerca(numero(original), red, lugar, 1e-8);
-  if (Math.abs(n - red) > 1e-8) assert.ok(t.includes('≈'), lugar + ': falta ≈ para un redondeo');
+  if (exigeAprox && Math.abs(n - red) > 1e-8) assert.ok(t.includes('≈'), lugar + ': falta ≈ para un redondeo');
 }
 
 // Oráculo separado: pasa primero al sistema del centro de masa. La velocidad
@@ -156,7 +157,7 @@ function igualdades(x) {
 }
 function verificarCaso(c, comprobante, nombre) {
   const q = fisica(c.verificacion);
-  valorMostrado(q.esperado, comprobante, nombre);
+  valorMostrado(q.esperado, comprobante, nombre, typeof comprobante !== 'string');
   assert.doesNotMatch(JSON.stringify(c), /NaN|undefined|\[object Object\]/);
   assert.ok(c.datos.length >= 1 && c.datos.length <= 6);
   if (q.unidad) assert.ok(texto(comprobante).includes(q.unidad), nombre + ': falta unidad');
@@ -249,7 +250,7 @@ test('choques: 400 semillas por momento, cada alternativa, explicación y caso f
       assert.equal(vals.filter(v => Math.abs(v - Math.round(q.esperado * 1000) / 1000) < 1e-8).length, 1);
       for (const op of c.opciones.filter(o => !o.correcta)) {
         const esperado = errorEsperado(c.verificacion, op.id);
-        valorMostrado(esperado, op.texto, nombre + '/' + op.id);
+        valorMostrado(esperado, op.texto, nombre + '/' + op.id, false);
         valorMostrado(esperado, op.siFuera, nombre + '/explicación ' + op.id);
         assert.match(op.siFuera, /^Bien /);
         igualdades(op.siFuera);
@@ -286,14 +287,15 @@ test('choques: misiones por fuerza bruta y relaciones visibles durante el juego'
 
 test('choques: predicciones con una respuesta y errores numéricos explicados', () => {
   const esperado = [
-    { c: (2 * 6 - 4 * 1.5) / 6, rapideces: (2 * 6 + 4 * 1.5) / 6, 'sin-b': 2 * 6 / 6, energia: Math.sqrt((2 * 6 ** 2 + 4 * 1.5 ** 2) / 6) },
-    { c: (4 - 2) / (6 - 2), 'velocidad-sola': 4 / 6, 'otro-cuerpo': 2 / 6, inversa: (6 - 2) / (4 - 2) },
+    // Auditoría (26 nov): «energia» se cambió por «promedio» y la predicción de restitución pasó a e = 0,8.
+    { c: (2 * 6 - 4 * 1.5) / 6, rapideces: (2 * 6 + 4 * 1.5) / 6, 'sin-b': 2 * 6 / 6, promedio: (6 - 1.5) / 2 },
+    { c: (9.5 - 5.5) / (10 - 5), 'velocidad-sola': 9.5 / 10, 'otro-cuerpo': 5.5 / 10, inversa: (10 - 5) / (9.5 - 5.5) },
   ];
   ideas.forEach((idea, i) => {
     assert.equal(idea.predice.opciones.filter(o => o.correcta).length, 1);
     assert.equal(new Set(idea.predice.opciones.map(o => numero(o.texto))).size, 4);
     for (const op of idea.predice.opciones) {
-      valorMostrado(esperado[i][op.id], op.texto, idea.id + '/Predice/' + op.id);
+      valorMostrado(esperado[i][op.id], op.texto, idea.id + '/Predice/' + op.id, false);
       if (!op.correcta) valorMostrado(esperado[i][op.id], op.siFuera, idea.id + '/siFuera/' + op.id);
     }
     for (const p of idea.mira.pasos) { igualdades(p.ecuacion); igualdades(p.texto); }
