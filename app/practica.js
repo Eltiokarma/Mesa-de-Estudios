@@ -47,7 +47,7 @@ const ICONO_MENOS = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden
 const ICONO_MAS = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 12h12M12 6v12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
 
 // «A_y» del texto de un generador se ve como A con subíndice y (no hay «y» subíndice en Unicode: «ᵧ» es una gamma).
-const conSub = h => h.replace(/([A-Za-zÁÉÍÓÚáéíóúθρ\)])_([a-z0-9]{1,3})/g, '$1<sub>$2</sub>');
+const conSub = h => h.replace(/([A-Za-zÁÉÍÓÚáéíóúθρ\)])_([A-Za-z0-9]{1,14}(?:,[A-Za-z0-9]{1,14})*(?:\([A-Za-z0-9]{1,3}\))?)/g, '$1<sub>$2</sub>');
 function texto(partes, p, esc) {
   return conSub(partes.map(x => {
     // Un «\n» del generador abre línea nueva: las pistas I, II, III… van una por renglón.
