@@ -6,6 +6,9 @@
     "aritmetica.potenciacion-y-radicacion"
   ],
   "estado": "borrador",
+  "rehacer": [
+    "aritmetica.potenciacion-y-radicacion"
+  ],
   "version": "0.1.0",
   "escena": "index.html",
   "motor": "motor.js",

@@ -507,11 +507,11 @@
           ]
         }
       },
-      "potencial_visual": "bajo",
+      "potencial_visual": "medio",
       "grado": 3,
-      "requiere": ["aritmetica.numeros-primos-y-divisores"],
-      "plantillas": ["potenciacion", "numeros-sucesiones"],
-      "investigacion": null
+      "requiere": ["aritmetica.numeros-racionales"],
+      "plantillas": ["potencias-raices", "potenciacion", "numeros-sucesiones"],
+      "investigacion": "docs/investigacion/etapa9/aritmetica.potenciacion-y-radicacion.md"
     },
     {
       "id": "aritmetica.sucesiones-y-series",

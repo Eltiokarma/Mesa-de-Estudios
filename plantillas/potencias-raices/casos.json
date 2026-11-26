@@ -1,0 +1,338 @@
+{
+ "plantilla": "potencias-raices",
+ "nota": "entrada es _datos del generador; un caso por tipo (24), con la semilla y la idea con que se generó. respuesta: la clave de la correcta, como texto.",
+ "verificacion": "Script aparte (26 nov 2026, python3, fuera del repo: scratchpad de la sesión, e9-aritmetica/casos.py), que no usa el generador ni el núcleo: lee solo los parámetros de cada caso (y, en los tipos de «cuál», las cuatro alternativas) y recalcula con enteros de Python: raíces por búsqueda, isqrt, conteos uno por uno y décimas como enteros. Los 24 casos cuadran con el generador.",
+ "casos": [
+  {
+   "semilla": "c1",
+   "idea": "perfectos",
+   "entrada": {
+    "idea": "perfectos",
+    "tipo": "es-cuadrado",
+    "nivel": 1,
+    "b1": 8,
+    "e1": 2,
+    "b2": 3,
+    "e2": 2
+   },
+   "esperado": {
+    "respuesta": "8² × 3²"
+   }
+  },
+  {
+   "semilla": "c5",
+   "idea": "perfectos",
+   "entrada": {
+    "idea": "perfectos",
+    "tipo": "mult-cuadrado",
+    "nivel": 2,
+    "N": 168,
+    "n": 2
+   },
+   "esperado": {
+    "respuesta": "42"
+   }
+  },
+  {
+   "semilla": "c3",
+   "idea": "perfectos",
+   "entrada": {
+    "idea": "perfectos",
+    "tipo": "mult-cubo",
+    "nivel": 2,
+    "N": 400,
+    "n": 3
+   },
+   "esperado": {
+    "respuesta": "20"
+   }
+  },
+  {
+   "semilla": "c0",
+   "idea": "perfectos",
+   "entrada": {
+    "idea": "perfectos",
+    "tipo": "div-cuadrados",
+    "nivel": 3,
+    "N": 13500
+   },
+   "esperado": {
+    "respuesta": "8"
+   }
+  },
+  {
+   "semilla": "c1",
+   "idea": "exclusion",
+   "entrada": {
+    "idea": "exclusion",
+    "tipo": "descarta",
+    "nivel": 1,
+    "mal": 490,
+    "ks": [
+     63,
+     48,
+     66
+    ]
+   },
+   "esperado": {
+    "respuesta": "490"
+   }
+  },
+  {
+   "semilla": "c5",
+   "idea": "exclusion",
+   "entrada": {
+    "idea": "exclusion",
+    "tipo": "cifra-final",
+    "nivel": 1,
+    "d": 6
+   },
+   "esperado": {
+    "respuesta": "6"
+   }
+  },
+  {
+   "semilla": "c3",
+   "idea": "exclusion",
+   "entrada": {
+    "idea": "exclusion",
+    "tipo": "pasa-no-es",
+    "nivel": 2,
+    "x": 9651,
+    "k1": 45,
+    "k2": 66,
+    "malo": 2723
+   },
+   "esperado": {
+    "respuesta": "9 651"
+   }
+  },
+  {
+   "semilla": "c0",
+   "idea": "exclusion",
+   "entrada": {
+    "idea": "exclusion",
+    "tipo": "oculta",
+    "nivel": 3,
+    "tapado": "15☐1"
+   },
+   "esperado": {
+    "respuesta": "2"
+   }
+  },
+  {
+   "semilla": "c1",
+   "idea": "raiz-entera",
+   "entrada": {
+    "idea": "raiz-entera",
+    "tipo": "raiz-residuo",
+    "nivel": 1,
+    "N": 659
+   },
+   "esperado": {
+    "respuesta": "k = 25, r = 34"
+   }
+  },
+  {
+   "semilla": "c5",
+   "idea": "raiz-entera",
+   "entrada": {
+    "idea": "raiz-entera",
+    "tipo": "faltan",
+    "nivel": 2,
+    "N": 798
+   },
+   "esperado": {
+    "respuesta": "43"
+   }
+  },
+  {
+   "semilla": "c3",
+   "idea": "raiz-entera",
+   "entrada": {
+    "idea": "raiz-entera",
+    "tipo": "mayor-n",
+    "nivel": 3,
+    "k": 44
+   },
+   "esperado": {
+    "respuesta": "2024"
+   }
+  },
+  {
+   "semilla": "c0",
+   "idea": "raiz-entera",
+   "entrada": {
+    "idea": "raiz-entera",
+    "tipo": "dos-residuos",
+    "nivel": 3,
+    "r": 14,
+    "re": 9
+   },
+   "esperado": {
+    "respuesta": "135"
+   }
+  },
+  {
+   "semilla": "c1",
+   "idea": "raiz-cubica",
+   "entrada": {
+    "idea": "raiz-cubica",
+    "tipo": "cubica",
+    "nivel": 1,
+    "N": 1414
+   },
+   "esperado": {
+    "respuesta": "k = 11, r = 83"
+   }
+  },
+  {
+   "semilla": "c5",
+   "idea": "raiz-cubica",
+   "entrada": {
+    "idea": "raiz-cubica",
+    "tipo": "siguiente-cubo",
+    "nivel": 2,
+    "k": 14
+   },
+   "esperado": {
+    "respuesta": "631"
+   }
+  },
+  {
+   "semilla": "c3",
+   "idea": "raiz-cubica",
+   "entrada": {
+    "idea": "raiz-cubica",
+    "tipo": "arista",
+    "nivel": 3,
+    "N": 5832
+   },
+   "esperado": {
+    "respuesta": "18"
+   }
+  },
+  {
+   "semilla": "c0",
+   "idea": "raiz-cubica",
+   "entrada": {
+    "idea": "raiz-cubica",
+    "tipo": "mayor-cubo",
+    "nivel": 3,
+    "k": 6
+   },
+   "esperado": {
+    "respuesta": "342"
+   }
+  },
+  {
+   "semilla": "c1",
+   "idea": "contar",
+   "entrada": {
+    "idea": "contar",
+    "tipo": "cifras",
+    "nivel": 1,
+    "n": 3,
+    "c": 2
+   },
+   "esperado": {
+    "respuesta": "2"
+   }
+  },
+  {
+   "semilla": "c5",
+   "idea": "contar",
+   "entrada": {
+    "idea": "contar",
+    "tipo": "entre",
+    "nivel": 2,
+    "a": 2647,
+    "b": 6536
+   },
+   "esperado": {
+    "respuesta": "29"
+   }
+  },
+  {
+   "semilla": "c3",
+   "idea": "contar",
+   "entrada": {
+    "idea": "contar",
+    "tipo": "cubos-entre",
+    "nivel": 2,
+    "a": 386,
+    "b": 2318
+   },
+   "esperado": {
+    "respuesta": "6"
+   }
+  },
+  {
+   "semilla": "c0",
+   "idea": "contar",
+   "entrada": {
+    "idea": "contar",
+    "tipo": "o-cubos",
+    "nivel": 3,
+    "L": 808
+   },
+   "esperado": {
+    "respuesta": "34"
+   }
+  },
+  {
+   "semilla": "c1",
+   "idea": "aproximadas",
+   "entrada": {
+    "idea": "aproximadas",
+    "tipo": "decimas",
+    "nivel": 1,
+    "N": 63
+   },
+   "esperado": {
+    "respuesta": "Entre 7,9 y 8,0"
+   }
+  },
+  {
+   "semilla": "c5",
+   "idea": "aproximadas",
+   "entrada": {
+    "idea": "aproximadas",
+    "tipo": "raiz-suma",
+    "nivel": 1,
+    "a": 144,
+    "b": 256
+   },
+   "esperado": {
+    "respuesta": "20"
+   }
+  },
+  {
+   "semilla": "c3",
+   "idea": "aproximadas",
+   "entrada": {
+    "idea": "aproximadas",
+    "tipo": "exceso",
+    "nivel": 2,
+    "N": 96,
+    "exceso": false
+   },
+   "esperado": {
+    "respuesta": "9,7 m"
+   }
+  },
+  {
+   "semilla": "c0",
+   "idea": "aproximadas",
+   "entrada": {
+    "idea": "aproximadas",
+    "tipo": "centesimas",
+    "nivel": 3,
+    "N": 37
+   },
+   "esperado": {
+    "respuesta": "Entre 6,08 y 6,09 m"
+   }
+  }
+ ]
+}

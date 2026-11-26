@@ -140,6 +140,13 @@
         "Con 4 cifras en base 7 van de 1000₍₇₎ = 7³ = 343 hasta 6666₍₇₎ = 7⁴ − 1 = 2400.",
         "Cubos en ese tramo: 7³ = 343 hasta 13³ = 2197 (14³ = 2744 se pasa).",
         "Las raíces van de 7 a 13: son 13 − 7 + 1 = 7, y suman 7 + 8 + … + 13 = 70."
+      ],
+      "unidades": [
+        "aritmetica.potenciacion-y-radicacion"
+      ],
+      "datos": [
+        "En base 7, el menor numeral de 4 cifras es 1000₍₇₎ = 7³ y el mayor, 6666₍₇₎ = 7⁴ − 1",
+        "Del primero, p, al último, u, hay u − p + 1 números"
       ]
     }
   ]

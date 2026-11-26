@@ -1,0 +1,80 @@
+{
+  "titulo": "La bandeja cuadrada de doña Juana: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Doña Juana tiene 740 caramelos para la vitrina y, con ellos, arma la mayor bandeja cuadrada. ¿De cuántos caramelos por lado es, y cuántos sobran? Datos: Raíz entera: el mayor entero k con k² ≤ N. Residuo: r = N − k². Alternativas: A) k = 27, r = 686   B) k = 27, r = 44   C) k = 27, r = 11   D) k = 28, r = 44",
+      "respuesta": "C) k = 27, r = 11",
+      "pasos": [
+        "27² = 729 ≤ 740 < 784 = 28², así que el lado es 27 y sobran 11."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Doña Juana anota cuatro números en su cuaderno. ¿Cuál de ellos no puede ser un cuadrado perfecto? Datos: Ningún cuadrado perfecto termina en 2, 3, 7 u 8. Si un cuadrado termina en ceros, tiene una cantidad par de ceros. Si un cuadrado termina en 5, termina en 25. Alternativas: A) 7 396   B) 7 135   C) 1 600   D) 8 464",
+      "respuesta": "B) 7 135",
+      "pasos": [
+        "7 135 no pasa los criterios de exclusión, porque ningún cuadrado termina así: se descarta. Los otros tres son cuadrados perfectos."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Doña Juana busca √96 sin la tecla de la raíz. ¿Entre qué décimas seguidas está? Datos: Si x² ≤ N < (x + 0,1)², entonces x ≤ √N < x + 0,1. 9² = 81; 10² = 100. Alternativas: A) Entre 9,5 y 9,6   B) Entre 9,8 y 9,9   C) Entre 9,6 y 9,7   D) Entre 9,7 y 9,8",
+      "respuesta": "D) Entre 9,7 y 9,8",
+      "pasos": [
+        "9,7² = 94,09 ≤ 96 < 96,04 = 9,8², así que √96 está entre 9,7 y 9,8."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Doña Juana tiene 40 = 2³ × 5 caramelos. ¿Por qué número mínimo hay que multiplicar esa cantidad para obtener un cuadrado perfecto? Datos: Cuadrado perfecto: cada primo de su factorización tiene exponente par. Un primo sin exponente escrito tiene exponente 1. Alternativas: A) 2   B) 10   C) 25   D) 40",
+      "respuesta": "B) 10",
+      "pasos": [
+        "Cada exponente que no cumple sube al par que sigue: se multiplica por 10.",
+        "40 × 10 = 400 = 20²."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "El cubo de 13 × 13 × 13 cubitos está armado. ¿Cuántos cubitos hay que agregar para armar el de 14 × 14 × 14? Datos: 13 × 13 = 169. 13 × 13 × 13 = 2 197. Alternativas: A) 547   B) 507   C) 27   D) 2 744",
+      "respuesta": "A) 547",
+      "pasos": [
+        "Hacen falta tres caras de 169 cubitos, tres aristas de 13 y una esquina: 507 + 39 + 1 = 547."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Doña Juana tendrá de 1 203 a 8 796 caramelos. ¿Cuántas de esas cantidades le permiten armar una bandeja cuadrada sin que sobre ninguno? Datos: Cuadrados de a hasta b: sus bases van desde la menor k con k² ≥ a hasta la mayor con k² ≤ b. Del entero menor al mayor, los dos incluidos, hay «mayor − menor + 1» enteros. Alternativas: A) 93   B) 58   C) 59   D) 87",
+      "respuesta": "C) 59",
+      "pasos": [
+        "34² = 1 156 queda antes del tramo, así que las bases van de 35 a 93: 93 − 35 + 1 = 59."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "El número 25☐0 es un cuadrado perfecto. ¿Qué cifra va en ☐? Datos: La cifra final de k² es la cifra final de d × d, donde d es la cifra final de k. Un número que queda entre dos cuadrados seguidos no es un cuadrado perfecto. Alternativas: A) 4   B) 7   C) 0   D) 2",
+      "respuesta": "C) 0",
+      "pasos": [
+        "Con 0 queda 2 500 = 50²; con las otras cifras, el número queda entre dos cuadrados seguidos."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Doña Juana numera sus caramelos del 1 al 1 187. ¿Cuántos de esos números son cuadrados perfectos o cubos perfectos? Datos: Cuadrados de a hasta b: sus bases van desde la menor k con k² ≥ a hasta la mayor con k² ≤ b. Cubos de a hasta b: sus bases van desde la menor k con k³ ≥ a hasta la mayor con k³ ≤ b. Un número es cuadrado y cubo a la vez si es una sexta potencia, como 1, 64 o 729. Alternativas: A) 44   B) 41   C) 3   D) 38",
+      "respuesta": "B) 41",
+      "pasos": [
+        "Hay 34 cuadrados y 10 cubos, y 3 de ellos son las dos cosas: 34 + 10 − 3 = 41."
+      ]
+    }
+  ]
+}

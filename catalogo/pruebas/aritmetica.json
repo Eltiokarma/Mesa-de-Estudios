@@ -6,7 +6,7 @@
   "informes": [
     "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
   ],
-  "nota": "Diez pares. Desde el 18 nov (docs/etapa4/decisiones.md, Las cuatro operaciones), dos son de Las cuatro operaciones: la resta con ceros (ari-17, de la escena, que salió de la reserva) y las cifras ocultas en una resta (ari-30, de la práctica operaciones-cifras, como San Marcos 2022 y 2024-I). El resto por exceso (ari-18) y el complemento (ari-29) quedan en la reserva, con sus verificadores. Para quedar en diez, el segundo par de porcentajes (ari-04) y el de MCD y MCM (fr-02) pasaron a la reserva sin cambios; regla de tres y sucesiones conservan sus dos pares. Los precios están fuera de la lista del generador de porcentajes, para que ningún ítem salga igual en la práctica. Divisibilidad (19 nov) no entra en los diez: sus dos pares, el conteo de múltiplos en un tramo (ari-31) y la cifra oculta con 9 (ari-32), de la práctica divisibilidad-restos, quedan en la reserva con sus verificadores. Números primos y divisores (19 nov) tampoco entra: sus dos pares, la cantidad de divisores (ari-33) y las fracciones irreductibles con la función de Euler (ari-34), de la práctica primos-divisores, quedan en la reserva con sus verificadores. MCD y MCM (19 nov) tampoco entra: sus dos pares, el mismo resto con dos divisores (ari-35) y los múltiplos de uno o de otro (ari-36), de la práctica mcd-mcm, quedan en la reserva con sus verificadores. Números racionales (19 nov, etapa 8) tampoco entra (fr-01, la suma de fracciones, ya está en las formas): sus dos pares, lo que queda tras dos ventas (ari-37) y la generatriz de un periódico mixto (ari-38), de la práctica racionales, quedan en la reserva con sus verificadores.",
+  "nota": "Diez pares. Desde el 18 nov (docs/etapa4/decisiones.md, Las cuatro operaciones), dos son de Las cuatro operaciones: la resta con ceros (ari-17, de la escena, que salió de la reserva) y las cifras ocultas en una resta (ari-30, de la práctica operaciones-cifras, como San Marcos 2022 y 2024-I). El resto por exceso (ari-18) y el complemento (ari-29) quedan en la reserva, con sus verificadores. Para quedar en diez, el segundo par de porcentajes (ari-04) y el de MCD y MCM (fr-02) pasaron a la reserva sin cambios; regla de tres y sucesiones conservan sus dos pares. Los precios están fuera de la lista del generador de porcentajes, para que ningún ítem salga igual en la práctica. Divisibilidad (19 nov) no entra en los diez: sus dos pares, el conteo de múltiplos en un tramo (ari-31) y la cifra oculta con 9 (ari-32), de la práctica divisibilidad-restos, quedan en la reserva con sus verificadores. Números primos y divisores (19 nov) tampoco entra: sus dos pares, la cantidad de divisores (ari-33) y las fracciones irreductibles con la función de Euler (ari-34), de la práctica primos-divisores, quedan en la reserva con sus verificadores. MCD y MCM (19 nov) tampoco entra: sus dos pares, el mismo resto con dos divisores (ari-35) y los múltiplos de uno o de otro (ari-36), de la práctica mcd-mcm, quedan en la reserva con sus verificadores. Números racionales (19 nov, etapa 8) tampoco entra (fr-01, la suma de fracciones, ya está en las formas): sus dos pares, lo que queda tras dos ventas (ari-37) y la generatriz de un periódico mixto (ari-38), de la práctica racionales, quedan en la reserva con sus verificadores. Potenciación y radicación (26 nov, etapa 9) tampoco entra: sus dos pares nuevos, el mayor número con raíz entera k (ari-39) y el número desde sus dos residuos (ari-40), de la práctica potencias-raices, quedan en la reserva con sus verificadores, junto a ari-19 y ari-20.",
   "errores": {
     "suma-descuentos": {
       "respaldo": "documentado",
@@ -407,6 +407,30 @@
     "olvida-el-cero": {
       "respaldo": "hipotesis",
       "describe": "Resta la cifra de antes pero olvida el 0 del denominador (AT-SIN-CERO)"
+    },
+    "suma-2k-mas-1": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que pueden sobrar 2k + 1 y llega al cuadrado siguiente (AT-MAS-UNO)"
+    },
+    "suma-una-fila": {
+      "respaldo": "hipotesis",
+      "describe": "Suma solo una fila nueva, k, como residuo máximo (AT-UNA-FILA)"
+    },
+    "olvida-el-residuo": {
+      "respaldo": "hipotesis",
+      "describe": "Da k² sin el residuo (AT-SIN-RESIDUO)"
+    },
+    "suma-los-residuos": {
+      "respaldo": "hipotesis",
+      "describe": "Suma lo que sobra y lo que falta y lo da como el número (AT-SUMA)"
+    },
+    "da-la-raiz": {
+      "respaldo": "hipotesis",
+      "describe": "Halla la raíz k y la da como el número (AT-DA-K)"
+    },
+    "residuo-sobre-el-siguiente": {
+      "respaldo": "hipotesis",
+      "describe": "Suma lo que sobra al cuadrado siguiente, no al de k (AT-EXCESO)"
     }
   },
   "pares": [
@@ -2665,6 +2689,134 @@
           {
             "texto": "23/100",
             "error": "corta-el-decimal"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-39",
+      "plantilla": "potencias-raices",
+      "unidad": "aritmetica.potenciacion-y-radicacion",
+      "nombreUnidad": "Potenciación y radicación",
+      "mide": "El residuo de la raíz cuadrada entera llega a lo más a 2k: el mayor número con raíz k es k² + 2k",
+      "A": {
+        "enunciado": "La raíz cuadrada entera de un número es 19. Si el residuo es el más grande que se puede, ¿cuánto vale el número?",
+        "datos": {
+          "k": 19
+        },
+        "opciones": [
+          {
+            "texto": "400",
+            "valor": 400,
+            "error": "suma-2k-mas-1"
+          },
+          {
+            "texto": "399",
+            "valor": 399,
+            "correcta": true
+          },
+          {
+            "texto": "380",
+            "valor": 380,
+            "error": "suma-una-fila"
+          },
+          {
+            "texto": "361",
+            "valor": 361,
+            "error": "olvida-el-residuo"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "La raíz cuadrada entera de un número es 17. Si el residuo es el más grande que se puede, ¿cuánto vale el número?",
+        "datos": {
+          "k": 17
+        },
+        "opciones": [
+          {
+            "texto": "306",
+            "valor": 306,
+            "error": "suma-una-fila"
+          },
+          {
+            "texto": "289",
+            "valor": 289,
+            "error": "olvida-el-residuo"
+          },
+          {
+            "texto": "324",
+            "valor": 324,
+            "error": "suma-2k-mas-1"
+          },
+          {
+            "texto": "323",
+            "valor": 323,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-40",
+      "plantilla": "potencias-raices",
+      "unidad": "aritmetica.potenciacion-y-radicacion",
+      "nombreUnidad": "Potenciación y radicación",
+      "mide": "Lo que sobra y lo que falta suman 2k + 1: de ahí sale la raíz, y el número es k² más lo que sobra",
+      "A": {
+        "enunciado": "Un número no es cuadrado perfecto. Del mayor cuadrado menor que él hasta el número hay 20 unidades, y del número hasta el menor cuadrado mayor que él hay 9. ¿Cuál es el número?",
+        "datos": {
+          "r": 20,
+          "re": 9
+        },
+        "opciones": [
+          {
+            "texto": "29",
+            "valor": 29,
+            "error": "suma-los-residuos"
+          },
+          {
+            "texto": "216",
+            "valor": 216,
+            "correcta": true
+          },
+          {
+            "texto": "14",
+            "valor": 14,
+            "error": "da-la-raiz"
+          },
+          {
+            "texto": "245",
+            "valor": 245,
+            "error": "residuo-sobre-el-siguiente"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un número no es cuadrado perfecto. Del mayor cuadrado menor que él hasta el número hay 7 unidades, y del número hasta el menor cuadrado mayor que él hay 24. ¿Cuál es el número?",
+        "datos": {
+          "r": 7,
+          "re": 24
+        },
+        "opciones": [
+          {
+            "texto": "263",
+            "valor": 263,
+            "error": "residuo-sobre-el-siguiente"
+          },
+          {
+            "texto": "15",
+            "valor": 15,
+            "error": "da-la-raiz"
+          },
+          {
+            "texto": "232",
+            "valor": 232,
+            "correcta": true
+          },
+          {
+            "texto": "31",
+            "valor": 31,
+            "error": "suma-los-residuos"
           }
         ]
       }

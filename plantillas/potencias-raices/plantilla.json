@@ -1,0 +1,20 @@
+{
+  "id": "potencias-raices",
+  "titulo": "La bandeja cuadrada de doña Juana",
+  "formato": "predicciones",
+  "unidades": [
+    "aritmetica.potenciacion-y-radicacion"
+  ],
+  "temas": [
+    "Cuadrados y cubos perfectos",
+    "Criterios de inclusión y exclusión",
+    "Raíz cuadrada y cúbica entera",
+    "Raíces aproximadas"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

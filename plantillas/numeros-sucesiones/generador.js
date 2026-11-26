@@ -774,7 +774,8 @@
     const correcta = sb === 'cuenta' ? R.length : suma(R);
     const R2 = raices(b ** k, b ** (k + 1) - 1), Rin = raices(lo, hi + 1), R1 = raices(1, hi);
     const cuad = []; for (let r = 1; r * r <= hi; r++) if (r * r >= lo) cuad.push(r);
-    const variables = { b: { nombre: 'base', color: 'o' }, k: { nombre: 'cantidad de cifras', color: 'i' }, rango: { nombre: 'números con k cifras', color: 'h' }, res: { nombre: 'lo que se pide', color: 'd' } };
+    // Potenciación y radicación (Etapa 9, 26 nov): lo que se pide en violeta, como en su teoría (antes, verde).
+    const variables = { b: { nombre: 'base', color: 'o' }, k: { nombre: 'cantidad de cifras', color: 'i' }, rango: { nombre: 'números con k cifras', color: 'h' }, res: { nombre: 'lo que se pide', color: 'f' } };
     const enunciado = ['Considera los cubos perfectos que, escritos en base ', v('b', String(b)), ', tienen exactamente ', v('k', String(k)), ' cifras.'];
     const pregunta = sb === 'cuenta' ? ['¿', v('res', 'Cuántos'), ' son?'] : ['¿Cuánto suman sus ', v('res', 'raíces cúbicas'), '?'];
     const elige = l => (sb === 'cuenta' ? l.length : suma(l));
@@ -797,7 +798,11 @@
         ? [`Raíces de ${R[0]} a ${R[R.length - 1]}: son ${R[R.length - 1]} − ${R[0]} + 1 = `, v('res', String(correcta)), '.']
         : [`${R.join(' + ')} = `, v('res', f(correcta)), '.'],
     ];
-    return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion, datos: { tipo: 'cubos', sub: sb, b, k } });
+    // Datos (Etapa 9, 26 nov, Potenciación y radicación): dónde empiezan y terminan los de k cifras en base b, y cómo se
+    // cuentan los enteros de un tramo; nunca el tramo ya calculado.
+    const recuadro = ['En base b, el menor numeral de k cifras es 10…0 (b elevado a k − 1) y el mayor, b elevado a k, menos 1',
+      'Del primero, p, al último, u, hay u − p + 1 números'];
+    return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion, recuadro, datos: { tipo: 'cubos', sub: sb, b, k } });
   }
 
   return { id: ID, titulo: 'Sucesiones, divisores y numerales', TIPOS, generar, tiposPorUnidad: TIPOS_POR_UNIDAD };
