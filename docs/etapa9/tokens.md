@@ -55,3 +55,4 @@ contra los límites semanales de los planes.
 | quimica (tanda 1, 4 unidades) | verificación de notas del redactor | 262 578 | 29 min 30 s | 128 herramientas |
 | quimica.geometria-molecular | redactor, unidad ya cerrada | 331 638 | 27 min | 56 herramientas |
 | razonamiento-matematico.arreglos-numericos | auditoría y correcciones (cierre) | 364 128 | 44 min 45 s | 149 herramientas |
+| algebra.binomio-de-newton | auditoría y correcciones (cierre) | 311 334 | 36 min | 146 herramientas |
