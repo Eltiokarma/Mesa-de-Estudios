@@ -111,16 +111,20 @@
       "id": "trigonometria.reduccion-al-primer-cuadrante",
       "nombre": "Reducción al primer cuadrante",
       "temas": [
+        "Ángulo de referencia",
         "Ángulos menores de una vuelta",
-        "Ángulos mayores de una vuelta",
         "Ángulos negativos",
-        "Ángulos suplementarios y de una vuelta"
+        "Ángulos mayores de una vuelta",
+        "Cofunción con 90° y 270°"
       ],
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [6]}},
       "potencial_visual": "alto",
       "grado": 4,
       "requiere": ["trigonometria.angulos-en-posicion-normal"],
-      "plantillas": ["circunferencia-trig", "trig-oblicuangulos"],
+      "plantillas": [
+        "trig-reduccion",
+        "circunferencia-trig"
+      ],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {

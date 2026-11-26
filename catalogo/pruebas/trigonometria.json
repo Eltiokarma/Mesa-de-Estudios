@@ -227,6 +227,30 @@
       "respaldo": "hipotesis",
       "describe": "Multiplica lo avanzado por la resta de cotangentes en vez de dividir"
     },
+    "TR15-olvida-el-menos-de-menos-theta": {
+      "respaldo": "parcial",
+      "describe": "Quita bien las vueltas, pero olvida que sen(−θ) = −sen θ"
+    },
+    "TR14-cambia-a-coseno": {
+      "respaldo": "parcial",
+      "describe": "Pone bien el signo, pero cambia el seno por el coseno sin que haya 90° ni 270°"
+    },
+    "TR14-TR15-coseno-sin-el-menos": {
+      "respaldo": "parcial",
+      "describe": "Cambia a coseno sin motivo y además olvida el menos de −θ"
+    },
+    "TR14-conserva-la-tangente": {
+      "respaldo": "parcial",
+      "describe": "Pone bien el signo, pero con 90° se queda con la tangente en vez de la cotangente"
+    },
+    "TR12-sin-signo": {
+      "respaldo": "parcial",
+      "describe": "Cambia bien a la cotangente, pero sin el signo menos del cuadrante II"
+    },
+    "TR14-TR12-conserva-y-sin-signo": {
+      "respaldo": "parcial",
+      "describe": "Se queda con la tangente y además pierde el signo"
+    },
     "TR12-coseno-sin-signo": {
       "respaldo": "parcial",
       "describe": "Divide bien la abscisa entre r, pero sin su signo"
@@ -1577,6 +1601,138 @@
             "texto": "−12/13",
             "valor": -0.9230769230769231,
             "error": "TR11-cambia-x-por-y"
+          }
+        ]
+      }
+    },
+    {
+      "par": "tri-18",
+      "plantilla": "trig-reduccion",
+      "unidad": "trigonometria.reduccion-al-primer-cuadrante",
+      "mide": "Un seno negativo de varias vueltas: se quitan las vueltas y el menos de −θ se conserva (no el valor sin signo, no la cofunción)",
+      "A": {
+        "enunciado": "¿Cuánto vale sen(−1110°)? (sen(−θ) = −sen θ; una vuelta = 360°; sen 30° = 1/2 y cos 30° = √3/2.)",
+        "datos": {
+          "modelo": {
+            "g": 1110
+          }
+        },
+        "opciones": [
+          {
+            "texto": "1/2",
+            "valor": 0.5,
+            "error": "TR15-olvida-el-menos-de-menos-theta"
+          },
+          {
+            "texto": "−1/2",
+            "valor": -0.5,
+            "correcta": true
+          },
+          {
+            "texto": "−√3/2",
+            "valor": -0.8660254037844386,
+            "error": "TR14-cambia-a-coseno"
+          },
+          {
+            "texto": "√3/2",
+            "valor": 0.8660254037844386,
+            "error": "TR14-TR15-coseno-sin-el-menos"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuánto vale sen(−780°)? (sen(−θ) = −sen θ; una vuelta = 360°; sen 60° = √3/2 y cos 60° = 1/2.)",
+        "datos": {
+          "modelo": {
+            "g": 780
+          }
+        },
+        "opciones": [
+          {
+            "texto": "−√3/2",
+            "valor": -0.8660254037844386,
+            "correcta": true
+          },
+          {
+            "texto": "√3/2",
+            "valor": 0.8660254037844386,
+            "error": "TR15-olvida-el-menos-de-menos-theta"
+          },
+          {
+            "texto": "−1/2",
+            "valor": -0.5,
+            "error": "TR14-cambia-a-coseno"
+          },
+          {
+            "texto": "1/2",
+            "valor": 0.5,
+            "error": "TR14-TR15-coseno-sin-el-menos"
+          }
+        ]
+      }
+    },
+    {
+      "par": "tri-19",
+      "plantilla": "trig-reduccion",
+      "unidad": "trigonometria.reduccion-al-primer-cuadrante",
+      "mide": "Con 90° + φ la tangente cambia a cotangente y es negativa en el II (no se queda, no pierde el signo)",
+      "A": {
+        "enunciado": "φ es agudo y tan φ = 1/2. ¿Cuánto vale tan(90° + φ)? (Con 90° ± φ, la razón cambia a su cofunción; cot φ = 1/tan φ; en el II, la tangente es negativa.)",
+        "datos": {
+          "modelo": {
+            "t": 0.5
+          }
+        },
+        "opciones": [
+          {
+            "texto": "−1/2",
+            "valor": -0.5,
+            "error": "TR14-conserva-la-tangente"
+          },
+          {
+            "texto": "2",
+            "valor": 2,
+            "error": "TR12-sin-signo"
+          },
+          {
+            "texto": "−2",
+            "valor": -2,
+            "correcta": true
+          },
+          {
+            "texto": "1/2",
+            "valor": 0.5,
+            "error": "TR14-TR12-conserva-y-sin-signo"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "φ es agudo y tan φ = 1/3. ¿Cuánto vale tan(90° + φ)? (Con 90° ± φ, la razón cambia a su cofunción; cot φ = 1/tan φ; en el II, la tangente es negativa.)",
+        "datos": {
+          "modelo": {
+            "t": 0.3333333333333333
+          }
+        },
+        "opciones": [
+          {
+            "texto": "3",
+            "valor": 3,
+            "error": "TR12-sin-signo"
+          },
+          {
+            "texto": "−3",
+            "valor": -3,
+            "correcta": true
+          },
+          {
+            "texto": "1/3",
+            "valor": 0.3333333333333333,
+            "error": "TR14-TR12-conserva-y-sin-signo"
+          },
+          {
+            "texto": "−1/3",
+            "valor": -0.3333333333333333,
+            "error": "TR14-conserva-la-tangente"
           }
         ]
       }

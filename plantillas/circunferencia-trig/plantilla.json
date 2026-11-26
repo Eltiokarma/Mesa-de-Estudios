@@ -9,7 +9,7 @@
     "trigonometria.funciones-trigonometricas",
     "trigonometria.ecuaciones-trigonometricas"
   ],
-  "rehacer": ["trigonometria.angulos-en-posicion-normal"],
+  "rehacer": ["trigonometria.angulos-en-posicion-normal", "trigonometria.reduccion-al-primer-cuadrante"],
   "estado": "borrador",
   "version": "0.1.0",
   "escena": "index.html",

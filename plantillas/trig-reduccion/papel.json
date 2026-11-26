@@ -1,0 +1,87 @@
+{
+  "titulo": "Reducción al primer cuadrante: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "θ = 218° está en posición normal. ¿Cuánto mide su ángulo de referencia α? Datos: Ángulo de referencia α: el ángulo agudo entre el lado final de θ y el eje x. Cuadrantes: I, de 0° a 90°; II, de 90° a 180°; III, de 180° a 270°; IV, de 270° a 360°. Cuenta de α: en el II, 180° − θ; en el III, θ − 180°; en el IV, 360° − θ. Alternativas: A) 52°   B) 142°   C) 38°   D) 218°",
+      "respuesta": "C) 38°",
+      "pasos": [
+        "218° está en el III, así que α es lo que pasa de 180°.",
+        "α = 38°"
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "El ángulo 217° no es agudo. ¿Cuánto vale cot 217°? Datos: Cuenta de α: en el II, 180° − θ; en el III, θ − 180°; en el IV, 360° − θ. Positivas: I, todas; II, sen y csc; III, tan y cot; IV, cos y sec. Las demás son negativas. cot 37° = 4/3; tan 37° = 3/4 (convención del examen). Alternativas: A) 4/3   B) −4/3   C) 3/4   D) −3/4",
+      "respuesta": "A) 4/3",
+      "pasos": [
+        "217° está en el III, con α = 37°, y ahí la cotangente es positiva.",
+        "cot 217° = +cot 37° = 4/3"
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "El ángulo −30° gira en sentido horario. ¿Cuánto vale csc(−30°)? Datos: Con −θ, cambian de signo sen, tan, cot y csc; cos y sec quedan igual. csc 30° = 2; sec 30° = 2√3/3. Alternativas: A) −2√3/3   B) 2   C) 2√3/3   D) −2",
+      "respuesta": "D) −2",
+      "pasos": [
+        "Con −θ, la cosecante cambia de signo: csc(−θ) = −csc θ.",
+        "csc(−30°) = −2"
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El ángulo 930° da más de una vuelta. ¿Cuánto vale csc 930°? Datos: Una razón de θ vale lo mismo que esa razón de θ − 360° · n, con n entero. Cuenta de α: en el II, 180° − θ; en el III, θ − 180°; en el IV, 360° − θ. Positivas: I, todas; II, sen y csc; III, tan y cot; IV, cos y sec. Las demás son negativas. csc 30° = 2; sec 30° = 2√3/3. Alternativas: A) 2   B) 2√3/3   C) −2   D) −2√3/3",
+      "respuesta": "C) −2",
+      "pasos": [
+        "930° − 720° = 210°, que está en el III, con α = 30°.",
+        "csc 930° = −2"
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "φ es agudo. ¿A qué es igual sec(90° − φ)? Datos: Con 90° ± φ o 270° ± φ, la razón cambia a su cofunción; con 180° ± φ o 360° − φ, se queda. Cofunciones: sen y cos; tan y cot; sec y csc. φ es agudo. Positivas: I, todas; II, sen y csc; III, tan y cot; IV, cos y sec. Las demás son negativas. Alternativas: A) sec φ   B) −sec φ   C) −csc φ   D) csc φ",
+      "respuesta": "D) csc φ",
+      "pasos": [
+        "Con 90°, la razón cambia a su cofunción, y en el I la secante es positiva.",
+        "sec(90° − φ) = csc φ"
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Los dos ángulos de la expresión no son agudos. Calcula E = tan 135° − 4 sec 143°. Datos: Cuenta de α: en el II, 180° − θ; en el III, θ − 180°; en el IV, 360° − θ. Positivas: I, todas; II, sen y csc; III, tan y cot; IV, cos y sec. Las demás son negativas. tan 45° = 1; sec 37° = 5/4 (convención del examen). Alternativas: A) 4   B) 6   C) −6   D) −4",
+      "respuesta": "A) 4",
+      "pasos": [
+        "tan 135° = −1 y sec 143° = −5/4, cada una con el signo de su cuadrante.",
+        "E = 4"
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "El ángulo 29π/6 está en radianes. ¿Cuánto vale tan(29π/6)? Datos: π rad = 180°. Una razón de θ vale lo mismo que esa razón de θ − 360° · n, con n entero. Cuenta de α: en el II, 180° − θ; en el III, θ − 180°; en el IV, 360° − θ. Positivas: I, todas; II, sen y csc; III, tan y cot; IV, cos y sec. Las demás son negativas. tan 30° = √3/3; cot 30° = √3. Alternativas: A) −√3   B) √3   C) √3/3   D) −√3/3",
+      "respuesta": "D) −√3/3",
+      "pasos": [
+        "29π/6 = 870°, que sin las vueltas es 150°, en el II, con α = 30°.",
+        "tan(29π/6) = −√3/3"
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "φ es agudo, sen φ = 7/25 y cos φ = 24/25. ¿Cuánto vale sen(90° + φ)? Datos: Con 90° ± φ o 270° ± φ, la razón cambia a su cofunción; con 180° ± φ o 360° − φ, se queda. Cofunciones: sen y cos; tan y cot; sec y csc. φ es agudo. Positivas: I, todas; II, sen y csc; III, tan y cot; IV, cos y sec. Las demás son negativas. tan φ = sen φ/cos φ; cot φ = cos φ/sen φ. Alternativas: A) −24/25   B) 7/25   C) 24/25   D) −7/25",
+      "respuesta": "C) 24/25",
+      "pasos": [
+        "sen(90° + φ) = cos φ: cambia a la cofunción, con el signo del II.",
+        "sen(90° + φ) = 24/25"
+      ]
+    }
+  ]
+}

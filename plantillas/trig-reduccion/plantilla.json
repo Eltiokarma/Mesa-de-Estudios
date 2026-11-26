@@ -1,0 +1,21 @@
+{
+  "id": "trig-reduccion",
+  "titulo": "Reducción al primer cuadrante",
+  "formato": "predicciones",
+  "unidades": [
+    "trigonometria.reduccion-al-primer-cuadrante"
+  ],
+  "temas": [
+    "Ángulo de referencia",
+    "Ángulos menores de una vuelta",
+    "Ángulos negativos",
+    "Ángulos mayores de una vuelta",
+    "Cofunción con 90° y 270°"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

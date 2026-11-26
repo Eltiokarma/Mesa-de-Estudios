@@ -16,6 +16,7 @@ const MUESTRAS = [
   { ventana: { x: [-64, 64], y: [-64, 64] }, objeto: { tipo: 'veleta', r: 40, flecha: 90 } },
   { ventana: { x: [-6.4, 6.4], y: [-6.4, 6.4] }, objeto: { tipo: 'reloj', r: 5 } },
   { ventana: { x: [-5.4, 5.4], y: [-5.4, 5.4] }, objeto: { tipo: 'bici', r: 4, valvula: 45 } },
+  { ventana: { x: [-5.6, 5.6], y: [-5.6, 5.6] }, objeto: { tipo: 'ventilador', r: 4, aspa: 20 } },   // Etapa 9, Reducción
 ];
 
 // Las cajas de los textos de un SVG: [x0, y0, x1, y1, texto].
@@ -76,7 +77,7 @@ test('cada objeto: SVG sano, puro, con data-prueba y texto alternativo; solo cur
     assert.equal(svg, P.dibujar(d, {}), 'pura');
     assert.deepEqual(revisarRotulos(svg), [], d.objeto.tipo);
   }
-  assert.deepEqual([...P.OBJETOS].sort(), ['bici', 'plano', 'reloj', 'rueda', 'veleta']);
+  assert.deepEqual([...P.OBJETOS].sort(), ['bici', 'plano', 'reloj', 'rueda', 'veleta', 'ventilador']);
 });
 
 test('el objeto va detrás: el primer hijo del SVG es la capa del objeto', () => {

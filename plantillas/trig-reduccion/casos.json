@@ -1,0 +1,485 @@
+{
+ "plantilla": "trig-reduccion",
+ "nota": "Entrada = _datos del generador; esperado.texto es la alternativa correcta como la ve el alumno.",
+ "verificacion": "python3 -I casos-verif.py (scratchpad e9-trig, 26 nov 2026): no usa el generador para calcular; evalúa cada expresión con math.sin y math.cos del ángulo de verdad (37° y 53° con el triángulo 3-4-5), halla α con atan2 y θ desde α por búsqueda de grado en grado, y elige la única alternativa cuyo valor coincide.",
+ "casos": [
+  {
+   "semilla": "caso-referencia-1",
+   "opciones": {
+    "tipo": "referencia"
+   },
+   "entrada": {
+    "idea": "angulo-referencia",
+    "tipo": "referencia",
+    "nivel": 1,
+    "g": 234,
+    "a": 54,
+    "q": 3,
+    "expr": "ref(234)"
+   },
+   "esperado": {
+    "texto": "54°"
+   }
+  },
+  {
+   "semilla": "caso-referencia-2",
+   "opciones": {
+    "tipo": "referencia"
+   },
+   "entrada": {
+    "idea": "angulo-referencia",
+    "tipo": "referencia",
+    "nivel": 1,
+    "g": 342,
+    "a": 18,
+    "q": 4,
+    "expr": "ref(342)"
+   },
+   "esperado": {
+    "texto": "18°"
+   }
+  },
+  {
+   "semilla": "caso-theta-desde-alfa-1",
+   "opciones": {
+    "tipo": "theta-desde-alfa"
+   },
+   "entrada": {
+    "idea": "angulo-referencia",
+    "tipo": "theta-desde-alfa",
+    "nivel": 2,
+    "a": 16,
+    "q": 2,
+    "expr": "164",
+    "g": 164
+   },
+   "esperado": {
+    "texto": "164°"
+   }
+  },
+  {
+   "semilla": "caso-theta-desde-alfa-2",
+   "opciones": {
+    "tipo": "theta-desde-alfa"
+   },
+   "entrada": {
+    "idea": "angulo-referencia",
+    "tipo": "theta-desde-alfa",
+    "nivel": 2,
+    "a": 12,
+    "q": 2,
+    "expr": "168",
+    "g": 168
+   },
+   "esperado": {
+    "texto": "168°"
+   }
+  },
+  {
+   "semilla": "caso-suma-referencias-1",
+   "opciones": {
+    "tipo": "suma-referencias"
+   },
+   "entrada": {
+    "idea": "angulo-referencia",
+    "tipo": "suma-referencias",
+    "nivel": 3,
+    "a": 20,
+    "q1": 2,
+    "q2": 4,
+    "expr": "500"
+   },
+   "esperado": {
+    "texto": "500°"
+   }
+  },
+  {
+   "semilla": "caso-suma-referencias-2",
+   "opciones": {
+    "tipo": "suma-referencias"
+   },
+   "entrada": {
+    "idea": "angulo-referencia",
+    "tipo": "suma-referencias",
+    "nivel": 3,
+    "a": 39,
+    "q1": 2,
+    "q2": 4,
+    "expr": "462"
+   },
+   "esperado": {
+    "texto": "462°"
+   }
+  },
+  {
+   "semilla": "caso-valor-1",
+   "opciones": {
+    "tipo": "valor"
+   },
+   "entrada": {
+    "idea": "misma-razon",
+    "tipo": "valor",
+    "nivel": 1,
+    "fn": "sen",
+    "g": 323,
+    "expr": "sen 323°"
+   },
+   "esperado": {
+    "texto": "−3/5"
+   }
+  },
+  {
+   "semilla": "caso-valor-2",
+   "opciones": {
+    "tipo": "valor"
+   },
+   "entrada": {
+    "idea": "misma-razon",
+    "tipo": "valor",
+    "nivel": 1,
+    "fn": "cot",
+    "g": 233,
+    "expr": "cot 233°"
+   },
+   "esperado": {
+    "texto": "3/4"
+   }
+  },
+  {
+   "semilla": "caso-dos-razones-1",
+   "opciones": {
+    "tipo": "dos-razones"
+   },
+   "entrada": {
+    "idea": "misma-razon",
+    "tipo": "dos-razones",
+    "nivel": 2,
+    "g": 217,
+    "expr": "sen 217° - cos 217°"
+   },
+   "esperado": {
+    "texto": "1/5"
+   }
+  },
+  {
+   "semilla": "caso-dos-razones-2",
+   "opciones": {
+    "tipo": "dos-razones"
+   },
+   "entrada": {
+    "idea": "misma-razon",
+    "tipo": "dos-razones",
+    "nivel": 2,
+    "g": 233,
+    "expr": "sen 233° + cos 233°"
+   },
+   "esperado": {
+    "texto": "−7/5"
+   }
+  },
+  {
+   "semilla": "caso-expresion-1",
+   "opciones": {
+    "tipo": "expresion"
+   },
+   "entrada": {
+    "idea": "misma-razon",
+    "tipo": "expresion",
+    "nivel": 3,
+    "expr": "5*cos 217° + 3*csc 323°"
+   },
+   "esperado": {
+    "texto": "−9"
+   }
+  },
+  {
+   "semilla": "caso-expresion-2",
+   "opciones": {
+    "tipo": "expresion"
+   },
+   "entrada": {
+    "idea": "misma-razon",
+    "tipo": "expresion",
+    "nivel": 3,
+    "expr": "3*cot 323° + 1*sec 240°"
+   },
+   "esperado": {
+    "texto": "−6"
+   }
+  },
+  {
+   "semilla": "caso-opuesto-1",
+   "opciones": {
+    "tipo": "opuesto"
+   },
+   "entrada": {
+    "idea": "opuestos",
+    "tipo": "opuesto",
+    "nivel": 1,
+    "expr": "csc(-60°)"
+   },
+   "esperado": {
+    "texto": "−2√3/3"
+   }
+  },
+  {
+   "semilla": "caso-opuesto-2",
+   "opciones": {
+    "tipo": "opuesto"
+   },
+   "entrada": {
+    "idea": "opuestos",
+    "tipo": "opuesto",
+    "nivel": 1,
+    "expr": "cot(-60°)"
+   },
+   "esperado": {
+    "texto": "−√3/3"
+   }
+  },
+  {
+   "semilla": "caso-opuesto-grande-1",
+   "opciones": {
+    "tipo": "opuesto-grande"
+   },
+   "entrada": {
+    "idea": "opuestos",
+    "tipo": "opuesto-grande",
+    "nivel": 2,
+    "expr": "cos(-210°)"
+   },
+   "esperado": {
+    "texto": "−√3/2"
+   }
+  },
+  {
+   "semilla": "caso-opuesto-grande-2",
+   "opciones": {
+    "tipo": "opuesto-grande"
+   },
+   "entrada": {
+    "idea": "opuestos",
+    "tipo": "opuesto-grande",
+    "nivel": 2,
+    "expr": "cot(-210°)"
+   },
+   "esperado": {
+    "texto": "−√3"
+   }
+  },
+  {
+   "semilla": "caso-cociente-opuestos-1",
+   "opciones": {
+    "tipo": "cociente-opuestos"
+   },
+   "entrada": {
+    "idea": "opuestos",
+    "tipo": "cociente-opuestos",
+    "nivel": 3,
+    "expr": "tan(-θ)/tan θ + 2*sec(-θ)/sec θ"
+   },
+   "esperado": {
+    "texto": "1"
+   }
+  },
+  {
+   "semilla": "caso-cociente-opuestos-2",
+   "opciones": {
+    "tipo": "cociente-opuestos"
+   },
+   "entrada": {
+    "idea": "opuestos",
+    "tipo": "cociente-opuestos",
+    "nivel": 3,
+    "expr": "cot(-θ)*tan θ - 2*tan(-θ)*cot θ"
+   },
+   "esperado": {
+    "texto": "1"
+   }
+  },
+  {
+   "semilla": "caso-vueltas-1",
+   "opciones": {
+    "tipo": "vueltas"
+   },
+   "entrada": {
+    "idea": "mayores-negativos",
+    "tipo": "vueltas",
+    "nivel": 1,
+    "expr": "cos 690°"
+   },
+   "esperado": {
+    "texto": "√3/2"
+   }
+  },
+  {
+   "semilla": "caso-vueltas-2",
+   "opciones": {
+    "tipo": "vueltas"
+   },
+   "entrada": {
+    "idea": "mayores-negativos",
+    "tipo": "vueltas",
+    "nivel": 1,
+    "expr": "cos 1297°"
+   },
+   "esperado": {
+    "texto": "−4/5"
+   }
+  },
+  {
+   "semilla": "caso-negativo-grande-1",
+   "opciones": {
+    "tipo": "negativo-grande"
+   },
+   "entrada": {
+    "idea": "mayores-negativos",
+    "tipo": "negativo-grande",
+    "nivel": 2,
+    "expr": "sec(-570°)"
+   },
+   "esperado": {
+    "texto": "−2√3/3"
+   }
+  },
+  {
+   "semilla": "caso-negativo-grande-2",
+   "opciones": {
+    "tipo": "negativo-grande"
+   },
+   "entrada": {
+    "idea": "mayores-negativos",
+    "tipo": "negativo-grande",
+    "nivel": 2,
+    "expr": "tan(-780°)"
+   },
+   "esperado": {
+    "texto": "−√3"
+   }
+  },
+  {
+   "semilla": "caso-radianes-1",
+   "opciones": {
+    "tipo": "radianes"
+   },
+   "entrada": {
+    "idea": "mayores-negativos",
+    "tipo": "radianes",
+    "nivel": 3,
+    "expr": "tan(17π/6)"
+   },
+   "esperado": {
+    "texto": "−√3/3"
+   }
+  },
+  {
+   "semilla": "caso-radianes-2",
+   "opciones": {
+    "tipo": "radianes"
+   },
+   "entrada": {
+    "idea": "mayores-negativos",
+    "tipo": "radianes",
+    "nivel": 3,
+    "expr": "cos(11π/3)"
+   },
+   "esperado": {
+    "texto": "1/2"
+   }
+  },
+  {
+   "semilla": "caso-cofuncion-1",
+   "opciones": {
+    "tipo": "cofuncion"
+   },
+   "entrada": {
+    "idea": "cofuncion",
+    "tipo": "cofuncion",
+    "nivel": 1,
+    "expr": "csc(270° - φ)",
+    "simbolica": true
+   },
+   "esperado": {
+    "texto": "−sec φ"
+   }
+  },
+  {
+   "semilla": "caso-cofuncion-2",
+   "opciones": {
+    "tipo": "cofuncion"
+   },
+   "entrada": {
+    "idea": "cofuncion",
+    "tipo": "cofuncion",
+    "nivel": 1,
+    "expr": "csc(180° - φ)",
+    "simbolica": true
+   },
+   "esperado": {
+    "texto": "csc φ"
+   }
+  },
+  {
+   "semilla": "caso-cofuncion-valor-1",
+   "opciones": {
+    "tipo": "cofuncion-valor"
+   },
+   "entrada": {
+    "idea": "cofuncion",
+    "tipo": "cofuncion-valor",
+    "nivel": 2,
+    "expr": "cot(90° - φ)",
+    "phi": 43.602818972703616
+   },
+   "esperado": {
+    "texto": "20/21"
+   }
+  },
+  {
+   "semilla": "caso-cofuncion-valor-2",
+   "opciones": {
+    "tipo": "cofuncion-valor"
+   },
+   "entrada": {
+    "idea": "cofuncion",
+    "tipo": "cofuncion-valor",
+    "nivel": 2,
+    "expr": "cos(90° + φ)",
+    "phi": 36.86989764584402
+   },
+   "esperado": {
+    "texto": "−3/5"
+   }
+  },
+  {
+   "semilla": "caso-expresion-cof-1",
+   "opciones": {
+    "tipo": "expresion-cof"
+   },
+   "entrada": {
+    "idea": "cofuncion",
+    "tipo": "expresion-cof",
+    "nivel": 3,
+    "expr": "tan(180° + φ)*tan(90° + φ) + 2*cot(270° + φ)*tan(90° + φ)"
+   },
+   "esperado": {
+    "texto": "1"
+   }
+  },
+  {
+   "semilla": "caso-expresion-cof-2",
+   "opciones": {
+    "tipo": "expresion-cof"
+   },
+   "entrada": {
+    "idea": "cofuncion",
+    "tipo": "expresion-cof",
+    "nivel": 3,
+    "expr": "tan(180° - φ)*tan(270° - φ) + 2*cos(180° + φ)*csc(90° - φ)"
+   },
+   "esperado": {
+    "texto": "−3"
+   }
+  }
+ ]
+}

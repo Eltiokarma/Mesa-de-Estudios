@@ -98,10 +98,12 @@
     if (o.flecha !== undefined) {
       const a = rad(o.flecha), ux = Math.cos(a), uy = -Math.sin(a), px = -uy, py = ux;
       const cola = [X0 - ux * R * 0.45, Y0 - uy * R * 0.45];
-      // La cola: una placa tenue a lo largo de la flecha (la punta la dibuja el lado final, encima). Unas plumas en «V»
-      // se leían como otra punta (cierre, lectores A y B).
-      const c1 = [X0 - ux * R * 0.12, Y0 - uy * R * 0.12], w = 6;
-      s += `<path d="M${n(c1[0] + px * w)} ${n(c1[1] + py * w)}L${n(cola[0] + px * w)} ${n(cola[1] + py * w)}L${n(cola[0] - px * w)} ${n(cola[1] - py * w)}L${n(c1[0] - px * w)} ${n(c1[1] - py * w)}Z" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.5" stroke-linejoin="round"/>`;
+      // La cola: la aleta de una veleta, angosta junto al poste y ancha al final (la punta la dibuja el lado final, encima).
+      // Unas plumas en «V» se leían como otra punta (cierre, lectores A y B); una placa recta, como una rosa de los vientos
+      // con un palito (lector en frío A, Reducción, 26 nov).
+      const c1 = [X0 - ux * R * 0.12, Y0 - uy * R * 0.12], w0 = 3, w = 13;
+      s += `<path d="M${n(c1[0] + px * w0)} ${n(c1[1] + py * w0)}L${n(cola[0] + px * w)} ${n(cola[1] + py * w)}L${n(cola[0] - px * w)} ${n(cola[1] - py * w)}L${n(c1[0] - px * w0)} ${n(c1[1] - py * w0)}Z" fill="currentColor" fill-opacity="0.22" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.5" stroke-linejoin="round"/>`;
+      s += `<circle cx="${n(X0)}" cy="${n(Y0)}" r="7" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="2"/>`;
     }
     return s;
   }
@@ -135,11 +137,28 @@
     if (o.valvula !== undefined) {
       const a = rad(o.valvula), ux = Math.cos(a), uy = -Math.sin(a);
       s += `<line x1="${n(X0 + ux * R * 0.9)}" y1="${n(Y0 + uy * R * 0.9)}" x2="${n(X0 + ux * R * 0.75)}" y2="${n(Y0 + uy * R * 0.75)}" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`;
+      // El tapón de la válvula, para que se reconozca sin el texto (lector en frío B, Reducción, 26 nov).
+      s += `<rect x="${n(X0 + ux * R * 0.75 - 4)}" y="${n(Y0 + uy * R * 0.75 - 4)}" width="8" height="8" rx="2" fill="currentColor" fill-opacity="0.55" transform="rotate(${n(-o.valvula)} ${n(X0 + ux * R * 0.75)} ${n(Y0 + uy * R * 0.75)})"/>`;
     }
     return s;
   }
 
-  const OBJETOS = { plano, rueda, veleta, reloj, bici };
+  // Etapa 9 (26 nov, «Reducción al primer cuadrante», idea 5): un ventilador de techo visto desde abajo, con cuatro aspas a
+  // 90° una de otra; la primera, A, en el ángulo aspa (grados). Los lados finales los dibuja la unidad con trig-plano.
+  function ventilador(g, o) {
+    const R = (o.r || 1) * g.k, X0 = g.X(0), Y0 = g.Y(0), p = o.aspa || 0;
+    let s = '';
+    for (let k = 0; k < 4; k++) {
+      const a = rad(p + 90 * k), ux = Math.cos(a), uy = -Math.sin(a), px = -uy, py = ux;
+      const pt = (d, w) => `${n(X0 + ux * d * R + px * w * R)} ${n(Y0 + uy * d * R + py * w * R)}`;
+      s += `<path d="M${pt(0.2, 0.06)}L${pt(0.85, 0.13)}Q${pt(1.02, 0)} ${pt(0.85, -0.13)}L${pt(0.2, -0.06)}Z" fill="currentColor" fill-opacity="0.1" ${TENUE} stroke-width="1.5" stroke-linejoin="round"/>`;
+    }
+    s += `<circle cx="${n(X0)}" cy="${n(Y0)}" r="${n(R * 0.2)}" fill="currentColor" fill-opacity="0.12" ${TENUE} stroke-width="2"/>`;
+    s += `<circle cx="${n(X0)}" cy="${n(Y0)}" r="4" fill="currentColor" fill-opacity="0.4"/>`;
+    return s;
+  }
+
+  const OBJETOS = { plano, rueda, veleta, reloj, bici, ventilador };
 
   // ---------- Arcos y sus rótulos (cierre, 20 nov) ----------
   // En esta unidad el arco ES la información (lector en frío A): se dibuja con un radio de 20 px o más, para que se vea
@@ -187,24 +206,29 @@
       if (!o.rotulo || !ve(a) || Math.abs(a.a - (a.de || 0)) < 1e-9) continue;
       const pts = puntosArco(g, a), texto = String(o.rotulo);
       let elegido = null;
-      for (const f of [0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82]) {
-        for (const d of [18, 24, 12, 30, 36, 44, 54, 66, 80]) {
-          const [px, py, t] = pts[Math.round(f * (pts.length - 1))], ux = Math.cos(rad(t)), uy = -Math.sin(rad(t));
-          const ancla = Math.abs(ux) < 0.35 ? 'middle' : ux > 0 ? 'start' : 'end';
-          const x = T.encajar(px + ux * d, texto, ancla, { tam: TAM, peso: 700, min: 2, max: W - 2 }), y = py + uy * d + 5;
-          const c = cajaDe(x, y, texto, ancla);
-          if (c[0] < 4 || c[2] > W - 4 || c[1] < 4 || c[3] > H - 4) continue;
-          if (lineas.some(l => cortaCaja(...l, c)) || cajas.some(b => sePisan(b, c))) continue;
-          if (curvas.some(cv => cv.some(([qx, qy]) => qx >= c[0] - 2 && qx <= c[2] + 2 && qy >= c[1] - 2 && qy <= c[3] + 2))) continue;
-          elegido = { x, y, ancla, c }; break;
-        }
-        if (elegido) break;
-      }
+      // Primero cerca del arco (lector en frío, 26 nov: un rótulo a 50 px o más se leía como el nombre de otra cosa, «α»
+      // junto a la altura): a 12–30 px, en cualquier punto del arco; después por dentro del arco, si es grande; recién al
+      // final, más lejos.
+      const R0 = Math.hypot(pts[0][0] - g.X(a.cx || 0), pts[0][1] - g.Y(a.cy || 0));
+      const prueba = (f, d) => {
+        const [px, py, t] = pts[Math.round(f * (pts.length - 1))], ux = Math.cos(rad(t)), uy = -Math.sin(rad(t));
+        const ancla = Math.abs(ux) < 0.35 ? 'middle' : (ux > 0) === (d > 0) ? 'start' : 'end';
+        const x = T.encajar(px + ux * d, texto, ancla, { tam: TAM, peso: 700, min: 2, max: W - 2 }), y = py + uy * d + 5;
+        const c = cajaDe(x, y, texto, ancla);
+        if (c[0] < 4 || c[2] > W - 4 || c[1] < 4 || c[3] > H - 4) return null;
+        // Con 6 px de aire contra otro texto: «90° + φ» pegado a «P» se leía «90° + φP» (lector en frío B, 26 nov).
+        if (lineas.some(l => cortaCaja(...l, c)) || cajas.some(b => sePisan(b, [c[0] - 4, c[1], c[2] + 4, c[3]]))) return null;
+        if (curvas.some(cv => cv.some(([qx, qy]) => qx >= c[0] - 2 && qx <= c[2] + 2 && qy >= c[1] - 2 && qy <= c[3] + 2))) return null;
+        return { x, y, ancla, c };
+      };
+      const FR = [0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82];
+      const DIST = [[18, 12, 24, 30], R0 > 46 ? [-14, -20, -26] : [], [36, 44, 54, 66, 80]];
+      for (const ds of DIST.slice(0, 2)) for (const d of ds) for (const f of FR) { if (!elegido) elegido = prueba(f, d); }
       // Un ángulo muy angosto no deja lugar adentro: el rótulo va junto al final del arco, del otro lado del lado final.
       const sg = Math.sign(a.a - (a.de || 0));
       for (const f of [1, 0.9, 0.8]) {
         if (elegido) break;
-        for (const d of [10, 16, 24]) for (const r of [0, 8, 16]) {
+        for (const d of [10, 16, 24, 32]) for (const r of [0, 8, 16, -8, 24]) {
           const [px, py, t] = pts[Math.round(f * (pts.length - 1))], ux = Math.cos(rad(t + sg * 90)), uy = -Math.sin(rad(t + sg * 90));
           const rx = Math.cos(rad(t)), ry = -Math.sin(rad(t));
           const ancla = Math.abs(ux) < 0.35 ? 'middle' : ux > 0 ? 'start' : 'end';
@@ -216,6 +240,7 @@
           elegido = { x, y, ancla, c }; break;
         }
       }
+      for (const d of DIST[2]) for (const f of FR) { if (!elegido) elegido = prueba(f, d); }
       if (!elegido) {   // sin lugar libre: donde lo pondría trig-plano
         const [px, py, t] = pts[Math.floor(pts.length / 2)], ux = Math.cos(rad(t)), uy = -Math.sin(rad(t)), ancla = Math.abs(ux) < 0.35 ? 'middle' : ux > 0 ? 'start' : 'end';
         elegido = { x: px + ux * 18, y: py + uy * 18 + 5, ancla, c: cajaDe(px + ux * 18, py + uy * 18 + 5, texto, ancla) };
@@ -244,7 +269,8 @@
   }
 
   const NOMBRE = { plano: 'el plano de un pueblo con su plaza en el origen', rueda: 'una rueda de la fortuna con su centro en el origen',
-    veleta: 'la veleta de la plaza vista desde arriba', reloj: 'un reloj de pared con su centro en el origen', bici: 'una rueda de bicicleta con su eje en el origen' };
+    veleta: 'la veleta de la plaza vista desde arriba', reloj: 'un reloj de pared con su centro en el origen', bici: 'una rueda de bicicleta con su eje en el origen',
+    ventilador: 'un ventilador de techo visto desde abajo, con su eje en el origen' };
   function alt(datos) {
     const base = TP.alt(datos), o = datos.objeto;
     return o && NOMBRE[o.tipo] && !datos.alt ? `${NOMBRE[o.tipo][0].toUpperCase()}${NOMBRE[o.tipo].slice(1)}. ${base}` : base;

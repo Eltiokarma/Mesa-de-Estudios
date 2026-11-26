@@ -4,8 +4,7 @@
   "formato": "predicciones",
   "unidades": [
     "trigonometria.triangulos-oblicuangulos",
-    "trigonometria.areas-y-lineas-notables",
-    "trigonometria.reduccion-al-primer-cuadrante"
+    "trigonometria.areas-y-lineas-notables"
   ],
   "estado": "borrador",
   "version": "0.1.0",
