@@ -25,3 +25,5 @@ contra los límites semanales de los planes.
 | trigonometria.reduccion-al-primer-cuadrante | redactor (Escribidor Escribano) | 381 857 | 28 min 48 s | 83 herramientas |
 | quimica.reacciones-y-balance | redactor (Escribidor Escribano) | 415 520 | 27 min | 71 herramientas |
 | trigonometria.reduccion-al-primer-cuadrante | lector en frío B (ideas 4–5) | 111 025 | 2 min 10 s | 23 herramientas |
+| trigonometria.reduccion-al-primer-cuadrante | lector en frío A (ideas 1–3) | 127 516 | 2 min 36 s | 34 herramientas |
+| razonamiento-verbal.cohesion-y-coherencia | auditoría y correcciones (cierre) | 328 158 | 30 min | 110 herramientas |
