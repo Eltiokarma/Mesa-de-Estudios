@@ -122,12 +122,12 @@
     { id: 'pn-nucleo', v: true, txt: 'Los protones y los neutrones están en el núcleo.', niega: 'QM-PROTON-AFUERA', por: 'el núcleo junta los protones y los neutrones' },
     { id: 'e-fuera', v: true, txt: 'Los electrones se mueven fuera del núcleo.', niega: 'QM-ELECTRON-NUCLEO', por: 'los electrones están alrededor del núcleo, no adentro' },
     { id: 'neutro-e', v: true, txt: 'Un átomo neutro tiene tantos electrones como protones.', niega: 'QM-NEUTRO-NEUTRONES', por: 'así las cargas +1 y −1 se compensan' },
-    { id: 'masa-nucleo', v: true, txt: 'Casi toda la masa del átomo está en el núcleo.', niega: 'QM-PARTICULA-MASA', por: 'protones y neutrones pesan mucho más que los electrones' },
+    { id: 'masa-nucleo', v: true, txt: 'Casi toda la masa del átomo está en el núcleo.', niega: 'QM-PARTICULA-MASA', por: 'los protones y los neutrones tienen mucha más masa que los electrones' },
     { id: 'e-nucleo', v: false, txt: 'Los electrones están en el núcleo, junto a los protones.', error: 'QM-ELECTRON-NUCLEO', por: 'los electrones están fuera del núcleo' },
     { id: 'p-fuera', v: false, txt: 'Los protones giran fuera del núcleo.', error: 'QM-PROTON-AFUERA', por: 'los protones están en el núcleo' },
     { id: 'n-fuera', v: false, txt: 'Los neutrones están fuera del núcleo.', error: 'QM-NEUTRON-AFUERA', por: 'los neutrones están en el núcleo, con los protones' },
-    { id: 'neutro-n', v: false, txt: 'Un átomo es neutro porque tiene tantos neutrones como protones.', error: 'QM-NEUTRO-NEUTRONES', por: 'el neutrón no tiene carga: lo que compensa a los protones son los electrones' },
-    { id: 'masa-e', v: false, txt: 'Casi toda la masa del átomo está en sus electrones.', error: 'QM-PARTICULA-MASA', por: 'el electrón es el más liviano: la masa está en el núcleo' },
+    { id: 'neutro-n', v: false, txt: 'Un átomo es neutro porque tiene tantos neutrones como protones.', error: 'QM-NEUTRO-NEUTRONES', por: 'el neutrón no tiene carga, y lo que compensa a los protones son los electrones' },
+    { id: 'masa-e', v: false, txt: 'Casi toda la masa del átomo está en sus electrones.', error: 'QM-PARTICULA-MASA', por: 'el electrón es la partícula más liviana, y la masa está en el núcleo' },
   ];
   function tDonde(rng) {
     const sub = rng.elegir(['particula', 'particula', 'correcta', 'incorrecta']);
@@ -156,7 +156,7 @@
     return cerrar({ enunciado: ['Se dan varias afirmaciones sobre las partículas de un átomo.'],
       pregunta: [busca ? '¿Cuál de estas afirmaciones es correcta?' : '¿Cuál de estas afirmaciones es incorrecta?'],
       datos, alternativas: P.armarTexto({ correcta: c, errores, rng }), valor: c.clave,
-      solucion: [[`${meta.txt} Es ${busca ? 'verdadera' : 'falsa'}: ${meta.por}.`], [busca ? 'Las otras son falsas.' : 'Las otras son verdaderas.']],
+      solucion: [[`La afirmación «${meta.txt.replace(/\.$/, '')}» es ${busca ? 'verdadera' : 'falsa'}: ${meta.por}.`], [busca ? 'Las otras son falsas.' : 'Las otras son verdaderas.']],
       _datos: { tipo: 'donde', nivel: 1, sub, ids: [meta.id, ...otras.map(a => a.id)] } });
   }
 
@@ -188,15 +188,15 @@
         pregunta: ['¿Qué son entre sí?'], datos: [...zDe([z1, z2]), D.familias, D.masa],
         alternativas: P.armarTexto({ correcta: c, errores, rng }), valor: c.clave,
         solucion: [
-          [v('Z', `Z: ${z1} y ${z2}`), `. A: ${a1} y ${a2}. `, v('N', `N = A − Z: ${n1} y ${n2}`), '.'],
-          [coincide ? `Coincide ${coincide[0]} (${coincide[1]}): son ${NOM_REL[es].toLowerCase()}.` : 'No coincide ninguno de los tres números.'],
+          ['Comparo los tres números: ', v('Z', `Z vale ${z1} y ${z2}`), `; A vale ${a1} y ${a2}, y `, v('N', `N = A − Z vale ${n1} y ${n2}`), '.'],
+          [coincide ? `Coincide ${coincide[0]} (${coincide[1]}), así que son ${NOM_REL[es].toLowerCase()}.` : 'No coincide ninguno de los tres números.'],
         ], _datos: { tipo: 'nuclidos', nivel: 2, sub: 'que-son', a, b } });
     }
     const [a, b] = rng.elegir(PARES.isotopos), z = a[0], x1 = nuclido(...a), x2 = nuclido(...b), nom = NOMBRE[z];
     if (rng.moneda()) {
       const c = { clave: 'iso:igual:pe', texto: 'Los protones y los electrones' };
       const errores = [
-        t('iso:igual:n', 'Los neutrones', 'QM-ISOTOPO-N', `Bien buscar lo que comparten. Pero los neutrones es lo que cambia: ${a[1] - z} y ${b[1] - z}.`),
+        t('iso:igual:n', 'Los neutrones', 'QM-ISOTOPO-N', `Bien buscar lo que comparten. Pero los neutrones son justo lo que cambia: ${a[1] - z} y ${b[1] - z}.`),
         t('iso:igual:a', 'El número de masa', 'QM-ISOTOPO-A', `Bien mirar los números del símbolo. Pero el número de masa cambia: ${a[1]} y ${b[1]}.`),
         t('iso:igual:nada', 'Nada: son elementos distintos', 'QM-ISOTOPO-ELEMENTO', `Bien notar que no son iguales. Pero los dos tienen Z = ${z}: son ${nom}.`),
       ];
@@ -210,14 +210,14 @@
     const c = { clave: 'iso:reacciona:igual', texto: 'Iguales: tienen los mismos electrones' };
     const errores = [
       t('iso:reacciona:n', 'Distintas: tienen distintos neutrones', 'QM-ISOTOPO-REACCIONA', 'Bien: sus neutrones son distintos. Pero las reacciones las deciden los electrones, y son los mismos.'),
-      t('iso:reacciona:uno', 'Solo reacciona el más liviano', 'QM-ISOTOPO-UNO', 'Bien notar que uno pesa más. Pero los dos tienen los mismos electrones: los dos reaccionan igual.'),
+      t('iso:reacciona:uno', 'Solo reacciona el más liviano', 'QM-ISOTOPO-UNO', 'Bien notar que uno tiene más masa. Pero los dos tienen los mismos electrones, así que los dos reaccionan igual.'),
       t('iso:reacciona:elem', 'Distintas: son elementos distintos', 'QM-ISOTOPO-ELEMENTO', `Bien notar que no son el mismo núclido. Pero los dos tienen Z = ${z}: son ${nom}.`),
       t('iso:reacciona:masa', 'Distintas: el más pesado reacciona más rápido', 'QM-ISOTOPO-REACCIONA', 'Bien comparar sus masas. Pero la masa del núcleo no decide la reacción: la deciden los electrones.'),
     ];
     return cerrar({ variables: usa('Z', 'e'), enunciado: ['El ', x1, ' y el ', x2, ` son átomos neutros del ${nom}.`],
       pregunta: ['¿Cómo son sus reacciones químicas, comparadas?'], datos: [`Z del ${nom} = ${z}`, D.reaccion, D.neutro],
       alternativas: P.armarTexto({ correcta: c, errores: [errores[0], errores[1], errores[2]], rng }), valor: c.clave,
-      solucion: [[v('Z', `Z = ${z}`), ' en los dos; neutros, los mismos ', v('e', `${z} ${z === 1 ? 'electrón' : 'electrones'}`), '.'], ['Como la reacción depende de los electrones, reaccionan igual.']],
+      solucion: [[v('Z', `Z = ${z}`), ' en los dos y, como son neutros, los mismos ', v('e', `${z} ${z === 1 ? 'electrón' : 'electrones'}`), '.'], ['Como la reacción depende de los electrones, reaccionan igual.']],
       _datos: { tipo: 'nuclidos', nivel: 1, sub: 'isotopos', pide: 'reacciona', a, b } });
   }
 
@@ -256,7 +256,7 @@
     const ya = nuclido(z1, a1), dz = z2 - z1;
     if (sub === 'isobaros') {
       const errores = [
-        e(n1, 'QM-NUCLIDO-ISOTONO', `Bien que los dos núclidos se parezcan. Pero isóbaros tienen el mismo A, no el mismo N: ${n1} es de otro. Así salen ${n1}.`),
+        e(n1, 'QM-NUCLIDO-ISOTONO', `Bien que los dos núclidos se parezcan. Pero los isóbaros tienen el mismo A, no el mismo N: ${n1} son los neutrones del otro. Así salen ${n1}.`),
         e(a1, 'QM-NEUTRONES', `Bien que el A sea ${a1} en los dos. Pero A junta protones y neutrones: falta quitar los ${z2} protones. Así salen ${a1}.`),
         e(n1 + dz, 'QM-NUCLIDO-SIGNO', `Bien partir de los ${n1} neutrones y de la diferencia de ${Math.abs(dz)} protones. Pero va al revés: con ${dz > 0 ? 'más' : 'menos'} protones y el mismo A, hay ${dz > 0 ? 'menos' : 'más'} neutrones. Así salen ${n1 + dz}.`),
         e(z2, 'AT4', `Bien los ${z2} protones del otro núcleo. Pero no siempre hay tantos neutrones como protones: usa A. Así salen ${z2}.`),
@@ -264,7 +264,7 @@
       return cerrar({ variables: usa('Z', 'N'), enunciado: ['El ', ya, ' tiene ', v('Z', `Z = ${z1}`), `. Un núclido del ${NOMBRE[z2]} (`, v('Z', `Z = ${z2}`), ') es isóbaro del ', ya, '.'],
         pregunta: ['¿Cuántos ', v('N', 'neutrones'), ` tiene ese núclido del ${NOMBRE[z2]}?`], datos: [D.familias, D.masa],
         alternativas: numericas(rng, n2, errores), valor: n2,
-        solucion: [['Isóbaros: el mismo A, ', `${a1}.`], [v('N', 'N'), ' = ', `${a1} − `, v('Z', String(z2)), ' = ', v('N', `${n2} neutrones`), '.']],
+        solucion: [['Los isóbaros tienen el mismo A, ', `${a1}.`], [v('N', 'N'), ' = ', `${a1} − `, v('Z', String(z2)), ' = ', v('N', `${n2} neutrones`), '.']],
         _datos: { tipo: 'vecinos', nivel: 3, sub, a, b } });
     }
     if (sub === 'isotonos') {
@@ -277,7 +277,7 @@
       return cerrar({ variables: usa('Z', 'N'), enunciado: ['El ', ya, ' tiene ', v('Z', `Z = ${z1}`), `. Un núclido del ${NOMBRE[z2]} (`, v('Z', `Z = ${z2}`), ') es isótono del ', ya, '.'],
         pregunta: [`¿Cuál es el número de masa de ese núclido del ${NOMBRE[z2]}?`], datos: [D.familias, D.masa],
         alternativas: numericas(rng, a2, errores), valor: a2,
-        solucion: [['Isótonos: el mismo N. ', v('N', 'N'), ' del ', ya, ' = ', `${a1} − `, v('Z', String(z1)), ' = ', v('N', String(n1)), '.'],
+        solucion: [['Los isótonos tienen el mismo N. En el ', ya, ', ', v('N', 'N'), ' = ', `${a1} − `, v('Z', String(z1)), ' = ', v('N', String(n1)), '.'],
           ['A = ', v('Z', String(z2)), ' + ', v('N', String(n1)), ` = ${a2}.`]],
         _datos: { tipo: 'vecinos', nivel: 3, sub, a, b } });
     }
@@ -303,15 +303,15 @@
   function tMasaIon(rng) {
     const [z, a, q] = rng.elegir(IONES), el = z - q, n = a - z;
     const errores = [
-      e(el + n, 'QM-CARGA-E', `Bien sumar los ${n} neutrones. Pero el ion tiene carga: sus protones no son sus ${el} electrones. Así sale ${el + n}.`),
+      e(el + n, 'QM-CARGA-E', `Bien sumar los ${n} neutrones. Pero el ion tiene carga, así que sus protones no son sus ${el} electrones. Así sale ${el + n}.`),
       e(el - q + n, 'QM-CARGA-SIGNO', `Bien usar la carga y los neutrones. Pero el signo va al revés: carga = Z − e⁻. Así sale ${el - q + n}.`),
-      e(z, 'QM-NEUTRONES', `Bien los protones: Z = ${z}. Pero falta sumar los ${n} neutrones: A = Z + N. Así sale ${z}.`),
-      e(a + el, 'QM-SUMA-TODO', `Bien Z y N. Pero A cuenta solo el núcleo: los ${el} electrones no van. Así sale ${a + el}.`),
+      e(z, 'QM-NEUTRONES', `Bien los protones: Z = ${z}. Pero falta sumar los ${n} neutrones, porque A = Z + N. Así sale ${z}.`),
+      e(a + el, 'QM-SUMA-TODO', `Bien Z y N. Pero A cuenta solo el núcleo, así que los ${el} electrones no se suman. Así sale ${a + el}.`),
     ];
     return cerrar({ variables: usa('Z', 'N', 'e', 'q'), enunciado: ['Un ion X tiene carga ', v('q', qTxt(q)), ', ', v('e', `${el} electrones`), ' y ', v('N', `${n} neutrones`), '.'],
       pregunta: ['¿Cuál es su número de masa A?'], datos: [D.carga, D.masa],
       alternativas: numericas(rng, a, errores), valor: a,
-      solucion: [['Protones: ', v('Z', 'Z'), ' = ', v('e', String(el)), ' + (', v('q', signo(q)), ') = ', v('Z', String(z)), '.'],
+      solucion: [['Primero los protones: ', v('Z', 'Z'), ' = ', v('e', String(el)), ' + (', v('q', signo(q)), ') = ', v('Z', String(z)), '.'],
         ['A = ', v('Z', String(z)), ' + ', v('N', String(n)), ` = ${a}.`]],
       _datos: { tipo: 'masa-ion', nivel: 3, Z: z, A: a, carga: q } });
   }

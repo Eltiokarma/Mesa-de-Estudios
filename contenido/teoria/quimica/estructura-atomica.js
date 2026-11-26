@@ -35,7 +35,7 @@
  * Letras (propuesta §7): N son los neutrones, como en los libros (A = Z + N); «Lee» lo avisa y el nitrógeno va siempre
  * por su nombre o con su número de masa (¹⁴N). A, el número de masa, nunca va en negrita; la letra de una alternativa sí,
  * en tinta ({ negrita }), porque el violeta es de los electrones.
- * Datos del mundo: el protón pesa unas 1836 veces el electrón (valor de libro, con «unas»); el cobre de Cuajone tiene
+ * Datos del mundo: el protón tiene unas 1836 veces la masa del electrón (valor de libro, con «unas»); el cobre de Cuajone tiene
  * Z = 29 (hecho sin cifra del mundo). La imagen del arándano en el estadio (OpenStax §2.3) no se usa: la página no se
  * pudo abrir para comprobarla (18 nov). El ejemplo de escala usa solo «unas 100 000 veces» (valor de libro).
  * Historia, una fecha por hecho (correcciones del 18 nov, A1; lo revisa estructura-atomica.test.js): Thomson halló el
@@ -93,7 +93,7 @@
       const txt = fmt(correcta + dx);
       if (vistos.has(txt)) continue;
       vistos.add(txt);
-      ops.push({ id: `cuenta${dx}`, texto: txt, error: 'QM-CUENTA', siFuera: 'Bien el camino. Revisa la cuenta paso por paso: ese número no sale.' });
+      ops.push({ id: `cuenta${dx}`, texto: txt, error: 'QM-CUENTA', siFuera: 'El camino puede estar bien, pero la cuenta no da ese número: revísala paso por paso.' });
     }
     return ops.slice(0, 4);
   }
@@ -296,12 +296,12 @@
       pregunta: ['El ion ', nuclido(z, a, q), ' tiene ', Z, ` = ${z}. ¿Cuántos neutrones tiene su núcleo?`],
       datos: [DF1.masa, DF1.nota],
       opciones: opciones(a - z, [
-        { id: 'carga', valor: a - z - q, error: 'QM-CARGA-N', siFuera: 'Bien usar A − Z. Pero la carga es de los electrones: no se resta en el núcleo.' },
-        { id: 'a', valor: a, error: 'QM-NEUTRONES', siFuera: 'Ese es A, bien leído del símbolo. Pero A junta protones y neutrones: falta quitar Z.' },
-        { id: 'z', valor: z, error: 'AT4', siFuera: 'Ese es Z, bien. Pero no siempre hay tantos neutrones como protones: usa A.' },
-        { id: 'suma', valor: a + z, error: 'QM-NEUTRONES', siFuera: 'Bien usar A y Z. Pero los neutrones son lo que queda al quitar Z, no al sumarlo.' },
+        { id: 'carga', valor: a - z - q, error: 'QM-CARGA-N', siFuera: 'Restar A − Z está bien. Pero la carga depende de los electrones, así que no se resta al contar el núcleo.' },
+        { id: 'a', valor: a, error: 'QM-NEUTRONES', siFuera: 'Ese es A, bien leído del símbolo. Pero A junta protones y neutrones, así que falta quitarle Z.' },
+        { id: 'z', valor: z, error: 'AT4', siFuera: 'Ese es Z, bien leído. Pero no siempre hay tantos neutrones como protones: los neutrones salen de A.' },
+        { id: 'suma', valor: a + z, error: 'QM-NEUTRONES', siFuera: 'Usar A y Z está bien. Pero los neutrones son lo que queda al quitarle Z a A, no al sumarlo.' },
       ], x => `${x}`),
-      solucion: { texto: 'Los neutrones son A − Z; la carga es de los electrones y no toca el núcleo.', ecuacion: [N, ` = ${a} − ${z} = `, Nn(a - z)] },
+      solucion: { texto: 'Los neutrones son A − Z. La carga depende de los electrones, así que no cambia nada en el núcleo.', ecuacion: [N, ` = ${a} − ${z} = `, Nn(a - z)] },
     };
   }
   function casoElectrones(r) {
@@ -310,12 +310,12 @@
       pregunta: ['El ion ', nuclido(z, a, q), ' tiene ', Z, ` = ${z}. ¿Cuántos electrones tiene?`],
       datos: [DF1.carga, DF1.nota],
       opciones: opciones(z - q, [
-        { id: 'signo', valor: z + q, error: 'QM-CARGA-SIGNO', siFuera: 'Bien usar la carga. Pero con carga positiva faltan electrones; con negativa, sobran.' },
-        { id: 'neutro', valor: z, error: 'QM-CARGA-E', siFuera: 'Así sería el átomo neutro, bien. Pero la carga dice que ganó o perdió electrones.' },
-        { id: 'neutrones', valor: a - z, error: 'QM-NEUTRONES', siFuera: 'A − Z está bien restado, pero cuenta neutrones del núcleo, no electrones.' },
-        { id: 'a', valor: a - q, error: 'QM-CARGA-A', siFuera: 'Bien usar la carga con su signo. Pero se aplica a Z, los protones, no a A.' },
+        { id: 'signo', valor: z + q, error: 'QM-CARGA-SIGNO', siFuera: 'Usar la carga está bien. Pero con carga positiva faltan electrones, y con carga negativa sobran.' },
+        { id: 'neutro', valor: z, error: 'QM-CARGA-E', siFuera: 'Así sería el átomo neutro. Pero el ion tiene carga, y eso dice que ganó o perdió electrones.' },
+        { id: 'neutrones', valor: a - z, error: 'QM-NEUTRONES', siFuera: 'A − Z está bien restado, pero esa resta cuenta los neutrones del núcleo, no los electrones.' },
+        { id: 'a', valor: a - q, error: 'QM-CARGA-A', siFuera: 'Usar la carga con su signo está bien. Pero la carga se aplica a Z, los protones, y no a A.' },
       ], x => `${x}`),
-      solucion: { texto: `Carga ${signo(q)}: ${q > 0 ? 'perdió' : 'ganó'} ${Math.abs(q)} respecto de los ${z} electrones del átomo neutro.`, ecuacion: [e, ` = ${z} − (${signo(q)}) = `, Ee(z - q)] },
+      solucion: { texto: `La carga es ${signo(q)}: el ion ${q > 0 ? 'perdió' : 'ganó'} ${Math.abs(q)} respecto de los ${z} electrones del átomo neutro.`, ecuacion: [e, ` = ${z} − (${signo(q)}) = `, Ee(z - q)] },
     };
   }
   const PARES_ISOTOPOS = [[6, 12, 14], [17, 35, 37], [8, 16, 18], [1, 1, 2], [19, 39, 41], [12, 24, 26]];
@@ -326,22 +326,22 @@
       datos: [`Z del ${nom} = ${z}`, DF1.masa, DF1.neutro],
       opciones: [
         { id: 'c', texto: 'Protones y electrones', correcta: true },
-        { id: 'n', texto: 'Neutrones', error: 'QM-ISOTOPO-N', siFuera: `Bien buscar lo que comparten. Pero los neutrones es lo que cambia: ${a1 - z} y ${a2 - z}.` },
+        { id: 'n', texto: 'Neutrones', error: 'QM-ISOTOPO-N', siFuera: `Bien buscar lo que comparten. Pero los neutrones son justo lo que cambia: ${a1 - z} y ${a2 - z}.` },
         { id: 'a', texto: 'Número de masa', error: 'QM-ISOTOPO-A', siFuera: `Sería cierto en dos isóbaros. Aquí los números de masa son ${a1} y ${a2}.` },
         { id: 'nada', texto: 'Nada: son elementos distintos', error: 'QM-ISOTOPO-ELEMENTO', siFuera: `Sería así si cambiara Z. Los dos tienen Z = ${z}: son ${nom}.` },
       ],
-      solucion: { texto: `Los dos tienen ${z} ${z === 1 ? 'protón' : 'protones'} y, neutros, ${z} ${z === 1 ? 'electrón' : 'electrones'}; cambian los neutrones.`, ecuacion: [Z, ` = ${z} y `, e, ` = ${z} en los dos   ·   `, N, ` = ${a1 - z} y ${a2 - z}`] },
+      solucion: { texto: `Los dos tienen ${z} ${z === 1 ? 'protón' : 'protones'} y, como son neutros, ${z} ${z === 1 ? 'electrón' : 'electrones'}; solo cambian los neutrones.`, ecuacion: [Z, ` = ${z} y `, e, ` = ${z} en los dos   ·   `, N, ` = ${a1 - z} y ${a2 - z}`] },
     };
     return {
       pregunta: ['El ', x1, ' y el ', x2, ` son átomos neutros del ${nom}. ¿Cómo son sus reacciones químicas, comparadas?`],
       datos: [`Z del ${nom} = ${z}`, 'Una reacción química depende de los electrones', DF1.neutro],
       opciones: [
         { id: 'c', texto: 'Iguales: tienen los mismos electrones', correcta: true },
-        { id: 'n', texto: 'Distintas: tienen distintos neutrones', error: 'QM-ISOTOPO-REACCIONA', siFuera: 'Bien: sus neutrones son distintos. Pero las reacciones las deciden los electrones, y son iguales.' },
-        { id: 'uno', texto: 'Solo reacciona el más liviano', error: 'QM-ISOTOPO-UNO', siFuera: 'Bien notar que uno pesa más. Pero los dos tienen los mismos electrones: los dos reaccionan.' },
+        { id: 'n', texto: 'Distintas: tienen distintos neutrones', error: 'QM-ISOTOPO-REACCIONA', siFuera: 'Es cierto que sus neutrones son distintos. Pero las reacciones las deciden los electrones, y los dos tienen los mismos.' },
+        { id: 'uno', texto: 'Solo reacciona el más liviano', error: 'QM-ISOTOPO-UNO', siFuera: 'Bien notar que uno tiene más masa. Pero los dos tienen los mismos electrones, así que los dos reaccionan.' },
         { id: 'nada', texto: 'Distintas: son elementos distintos', error: 'QM-ISOTOPO-ELEMENTO', siFuera: `Sería así si cambiara Z. Los dos tienen Z = ${z}: son ${nom}.` },
       ],
-      solucion: { texto: `Mismo Z, y neutros, los mismos ${z} electrones: reaccionan igual.`, ecuacion: [e, ` = ${z} en los dos`] },
+      solucion: { texto: `Tienen el mismo Z y, como son neutros, los mismos ${z} electrones: por eso reaccionan igual.`, ecuacion: [e, ` = ${z} en los dos`] },
     };
   }
   // Pares de núclidos neutros y qué son: isótopos (mismo Z), isóbaros (mismo A) o isótonos (mismo N).
@@ -362,8 +362,8 @@
       pregunta: ['¿Qué son entre sí el ', nuclido(z1, a1), ' y el ', nuclido(z2, a2), '?'],
       datos: [zDatos, DF1.familias, DF1.masa],
       opciones: Object.keys(TXT).map(k => (k === es ? { id: 'c', texto: TXT[k], correcta: true } : Object.assign({ id: k, texto: TXT[k] }, NO[k])))
-        .concat([{ id: 'nada', texto: 'Nada: no comparten ningún número', error: 'QM-NUCLIDO-NADA', siFuera: 'Sería así si Z, A y N fueran distintos. Compara los tres: uno coincide.' }]),
-      solucion: { texto: `Z: ${z1} y ${z2}. A: ${a1} y ${a2}. N: ${n1} y ${n2}. Coincide ${es === 'isotopos' ? 'Z' : es === 'isobaros' ? 'A' : 'N'}.`, ecuacion: comun },
+        .concat([{ id: 'nada', texto: 'Nada: no comparten ningún número', error: 'QM-NUCLIDO-NADA', siFuera: 'Sería así si Z, A y N fueran distintos. Compara los tres números: uno de ellos coincide.' }]),
+      solucion: { texto: `Los Z son ${z1} y ${z2}; los A, ${a1} y ${a2}, y los N, ${n1} y ${n2}. El que coincide es ${es === 'isotopos' ? 'Z' : es === 'isobaros' ? 'A' : 'N'}.`, ecuacion: comun },
     };
   }
   // Especies con su carga para el caso «isoelectrónico»: [Z, carga].
@@ -374,17 +374,17 @@
       if (zx === zy || zx < 1 || (i < 50 && Math.abs(qx) === Math.abs(qy) && Math.sign(qx) === Math.sign(qy))) continue;
       const y = `${SIMB[zy]}${carga(qy)}`;
       const ops = opciones(zx, [
-        { id: 'z-igual', valor: ey, error: 'QM-ISO-Z', siFuera: `Bien: X también tiene ${ey} electrones. Pero X tiene carga: Z no es igual a sus electrones.` },
-        { id: 'signo', valor: ey - qx, error: 'QM-CARGA-SIGNO', siFuera: `Bien partir de ${ey} electrones. Revisa el signo: carga = Z − electrones.` },
-        { id: 'neutro', valor: zy + qx, error: 'QM-ISO-NEUTRO', siFuera: `Bien usar la carga de X. Pero el ${y} ya no tiene ${zy} electrones.` },
-        { id: 'suma', valor: zy - qx, error: 'QM-ISO-NEUTRO', siFuera: `Bien igualar electrones. Pero el ${y} no tiene ${zy}: tiene ${ey}.` },
+        { id: 'z-igual', valor: ey, error: 'QM-ISO-Z', siFuera: `Es cierto que X también tiene ${ey} electrones. Pero X tiene carga, así que su Z no es igual a sus electrones.` },
+        { id: 'signo', valor: ey - qx, error: 'QM-CARGA-SIGNO', siFuera: `Partir de ${ey} electrones está bien. Revisa el signo: la carga es Z menos los electrones.` },
+        { id: 'neutro', valor: zy + qx, error: 'QM-ISO-NEUTRO', siFuera: `Usar la carga de X está bien. Pero el ${y} ya no tiene ${zy} electrones: tiene ${ey}.` },
+        { id: 'suma', valor: zy - qx, error: 'QM-ISO-NEUTRO', siFuera: `Igualar los electrones está bien. Pero el ${y} no tiene ${zy} electrones: tiene ${ey}.` },
       ], x => `${x}`);
       if (ops.length < 4) continue;
       return {
         pregunta: ['El ion X', carga(qx), ' es isoelectrónico con el ', y, '. ¿Cuál es el número atómico de X?'],
         datos: [`Z del ${NOMBRE[zy]} = ${zy}`, DF1.carga, DF1.iso],
         opciones: ops,
-        solucion: { texto: `El ${y} tiene ${ey} electrones; X también, con carga ${signo(qx)}.`, ecuacion: [Z, ` = ${ey} + (${signo(qx)}) = `, Pz(zx)] },
+        solucion: { texto: `El ${y} tiene ${ey} electrones, y X tiene esos mismos ${ey} con carga ${signo(qx)}.`, ecuacion: [Z, ` = ${ey} + (${signo(qx)}) = `, Pz(zx)] },
       };
     }
   }
@@ -392,17 +392,17 @@
     for (;;) {
       const z = r.ent(8, 30), q = r.de([-3, -2, -1, 1, 2, 3]), el = z - q, nN = z + r.ent(0, 6), a = z + nN;
       const ops = opciones(a, [
-        { id: 'e', valor: el + nN, error: 'QM-CARGA-E', siFuera: `Bien sumar los ${nN} neutrones. Pero el ion tiene carga: sus protones no son ${el}.` },
-        { id: 'signo', valor: el - q + nN, error: 'QM-CARGA-SIGNO', siFuera: 'Bien usar la carga. Revisa el signo: carga = Z − electrones.' },
-        { id: 'z', valor: z, error: 'QM-NEUTRONES', siFuera: `Ese es Z, bien calculado. Falta sumar los ${nN} neutrones: A = Z + N.` },
-        { id: 'todo', valor: a + el, error: 'QM-SUMA-TODO', siFuera: `Bien Z y N. Pero A cuenta solo el núcleo: los ${el} electrones no van.` },
+        { id: 'e', valor: el + nN, error: 'QM-CARGA-E', siFuera: `Sumar los ${nN} neutrones está bien. Pero el ion tiene carga, así que sus protones no son ${el}.` },
+        { id: 'signo', valor: el - q + nN, error: 'QM-CARGA-SIGNO', siFuera: 'Usar la carga está bien. Revisa el signo: la carga es Z menos los electrones.' },
+        { id: 'z', valor: z, error: 'QM-NEUTRONES', siFuera: `Ese es Z, bien calculado. Falta sumarle los ${nN} neutrones, porque A = Z + N.` },
+        { id: 'todo', valor: a + el, error: 'QM-SUMA-TODO', siFuera: `Z y N están bien. Pero A cuenta solo lo que hay en el núcleo, así que los ${el} electrones no se suman.` },
       ], x => `${x}`);
       if (ops.length < 4) continue;
       return {
         pregunta: ['Un ion X', carga(q), ` tiene ${el} electrones y ${nN} neutrones. ¿Cuál es su número de masa?`],
         datos: [DF1.carga, DF1.masa],
         opciones: ops,
-        solucion: { texto: `Primero los protones con la carga; después, A con los neutrones.`, ecuacion: [Z, ` = ${el} + (${signo(q)}) = `, Pz(z), '   ·   ', A, ` = ${z} + ${nN} = ${a}`] },
+        solucion: { texto: `Primero se hallan los protones con la carga; después, A sale de sumarles los neutrones.`, ecuacion: [Z, ` = ${el} + (${signo(q)}) = `, Pz(z), '   ·   ', A, ` = ${z} + ${nN} = ${a}`] },
       };
     }
   }
@@ -428,33 +428,33 @@
       enunciado: 'Un átomo de oxígeno-18 tiene 8 protones. ¿Cuántos neutrones tiene?',
       datos: [DF1.masa, 'En «oxígeno-18», 18 es el número de masa A'],
       figura: ATOMO({ atomos: [{ Z: 8, N: 10, e: null, titulo: 'oxígeno-18', oculto: ['N'], rotulo: 'A = 18' }] }),
-      solucion: [{ texto: 'Del número de masa quito los protones: lo que queda son los neutrones.', ecuacion: [N, ' = 18 − ', Pz(8), ' = ', Nn(10)] }],
+      solucion: [{ texto: 'Al número de masa le quito los protones, y lo que queda son los neutrones.', ecuacion: [N, ' = 18 − ', Pz(8), ' = ', Nn(10)] }],
       respuesta: [Nn(10), ' neutrones'] },
     { nivel: 1, titulo: 'Los electrones del Ca²⁺',
       enunciado: '¿Cuántos electrones tiene el ion Ca²⁺?',
       datos: ['Z del calcio = 20', DF1.carga],
       figura: ATOMO({ atomos: [{ Z: 20, N: null, e: 18, titulo: 'Ca', carga: 2, oculto: ['e'] }] }),
-      solucion: [{ texto: 'Despejo los electrones: son los protones menos la carga. Carga +2: perdió dos.', ecuacion: [e, ' = ', Pz(20), ' − ', Qc('(+2)'), ' = ', Ee(18)] }],
+      solucion: [{ texto: 'Despejo los electrones: son los protones menos la carga. Como la carga es +2, el átomo perdió dos.', ecuacion: [e, ' = ', Pz(20), ' − ', Qc('(+2)'), ' = ', Ee(18)] }],
       respuesta: [Ee(18), ' electrones'] },
     { nivel: 1, titulo: '¿Qué elemento es?',
       enunciado: 'Un átomo tiene 17 protones, 18 neutrones y 17 electrones. ¿De qué elemento es?',
       datos: ['Z del azufre = 16', 'Z del cloro = 17', 'Z del argón = 18'],
       figura: ATOMO({ atomos: [{ Z: 17, N: 18, titulo: '?' }] }),
-      solucion: [{ texto: 'El elemento lo decide Z, los protones: 17 es el cloro. Los 18 neutrones no cambian el nombre: no es argón.', ecuacion: [Z, ' = ', Pz(17), ': cloro'] }],
+      solucion: [{ texto: 'El elemento lo decide Z, los protones, y Z = 17 es el cloro. Los 18 neutrones no cambian el nombre, así que no es argón.', ecuacion: [Z, ' = ', Pz(17), ': cloro'] }],
       respuesta: ['Cloro: ', Z, ' = ', Pz(17)] },
     { nivel: 1, titulo: 'Hidrógeno y deuterio',
       enunciado: 'Un átomo de hidrógeno común tiene 1 protón, ningún neutrón y 1 electrón. Uno de deuterio tiene 1 protón, 1 neutrón y 1 electrón. ¿Son el mismo elemento?',
       datos: ['Z del hidrógeno = 1', DF1.familias],
       figura: ATOMO({ atomos: [{ Z: 1, N: 0, titulo: 'hidrógeno' }, { Z: 1, N: 1, titulo: 'deuterio' }] }),
-      solucion: [{ texto: 'Los dos tienen 1 protón: el mismo Z, el mismo elemento. Solo cambia N: son isótopos.', ecuacion: [Z, ' = ', Pz(1), ' en los dos   ·   ', N, ' = ', Nn(0), ' y ', Nn(1)] }],
+      solucion: [{ texto: 'Los dos tienen 1 protón, así que tienen el mismo Z y son el mismo elemento. Como solo cambia N, son isótopos.', ecuacion: [Z, ' = ', Pz(1), ' en los dos   ·   ', N, ' = ', Nn(0), ' y ', Nn(1)] }],
       respuesta: ['Sí: los dos tienen ', Z, ' = ', Pz(1), '; son isótopos'] },
     { nivel: 2, titulo: 'Las tres partículas',
       enunciado: '¿Cuántos protones, neutrones y electrones tiene el ion ³⁵Cl⁻?',
       datos: ['Z del cloro = 17', DF1.masa, DF1.carga, DF1.nota],
       figura: ATOMO({ atomos: [{ Z: 17, N: 18, e: 18, titulo: '³⁵Cl', carga: -1, oculto: ['N', 'e'], rotulo: 'A = 35' }] }),
       solucion: [
-        { texto: 'Los protones son Z. Los neutrones salen del número de masa.', ecuacion: [Pz(17), ' protones   ·   ', N, ' = 35 − 17 = ', Nn(18)] },
-        { texto: 'Carga −1: ganó un electrón.', ecuacion: [e, ' = 17 − ', Qc('(−1)'), ' = ', Ee(18)] },
+        { texto: 'Los protones son Z. Los neutrones son lo que queda del número de masa al quitarle Z.', ecuacion: [Pz(17), ' protones   ·   ', N, ' = 35 − 17 = ', Nn(18)] },
+        { texto: 'La carga es −1, así que el átomo ganó un electrón.', ecuacion: [e, ' = 17 − ', Qc('(−1)'), ' = ', Ee(18)] },
       ],
       respuesta: [Pz(17), ' protones, ', Nn(18), ' neutrones y ', Ee(18), ' electrones'] },
     { nivel: 2, titulo: 'El ion del aluminio',
@@ -462,7 +462,7 @@
       datos: [DF1.carga],
       figura: ATOMO({ atomos: [{ Z: 13, N: null, e: 10, titulo: 'Al ?' }] }),
       solucion: [
-        { texto: 'La carga es protones menos electrones.', ecuacion: ['carga = ', Pz(13), ' − ', Ee(10), ' = ', Qc('+3')] },
+        { texto: 'La carga es la cuenta de los protones menos la de los electrones.', ecuacion: ['carga = ', Pz(13), ' − ', Ee(10), ' = ', Qc('+3')] },
         { texto: 'La carga va arriba a la derecha del símbolo, con su signo.', ecuacion: ['Al', Qc('³⁺')] },
       ],
       respuesta: ['Carga ', Qc('+3'), ': Al', Qc('³⁺')] },
@@ -471,16 +471,16 @@
       datos: ['Z del cloro = 17', DF1.masa, DF1.neutro],
       figura: ATOMO({ atomos: [{ Z: 17, N: 18, titulo: 'cloro-35', oculto: ['N', 'e'], rotulo: 'A = 35' }, { Z: 17, N: 20, titulo: 'cloro-37', oculto: ['N', 'e'], rotulo: 'A = 37' }] }),
       solucion: [
-        { texto: 'Los neutrones salen del número de masa de cada uno.', ecuacion: [N, ' = 35 − 17 = ', Nn(18), '   ·   ', N, ' = 37 − 17 = ', Nn(20)] },
-        { texto: 'Neutros, los dos tienen tantos electrones como protones: 17. Solo cambian los neutrones.', ecuacion: [e, ' = ', Ee(17), ' en los dos'] },
-        { texto: 'La diferencia de neutrones:', ecuacion: [Nn(20), ' − ', Nn(18), ' = ', Nn(2)] },
+        { texto: 'Los neutrones de cada uno salen de restarle Z a su número de masa.', ecuacion: [N, ' = 35 − 17 = ', Nn(18), '   ·   ', N, ' = 37 − 17 = ', Nn(20)] },
+        { texto: 'Como son neutros, los dos tienen tantos electrones como protones: 17. Solo cambian los neutrones.', ecuacion: [e, ' = ', Ee(17), ' en los dos'] },
+        { texto: 'Resto para ver cuántos neutrones más tiene el cloro-37.', ecuacion: [Nn(20), ' − ', Nn(18), ' = ', Nn(2)] },
       ],
       respuesta: ['El cloro-37 tiene ', Nn(2), ' neutrones más; los electrones son iguales'] },
     { nivel: 2, titulo: 'El agua pesada',
       enunciado: 'En el agua pesada, cada molécula tiene 2 átomos de deuterio (hidrógeno-2) y 1 de oxígeno-16. ¿Cuántos neutrones tiene una molécula?',
       datos: ['Z del hidrógeno = 1', 'Z del oxígeno = 8', DF1.masa],
       solucion: [
-        { texto: 'Cada deuterio: 2 − 1 = 1 neutrón; son dos átomos. El oxígeno-16: 16 − 8 = 8.', ecuacion: [N, ' = 2 · ', Nn(1), ' + ', Nn(8)] },
+        { texto: 'Cada deuterio tiene 2 − 1 = 1 neutrón, y hay dos átomos de deuterio. El oxígeno-16 tiene 16 − 8 = 8.', ecuacion: [N, ' = 2 · ', Nn(1), ' + ', Nn(8)] },
         { texto: 'Se suman los neutrones de los tres átomos.', ecuacion: ['2 + 8 = ', Nn(10)] },
       ],
       respuesta: [Nn(10), ' neutrones'] },
@@ -488,7 +488,7 @@
       enunciado: '¿Cuántas de estas especies son isoelectrónicas con el átomo de neón: Na⁺, Mg, F⁻, O²⁻ y Cl⁻?',
       datos: ['Z: oxígeno 8, flúor 9, neón 10, sodio 11, magnesio 12, cloro 17', DF1.carga, DF1.iso],
       solucion: [
-        { texto: 'El neón, neutro, tiene 10 electrones. Cuento los de cada especie con su carga.', ecuacion: ['Na⁺: ', Ee(10), '   ·   Mg: ', Ee(12), '   ·   F⁻: ', Ee(10), '   ·   O²⁻: ', Ee(10), '   ·   Cl⁻: ', Ee(18)] },
+        { texto: 'El neón es neutro, así que tiene 10 electrones. Cuento los de cada especie con su carga.', ecuacion: ['Na⁺: ', Ee(10), '   ·   Mg: ', Ee(12), '   ·   F⁻: ', Ee(10), '   ·   O²⁻: ', Ee(10), '   ·   Cl⁻: ', Ee(18)] },
         { texto: 'Tienen 10 electrones el Na⁺, el F⁻ y el O²⁻.' },
       ],
       respuesta: 'Tres: Na⁺, F⁻ y O²⁻' },
@@ -497,10 +497,10 @@
       alternativas: ['15', '18', '21', '17', '23'],
       datos: ['Z del calcio = 20', DF1.carga, DF1.iso],
       solucion: [
-        { texto: 'El Ca²⁺ perdió 2 electrones: le quedan 18. X³⁻ tiene esos mismos 18.', ecuacion: [e, ' = 20 − (+2) = ', Ee(18)] },
-        { texto: 'Para X, la carga es −3: Z − 18 = −3.', ecuacion: [Z, ' = 18 + (−3) = ', Pz(15)] },
-        { texto: ['La ', letra('B'), ' toma Z igual a los electrones. La ', letra('C'), ' suma el 3: 18 + 3.'] },
-        { texto: ['La ', letra('D'), ' usa los 20 del calcio neutro: 20 − 3. La ', letra('E'), ' hace 20 + 3.'] },
+        { texto: 'El Ca²⁺ perdió 2 de sus 20 electrones y le quedan 18. El ion X³⁻ tiene esos mismos 18.', ecuacion: [e, ' = 20 − (+2) = ', Ee(18)] },
+        { texto: 'La carga de X es −3, así que Z − 18 = −3 y Z es 3 menos que 18.', ecuacion: [Z, ' = 18 + (−3) = ', Pz(15)] },
+        { texto: ['La ', letra('B'), ' toma Z igual a los electrones, y la ', letra('C'), ' suma el 3 en vez de restarlo: 18 + 3.'] },
+        { texto: ['La ', letra('D'), ' parte de los 20 electrones del calcio neutro: 20 − 3. La ', letra('E'), ' hace 20 + 3.'] },
       ],
       respuesta: [letra('A'), ', ', Z, ' = ', Pz(15)] },
     { nivel: 3, titulo: 'Número de masa de un ion',
@@ -508,10 +508,10 @@
       alternativas: ['54', '56', '52', '26', '58'],
       datos: [DF1.carga, DF1.masa],
       solucion: [
-        { texto: 'Carga +2: perdió dos electrones. Tiene 2 protones más que electrones.', ecuacion: [Z, ' = 24 + 2 = ', Pz(26)] },
-        { texto: 'El número de masa junta protones y neutrones.', ecuacion: [A, ' = ', Pz(26), ' + ', Nn(30), ' = 56'] },
-        { texto: ['La ', letra('A'), ' suma electrones y neutrones: 24 + 30. La ', letra('C'), ' resta la carga: 22 + 30.'] },
-        { texto: ['La ', letra('D'), ' se queda en Z. La ', letra('E'), ' suma la carga dos veces: 26 + 30 + 2.'] },
+        { texto: 'La carga es +2 porque perdió dos electrones: tiene 2 protones más que electrones.', ecuacion: [Z, ' = 24 + 2 = ', Pz(26)] },
+        { texto: 'El número de masa junta los protones y los neutrones del núcleo.', ecuacion: [A, ' = ', Pz(26), ' + ', Nn(30), ' = 56'] },
+        { texto: ['La ', letra('A'), ' suma electrones y neutrones: 24 + 30. La ', letra('C'), ' resta la carga en vez de sumarla: 22 + 30.'] },
+        { texto: ['La ', letra('D'), ' se queda en Z, sin los neutrones. La ', letra('E'), ' suma la carga dos veces: 26 + 30 + 2.'] },
       ],
       respuesta: [letra('B'), ', ', A, ' = 56'] },
     { nivel: 3, titulo: 'Isóbaros e isótonos',
@@ -519,10 +519,10 @@
       alternativas: ['Isóbaros: Ar y K; isótonos: K y Ca', 'Isóbaros: Ar y Ca; isótonos: Ar y K', 'Isóbaros: Ar y Ca; isótonos: K y Ca', 'Isótopos: Ar y Ca; isótonos: K y Ca', 'Isóbaros: K y Ca; isótonos: Ar y Ca'],
       datos: ['Z del argón = 18; Z del potasio = 19; Z del calcio = 20', DF1.familias, DF1.masa],
       solucion: [
-        { texto: 'Isóbaros: mismo A. El ⁴⁰Ar y el ⁴⁰Ca tienen A = 40.' },
-        { texto: 'Isótonos: mismo N. Calculo los neutrones de cada uno.', ecuacion: ['Ar: ', N, ' = 40 − 18 = ', Nn(22), '   ·   Ca: ', N, ' = 40 − 20 = ', Nn(20), '   ·   K: ', N, ' = 39 − 19 = ', Nn(20)] },
-        { texto: ['El K y el Ca tienen 20 neutrones. La ', letra('D'), ' llama isótopos al Ar y al Ca: tienen distinto Z.'] },
-        { texto: ['La ', letra('A'), ' y la ', letra('B'), ' juntan al Ar con el K, que no comparten A ni N. La ', letra('E'), ' cruza los pares: K y Ca tienen distinto A.'] },
+        { texto: 'Los isóbaros tienen el mismo A, y el ⁴⁰Ar y el ⁴⁰Ca tienen A = 40.' },
+        { texto: 'Los isótonos tienen el mismo N, así que calculo los neutrones de cada uno.', ecuacion: ['Ar: ', N, ' = 40 − 18 = ', Nn(22), '   ·   Ca: ', N, ' = 40 − 20 = ', Nn(20), '   ·   K: ', N, ' = 39 − 19 = ', Nn(20)] },
+        { texto: ['El K y el Ca tienen 20 neutrones: son los isótonos. La ', letra('D'), ' llama isótopos al Ar y al Ca, que tienen distinto Z.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('B'), ' juntan al Ar con el K, que no comparten A ni N. La ', letra('E'), ' cruza los pares, y el K y el Ca tienen distinto A.'] },
       ],
       respuesta: [letra('C'), ', isóbaros: Ar y Ca; isótonos: K y Ca'] },
     // Nivel 3 que cruza isótopo e ion (auditoría B4): ³⁵Cl⁻ (17 p, 18 n, 18 e) y ³⁷Cl (17 p, 20 n, 17 e): solo Z es igual.
@@ -531,10 +531,10 @@
       alternativas: ['Protones y electrones', 'Neutrones', 'Solo los protones', 'Número de masa', 'Nada: son elementos distintos'],
       datos: ['Z del cloro = 17', DF1.masa, DF1.carga, DF1.nota],
       solucion: [
-        { texto: 'Los dos son cloro: tienen 17 protones.', ecuacion: [Z, ' = ', Pz(17), ' en los dos'] },
-        { texto: 'Neutrones: 35 − 17 y 37 − 17. Electrones: el ³⁵Cl⁻ ganó uno; el ³⁷Cl es neutro.', ecuacion: [N, ' = ', Nn(18), ' y ', Nn(20), '   ·   ', e, ' = ', Ee(18), ' y ', Ee(17)] },
-        { texto: ['La ', letra('A'), ' olvida la carga del ³⁵Cl⁻. La ', letra('B'), ' y la ', letra('D'), ' dan lo que cambia: N y A.'] },
-        { texto: ['La ', letra('E'), ' olvida que el mismo Z es el mismo elemento.'] },
+        { texto: 'Los dos son cloro, así que los dos tienen 17 protones.', ecuacion: [Z, ' = ', Pz(17), ' en los dos'] },
+        { texto: 'Los neutrones son 35 − 17 y 37 − 17. En los electrones, el ³⁵Cl⁻ ganó uno y el ³⁷Cl es neutro.', ecuacion: [N, ' = ', Nn(18), ' y ', Nn(20), '   ·   ', e, ' = ', Ee(18), ' y ', Ee(17)] },
+        { texto: ['La ', letra('A'), ' olvida la carga del ³⁵Cl⁻. La ', letra('B'), ' y la ', letra('D'), ' dan justo lo que cambia: N y A.'] },
+        { texto: ['La ', letra('E'), ' olvida que, si Z es el mismo, el elemento es el mismo.'] },
       ],
       respuesta: [letra('C'), ', solo los protones'] },
     { nivel: 3, titulo: 'Todas las partículas',
@@ -542,10 +542,10 @@
       alternativas: ['76', '52', '80', '104', '48'],
       datos: [DF1.masa, DF1.neutro],
       solucion: [
-        { texto: 'Los protones salen de A − N. Neutro: tantos electrones como protones.', ecuacion: [Z, ' = 52 − 28 = ', Pz(24), '   ·   ', e, ' = ', Ee(24)] },
-        { texto: 'Sumo las tres partículas.', ecuacion: [Pz(24), ' + ', Nn(28), ' + ', Ee(24), ' = 76'] },
-        { texto: ['La ', letra('B'), ' cuenta solo el núcleo: 52. La ', letra('C'), ' suma A con N: 52 + 28.'] },
-        { texto: ['La ', letra('D'), ' suma A dos veces: 104. La ', letra('E'), ' cuenta protones y electrones sin los neutrones.'] },
+        { texto: 'Los protones salen de A − N. Como el átomo es neutro, tiene tantos electrones como protones.', ecuacion: [Z, ' = 52 − 28 = ', Pz(24), '   ·   ', e, ' = ', Ee(24)] },
+        { texto: 'Sumo las tres clases de partículas para tener el total.', ecuacion: [Pz(24), ' + ', Nn(28), ' + ', Ee(24), ' = 76'] },
+        { texto: ['La ', letra('B'), ' cuenta solo el núcleo: 52. La ', letra('C'), ' suma A con N, y cuenta dos veces los neutrones: 52 + 28.'] },
+        { texto: ['La ', letra('D'), ' suma A dos veces: 104. La ', letra('E'), ' cuenta protones y electrones, pero no los neutrones.'] },
       ],
       respuesta: [letra('A'), ', 76 partículas'] },
   ];
@@ -561,22 +561,22 @@
     // Lee: el hueso, las tres partículas y los tres números. No dice qué le pasa a un átomo que pierde un electrón.
     lee: {
       tarjetas: [
-        { titulo: 'El hueso del museo', texto: 'En un museo hay un hueso de llama muy antiguo. Su carbono es de dos clases: casi todo es carbono-12, y hay un poco de carbono-14. Las dos clases son carbono. ¿En qué se diferencian sus átomos?',
+        { titulo: 'El hueso del museo', texto: 'En un museo hay un hueso de llama muy antiguo. Su carbono es de dos clases: casi todo es carbono-12, y hay un poco de carbono-14. Si las dos clases son carbono, ¿en qué se diferencian sus átomos?',
           pieza: 'quim-objeto', dibujo: HUESO({ atomos: [{ Z: 6, N: 6, titulo: 'carbono-12', oculto: ['Z', 'N', 'e'] }, { Z: 6, N: 8, titulo: 'carbono-14', oculto: ['Z', 'N', 'e'] }] }) },
-        { titulo: 'Tres partículas', texto: 'Al centro del átomo está el núcleo, con protones (carga positiva) y neutrones (sin carga). Afuera se mueven los electrones (carga negativa). Las cargas opuestas se atraen. Un protón pesa unas 1836 veces lo que un electrón.',
+        { titulo: 'Tres partículas', texto: 'En el centro del átomo está el núcleo, con protones de carga positiva y neutrones sin carga. Alrededor se mueven los electrones, de carga negativa, atraídos por el núcleo. Un protón tiene unas 1836 veces la masa de un electrón.',
           pieza: 'quim-atomo', dibujo: ATOMO({ atomos: [{ Z: 2, N: 2, titulo: 'un átomo de helio' }] }) },
-        { titulo: 'Tres números', texto: 'Z, el número atómico, cuenta los protones; N, los neutrones; A, el número de masa, los dos juntos. En ¹⁴₆C, arriba va A = 14 y abajo, Z = 6. Ojo: aquí N son neutrones; al nitrógeno lo llamamos por su nombre o ¹⁴N.' },
+        { titulo: 'Tres números', texto: 'El número atómico, Z, cuenta los protones; N cuenta los neutrones, y el número de masa, A, suma los dos. En ¹⁴₆C, A = 14 va arriba y Z = 6, abajo. Como N son los neutrones, al nitrógeno lo llamamos por su nombre o ¹⁴N.' },
         { titulo: 'Qué mirar', texto: 'En el juego armas un átomo con protones y neutrones, al lado de un carbono-12 del hueso. Mira con cuál de los dos números cambia el nombre del elemento.' },
       ],
     },
     ejemplos: EJEMPLOS_NUCLEO,
     juega: {
       pieza: 'quim-objeto',
-      consigna: 'El hueso guarda carbono-12 y un poco de carbono-14: los dos son carbono. A la derecha armas tu propio átomo, siempre neutro.',
+      consigna: 'El hueso guarda carbono-12 y un poco de carbono-14: los dos son carbono. A la derecha armas tu átomo, que siempre queda neutro.',
       mision: {
         texto: 'Arma un átomo de carbono-14.',
         logrado: v => v.z === 6 && v.z + v.n === 14,
-        bien: '6 protones y 8 neutrones. Con 6 neutrones también es carbono: lo decide Z.',
+        bien: 'Son 6 protones y 8 neutrones. Con 6 neutrones también sería carbono, porque lo decide Z.',
       },
       voz: 'Mueve una cosa a la vez y lee el nombre.',
       leyenda: [
@@ -608,9 +608,9 @@
       voz: 'Piensa qué cambió y qué se quedó igual.',
       opciones: [
         { id: 'c', texto: 'Un ion Na⁺: sigue siendo sodio', correcta: true },
-        { id: 'neon', texto: 'Neón, porque ahora tiene 10 electrones', error: 'QM-ION-ELEMENTO-E', siFuera: 'El neón tiene 10 electrones, cierto. Pero el elemento lo deciden los protones, y siguen siendo 11.' },
-        { id: 'magnesio', texto: 'Magnesio, porque queda con carga +1', error: 'QM-ION-ELEMENTO-Q', siFuera: 'La carga cambió a +1, bien visto. Pero el magnesio tiene 12 protones; aquí siguen siendo 11.' },
-        { id: 'isotopo', texto: 'Un isótopo del sodio', error: 'QM-ION-ISOTOPO', siFuera: 'Seguir siendo sodio está bien. Pero un isótopo cambia sus neutrones; aquí cambió un electrón.' },
+        { id: 'neon', texto: 'Neón, porque ahora tiene 10 electrones', error: 'QM-ION-ELEMENTO-E', siFuera: 'Es cierto que el neón tiene 10 electrones. Pero el elemento lo deciden los protones, y aquí siguen siendo 11.' },
+        { id: 'magnesio', texto: 'Magnesio, porque queda con carga +1', error: 'QM-ION-ELEMENTO-Q', siFuera: 'Bien visto que la carga cambió a +1. Pero el magnesio tiene 12 protones, y este núcleo sigue con 11.' },
+        { id: 'isotopo', texto: 'Un isótopo del sodio', error: 'QM-ION-ISOTOPO', siFuera: 'Es cierto que sigue siendo sodio. Pero un isótopo tiene otro número de neutrones, y aquí lo que cambió fue un electrón.' },
       ],
       dibujo: ATOMO({ atomos: [{ Z: 11, N: 12, titulo: 'Antes: sodio' }, { Z: 11, N: 12, e: 10, oculto: ['Z', 'N'], titulo: 'Después: ?', sale: { n: 1 } }] }),
       revelar: ATOMO({ atomos: [{ Z: 11, N: 12, titulo: 'Antes: sodio' }, { Z: 11, N: 12, e: 10, titulo: 'Na', carga: 1, sale: { n: 1 }, rotulo: 'carga: 11 − 10 = +1', rotuloColor: 'h' }] }),
@@ -630,18 +630,18 @@
       voz: 'Miremos los átomos del hueso hoy y miles de años después.',
       pasos: [
         { estado: { corte: 1 }, texto: 'En el hueso hay carbono-12 y un poco de carbono-14.', ecuacion: [Z, ' = ', Pz(6), ' en los dos: los dos son carbono'] },
-        { estado: { corte: 2 }, texto: 'Mismo Z y distinto N: son isótopos, con los mismos 6 electrones.', ecuacion: [A, ' = ', Pz(6), ' + ', Nn(6), ' = 12   ·   ', A, ' = ', Pz(6), ' + ', Nn(8), ' = 14'] },
-        { estado: { corte: 3 }, texto: 'Con los años, en un carbono-14 un neutrón del núcleo pasa a protón.', ecuacion: [Nn(8), ' − 1 = ', Nn(7), '   ·   ', Pz(6), ' + 1 = ', Pz(7)] },
-        { estado: { corte: 3 }, texto: 'Ahora hay 7 protones: Z = 7 es el nitrógeno, el ¹⁴N.', ecuacion: [Z, ' = ', Pz(7), ': nitrógeno'] },
-        { estado: { corte: 3 }, texto: 'A no cambió: ¹⁴C y ¹⁴N son isóbaros. Cambió Z: es otro elemento.', ecuacion: [A, ' = ', Pz(7), ' + ', Nn(7), ' = 14'] },
+        { estado: { corte: 2 }, texto: 'Tienen el mismo Z y distinto N, así que son isótopos; neutros, los dos tienen 6 electrones.', ecuacion: [A, ' = ', Pz(6), ' + ', Nn(6), ' = 12   ·   ', A, ' = ', Pz(6), ' + ', Nn(8), ' = 14'] },
+        { estado: { corte: 3 }, texto: 'Con los años, en el núcleo de un carbono-14, un neutrón se convierte en protón.', ecuacion: [Nn(8), ' − 1 = ', Nn(7), '   ·   ', Pz(6), ' + 1 = ', Pz(7)] },
+        { estado: { corte: 3 }, texto: 'Ahora el núcleo tiene 7 protones, y Z = 7 es el nitrógeno: el átomo pasó a ser ¹⁴N.', ecuacion: [Z, ' = ', Pz(7), ': nitrógeno'] },
+        { estado: { corte: 3 }, texto: 'A sigue siendo 14, así que el ¹⁴C y el ¹⁴N son isóbaros; como cambió Z, ya es otro elemento.', ecuacion: [A, ' = ', Pz(7), ' + ', Nn(7), ' = 14'] },
       ],
     },
     regla: {
       // Ronda 2 del lector en frío: cada familia con su ejemplo (los del glosario y de «Mira»).
-      texto: 'Z decide el elemento; A = Z + N. Isótopos: mismo Z (¹²C y ¹⁴C), reaccionan igual. Isóbaros: mismo A (¹⁴C y ¹⁴N). Isótonos: mismo N (¹³C y ¹⁴N). Isoelectrónicos: mismos electrones.',
+      texto: 'Z decide el elemento, y A suma protones y neutrones. Los isótopos tienen el mismo Z y reaccionan igual (¹²C y ¹⁴C); los isóbaros, el mismo A (¹⁴C y ¹⁴N); los isótonos, el mismo N (¹³C y ¹⁴N), y los isoelectrónicos, los mismos electrones.',
       ecuacion: [A, ' = ', { llave: [Z], nota: 'protones', color: 'c-o' }, ' + ', { llave: [N], nota: 'neutrones', color: 'c-i' }, '   ·   ',
         { llave: ['carga'], nota: 'con signo', color: 'c-h' }, ' = ', Z, ' − ', { llave: [e], nota: 'electrones', color: 'c-f' }],
-      condicion: 'hay una reacción química: un ion solo gana o pierde electrones; el núcleo cambia solo en procesos nucleares, como en el ¹⁴C.',
+      condicion: 'el cambio es una reacción química, en la que el átomo solo gana o pierde electrones; el núcleo cambia únicamente en procesos nucleares, como el del ¹⁴C que pasa a ¹⁴N.',
       voz: 'Primero el núcleo; después, los electrones.',
       // Dibujo propio (correcciones del 18 nov, lector en frío): el Na⁺ de la predicción, ya revelada. Antes la regla
       // mostraba el carbono-14 que pasa a nitrógeno-14 junto a «el núcleo no cambia».
@@ -658,11 +658,11 @@
           dibujo: fig(['N', 'e']),
           pasos: [
             { tipo: 'pide', texto: 'Piden las tres partículas: protones y neutrones del núcleo, y electrones de afuera.' },
-            { tipo: 'datos', texto: ['Del símbolo: ', A, ` = ${a} y carga ${signo(q)}. De los datos: `, Z, ` = ${z}.`] },
-            { tipo: 'regla', texto: 'Los protones son Z. Los neutrones salen del número de masa; los electrones, de la carga.', ecuacion: [N, ' = ', A, ' − ', Z, '   ·   ', e, ' = ', Z, ' − carga'] },
-            { tipo: 'cuentas', texto: `Carga ${signo(q)}: ${q > 0 ? 'perdió' : 'ganó'} ${Math.abs(q)} ${Math.abs(q) === 1 ? 'electrón' : 'electrones'}.`,
+            { tipo: 'datos', texto: ['El símbolo da ', A, ` = ${a} y la carga ${signo(q)}; los datos dan `, Z, ` = ${z}.`] },
+            { tipo: 'regla', texto: 'Los protones son Z. Los neutrones son lo que queda del número de masa al quitarle Z, y los electrones salen de la carga.', ecuacion: [N, ' = ', A, ' − ', Z, '   ·   ', e, ' = ', Z, ' − carga'] },
+            { tipo: 'cuentas', texto: `La carga es ${signo(q)}, así que el átomo ${q > 0 ? 'perdió' : 'ganó'} ${Math.abs(q)} ${Math.abs(q) === 1 ? 'electrón' : 'electrones'} al formar el ion.`,
               ecuacion: [N, ` = ${a} − ${z} = `, Nn(n), '   ·   ', e, ` = ${z} − (${signo(q)}) = `, Ee(el)], dibujo: fig([]) },
-            { tipo: 'sentido', texto: `De vuelta: ${z} + ${n} = ${a}, el A del símbolo, y ${z} − ${el} = ${signo(z - el)}, su carga.` },
+            { tipo: 'sentido', texto: `Para comprobar: ${z} + ${n} = ${a} es el A del símbolo, y ${z} − ${el} = ${signo(z - el)} es su carga.` },
           ],
           respuesta: `${z} protones, ${n} neutrones y ${el} electrones`,
         };
@@ -715,7 +715,7 @@
     ['Rutherford: casi toda la masa está en un núcleo diminuto.', true, 'por eso unas pocas alfas rebotaron'],
     ['Rutherford propuso los niveles de energía del electrón.', false, 'los niveles son de Bohr, en 1913'],
     ['Bohr: el electrón solo ocupa ciertos niveles de energía.', true, 'es su idea central'],
-    ['Según Bohr, al bajar de nivel el electrón absorbe luz.', false, 'al bajar, suelta luz de un color fijo'],
+    ['Según Bohr, al bajar de nivel el electrón absorbe luz.', false, 'al bajar de nivel, el electrón suelta luz de un color fijo'],
     ['En el modelo actual, el electrón sigue una órbita fija.', false, 'hoy se habla de orbitales, regiones de probabilidad'],
     ['Un orbital es una región donde es probable hallar al electrón.', true, 'es la idea del modelo actual'],
   ];
@@ -732,14 +732,14 @@
     tres.forEach((x, i) => {
       const otra = bien.slice(); otra[i] = !otra[i];
       ops.push({ id: `vf${i}`, texto: vf(otra), error: x[1] ? 'QM-VF-NIEGA' : 'QM-VF-ACEPTA',
-        siFuera: `Bien las otras dos. La ${ROMANO[i]} es ${x[1] ? 'verdadera' : 'falsa'}: ${x[2]}.` });
+        siFuera: `Las otras dos están bien juzgadas. Pero la ${ROMANO[i]} es ${x[1] ? 'verdadera' : 'falsa'}: ${x[2]}.` });
     });
     return {
       pregunta: ['Indica verdadero (V) o falso (F). ', ...tres.flatMap((x, i) => [`${ROMANO[i]}. ${x[0]} `])],
       datos: [ANIOS, 'Partícula alfa: partícula con carga, lanzada contra la lámina de oro'],
       opciones: ops,
-      solucion: { texto: `${tres.map((x, i) => `${ROMANO[i]} ${x[1] ? 'V' : 'F'}`).join(', ')}. ${(tres.find(x => !x[1]) || tres[0])[2].replace(/^./, m => m.toUpperCase())}.` },
-      razones: tres.map((x, i) => `${ROMANO[i]}: ${x[1] ? 'V' : 'F'}, ${x[2]}`).join('. ') + '.',
+      solucion: { texto: `En orden queda ${vf(bien)}. ${(() => { const k = Math.max(0, tres.findIndex(x => !x[1])); return `La ${ROMANO[k]} es ${tres[k][1] ? 'verdadera' : 'falsa'}: ${tres[k][2]}`; })()}.` },
+      razones: tres.map((x, i) => `La ${ROMANO[i]} es ${x[1] ? 'verdadera' : 'falsa'}: ${x[2]}.`).join(' '),
     };
   }
   // Evidencia → modelo (nivel base).
@@ -752,7 +752,7 @@
   ];
   const MOD_TXT = { dalton: 'Dalton', thomson: 'Thomson', rutherford: 'Rutherford', bohr: 'Bohr', actual: 'El modelo actual' };
   const MOD_QUE = { dalton: 'átomos macizos, con masa propia', thomson: 'electrones dentro de una esfera positiva', rutherford: 'un núcleo diminuto y positivo',
-    bohr: 'niveles de energía permitidos', actual: 'orbitales: regiones de probabilidad' };
+    bohr: 'niveles de energía permitidos', actual: 'orbitales, que son regiones de probabilidad' };
   function casoEvidencia(r, k) {
     const [ev, mod] = EVIDENCIAS[k % EVIDENCIAS.length];
     return {
@@ -761,8 +761,8 @@
       datos: [ANIOS, 'Electrón: descubierto en 1897'],
       opciones: Object.keys(MOD_TXT).filter(x => x !== mod).slice(0, 3).concat([mod]).map(x => (x === mod ? { id: 'c', texto: MOD_TXT[x], correcta: true }
         : { id: x, texto: MOD_TXT[x], error: x === 'bohr' && mod === 'rutherford' ? 'AT5' : x === 'thomson' && mod === 'rutherford' ? 'QM-MODELO-THOMSON' : 'QM-MODELO',
-          siFuera: `Bien buscar un modelo. Pero ${MOD_TXT[x].replace('El modelo', 'el modelo')} propuso ${MOD_QUE[x]}: explicaba otra evidencia.` })),
-      solucion: { texto: `${MOD_TXT[mod]} propuso ${MOD_QUE[mod]} para explicarla.` },
+          siFuera: `${MOD_TXT[x]} propuso ${MOD_QUE[x]}. Esa idea respondía a otra evidencia, no a esta.` })),
+      solucion: { texto: `Para explicar esta evidencia, ${MOD_TXT[mod].replace('El modelo', 'el modelo')} propuso ${MOD_QUE[mod]}.` },
     };
   }
   // Escala (AT2, el error mejor medido de la unidad): si el núcleo midiera tanto, ¿cuánto mediría el átomo?
@@ -774,11 +774,11 @@
       datos: ['El átomo es unas 100 000 veces más ancho que su núcleo', '1 m = 100 cm = 1000 mm', '1 km = 1000 m'],
       opciones: [
         { id: 'c', texto: `Unos ${y} ${v}`, correcta: true },
-        { id: 'poco', texto: mm ? `Unos ${x} m` : `Unos ${x * 10} m`, error: 'QM-ESCALA-POCO', siFuera: 'Bien multiplicar. Pero el átomo es unas 100 000 veces más ancho, no 1000.' },
-        { id: 'unidad', texto: mm ? `Unos ${y} km` : `Unos ${x * 100} km`, error: 'QM-ESCALA-UNIDAD', siFuera: `Bien multiplicar por 100 000. Pero ${f(x * 100000, 0)} ${u} son ${y} ${v}, no ${mm ? y : x * 100} km.` },
-        { id: 'igual', texto: `Unos ${2 * x} ${u}`, error: 'AT2', siFuera: 'Bien que el átomo sea mayor. Pero el núcleo es diminuto: el átomo es unas 100 000 veces más ancho.' },
+        { id: 'poco', texto: mm ? `Unos ${x} m` : `Unos ${x * 10} m`, error: 'QM-ESCALA-POCO', siFuera: 'Multiplicar es el camino. Pero el átomo es unas 100 000 veces más ancho que su núcleo, no 1000 veces.' },
+        { id: 'unidad', texto: mm ? `Unos ${y} km` : `Unos ${x * 100} km`, error: 'QM-ESCALA-UNIDAD', siFuera: `Multiplicar por 100 000 está bien. Pero ${f(x * 100000, 0)} ${u} son ${y} ${v}, no ${mm ? y : x * 100} km.` },
+        { id: 'igual', texto: `Unos ${2 * x} ${u}`, error: 'AT2', siFuera: 'Es cierto que el átomo es mayor, pero no por poco: es unas 100 000 veces más ancho que su núcleo.' },
       ],
-      solucion: { texto: `${x} ${u} × 100 000 = ${mm ? `${x * 100000} mm = ${y} m` : `${x * 100000} cm = ${y} km`}.` },
+      solucion: { texto: `El átomo mide unas 100 000 veces lo que su núcleo: ${x} ${u} × 100 000 = ${mm ? `${f(x * 100000, 0)} mm = ${y} m` : `${f(x * 100000, 0)} cm = ${y} km`}.` },
     };
   }
   // Bohr solo como idea: subir de nivel cuesta energía; bajar la suelta como luz de un color fijo.
@@ -786,20 +786,20 @@
     const [a, b] = r.de([[3, 2], [2, 1], [4, 2], [1, 3], [2, 4], [4, 1], [1, 2], [5, 2]]), baja = a > b;
     const ops = baja ? [
       { id: 'c', texto: 'Suelta energía: luz de un color fijo', correcta: true },
-      { id: 'sube', texto: 'Absorbe energía', error: 'QM-BOHR-SUBE', siFuera: 'Bien que la energía cambie. Pero al bajar de nivel el electrón la suelta; la absorbe al subir.' },
-      { id: 'continuo', texto: 'Suelta luz de cualquier color', error: 'QM-BOHR-CONTINUO', siFuera: 'Bien que suelte luz. Pero el salto entre dos niveles fijos da siempre el mismo color.' },
+      { id: 'sube', texto: 'Absorbe energía', error: 'QM-BOHR-SUBE', siFuera: 'Es cierto que la energía cambia. Pero al bajar de nivel el electrón la suelta, y solo la absorbe al subir.' },
+      { id: 'continuo', texto: 'Suelta luz de cualquier color', error: 'QM-BOHR-CONTINUO', siFuera: 'Es cierto que suelta luz. Pero el salto entre dos niveles fijos da siempre luz del mismo color.' },
       { id: 'entre', texto: 'Se queda entre los dos niveles', error: 'QM-BOHR-ENTRE', siFuera: 'Para Bohr no hay lugares intermedios: el electrón está en un nivel o en otro.' },
     ] : [
       { id: 'c', texto: 'Absorbe energía', correcta: true },
-      { id: 'sube', texto: 'Suelta luz de un color fijo', error: 'QM-BOHR-SUBE', siFuera: 'Bien que la energía cambie. Pero eso pasa al bajar; para subir, el electrón absorbe energía.' },
-      { id: 'continuo', texto: 'Sube sin ganar ni perder energía', error: 'QM-BOHR-CONTINUO', siFuera: 'Para Bohr, cada nivel tiene su energía: cambiar de nivel siempre cambia la energía.' },
+      { id: 'sube', texto: 'Suelta luz de un color fijo', error: 'QM-BOHR-SUBE', siFuera: 'Es cierto que la energía cambia. Pero soltar luz pasa al bajar; para subir, el electrón tiene que absorber energía.' },
+      { id: 'continuo', texto: 'Sube sin ganar ni perder energía', error: 'QM-BOHR-CONTINUO', siFuera: 'Para Bohr, cada nivel tiene su propia energía, así que cambiar de nivel siempre cambia la energía del electrón.' },
       { id: 'entre', texto: 'Se queda entre los dos niveles', error: 'QM-BOHR-ENTRE', siFuera: 'Para Bohr no hay lugares intermedios: el electrón está en un nivel o en otro.' },
     ];
     return {
       pregunta: `Según Bohr, un electrón del hidrógeno pasa del nivel ${a} al nivel ${b}. ¿Qué pasa con la energía?`,
       datos: ['Para Bohr, un nivel más alto tiene más energía', 'La luz lleva energía'],
       opciones: ops,
-      solucion: { texto: baja ? `Del ${a} al ${b} baja: suelta la diferencia de energía como luz de un color fijo.` : `Del ${a} al ${b} sube: necesita absorber energía.` },
+      solucion: { texto: baja ? `Al pasar del nivel ${a} al ${b}, el electrón baja y suelta la diferencia de energía como luz de un color fijo.` : `Al pasar del nivel ${a} al ${b}, el electrón sube, así que necesita absorber energía.` },
     };
   }
   // Relacionar científico y aporte (San Marcos 2026-II, propio).
@@ -819,8 +819,8 @@
       opciones: [{ id: 'c', texto: txt(perm), correcta: true },
         ...[[0, 1], [1, 2], [0, 2]].map(([i, j]) => ({ id: `x${i}${j}`, texto: txt(cambia(i, j)),
           error: (nom(i) === 'Thomson' && nom(j) === 'Rutherford') ? 'QM-MODELO-THOMSON' : (nom(i) === 'Rutherford' && nom(j) === 'Bohr') ? 'AT5' : 'QM-MODELO',
-          siFuera: `Bien el ${ROMANO[3 - i - j]}. Pero cambiaste a ${nom(i)} y ${nom(j)}: ${nom(i)} propuso ${APORTE[nom(i)]}.` }))],
-      solucion: { texto: quien.map((q, i) => `${q}: ${APORTE[q]}`).join('; ') + '.' },
+          siFuera: `El ${ROMANO[3 - i - j]} está bien. Pero intercambiaste a ${nom(i)} y ${nom(j)}: ${nom(i)} propuso ${APORTE[nom(i)]}.` }))],
+      solucion: { texto: `${quien[0]} propuso ${APORTE[quien[0]]}; ${quien[1]}, ${APORTE[quien[1]]}, y ${quien[2]}, ${APORTE[quien[2]]}.` },
     };
   }
 
@@ -856,14 +856,14 @@
     { nivel: 1, titulo: 'Órbita u orbital',
       enunciado: 'En el modelo actual, ¿el electrón sigue un camino fijo alrededor del núcleo?',
       datos: ['Órbita: un camino, como el de un planeta', 'Orbital: una región alrededor del núcleo'],
-      solucion: [{ texto: 'Del electrón solo se sabe dónde es probable hallarlo. Un orbital es esa región, no un camino.' }],
+      solucion: [{ texto: 'Del electrón solo se sabe dónde es probable hallarlo, y un orbital es esa región, no un camino que recorre.' }],
       respuesta: 'No: está en un orbital, una región probable' },
     { nivel: 2, titulo: 'Un núcleo de un centímetro',
       enunciado: 'Si el núcleo de un átomo midiera 1 cm, ¿cuánto mediría el átomo?',
       datos: ['El átomo es unas 100 000 veces más ancho que su núcleo', '1 m = 100 cm', '1 km = 1000 m'],
       solucion: [
         { texto: 'Multiplico el ancho del núcleo por las veces que cabe en el átomo.', ecuacion: ['1 cm × 100 000 = 100 000 cm'] },
-        { texto: 'Paso a metros y a kilómetros.', ecuacion: ['100 000 cm = 1000 m = 1 km'] },
+        { texto: 'Paso esos centímetros a metros y después a kilómetros.', ecuacion: ['100 000 cm = 1000 m = 1 km'] },
       ],
       respuesta: 'Un kilómetro (1 km)' },
     { nivel: 2, titulo: 'Pasan casi todas',
@@ -881,7 +881,7 @@
       figura: LAM({ vista: 'zoom', modelo: 'dalton', titulo: 'Uno de sus átomos, según Dalton', alfas: [{ b: 0.3, llega: true }] }),
       solucion: [
         { texto: 'Una alfa chocaría con la primera esfera y rebotaría: no encuentra huecos para cruzar.' },
-        { texto: 'Casi ninguna pasaría. Pero pasaron casi todas: el modelo de Dalton no explica el experimento.' },
+        { texto: 'Así casi ninguna pasaría, pero en el experimento pasaron casi todas: el modelo de Dalton no explica lo que se vio.' },
       ],
       respuesta: 'Casi ninguna pasaría: no coincide con lo que se vio' },
     { nivel: 2, titulo: 'Dos saltos de Bohr',
@@ -907,7 +907,7 @@
       solucion: [
         { texto: 'I es V: es un postulado de Dalton. II es F: el electrón se descubrió en 1897, después de Dalton.' },
         { texto: 'III es V: el átomo tiene partes, así que no es indivisible.' },
-        { texto: ['La ', letra('A'), ' le da electrones a Dalton. La ', letra('D'), ' cree que el átomo sigue siendo indivisible.'] },
+        { texto: ['La ', letra('A'), ' le da electrones a Dalton, y la ', letra('D'), ' cree que el átomo sigue siendo indivisible. La ', letra('C'), ' y la ', letra('E'), ' marcan falsa la I, que es un postulado de Dalton.'] },
       ],
       respuesta: [letra('B'), ', VFV'] },
     { nivel: 3, titulo: 'Verdadero o falso: la lámina',
@@ -917,7 +917,7 @@
       solucion: [
         { texto: 'I es V: el átomo es casi vacío. II es F: si el núcleo positivo las rechaza, son positivas.' },
         { texto: 'III es F: los orbitales son del modelo actual, de 1926; Rutherford propuso el núcleo.' },
-        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' dan carga negativa a las alfas. La ', letra('C'), ' le da orbitales a Rutherford.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' dan carga negativa a las alfas, y la ', letra('C'), ' le da orbitales a Rutherford. La ', letra('B'), ' niega que la mayoría atravesara la hoja.'] },
       ],
       respuesta: [letra('E'), ', VFF'] },
     { nivel: 3, titulo: 'Cada científico con su aporte',
@@ -925,8 +925,8 @@
       alternativas: ['Ia, IIc, IIIb', 'Ic, IIb, IIIa', 'Ic, IIa, IIIb', 'Ib, IIa, IIIc', 'Ia, IIb, IIIc'],
       datos: [ANIOS],
       solucion: [
-        { texto: 'Thomson halló el electrón (c). Rutherford, con la lámina, el núcleo (a). Bohr propuso los niveles (b).' },
-        { texto: ['La ', letra('A'), ' cambia a Thomson con Rutherford. La ', letra('B'), ' le da los niveles a Rutherford.'] },
+        { texto: 'Thomson halló el electrón (c); Rutherford, con la lámina de oro, halló el núcleo (a), y Bohr propuso los niveles (b).' },
+        { texto: ['La ', letra('A'), ' cambia a Thomson con Rutherford, y la ', letra('B'), ' le da los niveles a Rutherford. La ', letra('D'), ' y la ', letra('E'), ' le dan a Thomson los niveles o el núcleo.'] },
       ],
       respuesta: [letra('C'), ', Ic, IIa, IIIb'] },
     { nivel: 3, titulo: 'El núcleo de una cancha',
@@ -934,8 +934,8 @@
       alternativas: ['1 cm', '10 cm', '1 m', '1 mm', '0,1 mm'],
       datos: ['El átomo es unas 100 000 veces más ancho que su núcleo', '1 m = 1000 mm'],
       solucion: [
-        { texto: 'El núcleo es 100 000 veces más angosto: divido.', ecuacion: ['100 m ÷ 100 000 = 0,001 m'] },
-        { texto: 'Paso a milímetros.', ecuacion: ['0,001 m × 1000 = 1 mm'] },
+        { texto: 'Como el núcleo es 100 000 veces más angosto que el átomo, divido el ancho de la cancha.', ecuacion: ['100 m ÷ 100 000 = 0,001 m'] },
+        { texto: 'Paso ese resultado de metros a milímetros.', ecuacion: ['0,001 m × 1000 = 1 mm'] },
         { texto: ['La ', letra('C'), ' divide entre 100; la ', letra('B'), ', entre 1000; la ', letra('A'), ', entre 10 000; la ', letra('E'), ', entre 1 000 000.'] },
       ],
       respuesta: [letra('D'), ', 1 mm'] },
@@ -946,7 +946,7 @@
       solucion: [
         { texto: 'Rutherford ya explicaba la lámina: el vacío y el rebote. No explicaba por qué el hidrógeno caliente da solo unos colores.' },
         { texto: 'Bohr lo explicó con niveles fijos: cada salto suelta un color fijo.' },
-        { texto: ['La ', letra('A'), ' y la ', letra('C'), ' son lo que Rutherford sí explicó. La ', letra('E'), ' es de Thomson.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('C'), ' son lo que Rutherford sí explicó, y la ', letra('E'), ' es de Thomson. La ', letra('B'), ' no era un problema: su átomo ya era neutro.'] },
       ],
       respuesta: [letra('D'), ', que el hidrógeno dé pocos colores'] },
   ];
@@ -964,8 +964,8 @@
       tarjetas: [
         { titulo: 'Un retablo dorado', texto: 'Muchos retablos de las iglesias del sur del Perú están cubiertos de pan de oro: hojitas de oro tan finas que casi dejan pasar la luz. Con una hoja así, en 1909, se lanzaron partículas contra el oro para ver qué hay dentro del átomo.',
           pieza: 'quim-lamina', dibujo: LAM({ vista: 'zoom', banda: 'retablo', modelo: 'incognita', titulo: 'Un átomo de oro' }) },
-        { titulo: 'Partículas alfa', texto: 'Las balas del experimento fueron partículas alfa: muy pequeñas, con carga positiva y unas 7300 veces más pesadas que un electrón. Cargas del mismo signo se repelen; cargas opuestas se atraen.' },
-        { titulo: 'Qué es un modelo', texto: 'Nadie ve un átomo. Un modelo es una explicación simplificada que se pone a prueba. Para Dalton, los átomos son esferas macizas, iguales dentro de cada elemento, que en una reacción solo se reordenan. Thomson metió electrones en una esfera positiva.',
+        { titulo: 'Partículas alfa', texto: 'Las balas del experimento fueron partículas alfa, muy pequeñas, con carga positiva y con unas 7300 veces la masa de un electrón. Las cargas del mismo signo se repelen, y las opuestas se atraen.' },
+        { titulo: 'Qué es un modelo', texto: 'Como nadie puede ver un átomo, un modelo es una explicación simplificada que se pone a prueba. Para Dalton, los átomos eran esferas macizas, iguales dentro de cada elemento, que en una reacción solo se reordenan. Thomson metió electrones en una esfera positiva.',
           pieza: 'quim-lamina', dibujo: LAM({ vista: 'modelos' }, { corte: 2 }) },
         { titulo: 'Qué mirar', texto: 'En el juego lanzas una alfa contra un átomo de Thomson o de Dalton. Mira cuánto se desvía en cada modelo según dónde apuntas.' },
       ],
@@ -977,7 +977,7 @@
       mision: {
         texto: 'Apunta una alfa justo al centro de un átomo de Thomson.',
         logrado: v => v.k === 'thomson' && Math.abs(v.b) < 1e-9,
-        bien: 'Ni apuntando al centro rebota: con la carga repartida, ninguna alfa vuelve.',
+        bien: 'Ni apuntando al centro rebota, porque con la carga repartida ninguna alfa vuelve.',
       },
       voz: 'Cambia una cosa a la vez: el modelo o dónde apuntas.',
       leyenda: [
@@ -1007,9 +1007,9 @@
       voz: 'Ninguno de los dos átomos del juego da justo eso.',
       opciones: [
         { id: 'c', texto: 'Un núcleo diminuto y positivo; lo demás, casi vacío', correcta: true },
-        { id: 'orbitas', texto: 'Electrones en órbitas fijas', error: 'AT5', siFuera: 'Las órbitas fijas son de Bohr, dos años después, y hablan de los electrones: no explican el rebote.' },
-        { id: 'dalton', texto: 'Una esfera maciza que no se puede partir', error: 'QM-MODELO-DALTON', siFuera: 'Así pensaba Dalton. Pero si el oro fuera macizo, casi ninguna alfa lo atravesaría.' },
-        { id: 'thomson', texto: 'Carga positiva repartida en todo el átomo', error: 'QM-MODELO-THOMSON', siFuera: 'Es el átomo del juego: explica que pasen, pero con la carga repartida ninguna rebota.' },
+        { id: 'orbitas', texto: 'Electrones en órbitas fijas', error: 'AT5', siFuera: 'Las órbitas fijas son de Bohr, dos años después, y tratan de los electrones, así que no explican por qué unas alfas rebotan.' },
+        { id: 'dalton', texto: 'Una esfera maciza que no se puede partir', error: 'QM-MODELO-DALTON', siFuera: 'Así pensaba Dalton. Pero si el oro fuera macizo, casi ninguna alfa lo atravesaría, y pasaron casi todas.' },
+        { id: 'thomson', texto: 'Carga positiva repartida en todo el átomo', error: 'QM-MODELO-THOMSON', siFuera: 'Es el átomo de Thomson del juego: explica que las alfas pasen, pero con la carga repartida ninguna rebota.' },
       ],
       dibujo: LAM({ vista: 'lamina', resultado: true, titulo: 'Lo que se vio' }),
       revelar: LAM({ vista: 'zoom', modelo: 'nuclear', titulo: 'Núcleo diminuto y positivo', alfas: alfasNucleo }),
@@ -1023,20 +1023,20 @@
       pasos: [
         // Correcciones del 18 nov (A1 y A4): el electrón es de 1897 (el modelo, de 1904) y lo que piden los ejercicios
         // (las proporciones fijas de Dalton y los rayos catódicos de Thomson) se ve aquí.
-        { estado: { corte: 1 }, texto: 'Dalton, 1808: los átomos son esferas macizas que no se parten.' },
+        { estado: { corte: 1 }, texto: 'En 1808, Dalton propuso que los átomos son esferas macizas que no se parten.' },
         { estado: { corte: 1 }, texto: 'Así explicó las proporciones fijas: los átomos se unen en números enteros sencillos.' },
-        { estado: { corte: 2 }, texto: 'Thomson, 1897: en los rayos catódicos halló el electrón, con carga negativa.' },
-        { estado: { corte: 2 }, texto: 'En 1904 propuso su modelo: electrones dentro de una esfera positiva.' },
-        { estado: { corte: 3 }, texto: 'Rutherford, 1911: la lámina de oro mostró un núcleo diminuto y positivo.' },
-        { estado: { corte: 4 }, texto: 'Bohr, 1913: solo ciertos niveles; al bajar, el electrón suelta luz de un color.' },
-        { estado: { corte: 5 }, texto: 'Hoy: orbitales, regiones donde es probable hallar al electrón; no caminos.' },
+        { estado: { corte: 2 }, texto: 'En 1897, Thomson halló en los rayos catódicos el electrón, una partícula con carga negativa.' },
+        { estado: { corte: 2 }, texto: 'En 1904 propuso su modelo: electrones metidos dentro de una esfera de carga positiva.' },
+        { estado: { corte: 3 }, texto: 'En 1911, Rutherford explicó la lámina de oro con un núcleo diminuto y positivo en el centro del átomo.' },
+        { estado: { corte: 4 }, texto: 'En 1913, Bohr propuso que el electrón solo ocupa ciertos niveles, y que al bajar de uno a otro suelta luz de un color.' },
+        { estado: { corte: 5 }, texto: 'Hoy se habla de orbitales: regiones donde es probable hallar al electrón, no caminos que recorre.' },
       ],
     },
     regla: {
       // Ronda 2 del lector en frío: Dalton y Thomson también en la regla (Ahora tú pide las proporciones fijas), y por qué
       // Bohr solo explicó el hidrógeno.
-      texto: 'Cada modelo explicó una evidencia nueva. Dalton: átomos macizos (proporciones fijas). Thomson: el electrón. Rutherford: núcleo diminuto y positivo. Bohr: niveles; al bajar, luz de un color. Hoy: orbitales.',
-      condicion: 'cada modelo se juzga con lo que se sabía entonces; Bohr solo explicó bien el hidrógeno, de un solo electrón.',
+      texto: 'Cada modelo explicó una evidencia nueva. Dalton explicó las proporciones fijas con átomos macizos; Thomson halló el electrón; Rutherford halló un núcleo diminuto y positivo; en Bohr, el electrón que baja de nivel suelta luz de un color, y hoy se usan orbitales.',
+      condicion: 'cada modelo se juzga con lo que se sabía en su época; el de Bohr, por ejemplo, solo explicaba bien el hidrógeno, que tiene un solo electrón.',
       voz: 'Un modelo vale por lo que explica, no por lo bonito del dibujo.',
     },
     // Así se resuelve: el verdadero o falso de «Ahora tú» (tipo examen), con otra semilla.
@@ -1049,9 +1049,9 @@
           datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: 'Piden juzgar cada afirmación por separado: verdadera (V) o falsa (F).' },
-            { tipo: 'regla', texto: 'Cada modelo propuso una sola idea nueva para explicar su evidencia. Comparo cada afirmación con lo que propuso ese científico.' },
+            { tipo: 'regla', texto: 'Cada modelo propuso una idea nueva para explicar su evidencia, así que comparo cada afirmación con lo que propuso ese científico.' },
             { tipo: 'aplica', texto: c.razones },
-            { tipo: 'sentido', texto: `Junto las tres respuestas en orden: ${bien}. Una sola letra cambiada ya es otra alternativa.` },
+            { tipo: 'sentido', texto: `Junto las tres respuestas en orden y queda ${bien}; con una sola letra cambiada, ya sería otra alternativa.` },
           ],
           respuesta: bien,
         };
@@ -1094,12 +1094,12 @@
       pregunta: `¿Cuántos orbitales tiene el subnivel ${sub}?`,
       datos: [DC.letras, DC.orbitales],
       opciones: opciones(o, [
-        { id: 'e', valor: 2 * o, error: 'QM-ORBITAL-ELECTRON', siFuera: 'Bien la cuenta de cajas por dos. Pero eso son los electrones; los orbitales son las cajas.' },
-        { id: 'n', valor: n, error: 'QM-N-L', siFuera: `Bien leer el ${n}. Pero el ${n} es el nivel: los orbitales dependen de ℓ, la letra.` },
-        { id: 'l1', valor: 2 * (l + 1) + 1, error: 'QM-L-DESDE-UNO', siFuera: `Bien usar 2ℓ + 1. Pero ${LETRA[l]} es ℓ = ${l}: la s es 0, no 1.` },
-        { id: 'l', valor: l === 0 ? 3 : l, error: 'QM-N-L', siFuera: 'Bien leer ℓ. Pero cada valor de mₗ, de −ℓ a +ℓ, es un orbital: son 2ℓ + 1.' },
+        { id: 'e', valor: 2 * o, error: 'QM-ORBITAL-ELECTRON', siFuera: 'Multiplicar las cajas por dos da los electrones. Pero aquí piden los orbitales, que son las cajas.' },
+        { id: 'n', valor: n, error: 'QM-N-L', siFuera: `Leíste bien el ${n}, pero el ${n} es el nivel: los orbitales dependen de ℓ, que da la letra.` },
+        { id: 'l1', valor: 2 * (l + 1) + 1, error: 'QM-L-DESDE-UNO', siFuera: `Usar 2ℓ + 1 está bien. Pero ${LETRA[l]} es ℓ = ${l}, porque la cuenta empieza con s = 0, no con 1.` },
+        { id: 'l', valor: l === 0 ? 3 : l, error: 'QM-N-L', siFuera: 'Leíste bien ℓ. Pero cada valor de mₗ, de −ℓ a +ℓ, es un orbital, así que son 2ℓ + 1.' },
       ], x => `${x}`),
-      solucion: { texto: `${LETRA[l]} es ℓ = ${l}: mₗ va de −${l} a +${l}.`, ecuacion: ['2 · ', `${l}`, ' + 1 = ', Oo(o)] },
+      solucion: { texto: `La ${LETRA[l]} es ℓ = ${l}, así que mₗ va de −${l} a +${l}, con un orbital por cada valor.`, ecuacion: ['2 · ', `${l}`, ' + 1 = ', Oo(o)] },
     };
   }
   function casoESub(r) {
@@ -1108,12 +1108,12 @@
       pregunta: `¿Cuántos electrones caben, como máximo, en el subnivel ${sub}?`,
       datos: [DC.letras, DC.orbitales, DC.dos],
       opciones: opciones(2 * o, [
-        { id: 'o', valor: o, error: 'QM-ORBITAL-ELECTRON', siFuera: 'Bien contar los orbitales. Pero en cada uno caben dos electrones.' },
+        { id: 'o', valor: o, error: 'QM-ORBITAL-ELECTRON', siFuera: 'Contaste bien los orbitales. Pero en cada uno caben dos electrones.' },
         { id: 'nivel', valor: 2 * n * n, error: 'QM-N-L', siFuera: `Eso cabe en todo el nivel ${n}, bien calculado. Pero aquí piden un solo subnivel.` },
-        { id: 'l1', valor: 2 * (2 * (l + 1) + 1), error: 'QM-L-DESDE-UNO', siFuera: `Bien el doble de los orbitales. Pero ${LETRA[l]} es ℓ = ${l}: la s es 0.` },
+        { id: 'l1', valor: 2 * (2 * (l + 1) + 1), error: 'QM-L-DESDE-UNO', siFuera: `Doblar los orbitales está bien. Pero ${LETRA[l]} es ℓ = ${l}, porque la cuenta empieza con s = 0.` },
         { id: 'ocho', valor: 8, error: 'QM-OCHO-POR-NIVEL', siFuera: 'Ocho no es un tope de los subniveles: cada uno tiene 2ℓ + 1 orbitales con dos electrones.' },
       ], x => `${x}`),
-      solucion: { texto: `${LETRA[l]}: ℓ = ${l}, con ${o} ${o === 1 ? 'orbital' : 'orbitales'} de dos electrones.`, ecuacion: ['2 · ', Oo(o), ' = ', Ee(2 * o)] },
+      solucion: { texto: `La ${LETRA[l]} es ℓ = ${l}: tiene ${o} ${o === 1 ? 'orbital' : 'orbitales'}, y en cada uno caben dos electrones.`, ecuacion: ['2 · ', Oo(o), ' = ', Ee(2 * o)] },
     };
   }
   function casoENivel(r) {
@@ -1122,13 +1122,13 @@
       pregunta: `¿Cuántos electrones caben, como máximo, en todo el nivel n = ${n}?`,
       datos: [DC.lDe, DC.orbitales, DC.dos],
       opciones: opciones(2 * t, [
-        { id: 'o', valor: t, error: 'QM-ORBITAL-ELECTRON', siFuera: `Bien la suma de orbitales: ${t}. Pero en cada uno caben dos electrones.` },
-        { id: 'ocho', valor: 8, error: 'QM-OCHO-POR-NIVEL', siFuera: 'No todos los niveles se llenan con 8: cada nivel suma un subnivel más.' },
-        { id: 'menos', valor: 2 * (t - o[n - 1]), error: 'QM-SIN-F', siFuera: `Bien sumar subniveles. Pero ℓ llega hasta n − 1 = ${n - 1}: falta el ${n}${LETRA[n - 1]}.` },
-        { id: '2n', valor: 2 * n, error: 'QM-2N', siFuera: 'Bien multiplicar por dos. Pero hay que contar los orbitales de todos los subniveles.' },
-        { id: 'ln', valor: 2 * (t + 2 * n + 1), error: 'QM-L-IGUAL-N', siFuera: `Bien sumar subniveles. Pero ℓ llega hasta n − 1 = ${n - 1}: el ${n}${LETRA[n] || ''} no existe.` },
+        { id: 'o', valor: t, error: 'QM-ORBITAL-ELECTRON', siFuera: `Sumaste bien los orbitales: ${t}. Pero en cada uno caben dos electrones.` },
+        { id: 'ocho', valor: 8, error: 'QM-OCHO-POR-NIVEL', siFuera: 'No todos los niveles se llenan con 8, porque cada nivel suma un subnivel más que el anterior.' },
+        { id: 'menos', valor: 2 * (t - o[n - 1]), error: 'QM-SIN-F', siFuera: `Sumar subniveles es el camino. Pero ℓ llega hasta n − 1 = ${n - 1}, así que falta contar el ${n}${LETRA[n - 1]}.` },
+        { id: '2n', valor: 2 * n, error: 'QM-2N', siFuera: 'Multiplicar por dos está bien. Pero antes hay que contar los orbitales de todos los subniveles.' },
+        { id: 'ln', valor: 2 * (t + 2 * n + 1), error: 'QM-L-IGUAL-N', siFuera: `Sumar subniveles es el camino. Pero ℓ llega hasta n − 1 = ${n - 1}, así que el ${n}${LETRA[n] || ''} no existe.` },
       ], x => `${x}`),
-      solucion: { texto: `ℓ va de 0 a ${n - 1}: ${o.join(' + ')} = ${t} orbitales, dos electrones en cada uno.`, ecuacion: ['2 · ', Oo(t), ' = ', Ee(2 * t)] },
+      solucion: { texto: `ℓ va de 0 a ${n - 1}, así que hay ${o.join(' + ')} = ${t} orbitales, con dos electrones en cada uno.`, ecuacion: ['2 · ', Oo(t), ' = ', Ee(2 * t)] },
     };
   }
   function casoOrbNivel(r) {
@@ -1137,12 +1137,12 @@
       pregunta: `¿Cuántos orbitales tiene en total el nivel n = ${n}?`,
       datos: [DC.lDe, DC.orbitales],
       opciones: opciones(t, [
-        { id: 'e', valor: 2 * t, error: 'QM-ORBITAL-ELECTRON', siFuera: 'Bien la suma. Pero eso son los electrones: cada orbital lleva dos.' },
-        { id: 'n', valor: n, error: 'QM-N-L', siFuera: `Ese es el número de subniveles del nivel ${n}. Cada uno tiene varios orbitales.` },
-        { id: 'ultimo', valor: o[n - 1], error: 'QM-SOLO-ULTIMO', siFuera: `Bien el ${n}${LETRA[n - 1]}. Pero el nivel tiene también los subniveles de abajo.` },
-        { id: 'menos', valor: t - o[n - 1], error: 'QM-SIN-F', siFuera: `Bien sumar. Pero ℓ llega hasta n − 1 = ${n - 1}: falta el ${n}${LETRA[n - 1]}.` },
+        { id: 'e', valor: 2 * t, error: 'QM-ORBITAL-ELECTRON', siFuera: 'La suma está bien hecha, pero da los electrones, porque cada orbital lleva dos.' },
+        { id: 'n', valor: n, error: 'QM-N-L', siFuera: `Ese es el número de subniveles del nivel ${n}, y cada subnivel tiene sus propios orbitales.` },
+        { id: 'ultimo', valor: o[n - 1], error: 'QM-SOLO-ULTIMO', siFuera: `Contaste bien el ${n}${LETRA[n - 1]}. Pero el nivel también tiene los subniveles de abajo.` },
+        { id: 'menos', valor: t - o[n - 1], error: 'QM-SIN-F', siFuera: `Sumar es el camino. Pero ℓ llega hasta n − 1 = ${n - 1}, así que falta contar el ${n}${LETRA[n - 1]}.` },
       ], x => `${x}`),
-      solucion: { texto: `Los subniveles de ℓ = 0 a ${n - 1} tienen ${o.join(', ')} orbitales.`, ecuacion: [o.join(' + '), ' = ', Oo(t)] },
+      solucion: { texto: `Los subniveles de ℓ = 0 a ${n - 1} tienen ${o.slice(0, -1).join(', ')} y ${o[o.length - 1]} orbitales, y se suman.`, ecuacion: [o.join(' + '), ' = ', Oo(t)] },
     };
   }
   // Juego imposible de números cuánticos (nivel examen): tres posibles y uno que rompe una regla.
@@ -1152,7 +1152,7 @@
     const imposible = malo === 'l' ? [n, n, 0, 1] : malo === 'ml' ? [n, 1, -2, 1] : [n, 1, 0, 2];
     const txt = ([a, b, c, d]) => `(${a}; ${b}; ${ML(c)}; ${d === 2 ? '+1' : MS(d)})`;
     const posibles = [
-      { q: [r.ent(2, 4), 1, -1, -1], error: 'QM-ML-POSITIVO', siFuera: 'Ese sí existe: mₗ puede ser negativo, va de −ℓ a +ℓ.' },
+      { q: [r.ent(2, 4), 1, -1, -1], error: 'QM-ML-POSITIVO', siFuera: 'Ese sí existe: mₗ puede ser negativo, porque va de −ℓ a +ℓ.' },
       { q: [r.ent(1, 4), 0, 0, 1], error: 'QM-L-CERO', siFuera: 'Ese sí existe: ℓ = 0 es el subnivel s, con mₗ = 0.' },
       { q: [3, 2, 2, -1], error: 'QM-L-MENOR', siFuera: 'Ese sí existe: con n = 3, ℓ llega hasta 2, y mₗ = +2 cabe en el 3d.' },
     ];
@@ -1172,11 +1172,11 @@
       datos: [DC.letras, DC.orbitales, DC.dos],
       opciones: [
         { id: 'c', texto: t(sub, 2 * o), correcta: true },
-        { id: 'l1', texto: t(`${n}${LETRA[l - 1]}`, 2 * (2 * l - 1)), error: 'QM-L-DESDE-UNO', siFuera: `Bien el nivel ${n}. Pero ℓ = ${l} es la letra ${LETRA[l]}: s es 0, p es 1, d es 2.` },
-        { id: 'o', texto: t(sub, o), error: 'QM-ORBITAL-ELECTRON', siFuera: `Bien el ${sub}. Pero ${o} son sus orbitales; caben dos electrones en cada uno.` },
-        { id: 'nivel', texto: t(sub, 2 * n * n), error: 'QM-N-L', siFuera: `Bien el ${sub}. Pero ${2 * n * n} caben en todo el nivel ${n}, no en un subnivel.` },
+        { id: 'l1', texto: t(`${n}${LETRA[l - 1]}`, 2 * (2 * l - 1)), error: 'QM-L-DESDE-UNO', siFuera: `El nivel ${n} está bien. Pero ℓ = ${l} es la letra ${LETRA[l]}, porque s es 0, p es 1 y d es 2.` },
+        { id: 'o', texto: t(sub, o), error: 'QM-ORBITAL-ELECTRON', siFuera: `El ${sub} está bien. Pero ${o} son sus orbitales, y en cada uno caben dos electrones.` },
+        { id: 'nivel', texto: t(sub, 2 * n * n), error: 'QM-N-L', siFuera: `El ${sub} está bien. Pero ${2 * n * n} electrones caben en todo el nivel ${n}, no en un solo subnivel.` },
       ],
-      solucion: { texto: `ℓ = ${l} es ${LETRA[l]}: el ${sub}, con ${o} orbitales.`, ecuacion: ['2 · ', Oo(o), ' = ', Ee(2 * o)] },
+      solucion: { texto: `ℓ = ${l} es la letra ${LETRA[l]}, así que es el ${sub}: tiene ${o} orbitales con dos electrones cada uno.`, ecuacion: ['2 · ', Oo(o), ' = ', Ee(2 * o)] },
     };
   }
 
@@ -1189,7 +1189,7 @@
     { nivel: 1, titulo: 'Los cuartos del 3d',
       enunciado: '¿Cuántos orbitales tiene el subnivel 3d?',
       datos: [DC.letras, DC.orbitales],
-      solucion: [{ texto: 'La letra d es ℓ = 2. Un orbital por cada mₗ, de −2 a +2.', ecuacion: ['2 · 2 + 1 = ', Oo(5)] }],
+      solucion: [{ texto: 'La letra d es ℓ = 2, y hay un orbital por cada valor de mₗ, de −2 a +2.', ecuacion: ['2 · 2 + 1 = ', Oo(5)] }],
       respuesta: [Oo(5), ' orbitales'] },
     { nivel: 1, titulo: 'Los huéspedes del 2p',
       enunciado: 'El pasillo 2p tiene 3 cuartos dobles. ¿Cuántos electrones caben, como máximo, en el 2p?',
@@ -1200,18 +1200,18 @@
     { nivel: 1, titulo: 'La letra del subnivel',
       enunciado: 'Un electrón tiene n = 4 y ℓ = 1. ¿En qué subnivel está?',
       datos: [DC.letras],
-      solucion: [{ texto: 'n = 4 es el piso; ℓ = 1 es la letra p. Se escribe primero el número y después la letra.' }],
+      solucion: [{ texto: 'n = 4 es el piso, y ℓ = 1 es la letra p. Se escribe primero el número del nivel y después la letra.' }],
       respuesta: 'En el 4p' },
     { nivel: 1, titulo: 'Los pasillos del piso 2',
       enunciado: '¿Qué valores puede tomar ℓ en el nivel n = 2?',
       datos: [DC.lDe, DC.letras],
-      solucion: [{ texto: 'ℓ va de 0 a 2 − 1 = 1: el 2s (ℓ = 0) y el 2p (ℓ = 1). No hay 2d.' }],
+      solucion: [{ texto: 'ℓ va de 0 a 2 − 1 = 1, así que el nivel 2 tiene el 2s (ℓ = 0) y el 2p (ℓ = 1), pero no un 2d.' }],
       respuesta: 'ℓ = 0 y ℓ = 1: el 2s y el 2p' },
     { nivel: 1, titulo: 'Los números de las cajas p',
       enunciado: '¿Qué valores puede tomar mₗ en un subnivel p?',
       datos: [DC.letras, 'mₗ va de −ℓ a +ℓ'],
       figura: CAJAS([{ nombre: '2p', e: 0, cajas: 3 }], { cuenta: false }),
-      solucion: [{ texto: 'p es ℓ = 1: mₗ va de −1 a +1, pasando por 0. Una caja por valor.' }],
+      solucion: [{ texto: 'La p es ℓ = 1, así que mₗ va de −1 a +1 pasando por 0, con una caja por cada valor.' }],
       respuesta: 'mₗ = −1, 0 y +1' },
     { nivel: 2, titulo: 'Los huéspedes del piso 3',
       enunciado: '¿Cuántos electrones caben, como máximo, en el nivel n = 3?',
@@ -1219,7 +1219,7 @@
       figura: vacios(pisoFilas(3)),
       solucion: [
         { texto: 'ℓ va de 0 a 2: los subniveles 3s, 3p y 3d, con 1, 3 y 5 orbitales.', ecuacion: ['1 + 3 + 5 = ', Oo(9)] },
-        { texto: 'Dos electrones por orbital.', ecuacion: ['2 · ', Oo(9), ' = ', Ee(18)] },
+        { texto: 'Pongo dos electrones en cada orbital y multiplico.', ecuacion: ['2 · ', Oo(9), ' = ', Ee(18)] },
       ],
       respuesta: [Ee(18), ' electrones'] },
     { nivel: 2, titulo: 'Los cuartos del piso 4',
@@ -1227,16 +1227,16 @@
       datos: [DC.lDe, DC.orbitales],
       figura: vacios(pisoFilas(4)),
       solucion: [
-        { texto: 'ℓ va de 0 a 3: 4s, 4p, 4d y 4f.' },
-        { texto: 'Sumo 2ℓ + 1 de cada uno.', ecuacion: ['1 + 3 + 5 + 7 = ', Oo(16)] },
+        { texto: 'ℓ va de 0 a 3, así que el nivel 4 tiene los subniveles 4s, 4p, 4d y 4f.' },
+        { texto: 'Sumo los 2ℓ + 1 orbitales de cada subnivel.', ecuacion: ['1 + 3 + 5 + 7 = ', Oo(16)] },
       ],
       respuesta: [Oo(16), ' orbitales'] },
     { nivel: 2, titulo: '¿Existe el 2d?',
       enunciado: '¿Puede existir un subnivel 2d?',
       datos: [DC.lDe, DC.letras],
       solucion: [
-        { texto: 'La d pide ℓ = 2.' },
-        { texto: 'Con n = 2, ℓ llega solo hasta 2 − 1 = 1. El ℓ = 2 no cabe en el piso 2.' },
+        { texto: 'La letra d corresponde a ℓ = 2.' },
+        { texto: 'Con n = 2, ℓ llega solo hasta 2 − 1 = 1, así que ℓ = 2 no cabe en el piso 2.' },
       ],
       respuesta: 'No: en el nivel 2, ℓ llega hasta 1' },
     { nivel: 2, titulo: 'Los del 3d',
@@ -1244,7 +1244,7 @@
       datos: [DC.letras, DC.orbitales, DC.dos],
       solucion: [
         { texto: 'ℓ = 2 con n = 3 es el 3d: tiene 2 · 2 + 1 = 5 orbitales.' },
-        { texto: 'Dos electrones en cada orbital.', ecuacion: ['2 · ', Oo(5), ' = ', Ee(10)] },
+        { texto: 'En cada orbital caben dos electrones, así que multiplico por dos.', ecuacion: ['2 · ', Oo(5), ' = ', Ee(10)] },
       ],
       respuesta: [Ee(10), ' electrones'] },
     { nivel: 2, titulo: 'El pasillo f',
@@ -1252,8 +1252,8 @@
       datos: [DC.letras, DC.orbitales, DC.dos],
       figura: vacios([{ nombre: '4f' }]),
       solucion: [
-        { texto: 'f es ℓ = 3.', ecuacion: ['2 · 3 + 1 = ', Oo(7)] },
-        { texto: 'Dos electrones en cada uno.', ecuacion: ['2 · ', Oo(7), ' = ', Ee(14)] },
+        { texto: 'La letra f es ℓ = 3, y los orbitales salen de 2ℓ + 1.', ecuacion: ['2 · 3 + 1 = ', Oo(7)] },
+        { texto: 'En cada orbital caben dos electrones.', ecuacion: ['2 · ', Oo(7), ' = ', Ee(14)] },
       ],
       respuesta: [Oo(7), ' orbitales y ', Ee(14), ' electrones'] },
     { nivel: 3, titulo: 'El juego imposible',
@@ -1261,7 +1261,7 @@
       alternativas: ['(2; 1; −1; +½)', '(3; 0; 0; −½)', '(2; 2; 0; +½)', '(4; 3; −3; −½)', '(3; 2; +2; +½)'],
       datos: [DC.lDe, 'mₗ va de −ℓ a +ℓ', DC.ms],
       solucion: [
-        { texto: 'Reviso las tres reglas en cada uno: ℓ menor que n, mₗ entre −ℓ y +ℓ, mₛ = ±½.' },
+        { texto: 'Reviso las tres reglas en cada juego: ℓ menor que n, mₗ entre −ℓ y +ℓ, y mₛ igual a +½ o −½.' },
         { texto: 'En (2; 2; 0; +½), ℓ = 2 es igual a n = 2: con n = 2, ℓ llega hasta 1.' },
         { texto: ['La ', letra('D'), ' sí existe: con n = 4, ℓ = 3 es el 4f, y −3 está entre −3 y +3.'] },
       ],
@@ -1271,7 +1271,7 @@
       alternativas: ['(3; 1; 0; +½)', '(3; 2; −3; −½)', '(3; 2; +1; −½)', '(2; 2; 0; +½)', '(3; 3; 0; +½)'],
       datos: [DC.letras, 'mₗ va de −ℓ a +ℓ', DC.ms],
       solucion: [
-        { texto: 'El 3d pide n = 3 y ℓ = 2; mₗ entre −2 y +2.' },
+        { texto: 'El 3d pide n = 3 y ℓ = 2, con mₗ entre −2 y +2.' },
         { texto: ['La ', letra('A'), ' es un 3p y la ', letra('E'), ', ℓ = 3. La ', letra('B'), ' tiene mₗ = −3, fuera de −2 a +2. La ', letra('D'), ' tiene n = 2.'] },
       ],
       respuesta: [letra('C'), ', (3; 2; +1; −½)'] },
@@ -1281,7 +1281,7 @@
       datos: [DC.lDe, 'mₗ va de −ℓ a +ℓ', DC.dos],
       solucion: [
         { texto: 'El nivel 3 tiene 3s, 3p y 3d. Cada uno tiene una sola caja con mₗ = 0: son 3 orbitales.' },
-        { texto: 'Dos electrones por orbital.', ecuacion: ['2 · ', Oo(3), ' = ', Ee(6)] },
+        { texto: 'Cada orbital lleva dos electrones, así que multiplico por dos.', ecuacion: ['2 · ', Oo(3), ' = ', Ee(6)] },
         { texto: ['La ', letra('A'), ' cuenta solo el 3s. La ', letra('B'), ' cuenta orbitales y no electrones.'] },
         { texto: ['La ', letra('D'), ' da los orbitales de todo el nivel. La ', letra('E'), ', sus electrones.'] },
       ],
@@ -1293,8 +1293,8 @@
       alternativas: ['18', '24', '14', '28', '12'],
       datos: [DC.lDe, DC.orbitales, DC.dos],
       solucion: [
-        { texto: 'Orbitales por nivel: 1; 1 + 3 = 4; 1 + 3 + 5 = 9. Con dos electrones cada uno: 2, 8 y 18.' },
-        { texto: 'Sumo los tres niveles.', ecuacion: ['2 + 8 + 18 = ', Ee(28)] },
+        { texto: 'Los niveles tienen 1, 1 + 3 = 4 y 1 + 3 + 5 = 9 orbitales; con dos electrones en cada uno, caben 2, 8 y 18.' },
+        { texto: 'Sumo lo que cabe en los tres niveles.', ecuacion: ['2 + 8 + 18 = ', Ee(28)] },
         { texto: ['La ', letra('A'), ' toma solo el nivel 3. La ', letra('B'), ' pone 8 en cada nivel. La ', letra('C'), ' suma orbitales.'] },
         { texto: ['La ', letra('E'), ' usa 2n en vez de 2n²: 2 + 4 + 6 = 12.'] },
       ],
@@ -1324,7 +1324,7 @@
     // un piso (eso se cuenta en el juego) ni nada del piso 4 (se predice).
     lee: {
       tarjetas: [
-        { titulo: 'El hotel del electrón', texto: 'Imagina el átomo como un hotel. Cada piso es un nivel de energía, n. En cada piso hay pasillos, los subniveles, y en cada pasillo, cuartos dobles: los orbitales. Los huéspedes son los electrones. Es una analogía: un electrón no es una bolita quieta.',
+        { titulo: 'El hotel del electrón', texto: 'Imagina el átomo como un hotel: cada piso es un nivel de energía, n; cada piso tiene pasillos, que son los subniveles, y cada pasillo, cuartos dobles, que son los orbitales. Los huéspedes son los electrones, aunque un electrón no es una bolita quieta.',
           pieza: 'quim-hotel', dibujo: HOTEL(hastaPiso(2), { cuenta: false }) },
         { titulo: 'Las letras de los pasillos', texto: 'Cada pasillo lleva su piso y una letra: s, p, d o f. El número ℓ dice la letra: ℓ = 0 es s; ℓ = 1, p; ℓ = 2, d; ℓ = 3, f. En 2p, el 2 es el piso y la p, el pasillo.' },
         { titulo: 'Una dirección de cuatro números', texto: 'Cada electrón tiene cuatro números cuánticos, como una dirección: n (el piso), ℓ (el pasillo), mₗ (el cuarto) y mₛ, su espín: la flecha ↑ o ↓. En un mismo cuarto, los dos huéspedes tienen espín opuesto.' },
@@ -1338,7 +1338,7 @@
       mision: {
         texto: 'Abre un piso donde quepan justo 18 huéspedes.',
         logrado: v => v.n === 3,
-        bien: 'Piso 3: 9 cuartos y 18 huéspedes. Cada piso suma un pasillo con dos cuartos más.',
+        bien: 'El piso 3 tiene 9 cuartos y 18 huéspedes. Cada pasillo nuevo trae dos cuartos más.',
       },
       voz: 'Cuenta cuartos y después huéspedes.',
       leyenda: [
@@ -1356,7 +1356,7 @@
       dibujo: v => juegoHotel(v),
       // La relación: cuartos y huéspedes del piso n, y el pasillo ℓ que se mira.
       lectura: v => (v.l >= v.n ? [`El piso ${v.n} no tiene pasillo ${LETRA[v.l]}: ℓ llega hasta n − 1.`]
-        : [`Piso ${v.n}: `, Oo(`${v.n * v.n} cuartos`), ' y ', Ee(`${2 * v.n * v.n} huéspedes`), `; el ${v.n}${LETRA[v.l]} tiene ${2 * v.l + 1}.`]),
+        : [`Piso ${v.n}: `, Oo(`${v.n * v.n} ${v.n === 1 ? 'cuarto' : 'cuartos'}`), ' y ', Ee(`${2 * v.n * v.n} huéspedes`), `; el ${v.n}${LETRA[v.l]} tiene ${2 * v.l + 1}.`]),
       minimo: 3,
     },
     predice: {
@@ -1367,8 +1367,8 @@
       opciones: [
         { id: 'c', texto: '32', correcta: true },
         { id: 'cuartos', texto: '16', error: 'QM-ORBITAL-ELECTRON', siFuera: 'Dieciséis son los cuartos del piso 4, bien contados. Pero en cada cuarto caben dos huéspedes.' },
-        { id: 'sinf', texto: '18', error: 'QM-SIN-F', siFuera: 'Dieciocho caben en el piso 3. El piso 4 suma además el pasillo 4f, con 7 cuartos.' },
-        { id: 'ocho', texto: '8', error: 'QM-OCHO-POR-NIVEL', siFuera: 'No todos los pisos se llenan con 8: cada piso suma un pasillo más que el de abajo.' },
+        { id: 'sinf', texto: '18', error: 'QM-SIN-F', siFuera: 'Dieciocho huéspedes caben en el piso 3. El piso 4 suma además el pasillo 4f, que tiene 7 cuartos.' },
+        { id: 'ocho', texto: '8', error: 'QM-OCHO-POR-NIVEL', siFuera: 'No todos los pisos se llenan con 8, porque cada piso suma un pasillo más que el de abajo.' },
       ],
       dibujo: vacios(pisoFilas(4), { rotulo: 'Piso 4: ¿cuántos huéspedes caben?' }),
       revelar: HOTEL(pisoFilas(4), { cuenta: true, rotulo: 'Piso 4: 2 + 6 + 10 + 14 = 32 huéspedes', rotuloColor: 'f' }),
@@ -1380,17 +1380,17 @@
       datos: { paleta: 'zne', ml: true, filas: [{ nombre: '3s', e: 2, cajas: 1, desde: 1 }, { nombre: '3p', e: 6, cajas: 3, desde: 2 }, { nombre: '3d', e: 10, cajas: 5, desde: 3 }] },
       voz: 'Armemos el piso 3, pasillo por pasillo.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Piso 3, pasillo s (ℓ = 0): un cuarto, con el número mₗ = 0.', ecuacion: ['ℓ = 0:  2 · 0 + 1 = ', Oo(1)] },
-        { estado: { corte: 2 }, texto: 'Pasillo p: ℓ = 1, tres cuartos, con mₗ de −1 a +1.', ecuacion: ['ℓ = 1:  2 · 1 + 1 = ', Oo(3)] },
-        { estado: { corte: 3 }, texto: 'Pasillo d: ℓ = 2, cinco cuartos, con mₗ de −2 a +2.', ecuacion: ['ℓ = 2:  2 · 2 + 1 = ', Oo(5)] },
-        { estado: { corte: 3 }, texto: 'En cada cuarto, dos electrones de espín opuesto: mₛ = +½ y −½.' },
-        { estado: { corte: 3 }, texto: 'Piso 3: 9 orbitales y 18 electrones.', ecuacion: ['1 + 3 + 5 = ', Oo(9), '   ·   2 · ', Oo(9), ' = ', Ee(18)] },
-        { estado: { corte: 3 }, texto: 'ℓ llega hasta n − 1 = 2: el piso 3 no tiene pasillo f.' },
+        { estado: { corte: 1 }, texto: 'En el piso 3, el pasillo s (ℓ = 0) tiene un solo cuarto, con el número mₗ = 0.', ecuacion: ['ℓ = 0:  2 · 0 + 1 = ', Oo(1)] },
+        { estado: { corte: 2 }, texto: 'El pasillo p tiene ℓ = 1 y tres cuartos, con mₗ de −1 a +1.', ecuacion: ['ℓ = 1:  2 · 1 + 1 = ', Oo(3)] },
+        { estado: { corte: 3 }, texto: 'El pasillo d tiene ℓ = 2 y cinco cuartos, con mₗ de −2 a +2.', ecuacion: ['ℓ = 2:  2 · 2 + 1 = ', Oo(5)] },
+        { estado: { corte: 3 }, texto: 'En cada cuarto van dos electrones de espín opuesto: uno con mₛ = +½ y otro con −½.' },
+        { estado: { corte: 3 }, texto: 'En total, el piso 3 tiene 9 orbitales, y en ellos caben 18 electrones.', ecuacion: ['1 + 3 + 5 = ', Oo(9), '   ·   2 · ', Oo(9), ' = ', Ee(18)] },
+        { estado: { corte: 3 }, texto: 'Como ℓ llega solo hasta n − 1 = 2, el piso 3 no tiene pasillo f.' },
       ],
     },
     regla: {
       // Ronda 2 del lector en frío: mₛ con su nombre (el espín) y su flecha.
-      texto: 'n es el nivel; ℓ, de 0 a n − 1, el subnivel (s, p, d, f); mₗ, de −ℓ a +ℓ, un orbital por valor; mₛ, espín: +½ (↑) o −½ (↓).',
+      texto: 'n es el nivel; ℓ es el subnivel (s, p, d, f) y va de 0 a n − 1; mₗ va de −ℓ a +ℓ, con un orbital por cada valor, y mₛ, el espín, vale +½ (↑) o −½ (↓).',
       ecuacion: [Oo('orbitales'), ' = 2', { llave: ['ℓ'], nota: 'subnivel' }, ' + 1', '   ·   ', Ee('electrones del nivel'), ' = 2', { llave: [{ sup: ['n', '2'] }], nota: 'nivel' }],
       condicion: 'en cada orbital caben dos electrones, de espín opuesto.',
       voz: 'Cuenta cajas y después flechas. El hotel es solo una analogía.',
@@ -1412,9 +1412,9 @@
               { tipo: 'pide', texto: `Piden cuántos huéspedes caben en todo el piso ${n}, con todos sus pasillos llenos.` },
               { tipo: 'datos', texto: `Con n = ${n}, ℓ va de 0 a ${n - 1}: los subniveles ${subs.join(', ')}.` },
               { tipo: 'regla', texto: 'Sumo los orbitales de cada subnivel (2ℓ + 1) y pongo dos electrones de espín opuesto en cada orbital.' },
-              { tipo: 'cuentas', texto: 'Cuento cuartos por pasillo y después los huéspedes.', ecuacion: [o.join(' + '), ' = ', Oo(t), '   ·   2 · ', Oo(t), ' = ', Ee(2 * t)],
+              { tipo: 'cuentas', texto: 'Cuento los cuartos de cada pasillo y después los huéspedes, dos por cuarto.', ecuacion: [o.join(' + '), ' = ', Oo(t), '   ·   2 · ', Oo(t), ' = ', Ee(2 * t)],
                 dibujo: HOTEL(pisoFilas(n), { cuenta: true }) },
-              { tipo: 'sentido', texto: `De vuelta: el piso ${n} tiene ${n} pasillos, uno más que el piso ${n - 1}, y le caben más huéspedes.` },
+              { tipo: 'sentido', texto: `Para comprobar: el piso ${n} tiene ${n} pasillos, uno más que el piso ${n - 1}, así que le caben más huéspedes.` },
             ],
             respuesta: `${2 * t} electrones`,
           };
@@ -1432,7 +1432,7 @@
             { tipo: 'regla', texto: 'Hay un orbital por cada valor de mₗ, que va de −ℓ a +ℓ pasando por 0.', ecuacion: [Oo('orbitales'), ' = 2ℓ + 1'] },
             { tipo: 'cuentas', texto: `Con ℓ = ${l}, mₗ toma ${o === 1 ? 'un solo valor' : `${o} valores`}: ${ml}.`, ecuacion: [`2 · ${l} + 1 = `, Oo(o)],
               dibujo: CAJAS([{ nombre: sub, e: 0, cajas: o }], { ml: true, cuenta: false }) },
-            { tipo: 'sentido', texto: `De vuelta: la figura tiene ${o} ${o === 1 ? 'caja' : 'cajas'}. El nivel no cambia la cuenta: todo subnivel ${LETRA[l]} tiene ${o}.` },
+            { tipo: 'sentido', texto: `Para comprobar, la figura tiene ${o} ${o === 1 ? 'caja' : 'cajas'}. El nivel no cambia la cuenta: todo subnivel ${LETRA[l]} tiene ${o}.` },
           ],
           respuesta: `${o} ${o === 1 ? 'orbital' : 'orbitales'}`,
         };
@@ -1443,8 +1443,8 @@
             { tipo: 'pide', texto: `Piden cuántos electrones caben en el subnivel ${sub} cuando está lleno.` },
             datos,
             { tipo: 'regla', texto: 'Primero cuento los orbitales, uno por cada valor de mₗ; en cada orbital caben dos electrones de espín opuesto.' },
-            { tipo: 'cuentas', texto: `Con ℓ = ${l} hay ${o} ${o === 1 ? 'orbital' : 'orbitales'}; cada uno lleva dos flechas.`, ecuacion: [`2 · ${l} + 1 = `, Oo(o), '   ·   2 · ', Oo(o), ' = ', Ee(2 * o)], dibujo: lleno },
-            { tipo: 'sentido', texto: `De vuelta: ${o} ${o === 1 ? 'caja' : 'cajas'} con dos flechas son ${2 * o}. Es menos que los ${2 * n * n} del nivel ${n} entero.` },
+            { tipo: 'cuentas', texto: `Con ℓ = ${l} hay ${o} ${o === 1 ? 'orbital' : 'orbitales'}, y cada orbital lleva dos flechas.`, ecuacion: [`2 · ${l} + 1 = `, Oo(o), '   ·   2 · ', Oo(o), ' = ', Ee(2 * o)], dibujo: lleno },
+            { tipo: 'sentido', texto: `Para comprobar: ${o} ${o === 1 ? 'caja' : 'cajas'} con dos flechas son ${2 * o}, menos que los ${2 * n * n} que caben en todo el nivel ${n}.` },
           ],
           respuesta: `${2 * o} electrones`,
         };
@@ -1488,12 +1488,12 @@
       pregunta: ['¿Cuál es la configuración electrónica del ', NOMBRE[z], ' (', Z, ` = ${z})?`],
       datos: [DC.orden36, DC.capacidad],
       opciones: opciones(textoConfig(c), [
-        { id: 'pisos', valor: z >= 19 ? textoConfig(porPisos(z)) : null, error: 'QM-PISO-ANTES', siFuera: 'Bien llenar hasta el 3p. Pero el 4s cuesta menos que el 3d: se llena antes.' },
-        { id: 'tope', valor: c.length > 2 ? textoConfig(c.slice(0, -2).concat([{ nom: c[c.length - 2].nom, e: c[c.length - 2].e + c[c.length - 1].e }])) : null, error: 'QM-TOPE', siFuera: 'Bien la cuenta total. Pero un subnivel no pasa su tope: 2 en un s y 6 en un p.' },
-        { id: 'menos', valor: textoConfig(config(z - 1)), error: 'QM-CUENTA', siFuera: `Bien el orden. Pero esa tiene ${z - 1} electrones, y el átomo neutro tiene ${z}.` },
-        { id: 'mas', valor: textoConfig(config(z + 1)), error: 'QM-CUENTA', siFuera: `Bien el orden. Pero esa tiene ${z + 1} electrones, y el átomo neutro tiene ${z}.` },
+        { id: 'pisos', valor: z >= 19 ? textoConfig(porPisos(z)) : null, error: 'QM-PISO-ANTES', siFuera: 'Llenar hasta el 3p está bien. Pero el 4s cuesta menos que el 3d, así que se llena antes.' },
+        { id: 'tope', valor: c.length > 2 ? textoConfig(c.slice(0, -2).concat([{ nom: c[c.length - 2].nom, e: c[c.length - 2].e + c[c.length - 1].e }])) : null, error: 'QM-TOPE', siFuera: 'La cuenta total está bien. Pero ningún subnivel pasa su tope: 2 en un s y 6 en un p.' },
+        { id: 'menos', valor: textoConfig(config(z - 1)), error: 'QM-CUENTA', siFuera: `El orden está bien. Pero esa configuración tiene ${z - 1} electrones, y el átomo neutro tiene ${z}.` },
+        { id: 'mas', valor: textoConfig(config(z + 1)), error: 'QM-CUENTA', siFuera: `El orden está bien. Pero esa configuración tiene ${z + 1} electrones, y el átomo neutro tiene ${z}.` },
       ], x => x),
-      solucion: { texto: `Neutro: ${z} electrones, repartidos en orden y sin pasar los topes.`, ecuacion: [textoConfig(c)] },
+      solucion: { texto: `El átomo neutro tiene ${z} electrones, repartidos en orden y sin pasar los topes.`, ecuacion: [textoConfig(c)] },
     };
   }
   function casoUltimoSub(r) {
@@ -1503,12 +1503,12 @@
       pregunta: ['¿En qué subnivel entra el último electrón del ', NOMBRE[z], ' (', Z, ` = ${z})?`],
       datos: [DC.orden, DC.capacidad],
       opciones: opciones(u.nom, [
-        { id: 'pisos', valor: up.nom, error: 'QM-PISO-ANTES', siFuera: 'Bien llenar pasillo por pasillo. Pero se sigue el orden de llenado, no el de los pisos.' },
-        { id: 'sig', valor: siguiente ? siguiente.nom : null, error: 'QM-CUENTA', siFuera: `Bien el orden. Pero con ${z} electrones el ${u.nom} todavía tiene sitio: no se pasa al siguiente.` },
-        { id: 'ant', valor: anterior ? anterior.nom : null, error: 'QM-TOPE', siFuera: `Bien el orden. Pero el ${anterior && anterior.nom} ya está lleno: el electrón ${z} va al que sigue.` },
-        { id: 'ns', valor: `${u.n}s`, error: 'QM-VALENCIA-SUB', siFuera: `Bien el nivel ${u.n}. Pero el último electrón va al último subnivel que se llenó.` },
-        { id: 'np', valor: `${u.n}p`, error: 'QM-PASILLO-NUEVO', siFuera: `Bien el nivel ${u.n}. Pero el ${u.n}p cuesta más: antes se llena el ${u.nom}.` },
-        { id: 'f', valor: '4f', error: 'QM-PASILLO-NUEVO', siFuera: 'El 4f cuesta S/ 7: se llena mucho después.' },
+        { id: 'pisos', valor: up.nom, error: 'QM-PISO-ANTES', siFuera: 'Llenar pasillo por pasillo está bien. Pero se sigue el orden de llenado, no el de los pisos.' },
+        { id: 'sig', valor: siguiente ? siguiente.nom : null, error: 'QM-CUENTA', siFuera: `El orden está bien. Pero con ${z} electrones el ${u.nom} todavía tiene sitio, así que no se pasa al siguiente.` },
+        { id: 'ant', valor: anterior ? anterior.nom : null, error: 'QM-TOPE', siFuera: `El orden está bien. Pero el ${anterior && anterior.nom} ya está lleno, así que el electrón ${z} va al subnivel que sigue.` },
+        { id: 'ns', valor: `${u.n}s`, error: 'QM-VALENCIA-SUB', siFuera: `El nivel ${u.n} está bien. Pero el último electrón va al último subnivel que se llenó.` },
+        { id: 'np', valor: `${u.n}p`, error: 'QM-PASILLO-NUEVO', siFuera: `El nivel ${u.n} está bien. Pero el ${u.n}p cuesta más, y antes se llena el ${u.nom}.` },
+        { id: 'f', valor: '4f', error: 'QM-PASILLO-NUEVO', siFuera: 'El 4f cuesta S/ 7, así que se llena mucho después.' },
       ], x => x),
       solucion: { texto: `Reparto ${z} electrones en orden: el último cae en el ${u.nom}.`, ecuacion: [abreviada(c)] },
     };
@@ -1520,14 +1520,14 @@
       pregunta: ['¿Cuántos electrones tiene en su último nivel el ', NOMBRE[z], ' (', Z, ` = ${z})?`],
       datos: [DC.orden, DC.capacidad, DC.valencia],
       opciones: opciones(v, [
-        { id: 'd', valor: conD !== v ? conD : null, error: 'QM-VALENCIA-D', siFuera: `Bien la configuración. Pero el ${n - 1}d es del nivel ${n - 1}: no es el último.` },
-        { id: 'sub', valor: ult !== v ? ult : null, error: 'QM-VALENCIA-SUB', siFuera: `Bien mirar el final. Pero el nivel ${n} tiene también su ${n}s: se suman.` },
-        { id: 'n', valor: n, error: 'QM-VALENCIA-N', siFuera: `${n} es el número del último nivel, bien. Pero piden cuántos electrones tiene.` },
-        { id: 'ocho', valor: v === 8 ? 2 : 8, error: 'QM-OCHO-POR-NIVEL', siFuera: 'Bien buscar el último nivel. Pero no siempre tiene 8: cuenta sus electrones.' },
-        { id: 'todo', valor: totalE(c), error: 'QM-VALENCIA-TODO', siFuera: 'Esos son todos los electrones del átomo. Piden solo los del último nivel.' },
-        { id: 'mas', valor: v + 1, error: 'QM-CUENTA', siFuera: 'Bien el último nivel. Revisa la suma de sus superíndices.' },
+        { id: 'd', valor: conD !== v ? conD : null, error: 'QM-VALENCIA-D', siFuera: `La configuración está bien. Pero el ${n - 1}d es del nivel ${n - 1}, así que no es parte del último nivel.` },
+        { id: 'sub', valor: ult !== v ? ult : null, error: 'QM-VALENCIA-SUB', siFuera: `Mirar el final está bien. Pero el nivel ${n} también tiene su ${n}s, y los dos se suman.` },
+        { id: 'n', valor: n, error: 'QM-VALENCIA-N', siFuera: `Es cierto que ${n} es el número del último nivel. Pero piden cuántos electrones tiene.` },
+        { id: 'ocho', valor: v === 8 ? 2 : 8, error: 'QM-OCHO-POR-NIVEL', siFuera: 'Buscar el último nivel está bien. Pero no siempre tiene 8 electrones: hay que contarlos.' },
+        { id: 'todo', valor: totalE(c), error: 'QM-VALENCIA-TODO', siFuera: 'Esos son todos los electrones del átomo, y piden solo los del último nivel.' },
+        { id: 'mas', valor: v + 1, error: 'QM-CUENTA', siFuera: 'El último nivel está bien elegido. Revisa la suma de sus superíndices.' },
       ], x => `${x}`),
-      solucion: { texto: `El último nivel es el ${n}: se suman sus subniveles.`, ecuacion: [abreviada(c), '   ·   ', Ee(v)] },
+      solucion: { texto: `El último nivel es el ${n}, así que se suman los electrones de sus subniveles.`, ecuacion: [abreviada(c), '   ·   ', Ee(v)] },
     };
   }
   function casoAnomala(r) {
@@ -1537,12 +1537,12 @@
       pregunta: ['¿Cuál es la configuración abreviada del ', NOMBRE[z], ' (', Z, ` = ${z})?`],
       datos: [DC.orden36, DC.capacidad, DC.ar, DC.anomalia],
       opciones: opciones(abreviada(c), [
-        { id: 'normal', valor: abreviada(normal), error: 'QM-ANOMALIA', siFuera: 'Bien el orden de llenado. Pero el cromo y el cobre son excepción: un 4s pasa al 3d.' },
-        { id: 'todo', valor: abreviada(quita(quita(c, '4s', -1), '3d', 1)), error: 'QM-TODO-3D', siFuera: 'Bien mover un electrón al 3d. Pero pasa uno solo: el 4s se queda con uno.' },
-        { id: 'menos', valor: abreviada(quita(c, '3d', -1)), error: 'QM-CUENTA', siFuera: `Bien la excepción. Pero esa tiene ${z - 1} electrones: cuenta de nuevo.` },
-        { id: 'mas', valor: abreviada(quita(c, '4s', 1)), error: 'QM-CUENTA', siFuera: `Bien el 3d. Pero esa tiene ${z + 1} electrones: el 4s se queda con uno.` },
+        { id: 'normal', valor: abreviada(normal), error: 'QM-ANOMALIA', siFuera: 'El orden de llenado está bien. Pero el cromo y el cobre son una excepción: un electrón del 4s pasa al 3d.' },
+        { id: 'todo', valor: abreviada(quita(quita(c, '4s', -1), '3d', 1)), error: 'QM-TODO-3D', siFuera: 'Mover un electrón al 3d está bien. Pero pasa uno solo, y el 4s se queda con uno.' },
+        { id: 'menos', valor: abreviada(quita(c, '3d', -1)), error: 'QM-CUENTA', siFuera: `La excepción está bien. Pero esa configuración tiene ${z - 1} electrones: cuenta de nuevo.` },
+        { id: 'mas', valor: abreviada(quita(c, '4s', 1)), error: 'QM-CUENTA', siFuera: `El 3d está bien. Pero esa configuración tiene ${z + 1} electrones, porque el 4s se queda con uno.` },
       ], x => x),
-      solucion: { texto: `Por orden sería ${abreviada(normal)}; un electrón del 4s pasa al 3d.`, ecuacion: [abreviada(c)] },
+      solucion: { texto: `Por el orden de llenado sería ${abreviada(normal)}, pero un electrón del 4s pasa al 3d.`, ecuacion: [abreviada(c)] },
     };
   }
   function casoNiveles(r) {
@@ -1552,9 +1552,9 @@
       pregunta: ['¿Cuántos niveles completamente llenos tiene el átomo de ', NOMBRE[z], ' (', Z, ` = ${z})?`],
       datos: [DC.orden, DC.capacidad, DC.lDe],
       opciones: opciones(ll, [
-        { id: 'ocupados', valor: ocupados, error: 'QM-NIVEL-OCUPADO', siFuera: `Bien contar los niveles. Pero el nivel ${ocupados} tiene electrones sin estar lleno.` },
-        { id: 'ocho', valor: con8 !== ll ? con8 : null, error: 'QM-NIVEL-8', siFuera: 'Bien mirar s y p. Pero el nivel 3 incluye el 3d, y el 4, el 4d y el 4f.' },
-        { id: 'menos', valor: ll - 1 >= 0 ? ll - 1 : null, error: 'QM-CUENTA', siFuera: 'Bien buscar los llenos. Revisa los niveles de abajo: todos sus subniveles están completos.' },
+        { id: 'ocupados', valor: ocupados, error: 'QM-NIVEL-OCUPADO', siFuera: `Contar los niveles está bien. Pero el nivel ${ocupados} tiene electrones sin estar lleno.` },
+        { id: 'ocho', valor: con8 !== ll ? con8 : null, error: 'QM-NIVEL-8', siFuera: 'Mirar el s y el p está bien. Pero el nivel 3 incluye el 3d, y el nivel 4, el 4d y el 4f.' },
+        { id: 'menos', valor: ll - 1 >= 0 ? ll - 1 : null, error: 'QM-CUENTA', siFuera: 'Buscar los niveles llenos está bien. Revisa los de abajo: todos sus subniveles están completos.' },
         { id: 'mas', valor: ll + 2, error: 'QM-CUENTA', siFuera: 'Un nivel lleno tiene llenos todos sus subniveles, de ℓ = 0 a n − 1.' },
       ], x => `${x}`),
       solucion: { texto: `Un nivel está lleno si todos sus subniveles lo están: ${abreviada(c)}.`, ecuacion: [`${ll} ${ll === 1 ? 'nivel' : 'niveles'}`] },
@@ -1570,13 +1570,13 @@
       pregunta: ['¿Cuál es la configuración abreviada del ', NOMBRE[z], ' (', Z, ` = ${z})?`],
       datos: [DC.orden, DC.capacidad, DC.kr],
       opciones: opciones(abreviada(c), [
-        { id: 'pisos', valor: `[Kr] ${textoConfig(pisos.length ? pisos : [{ nom: '4d', e: resto }])}`, error: 'QM-PISO-ANTES', siFuera: 'Bien partir del kriptón. Pero el 5s (S/ 5) cuesta menos que el 4d y el 4f.' },
-        { id: '5p', valor: `[Kr] ${textoConfig(p5)}`, error: 'QM-5P-ANTES', siFuera: 'Bien el 5s primero. Pero 4d y 5p cuestan 6: a igual precio, va primero el de menor n.' },
-        { id: 'tope', valor: tope && tope.find(x => x.nom === '4d').e > 10 ? `[Kr] ${textoConfig(tope)}` : null, error: 'QM-TOPE', siFuera: 'Bien el orden. Pero el 4d no pasa de 10 electrones.' },
-        { id: 'mas', valor: abreviada(configNeutro(z + 1)), error: 'QM-CUENTA', siFuera: `Bien el orden. Pero esa tiene ${z + 1} electrones.` },
-        { id: 'menos', valor: abreviada(configNeutro(z - 1)), error: 'QM-CUENTA', siFuera: `Bien el orden. Pero esa tiene ${z - 1} electrones.` },
+        { id: 'pisos', valor: `[Kr] ${textoConfig(pisos.length ? pisos : [{ nom: '4d', e: resto }])}`, error: 'QM-PISO-ANTES', siFuera: 'Partir del kriptón está bien. Pero el 5s (S/ 5) cuesta menos que el 4d y el 4f, y se llena antes.' },
+        { id: '5p', valor: `[Kr] ${textoConfig(p5)}`, error: 'QM-5P-ANTES', siFuera: 'Poner primero el 5s está bien. Pero el 4d y el 5p cuestan 6, y a igual precio va primero el de menor n.' },
+        { id: 'tope', valor: tope && tope.find(x => x.nom === '4d').e > 10 ? `[Kr] ${textoConfig(tope)}` : null, error: 'QM-TOPE', siFuera: 'El orden está bien. Pero el 4d no pasa de 10 electrones.' },
+        { id: 'mas', valor: abreviada(configNeutro(z + 1)), error: 'QM-CUENTA', siFuera: `El orden está bien. Pero esa configuración tiene ${z + 1} electrones, y el átomo tiene ${z}.` },
+        { id: 'menos', valor: abreviada(configNeutro(z - 1)), error: 'QM-CUENTA', siFuera: `El orden está bien. Pero esa configuración tiene ${z - 1} electrones, y el átomo tiene ${z}.` },
       ], x => x),
-      solucion: { texto: `Después de los 36 del kriptón quedan ${resto}: 5s, 4d y 5p, en ese orden.`, ecuacion: [abreviada(c)] },
+      solucion: { texto: `Después de los 36 del kriptón ${resto === 1 ? 'queda 1 electrón' : `quedan ${resto} electrones`}, y se llenan el 5s, el 4d y el 5p, en ese orden.`, ecuacion: [abreviada(c)] },
     };
   }
 
@@ -1587,18 +1587,18 @@
       enunciado: 'Escribe la configuración electrónica del nitrógeno, con 7 electrones.',
       datos: [DC.orden36, DC.capacidad],
       figura: hotelVacio(['1s', '2s', '2p']),
-      solucion: [{ texto: 'Lleno en orden sin pasar los topes: 2 en el 1s, 2 en el 2s y los 3 que quedan en el 2p.', ecuacion: ['1s² 2s² 2p³'] }],
+      solucion: [{ texto: 'Lleno en orden y sin pasar los topes: 2 en el 1s, 2 en el 2s y los 3 que quedan en el 2p.', ecuacion: ['1s² 2s² 2p³'] }],
       respuesta: ['1s² 2s² 2p³: ', Ee(7), ' electrones'] },
     { nivel: 1, titulo: '¿El 3d o el 4s?',
       enunciado: '¿Cuánto vale n + ℓ para el 3d y para el 4s? ¿Cuál se llena primero?',
       datos: [DC.letras, 'Se llena primero el subnivel de menor n + ℓ'],
       figura: hotelVacio(['3d', '4s'], { filas: [{ nombre: '3d', vacia: true, precio: '?' }, { nombre: '4s', vacia: true, precio: '?' }] }),
-      solucion: [{ texto: '3d: n = 3 y ℓ = 2. 4s: n = 4 y ℓ = 0.', ecuacion: ['3d: 3 + 2 = 5   ·   4s: 4 + 0 = 4'] }],
+      solucion: [{ texto: 'El 3d tiene n = 3 y ℓ = 2, y el 4s tiene n = 4 y ℓ = 0.', ecuacion: ['3d: 3 + 2 = 5   ·   4s: 4 + 0 = 4'] }],
       respuesta: 'El 4s: cuesta 4; el 3d, 5' },
     { nivel: 1, titulo: 'El último nivel del sodio',
       enunciado: 'El sodio tiene 11 electrones. ¿Cuántos tiene en su último nivel?',
       datos: [DC.orden36, DC.capacidad, DC.valencia],
-      solucion: [{ texto: 'En orden: 2 + 2 + 6 = 10 hasta el 2p; el 11 va al 3s. Queda 1s² 2s² 2p⁶ 3s¹: el último nivel es el 3.', ecuacion: ['3s¹: ', Ee(1)] }],
+      solucion: [{ texto: 'En orden van 2 + 2 + 6 = 10 hasta el 2p, y el electrón 11 va al 3s. Queda 1s² 2s² 2p⁶ 3s¹, cuyo último nivel es el 3.', ecuacion: ['3s¹: ', Ee(1)] }],
       respuesta: [Ee(1), ' electrón'] },
     { nivel: 1, titulo: 'Qué abrevia [Ar]',
       enunciado: 'En una configuración, ¿qué reemplaza el símbolo [Ar]?',
@@ -1609,31 +1609,31 @@
       enunciado: 'El calcio tiene 20 electrones. ¿En qué subnivel entra el último?',
       datos: [DC.orden36, DC.capacidad],
       figura: hotelVacio(['3p', '4s', '3d']),
-      solucion: [{ texto: 'Hasta el 3p van 18. El 19 y el 20 van al 4s, que cuesta 4, antes que el 3d, que cuesta 5.' }],
+      solucion: [{ texto: 'Hasta el 3p van 18 electrones. El 19 y el 20 van al 4s, que cuesta 4, antes que el 3d, que cuesta 5.' }],
       respuesta: 'En el 4s' },
     { nivel: 2, titulo: 'El hierro',
       enunciado: 'Escribe la configuración electrónica del hierro (Z = 26).',
       datos: [DC.orden36, DC.capacidad],
       figura: hotelVacio(PASILLOS36.map(p => p.nom)),
       solucion: [
-        { texto: 'Neutro: 26 electrones. Hasta el 4s van 2 + 2 + 6 + 2 + 6 + 2 = 20.' },
-        { texto: 'Los 6 que quedan van al 3d, que admite 10.', ecuacion: ['1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶'] },
+        { texto: 'Como es neutro, tiene 26 electrones. Hasta el 4s van 2 + 2 + 6 + 2 + 6 + 2 = 20.' },
+        { texto: 'Los 6 que quedan van al 3d, que admite hasta 10.', ecuacion: ['1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶'] },
       ],
       respuesta: ['1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶: ', Ee(26), ' electrones'] },
     { nivel: 2, titulo: 'El bromo, abreviado',
       enunciado: 'Escribe la configuración abreviada del bromo (Z = 35).',
       datos: [DC.orden36, DC.capacidad, DC.ar],
       solucion: [
-        { texto: 'Los primeros 18 son los del argón. Quedan 35 − 18 = 17.' },
-        { texto: '2 al 4s, 10 al 3d y los 5 últimos al 4p.', ecuacion: ['[Ar] 4s² 3d¹⁰ 4p⁵'] },
+        { texto: 'Los primeros 18 electrones son los del argón, y quedan 35 − 18 = 17.' },
+        { texto: 'De esos 17, van 2 al 4s, 10 al 3d y los 5 últimos al 4p.', ecuacion: ['[Ar] 4s² 3d¹⁰ 4p⁵'] },
       ],
       respuesta: ['[Ar] 4s² 3d¹⁰ 4p⁵: ', Ee(35), ' electrones'] },
     { nivel: 2, titulo: 'El último nivel del bromo',
       enunciado: '¿Cuántos electrones tiene el bromo (Z = 35) en su último nivel?',
       datos: [DC.orden36, DC.capacidad, DC.valencia],
       solucion: [
-        { texto: 'Su configuración es [Ar] 4s² 3d¹⁰ 4p⁵: el último nivel es el 4.' },
-        { texto: 'El 3d es del nivel 3: no cuenta. Sumo 4s y 4p.', ecuacion: ['2 + 5 = ', Ee(7)] },
+        { texto: 'Su configuración es [Ar] 4s² 3d¹⁰ 4p⁵, y su último nivel es el 4.' },
+        { texto: 'El 3d es del nivel 3, así que no cuenta. Sumo el 4s y el 4p.', ecuacion: ['2 + 5 = ', Ee(7)] },
       ],
       respuesta: [Ee(7), ' electrones'] },
     { nivel: 2, titulo: 'El cromo',
@@ -1641,7 +1641,7 @@
       datos: [DC.orden36, DC.ar, DC.anomalia],
       solucion: [
         { texto: 'Por el orden de llenado sería [Ar] 4s² 3d⁴.' },
-        { texto: 'Es una excepción: un electrón del 4s pasa al 3d.', ecuacion: ['[Ar] 4s¹ 3d⁵'] },
+        { texto: 'Pero el cromo es una excepción: un electrón del 4s pasa al 3d.', ecuacion: ['[Ar] 4s¹ 3d⁵'] },
       ],
       respuesta: ['[Ar] 4s¹ 3d⁵: ', Ee(24), ' electrones'] },
     { nivel: 2, titulo: 'Niveles llenos del cinc',
@@ -1649,7 +1649,7 @@
       datos: [DC.orden36, DC.capacidad, DC.lDe],
       solucion: [
         { texto: 'Su configuración es 1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d¹⁰.' },
-        { texto: 'Los niveles 1, 2 y 3 tienen todos sus subniveles llenos, con el 3d. El 4 tiene solo el 4s: no está lleno.' },
+        { texto: 'Los niveles 1, 2 y 3 tienen todos sus subniveles llenos, con el 3d. El nivel 4 tiene solo el 4s, así que no está lleno.' },
       ],
       respuesta: '3 niveles llenos' },
     { nivel: 3, titulo: 'El estaño',
@@ -1658,8 +1658,8 @@
       datos: [DC.orden, DC.capacidad, DC.kr],
       solucion: [
         { texto: 'Después del kriptón quedan 50 − 36 = 14: 2 al 5s, 10 al 4d y 2 al 5p.', ecuacion: ['[Kr] 5s² 4d¹⁰ 5p²'] },
-        { texto: ['La ', letra('A'), ' llena el piso 4 antes que el 5s. La ', letra('C'), ' pone el 5p antes que el 4d.'] },
-        { texto: ['La ', letra('D'), ' pasa el tope del 4d. La ', letra('E'), ' se salta el 5s.'] },
+        { texto: ['La ', letra('A'), ' llena el piso 4 antes que el 5s, y la ', letra('C'), ' pone el 5p antes que el 4d.'] },
+        { texto: ['La ', letra('D'), ' pasa el tope del 4d, y la ', letra('E'), ' se salta el 5s.'] },
       ],
       respuesta: [letra('B'), ', [Kr] 5s² 4d¹⁰ 5p²'] },
     { nivel: 3, titulo: 'El último nivel del cobre',
@@ -1667,9 +1667,9 @@
       alternativas: ['2', '11', '1', '18', '10'],
       datos: [DC.orden36, DC.capacidad, DC.valencia, DC.anomalia],
       solucion: [
-        { texto: 'El cobre es una excepción: [Ar] 4s¹ 3d¹⁰. Su último nivel es el 4, con el 4s¹.' },
-        { texto: ['La ', letra('A'), ' olvida la excepción (4s²). La ', letra('B'), ' cuenta el 3d, que es del nivel 3.'] },
-        { texto: ['La ', letra('D'), ' cuenta todo el nivel 3. La ', letra('E'), ' cuenta solo el 3d.'] },
+        { texto: 'El cobre es una excepción, [Ar] 4s¹ 3d¹⁰, y su último nivel es el 4, que solo tiene el 4s¹.' },
+        { texto: ['La ', letra('A'), ' olvida la excepción (4s²), y la ', letra('B'), ' cuenta el 3d, que es del nivel 3.'] },
+        { texto: ['La ', letra('D'), ' cuenta todo el nivel 3, y la ', letra('E'), ' cuenta solo el 3d.'] },
       ],
       respuesta: [letra('C'), ', ', Ee(1), ' electrón'] },
     { nivel: 3, titulo: 'Niveles llenos del bromo',
@@ -1678,10 +1678,10 @@
       alternativas: ['4', '2', '7', '3', '0'],
       datos: [DC.orden36, DC.capacidad, DC.lDe],
       solucion: [
-        { texto: '[Ar] 4s² 3d¹⁰ 4p⁵: los niveles 1, 2 y 3 están completos, con el 3d¹⁰.' },
-        { texto: 'El nivel 4 no: le falta un electrón al 4p y tiene vacíos el 4d y el 4f.' },
-        { texto: ['La ', letra('A'), ' cuenta los niveles con electrones. La ', letra('B'), ' deja fuera el nivel 3 porque su 3d se llenó después del 4s.'] },
-        { texto: ['La ', letra('C'), ' da los electrones del último nivel, 2 + 5. La ', letra('E'), ' deja llegar ℓ hasta n: ningún nivel quedaría lleno.'] },
+        { texto: 'La configuración es [Ar] 4s² 3d¹⁰ 4p⁵, y los niveles 1, 2 y 3 están completos, con el 3d¹⁰.' },
+        { texto: 'El nivel 4 no lo está: le falta un electrón al 4p y tiene vacíos el 4d y el 4f.' },
+        { texto: ['La ', letra('A'), ' cuenta los niveles con electrones, y la ', letra('B'), ' deja fuera el nivel 3 porque su 3d se llenó después del 4s.'] },
+        { texto: ['La ', letra('C'), ' da los electrones del último nivel, 2 + 5. La ', letra('E'), ' deja llegar ℓ hasta n, y así ningún nivel quedaría lleno.'] },
       ],
       respuesta: [letra('D'), ', 3 niveles'] },
     { nivel: 3, titulo: 'El último subnivel del yodo',
@@ -1690,7 +1690,7 @@
       datos: [DC.orden, DC.capacidad, DC.kr],
       solucion: [
         { texto: 'Después del kriptón quedan 53 − 36 = 17: 2 al 5s, 10 al 4d y 5 al 5p.', ecuacion: ['[Kr] 5s² 4d¹⁰ 5p⁵'] },
-        { texto: ['La ', letra('D'), ' llena el 4f antes que el 5p. La ', letra('E'), ' pasa el tope del 5p, que es 6.'] },
+        { texto: ['La ', letra('D'), ' llena el 4f antes que el 5p, y la ', letra('E'), ' pasa el tope del 5p, que es 6.'] },
         { texto: ['La ', letra('A'), ' y la ', letra('C'), ' se quedan en el 4d o en el 5s, que se llenan antes del 5p.'] },
       ],
       respuesta: [letra('B'), ', 5p⁵'] },
@@ -1700,9 +1700,9 @@
       datos: [DC.orden36, DC.capacidad, DC.ar],
       solucion: [
         { texto: 'Antes del 4p están llenos todos los subniveles hasta el 3d: [Ar] 4s² 3d¹⁰ 4p³.' },
-        { texto: 'Neutro: Z es la suma de los electrones.', ecuacion: [Z, ' = 18 + 2 + 10 + 3 = ', Pz(33)] },
-        { texto: ['La ', letra('A'), ' se olvida del 3d. La ', letra('B'), ' confunde 4p con 3p. La ', letra('C'), ' se olvida del 4s y del 3d.'] },
-        { texto: ['La ', letra('D'), ' se olvida del 4s.'] },
+        { texto: 'Como el átomo es neutro, Z es la suma de sus electrones.', ecuacion: [Z, ' = 18 + 2 + 10 + 3 = ', Pz(33)] },
+        { texto: ['La ', letra('A'), ' se olvida del 3d, la ', letra('B'), ' confunde el 4p con el 3p y la ', letra('C'), ' se olvida del 4s y del 3d.'] },
+        { texto: ['La ', letra('D'), ' se olvida de los dos electrones del 4s.'] },
       ],
       respuesta: [letra('E'), ', ', Z, ' = ', Pz(33)] },
   ];
@@ -1720,10 +1720,10 @@
     lee: {
       tarjetas: [
         // Ronda 2 del lector en frío: sin el empate 2p/3s (cuál va primero lo dice «Mira», paso 3, y la regla).
-        { titulo: 'El precio en la puerta', texto: 'En el hotel del electrón, la puerta de cada pasillo dice su precio: n + ℓ, en soles. El 2s cuesta 2 + 0 = 2 soles; el 2p, 2 + 1 = 3. Los huéspedes llegan de uno en uno.',
+        { titulo: 'El precio en la puerta', texto: 'En el hotel del electrón, la puerta de cada pasillo dice su precio: n + ℓ, en soles. El 2s cuesta 2 + 0 = 2 soles, y el 2p, 2 + 1 = 3. Los huéspedes llegan al hotel de uno en uno.',
           pieza: 'quim-hotel', dibujo: hotelVacio(['1s', '2s', '2p']) },
-        { titulo: 'Cómo se escribe', texto: 'La configuración electrónica dice cuántos electrones hay en cada subnivel: 1s² 2s² 2p³ es el nitrógeno, con 2 + 2 + 3 = 7. Ojo: aquí el número chico de arriba cuenta electrones; en ¹⁴C era el número de masa.' },
-        { titulo: 'Abreviar y el último nivel', texto: '[Ne] reemplaza los 10 electrones del neón, 1s² 2s² 2p⁶: el sodio, con 11, es [Ne] 3s¹. El último nivel, o capa de valencia, es el de mayor n.' },
+        { titulo: 'Cómo se escribe', texto: 'La configuración electrónica dice cuántos electrones hay en cada subnivel: 1s² 2s² 2p³ es el nitrógeno, con 2 + 2 + 3 = 7. Aquí el número chico de arriba cuenta electrones, mientras que en ¹⁴C era el número de masa.' },
+        { titulo: 'Abreviar y el último nivel', texto: '[Ne] reemplaza los 10 electrones del neón, 1s² 2s² 2p⁶, así que el sodio, con 11, se escribe [Ne] 3s¹. El último nivel, o capa de valencia, es el de mayor n.' },
         { titulo: 'Qué mirar', texto: 'En el juego agregas electrones de uno en uno, hasta el kriptón. Mira qué pasillo estrena cada átomo y cuánto cuesta.' },
       ],
     },
@@ -1734,7 +1734,7 @@
       mision: {
         texto: 'Encuentra el primer átomo que estrena el pasillo 3d.',
         logrado: v => v.z === 21,
-        bien: 'El escandio, Z = 21: el 3d (S/ 5) se abre después del 4s (S/ 4).',
+        bien: 'Es el escandio, Z = 21: el 3d (S/ 5) se abre después del 4s (S/ 4).',
       },
       voz: 'Mira el precio del pasillo que se llena.',
       leyenda: [
@@ -1760,15 +1760,15 @@
       voz: 'Calcula el precio de cada pasillo con sitio.',
       opciones: [
         { id: 'c', texto: 'Al 5s', correcta: true },
-        { id: '4d', texto: 'Al 4d: el piso 4 todavía tiene sitio', error: 'QM-PISO-ANTES', siFuera: 'El piso 4 tiene sitio en el 4d, cierto. Pero el 4d cuesta S/ 6 y el 5s, S/ 5.' },
-        { id: '4f', texto: 'Al 4f', error: 'QM-PASILLO-NUEVO', siFuera: 'Bien buscar un pasillo con sitio. Pero el 4f cuesta S/ 7: es de los más caros.' },
-        { id: 'lleno', texto: 'A ninguno: el kriptón ya está lleno', error: 'QM-LLENO-NO-ENTRA', siFuera: 'Lo que tiene el kriptón está lleno, cierto. Pero hay pasillos más arriba con sitio.' },
+        { id: '4d', texto: 'Al 4d: el piso 4 todavía tiene sitio', error: 'QM-PISO-ANTES', siFuera: 'Es cierto que el piso 4 tiene sitio en el 4d. Pero el 4d cuesta S/ 6, y el 5s, solo S/ 5.' },
+        { id: '4f', texto: 'Al 4f', error: 'QM-PASILLO-NUEVO', siFuera: 'Buscar un pasillo con sitio está bien. Pero el 4f cuesta S/ 7, y hay pasillos con sitio más baratos.' },
+        { id: 'lleno', texto: 'A ninguno: el kriptón ya está lleno', error: 'QM-LLENO-NO-ENTRA', siFuera: 'Es cierto que lo que ocupa el kriptón está lleno. Pero más arriba hay pasillos con sitio para el electrón 37.' },
       ],
       dibujo: HOTEL([{ nombre: '4s', e: 2 }, { nombre: '4p', e: 6 }, { nombre: '4d', e: 0, vacia: true, precio: '?' }, { nombre: '4f', e: 0, vacia: true, precio: '?' }, { nombre: '5s', e: 0, vacia: true, precio: '?' }],
         { precios: true, rotulo: 'Rb: ¿adónde va el electrón 37?' }),
       revelar: HOTEL([{ nombre: '4s', e: 2 }, { nombre: '4p', e: 6 }, { nombre: '4d', e: 0, vacia: true }, { nombre: '4f', e: 0, vacia: true }, { nombre: '5s', e: 1 }],
         { precios: true, rotulo: 'Rb: [Kr] 5s¹. El 5s cuesta menos.' }),
-      coincide: 'Coincide: el 5s cuesta 5 + 0 = 5; el 4d, 4 + 2 = 6.',
+      coincide: 'Coincide: el 5s cuesta 5 + 0 = 5, y el 4d, 4 + 2 = 6.',
       noCoincide: 'El 5s cuesta 5 + 0 = 5 soles y el 4d, 4 + 2 = 6: va al 5s.',
     },
     mira: {
@@ -1777,17 +1777,17 @@
       voz: 'Llenemos el hotel del más barato al más caro.',
       pasos: [
         { estado: { corte: 1 }, texto: 'El 1s cuesta 1 + 0 = 1: es el más barato y se llena primero.' },
-        { estado: { corte: 2 }, texto: 'El 2s cuesta 2: es el segundo.' },
-        { estado: { corte: 3 }, texto: '2p y 3s cuestan 3: a igual precio, primero el de menor n.', ecuacion: ['2p: 2 + 1 = 3   ·   3s: 3 + 0 = 3'] },
-        { estado: { corte: 4 }, texto: '3p y 4s cuestan 4: el 4s se llena antes que el 3d.', ecuacion: ['4s: 4 + 0 = 4   ·   3d: 3 + 2 = 5'] },
-        { estado: { corte: 5 }, texto: 'El 3d y el 4p cuestan 5: primero el 3d, de menor n.' },
-        { estado: { corte: 5 }, texto: '[Ar] abrevia los 18 del argón; el último nivel es el de mayor n.', ecuacion: ['[Ar] = 1s² 2s² 2p⁶ 3s² 3p⁶'] },
-        { estado: { corte: 5 }, texto: 'Cromo y cobre: un 4s pasa al 3d, que queda con 5 o 10.', ecuacion: ['Cr: [Ar] 4s¹ 3d⁵   ·   Cu: [Ar] 4s¹ 3d¹⁰'] },
+        { estado: { corte: 2 }, texto: 'El 2s cuesta 2 + 0 = 2, así que es el segundo en llenarse.' },
+        { estado: { corte: 3 }, texto: 'El 2p y el 3s cuestan 3; a igual precio, se llena primero el de menor n, que es el 2p.', ecuacion: ['2p: 2 + 1 = 3   ·   3s: 3 + 0 = 3'] },
+        { estado: { corte: 4 }, texto: 'El 3p y el 4s cuestan 4, y el 3d cuesta 5: por eso el 4s se llena antes que el 3d.', ecuacion: ['4s: 4 + 0 = 4   ·   3d: 3 + 2 = 5'] },
+        { estado: { corte: 5 }, texto: 'El 3d y el 4p cuestan 5, y se llena primero el 3d, que tiene menor n.' },
+        { estado: { corte: 5 }, texto: '[Ar] abrevia los 18 electrones del argón, y el último nivel es el de mayor n.', ecuacion: ['[Ar] = 1s² 2s² 2p⁶ 3s² 3p⁶'] },
+        { estado: { corte: 5 }, texto: 'En el cromo y el cobre, un electrón del 4s pasa al 3d, que queda con 5 o con 10.', ecuacion: ['Cr: [Ar] 4s¹ 3d⁵   ·   Cu: [Ar] 4s¹ 3d¹⁰'] },
       ],
     },
     regla: {
       // Ronda 2 del lector en frío: cómo quedan el Cr y el Cu (en el texto) y por qué (en la voz de Bruna).
-      texto: 'Primero el subnivel de menor n + ℓ; a igual n + ℓ, el de menor n. Cr y Cu pasan un 4s al 3d: quedan 3d⁵ (medio lleno) y 3d¹⁰ (lleno).',
+      texto: 'Se llena primero el subnivel de menor n + ℓ y, a igual n + ℓ, el de menor n. El cromo y el cobre pasan un electrón del 4s al 3d, y quedan 3d⁵ (medio lleno) y 3d¹⁰ (lleno).',
       ecuacion: ['1s → 2s → 2p → 3s → 3p → 4s → 3d → 4p → 5s → 4d → 5p'],
       condicion: 'el átomo es neutro y está en su estado de menor energía.',
       voz: 'Un 3d medio lleno o lleno es más estable: por eso cambian Cr y Cu.',
@@ -1805,10 +1805,10 @@
           dibujo: hotelVacio(PASILLOS36.map(p => p.nom)),
           pasos: [
             { tipo: 'pide', texto: `Piden cómo se reparten los electrones del ${NOMBRE[z]} neutro entre los subniveles.` },
-            { tipo: 'datos', texto: ['Neutro: tantos electrones como protones, ', Z, ` = ${z}.`], ecuacion: [e, ' = ', Ee(z)] },
+            { tipo: 'datos', texto: ['Como el átomo es neutro, tiene tantos electrones como protones: ', Z, ` = ${z}.`], ecuacion: [e, ' = ', Ee(z)] },
             { tipo: 'regla', texto: 'Lleno en el orden de llenado, sin pasar los topes: 2 en un s, 6 en un p, 10 en un d.' },
-            { tipo: 'cuentas', texto: `Hasta el ${hasta[hasta.length - 1].nom} van ${totalE(hasta)}; los ${z - totalE(hasta)} que quedan, al ${ultimoSub(c).nom}.`, ecuacion: [textoConfig(c)], dibujo: hotelDe(z) },
-            { tipo: 'sentido', texto: `De vuelta: ${c.map(x => x.e).join(' + ')} = ${totalE(c)}, los electrones del átomo neutro.` },
+            { tipo: 'cuentas', texto: `Hasta el ${hasta[hasta.length - 1].nom} van ${totalE(hasta)} electrones, y ${z - totalE(hasta) === 1 ? 'el que queda entra' : `los ${z - totalE(hasta)} que quedan entran`} al ${ultimoSub(c).nom}.`, ecuacion: [textoConfig(c)], dibujo: hotelDe(z) },
+            { tipo: 'sentido', texto: `Para comprobar: ${c.map(x => x.e).join(' + ')} = ${totalE(c)}, que son los electrones del átomo neutro.` },
           ],
           respuesta: textoConfig(c),
         };
@@ -1862,12 +1862,12 @@
       pregunta: ['¿Cuál es la configuración electrónica del ion ', sim, '?'],
       datos: [`Z del ${NOMBRE[z]} = ${z}`, DC.carga, DC.orden36, DC.capacidad],
       opciones: opciones(textoConfig(c), [
-        { id: 'neutro', valor: textoConfig(configNeutro(z)), error: 'QM-CARGA-E', siFuera: `Esa es la del átomo neutro, bien escrita. Pero el ion ${anion ? 'ganó' : 'perdió'} ${Math.abs(q)}.` },
-        { id: 'signo', valor: z + q > 0 ? textoConfig(configEspecie(z, -q)) : null, error: 'QM-CARGA-SIGNO', siFuera: 'Bien aplicar la carga. Pero al revés: con carga positiva faltan electrones; con negativa, sobran.' },
-        { id: 'menos', valor: c.length ? textoConfig(config(totalE(c) - 1)) : null, error: 'QM-CUENTA', siFuera: `Bien el orden. Pero esa tiene ${totalE(c) - 1} electrones; el ${sim} tiene ${totalE(c)}.` },
-        { id: 'mas', valor: textoConfig(config(totalE(c) + 1)), error: 'QM-CUENTA', siFuera: `Bien el orden. Pero esa tiene ${totalE(c) + 1} electrones; el ${sim} tiene ${totalE(c)}.` },
+        { id: 'neutro', valor: textoConfig(configNeutro(z)), error: 'QM-CARGA-E', siFuera: `Esa es la configuración del átomo neutro, bien escrita. Pero el ion ${anion ? 'ganó' : 'perdió'} ${Math.abs(q)} ${Math.abs(q) === 1 ? 'electrón' : 'electrones'}.` },
+        { id: 'signo', valor: z + q > 0 ? textoConfig(configEspecie(z, -q)) : null, error: 'QM-CARGA-SIGNO', siFuera: 'Usar la carga está bien, pero la aplicaste al revés: con carga positiva faltan electrones, y con carga negativa sobran.' },
+        { id: 'menos', valor: c.length ? textoConfig(config(totalE(c) - 1)) : null, error: 'QM-CUENTA', siFuera: `El orden está bien. Pero esa configuración tiene ${totalE(c) - 1} ${totalE(c) - 1 === 1 ? 'electrón' : 'electrones'}, y el ${sim} tiene ${totalE(c)}.` },
+        { id: 'mas', valor: textoConfig(config(totalE(c) + 1)), error: 'QM-CUENTA', siFuera: `El orden está bien. Pero esa configuración tiene ${totalE(c) + 1} electrones, y el ${sim} tiene ${totalE(c)}.` },
       ], x => x),
-      solucion: { texto: `${sim}: ${z} − (${signo(q)}) = ${totalE(c)} electrones, en el orden de llenado.`, ecuacion: [textoConfig(c)] },
+      solucion: { texto: `El ${sim} tiene ${z} − (${signo(q)}) = ${totalE(c)} electrones, repartidos en el orden de llenado.`, ecuacion: [textoConfig(c)] },
     };
   }
   function casoCationD(r) {
@@ -1876,13 +1876,13 @@
       pregunta: ['¿Cuál es la configuración abreviada del ion ', sim, '?'],
       datos: [`${Nombre(z)} (Z = ${z}): ${abreviada(n)}`, DC.ar, DC.carga],
       opciones: opciones(abreviada(c), [
-        { id: 'ultimo', valor: abreviada(quitarUltimo(z, q)), error: 'QM-ULTIMO', siFuera: 'Bien quitar electrones. Pero no sale el último en entrar: salen primero los del 4s, el nivel más alto.' },
-        { id: 'neutro', valor: abreviada(n), error: 'QM-CARGA-E', siFuera: `Esa es la del átomo neutro. Con carga ${signo(q)}, salieron ${q} electrones.` },
-        { id: 'menos', valor: abreviada(configEspecie(z, q + 1)), error: 'QM-CUENTA', siFuera: `Bien el orden de salida. Pero quitaste ${q + 1}; la carga ${signo(q)} dice ${q}.` },
-        { id: 'mas', valor: q > 1 ? abreviada(configEspecie(z, q - 1)) : null, error: 'QM-CUENTA', siFuera: `Bien el orden de salida. Pero quitaste ${q - 1}; la carga ${signo(q)} dice ${q}.` },
-        { id: 'reparte', valor: abreviada(configEspecie(z, q - 1).map(x => (x.nom === '3d' ? Object.assign({}, x, { e: x.e - 1 }) : x)).filter(x => x.e > 0)), error: 'QM-REPARTE', siFuera: 'Bien sacar del 4s. Pero salen todos los 4s antes de tocar el 3d.' },
+        { id: 'ultimo', valor: abreviada(quitarUltimo(z, q)), error: 'QM-ULTIMO', siFuera: 'Quitar electrones está bien. Pero no sale el último en entrar: salen primero los del 4s, el nivel más alto.' },
+        { id: 'neutro', valor: abreviada(n), error: 'QM-CARGA-E', siFuera: `Esa es la configuración del átomo neutro, y con carga ${signo(q)} ${q === 1 ? 'salió 1 electrón' : `salieron ${q} electrones`}.` },
+        { id: 'menos', valor: abreviada(configEspecie(z, q + 1)), error: 'QM-CUENTA', siFuera: `El orden de salida está bien. Pero quitaste ${q + 1}, y la carga ${signo(q)} dice ${q}.` },
+        { id: 'mas', valor: q > 1 ? abreviada(configEspecie(z, q - 1)) : null, error: 'QM-CUENTA', siFuera: `El orden de salida está bien. Pero quitaste ${q - 1}, y la carga ${signo(q)} dice ${q}.` },
+        { id: 'reparte', valor: abreviada(configEspecie(z, q - 1).map(x => (x.nom === '3d' ? Object.assign({}, x, { e: x.e - 1 }) : x)).filter(x => x.e > 0)), error: 'QM-REPARTE', siFuera: 'Sacar del 4s está bien. Pero salen todos los electrones del 4s antes de tocar el 3d.' },
       ], x => x),
-      solucion: { texto: `Salen ${q}: primero los del 4s, el nivel más alto; después, si faltan, del 3d.`, ecuacion: [`${sim}: ${abreviada(c)}`] },
+      solucion: { texto: `${q === 1 ? 'Sale 1 electrón' : `Salen ${q} electrones`}: primero los del 4s, el nivel más alto, y después, si faltan, los del 3d.`, ecuacion: [`${sim}: ${abreviada(c)}`] },
     };
   }
   function casoIsoZ(r) {
@@ -1891,12 +1891,12 @@
       pregunta: [`El ion X${carga(q)} tiene la configuración ${abreviada(c)}. ¿Cuál es el número atómico de X?`],
       datos: [DC.ar, DC.carga],
       opciones: opciones(z, [
-        { id: 'e', valor: el, error: 'QM-ISO-Z', siFuera: `Bien contar ${el} electrones. Pero X tiene carga ${signo(q)}: tiene más protones que electrones.` },
-        { id: 'signo', valor: el - q, error: 'QM-CARGA-SIGNO', siFuera: `Bien partir de ${el} electrones. Revisa el signo: carga = Z − electrones.` },
-        { id: 'cuatro', valor: el + q + 2, error: 'QM-ULTIMO', siFuera: 'Bien la carga. Pero los electrones se cuentan de la configuración dada, sin agregar un 4s.' },
-        { id: 'ar', valor: el - 18, error: 'QM-CUENTA', siFuera: 'Eso son los electrones después del argón. [Ar] también cuenta: son 18 más.' },
+        { id: 'e', valor: el, error: 'QM-ISO-Z', siFuera: `Contar ${el} electrones está bien. Pero X tiene carga ${signo(q)}, así que tiene más protones que electrones.` },
+        { id: 'signo', valor: el - q, error: 'QM-CARGA-SIGNO', siFuera: `Partir de ${el} electrones está bien. Revisa el signo: la carga es Z menos los electrones.` },
+        { id: 'cuatro', valor: el + q + 2, error: 'QM-ULTIMO', siFuera: 'La carga está bien usada. Pero los electrones se cuentan en la configuración dada, sin agregarle un 4s.' },
+        { id: 'ar', valor: el - 18, error: 'QM-CUENTA', siFuera: 'Esos son los electrones que siguen al argón. Pero [Ar] también cuenta, y son 18 electrones más.' },
       ], x => `${x}`),
-      solucion: { texto: `${abreviada(c)}: 18 + ${el - 18} = ${el} electrones; X tiene ${q} protones más.`, ecuacion: [Z, ` = ${el} + ${q} = `, Pz(z)] },
+      solucion: { texto: `${abreviada(c)} tiene 18 + ${el - 18} = ${el} electrones, y X tiene ${q} protones más que electrones.`, ecuacion: [Z, ` = ${el} + ${q} = `, Pz(z)] },
     };
   }
   function casoElectronesD(r) {
@@ -1906,29 +1906,29 @@
       pregunta: ['¿Cuántos electrones tiene en su subnivel 3d el ion ', SIMB_Q(z, q), '?'],
       datos: [`Z del ${NOMBRE[z]} = ${z}`, DC.orden36, DC.capacidad, DC.anomalia],
       opciones: opciones(d, [
-        { id: 'ultimo', valor: ul, error: 'QM-ULTIMO', siFuera: 'Bien quitar los electrones de la carga. Pero salen primero los del 4s, no los del 3d.' },
-        { id: 'neutro', valor: dn, error: 'QM-CARGA-E', siFuera: `Esos son los 3d del átomo neutro. Con carga ${signo(q)}, ${q > 2 ? 'también sale alguno del 3d' : 'cambia el 4s, no el 3d'}.` },
-        { id: 'mas', valor: d + 1, error: 'QM-CUENTA', siFuera: 'Bien el orden de salida. Revisa cuántos salen: lo dice la carga.' },
-        { id: 'menos', valor: d - 1 >= 0 ? d - 1 : null, error: 'QM-CUENTA', siFuera: 'Bien el orden de salida. Revisa cuántos salen: lo dice la carga.' },
+        { id: 'ultimo', valor: ul, error: 'QM-ULTIMO', siFuera: 'Quitar los electrones que pide la carga está bien. Pero salen primero los del 4s, no los del 3d.' },
+        { id: 'neutro', valor: dn, error: 'QM-CARGA-E', siFuera: `Esos son los electrones 3d del átomo neutro. Con carga ${signo(q)}, ${dn !== d ? 'después del 4s también sale alguno del 3d' : 'cambia el 4s, no el 3d'}.` },
+        { id: 'mas', valor: d + 1, error: 'QM-CUENTA', siFuera: 'El orden de salida está bien. Revisa cuántos electrones salen: lo dice la carga.' },
+        { id: 'menos', valor: d - 1 >= 0 ? d - 1 : null, error: 'QM-CUENTA', siFuera: 'El orden de salida está bien. Revisa cuántos electrones salen: lo dice la carga.' },
       ], x => `${x}`),
-      solucion: { texto: `${Nombre(z)}: ${abreviada(n)}. Con carga ${signo(q)}, salen primero los 4s.`, ecuacion: [`${SIMB_Q(z, q)}: ${abreviada(c)}   ·   3d: `, Ee(d)] },
+      solucion: { texto: `El ${NOMBRE[z]} neutro es ${abreviada(n)}, y con carga ${signo(q)} salen primero los electrones del 4s.`, ecuacion: [`${SIMB_Q(z, q)}: ${abreviada(c)}   ·   3d: `, Ee(d)] },
     };
   }
   function casoIon54(r) {
     const [z, q] = r.de(IONES54), c = configEspecie(z, q), sim = SIMB_Q(z, q);
     const dis = q > 0 ? [
-      { id: 'ultimo', valor: abreviada(quitarUltimo(z, q)), error: 'QM-ULTIMO', siFuera: 'Bien quitar electrones. Pero sale primero el de mayor n, no el último en entrar.' },
-      { id: 's', valor: abreviada(quitarS(z, q)), error: 'QM-S-PRIMERO', siFuera: 'Bien el nivel 5. Pero a igual n sale primero el de mayor ℓ: el 5p antes que el 5s.' },
-    ] : [{ id: 'signo', valor: abreviada(configEspecie(z, -q)), error: 'QM-CARGA-SIGNO', siFuera: 'Bien aplicar la carga. Pero al revés: con carga negativa, sobran electrones.' }];
+      { id: 'ultimo', valor: abreviada(quitarUltimo(z, q)), error: 'QM-ULTIMO', siFuera: 'Quitar electrones está bien. Pero salen primero los de mayor n, no los últimos en entrar.' },
+      { id: 's', valor: abreviada(quitarS(z, q)), error: 'QM-S-PRIMERO', siFuera: 'Sacar del nivel 5 está bien. Pero a igual n sale primero el de mayor ℓ: el 5p antes que el 5s.' },
+    ] : [{ id: 'signo', valor: abreviada(configEspecie(z, -q)), error: 'QM-CARGA-SIGNO', siFuera: 'Usar la carga está bien, pero la aplicaste al revés: con carga negativa sobran electrones.' }];
     return {
       pregunta: ['¿Cuál es la configuración abreviada del ion ', sim, ' (', Z, ` = ${z})?`],
       datos: [DC.orden, DC.capacidad, DC.kr, DC.carga],
       opciones: opciones(abreviada(c), dis.concat([
-        { id: 'neutro', valor: abreviada(configNeutro(z)), error: 'QM-CARGA-E', siFuera: `Esa es la del átomo neutro. Con carga ${signo(q)}, ${q > 0 ? 'salieron' : 'llegaron'} ${Math.abs(q)}.` },
-        { id: 'mas', valor: z - q + 1 <= 54 ? abreviada(configEspecie(z, q - 1)) : null, error: 'QM-CUENTA', siFuera: `Bien el orden. Pero esa tiene un electrón más que el ${sim}.` },
-        { id: 'menos', valor: abreviada(configEspecie(z, q + 1)), error: 'QM-CUENTA', siFuera: `Bien el orden. Pero esa tiene un electrón menos que el ${sim}.` },
+        { id: 'neutro', valor: abreviada(configNeutro(z)), error: 'QM-CARGA-E', siFuera: `Esa es la configuración del átomo neutro, y con carga ${signo(q)} ${Math.abs(q) === 1 ? (q > 0 ? 'salió 1 electrón' : 'llegó 1 electrón') : `${q > 0 ? 'salieron' : 'llegaron'} ${Math.abs(q)} electrones`}.` },
+        { id: 'mas', valor: z - q + 1 <= 54 ? abreviada(configEspecie(z, q - 1)) : null, error: 'QM-CUENTA', siFuera: `El orden está bien. Pero esa configuración tiene un electrón más que el ${sim}.` },
+        { id: 'menos', valor: abreviada(configEspecie(z, q + 1)), error: 'QM-CUENTA', siFuera: `El orden está bien. Pero esa configuración tiene un electrón menos que el ${sim}.` },
       ]), x => x),
-      solucion: { texto: q > 0 ? `Salen ${q}: primero los de mayor n y, a igual n, los de mayor ℓ.` : `Llegan ${-q} en el orden de llenado.`, ecuacion: [`${sim}: ${abreviada(c)}`] },
+      solucion: { texto: q > 0 ? `Salen ${q} electrones: primero los de mayor n y, a igual n, los de mayor ℓ.` : `${-q === 1 ? 'Llega 1 electrón, que entra' : `Llegan ${-q} electrones, que entran`} en el orden de llenado.`, ecuacion: [`${sim}: ${abreviada(c)}`] },
     };
   }
 
@@ -1938,45 +1938,45 @@
     { nivel: 1, titulo: 'El Mg²⁺',
       enunciado: 'Escribe la configuración electrónica del ion Mg²⁺.',
       datos: ['Z del magnesio = 12', DC.carga, DC.orden36, DC.capacidad],
-      solucion: [{ texto: 'Electrones: 12 − 2 = 10. Se reparten en el orden de llenado.', ecuacion: ['Mg²⁺: 1s² 2s² 2p⁶'] }],
+      solucion: [{ texto: 'El ion tiene 12 − 2 = 10 electrones, que se reparten en el orden de llenado.', ecuacion: ['Mg²⁺: 1s² 2s² 2p⁶'] }],
       respuesta: ['1s² 2s² 2p⁶: ', Ee(10), ' electrones'] },
     { nivel: 1, titulo: 'El cloruro de la sal',
       enunciado: 'En la sal de Maras, el cloro está como Cl⁻. Escribe la configuración del Cl⁻.',
       datos: ['Z del cloro = 17', DC.carga, DC.orden36, DC.capacidad],
       figura: OBJ_CAJAS('salero', { filas: filasDe(configNeutro(17)), rotulo: 'Cl: 1s² 2s² 2p⁶ 3s² 3p⁵' }),
-      solucion: [{ texto: 'Electrones: 17 − (−1) = 18. El que llega completa el 3p.', ecuacion: ['Cl⁻: 1s² 2s² 2p⁶ 3s² 3p⁶'] }],
+      solucion: [{ texto: 'El ion tiene 17 − (−1) = 18 electrones, y el que llega completa el 3p.', ecuacion: ['Cl⁻: 1s² 2s² 2p⁶ 3s² 3p⁶'] }],
       respuesta: ['1s² 2s² 2p⁶ 3s² 3p⁶: ', Ee(18), ' electrones'] },
     { nivel: 1, titulo: '¿Catión o anión?',
       enunciado: 'El ion S²⁻, ¿es un catión o un anión? ¿Ganó o perdió electrones?',
       datos: [DC.carga, 'Catión: ion positivo. Anión: ion negativo'],
-      solucion: [{ texto: 'Carga = Z − e⁻ = −2: tiene 2 electrones más que protones. Es un anión: ganó 2.' }],
+      solucion: [{ texto: 'Como la carga, Z − e⁻, es −2, el ion tiene 2 electrones más que protones: es un anión que ganó 2.' }],
       respuesta: ['Anión: ganó ', Ee(2), ' electrones'] },
     { nivel: 1, titulo: 'De dónde sale el del K⁺',
       enunciado: 'El potasio es [Ar] 4s¹. Al formar K⁺, ¿de qué subnivel sale su electrón?',
       datos: [DC.ar, DC.carga],
       figura: CAJAS([{ nombre: '3p', e: 6, cajas: 3 }, { nombre: '4s', e: 1, cajas: 1 }], { rotulo: 'K: [Ar] 4s¹' }),
-      solucion: [{ texto: 'Sale del nivel más alto, el 4: del 4s. Quedan 18 electrones, 1s² 2s² 2p⁶ 3s² 3p⁶, como el argón.' }],
+      solucion: [{ texto: 'Sale del nivel más alto, el 4, es decir, del 4s. Quedan 18 electrones, 1s² 2s² 2p⁶ 3s² 3p⁶, como en el argón.' }],
       respuesta: 'Del 4s: queda como el argón' },
     { nivel: 1, titulo: 'Na⁺ y el neón',
       enunciado: '¿Tienen la misma configuración el ion Na⁺ y el átomo de neón?',
       datos: ['Z del sodio = 11; Z del neón = 10', DC.carga, DC.orden36],
-      solucion: [{ texto: 'Na⁺: 11 − 1 = 10 electrones. Neón: 10. Los dos son 1s² 2s² 2p⁶: son isoelectrónicos.' }],
+      solucion: [{ texto: 'El Na⁺ tiene 11 − 1 = 10 electrones, igual que el neón. Los dos son 1s² 2s² 2p⁶: son isoelectrónicos.' }],
       respuesta: ['Sí: los dos tienen ', Ee(10), ' electrones, 1s² 2s² 2p⁶'] },
     { nivel: 2, titulo: 'El Fe³⁺',
       enunciado: 'Escribe la configuración abreviada del ion Fe³⁺.',
       datos: ['Z del hierro = 26', DC.orden36, DC.ar, DC.carga],
       figura: OBJ_CAJAS('frasco', { filas: filasDe(configNeutro(26)).slice(-2), rotulo: 'Fe: [Ar] 4s² 3d⁶' }),
       solucion: [
-        { texto: 'Hierro neutro: [Ar] 4s² 3d⁶. Carga +3: salen 3.' },
-        { texto: 'Salen primero los dos del 4s; el tercero, del 3d.', ecuacion: ['Fe³⁺: [Ar] 3d⁵'] },
+        { texto: 'El hierro neutro es [Ar] 4s² 3d⁶, y la carga +3 dice que salen 3 electrones.' },
+        { texto: 'Salen primero los dos del 4s, y el tercero sale del 3d.', ecuacion: ['Fe³⁺: [Ar] 3d⁵'] },
       ],
       respuesta: ['[Ar] 3d⁵: ', Ee(23), ' electrones'] },
     { nivel: 2, titulo: 'El Zn²⁺',
       enunciado: 'Escribe la configuración abreviada del ion Zn²⁺.',
       datos: ['Z del cinc = 30', DC.orden36, DC.ar, DC.carga],
       solucion: [
-        { texto: 'Cinc neutro: 30 electrones, [Ar] 4s² 3d¹⁰.' },
-        { texto: 'Carga +2: salen los dos del 4s, el nivel más alto.', ecuacion: ['Zn²⁺: [Ar] 3d¹⁰'] },
+        { texto: 'El cinc neutro tiene 30 electrones: [Ar] 4s² 3d¹⁰.' },
+        { texto: 'Con carga +2 salen los dos electrones del 4s, el nivel más alto.', ecuacion: ['Zn²⁺: [Ar] 3d¹⁰'] },
       ],
       respuesta: ['[Ar] 3d¹⁰: ', Ee(28), ' electrones'] },
     { nivel: 2, titulo: 'El Cu⁺',
@@ -1984,7 +1984,7 @@
       datos: ['Z del cobre = 29', DC.orden36, DC.ar, DC.anomalia, DC.carga],
       solucion: [
         { texto: 'El cobre es una excepción: [Ar] 4s¹ 3d¹⁰, con 18 + 1 + 10 = 29.' },
-        { texto: 'Carga +1: sale el único 4s, del nivel más alto.', ecuacion: ['Cu⁺: [Ar] 3d¹⁰'] },
+        { texto: 'Con carga +1 sale el único electrón del 4s, que es el nivel más alto.', ecuacion: ['Cu⁺: [Ar] 3d¹⁰'] },
       ],
       respuesta: ['[Ar] 3d¹⁰: ', Ee(28), ' electrones'] },
     { nivel: 2, titulo: 'Con la configuración del argón',
@@ -1992,15 +1992,15 @@
       datos: ['Z: sodio 11, azufre 16, cloro 17, argón 18, potasio 19, calcio 20', DC.carga],
       solucion: [
         { texto: 'El argón tiene 18 electrones. Cuento los de cada ion con su carga.', ecuacion: ['K⁺: ', Ee(18), '   ·   Ca²⁺: ', Ee(18), '   ·   Na⁺: ', Ee(10), '   ·   Cl⁻: ', Ee(18), '   ·   S²⁻: ', Ee(18)] },
-        { texto: 'Con 18 electrones y el mismo orden de llenado, tienen la misma configuración. El Na⁺ no.' },
+        { texto: 'Los que tienen 18 electrones, llenados en el mismo orden, tienen la configuración del argón; el Na⁺, con 10, no la tiene.' },
       ],
       respuesta: 'Cuatro: K⁺, Ca²⁺, Cl⁻ y S²⁻' },
     { nivel: 2, titulo: 'El Mn²⁺',
       enunciado: 'Escribe la configuración abreviada del ion Mn²⁺.',
       datos: ['Z del manganeso = 25', DC.orden36, DC.ar, DC.carga],
       solucion: [
-        { texto: 'Manganeso neutro: 25 electrones, [Ar] 4s² 3d⁵.' },
-        { texto: 'Carga +2: salen los dos del 4s.', ecuacion: ['Mn²⁺: [Ar] 3d⁵'] },
+        { texto: 'El manganeso neutro tiene 25 electrones: [Ar] 4s² 3d⁵.' },
+        { texto: 'Con carga +2 salen los dos electrones del 4s.', ecuacion: ['Mn²⁺: [Ar] 3d⁵'] },
       ],
       respuesta: ['[Ar] 3d⁵: ', Ee(23), ' electrones'] },
     { nivel: 3, titulo: 'El catión del cromo',
@@ -2008,9 +2008,9 @@
       alternativas: ['[Ar] 4s² 3d¹', '[Ar] 3d³', '[Ar] 4s¹ 3d²', '[Ar] 4s² 3d⁴', '[Ar] 3d⁶'],
       datos: ['Z del cromo = 24', DC.orden36, DC.ar, DC.anomalia],
       solucion: [
-        { texto: 'El cromo es excepción: [Ar] 4s¹ 3d⁵. Carga +3: salen 3.' },
-        { texto: 'Primero el único 4s; después, dos del 3d.', ecuacion: ['Cr³⁺: [Ar] 3d³'] },
-        { texto: ['La ', letra('A'), ' saca los tres del 3d y olvida la excepción. La ', letra('D'), ' es el cromo neutro sin la excepción.'] },
+        { texto: 'El cromo es una excepción, [Ar] 4s¹ 3d⁵, y con carga +3 salen 3 electrones.' },
+        { texto: 'Sale primero el único 4s, y después salen dos del 3d.', ecuacion: ['Cr³⁺: [Ar] 3d³'] },
+        { texto: ['La ', letra('A'), ' olvida la excepción y saca tres del 3d, y la ', letra('D'), ' es el cromo neutro sin ella. La ', letra('C'), ' deja el 4s y saca tres del 3d, y la ', letra('E'), ' no quita ninguno: pasa el 4s al 3d.'] },
       ],
       respuesta: [letra('B'), ', [Ar] 3d³'] },
     { nivel: 3, titulo: 'El ion del cobalto',
@@ -2018,8 +2018,8 @@
       alternativas: ['[Ar] 3d⁷', '[Ar] 4s² 3d⁵', '[Ar] 4s¹ 3d⁶', '[Ar] 4s² 3d⁷', '[Ar] 3d⁹'],
       datos: ['Z del cobalto = 27', DC.orden36, DC.ar, DC.carga],
       solucion: [
-        { texto: 'Cobalto neutro: [Ar] 4s² 3d⁷. Carga +2: salen los dos del 4s.', ecuacion: ['Co²⁺: [Ar] 3d⁷'] },
-        { texto: ['La ', letra('B'), ' saca del 3d, el último en entrar. La ', letra('C'), ' saca uno de cada uno. La ', letra('D'), ' es el átomo neutro.'] },
+        { texto: 'El cobalto neutro es [Ar] 4s² 3d⁷, y con carga +2 salen los dos electrones del 4s.', ecuacion: ['Co²⁺: [Ar] 3d⁷'] },
+        { texto: ['La ', letra('B'), ' saca del 3d, el último en entrar, y la ', letra('C'), ' saca uno de cada uno. La ', letra('D'), ' es el átomo neutro, y la ', letra('E'), ' pasa los 4s al 3d sin quitar ninguno.'] },
       ],
       respuesta: [letra('A'), ', [Ar] 3d⁷'] },
     { nivel: 3, titulo: 'El X²⁺ con 3d⁸',
@@ -2027,9 +2027,9 @@
       alternativas: ['26', '24', '28', '30', '18'],
       datos: [DC.ar, DC.carga],
       solucion: [
-        { texto: 'Electrones del ion: 18 + 8 = 26.' },
-        { texto: 'Carga +2: tiene 2 protones más que electrones.', ecuacion: [Z, ' = 26 + 2 = ', Pz(28)] },
-        { texto: ['La ', letra('A'), ' toma Z igual a los electrones. La ', letra('B'), ' resta la carga. La ', letra('E'), ' cuenta solo el argón.'] },
+        { texto: 'El ion tiene 18 + 8 = 26 electrones.' },
+        { texto: 'Con carga +2, tiene 2 protones más que electrones.', ecuacion: [Z, ' = 26 + 2 = ', Pz(28)] },
+        { texto: ['La ', letra('A'), ' toma Z igual a los electrones, la ', letra('B'), ' resta la carga y la ', letra('E'), ' cuenta solo el argón.'] },
         { texto: ['La ', letra('D'), ' cuenta dos veces los que salieron: suma los dos 4s y, además, la carga.'] },
       ],
       respuesta: [letra('C'), ', ', Z, ' = ', Pz(28)] },
@@ -2049,9 +2049,9 @@
       alternativas: ['[Kr] 4d¹⁰ 5p²', '[Kr] 5s² 4d⁸', '[Kr] 5s² 4d¹⁰', '[Kr] 5s² 4d¹⁰ 5p²', '[Kr] 4d¹⁰'],
       datos: [DC.orden, DC.capacidad, DC.kr, DC.carga],
       solucion: [
-        { texto: 'Estaño neutro: [Kr] 5s² 4d¹⁰ 5p². El nivel más alto es el 5, con 5s y 5p.' },
-        { texto: 'A igual n, sale primero el de mayor ℓ: los dos 5p.', ecuacion: ['Sn²⁺: [Kr] 5s² 4d¹⁰'] },
-        { texto: ['La ', letra('A'), ' saca el 5s. La ', letra('B'), ' saca del 4d. La ', letra('D'), ' es el átomo neutro.'] },
+        { texto: 'El estaño neutro es [Kr] 5s² 4d¹⁰ 5p², y su nivel más alto es el 5, con el 5s y el 5p.' },
+        { texto: 'A igual n sale primero el de mayor ℓ, así que salen los dos 5p.', ecuacion: ['Sn²⁺: [Kr] 5s² 4d¹⁰'] },
+        { texto: ['La ', letra('A'), ' saca el 5s, y la ', letra('B'), ' saca del 4d. La ', letra('D'), ' es el átomo neutro, y la ', letra('E'), ' saca cuatro: los dos 5p y los dos 5s.'] },
       ],
       respuesta: [letra('C'), ', [Kr] 5s² 4d¹⁰'] },
   ];
@@ -2067,9 +2067,9 @@
     // Lee: la sal de Maras, los nombres catión y anión y contar primero. No dice nada de los iones con d (se predice).
     lee: {
       tarjetas: [
-        { titulo: 'La sal de Maras', texto: 'En las salineras de Maras, en el Cusco, se saca sal: cloruro de sodio. En la sal, el sodio está como ion Na⁺ y el cloro como ion Cl⁻. Un ion positivo se llama catión; uno negativo, anión.',
+        { titulo: 'La sal de Maras', texto: 'En las salineras de Maras, en el Cusco, se saca sal: cloruro de sodio. En esa sal, el sodio está como ion Na⁺ y el cloro como ion Cl⁻. Un ion positivo se llama catión, y uno negativo, anión.',
           pieza: 'quim-objeto', dibujo: OBJ_CAJAS('salero', { filas: filasDe(configNeutro(11)), rotulo: 'Na: 1s² 2s² 2p⁶ 3s¹' }) },
-        { titulo: 'Primero, contar', texto: 'Antes de escribir la configuración de un ion, cuenta sus electrones con la carga: e⁻ = Z − carga. El Cl⁻ tiene 17 − (−1) = 18. Después se reparten en los subniveles.' },
+        { titulo: 'Primero, contar', texto: 'Antes de escribir la configuración de un ion, cuenta sus electrones con la carga: e⁻ = Z − carga. El Cl⁻ tiene 17 − (−1) = 18, y después esos electrones se reparten en los subniveles.' },
         { titulo: 'Qué mirar', texto: 'En el juego eliges el elemento y su carga. Mira de qué subnivel salen los electrones cuando la carga es positiva, y adónde llegan cuando es negativa.' },
       ],
     },
@@ -2080,7 +2080,7 @@
       mision: {
         texto: 'Deja al sodio con la misma configuración que el neón.',
         logrado: v => v.z === 11 && v.q === 1,
-        bien: 'Na⁺ y neón: los mismos 10 electrones y las mismas cajas. Son isoelectrónicos.',
+        bien: 'El Na⁺ y el neón tienen 10 electrones y las mismas cajas: son isoelectrónicos.',
       },
       voz: 'Cambia la carga y mira qué caja cambia.',
       leyenda: [
@@ -2101,7 +2101,7 @@
       // La relación: protones y electrones de la especie, su configuración y, si coincide, el gas noble que imita.
       lectura: v => {
         const el = v.z - v.q, sim = SIMB_Q(v.z, v.q);
-        if (el < 0) return [`${Nombre(v.z)} no tiene ${v.q} electrones que perder.`];
+        if (el < 0) return [`El ${NOMBRE[v.z]} no tiene ${v.q} electrones que perder.`];
         if (el === 0) return [sim, ': ', Pz(`${v.z} p⁺`), ' y ', Ee('0 e⁻'), ': sin electrones.'];
         const gas = gasDe(el) && v.z !== el ? `, como el ${gasDe(el)}` : '';
         return [sim, ': ', Pz(`${v.z} p⁺`), ' y ', Ee(`${el} e⁻`), ` → ${textoIon(configEspecie(v.z, v.q))}${gas}`];
@@ -2115,9 +2115,9 @@
       voz: 'Al llenar, el 4s entró antes. ¿Y al quitar?',
       opciones: [
         { id: 'c', texto: 'Del 4s: queda [Ar] 3d⁶', correcta: true },
-        { id: 'ultimo', texto: 'Del 3d, el último en llenarse: [Ar] 4s² 3d⁴', error: 'QM-ULTIMO', siFuera: 'El 3d se llenó después, cierto. Pero al quitar sale primero el nivel 4, el más alto.' },
+        { id: 'ultimo', texto: 'Del 3d, el último en llenarse: [Ar] 4s² 3d⁴', error: 'QM-ULTIMO', siFuera: 'Es cierto que el 3d se llenó después. Pero al quitar electrones salen primero los del nivel 4, el más alto.' },
         { id: 'reparte', texto: 'Uno de cada uno: [Ar] 4s¹ 3d⁵', error: 'QM-REPARTE', siFuera: 'Sería así si salieran parejos. Pero salen primero los dos del nivel más alto, el 4s.' },
-        { id: 'neutro', texto: 'De ninguno: es [Ar] 4s² 3d⁶ con carga 2+', error: 'QM-CARGA-E', siFuera: 'La carga 2+ está bien. Pero esa es la del átomo neutro: dos electrones tienen que salir.' },
+        { id: 'neutro', texto: 'De ninguno: es [Ar] 4s² 3d⁶ con carga 2+', error: 'QM-CARGA-E', siFuera: 'La carga 2+ está bien. Pero esa es la configuración del átomo neutro, y para formar el ion tienen que salir dos electrones.' },
       ],
       dibujo: OBJ_CAJAS('frasco', { filas: [{ nombre: '4s', e: 2, cajas: 1 }, { nombre: '3d', e: 6, cajas: 5 }], rotulo: 'Fe: [Ar] y estos; ¿cuáles salen?' }),
       revelar: OBJ_CAJAS('frasco', { filas: [{ nombre: '4s', e: 2, cajas: 1, sale: 2 }, { nombre: '3d', e: 6, cajas: 5 }], rotulo: 'Fe²⁺: [Ar] 3d⁶', rotuloColor: 'f' }),
@@ -2129,16 +2129,16 @@
       datos: { paleta: 'zne', filas: [{ nombre: '4s', e: 2, cajas: 1, sale: 2, saleDesde: 2 }, { nombre: '3d', e: 6, cajas: 5, sale: 1, saleDesde: 3 }], rotulo: 'Después de los 18 del argón' },
       voz: 'Del hierro al Fe²⁺, y después al Fe³⁺.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Hierro, Z = 26: [Ar] 4s² 3d⁶. Al llenar, el 4s entró antes.', ecuacion: ['Fe: [Ar] 4s² 3d⁶'] },
-        { estado: { corte: 2 }, texto: 'Fe²⁺: salen los dos del 4s, el nivel más alto.', ecuacion: ['Fe²⁺: [Ar] 3d⁶'] },
-        { estado: { corte: 3 }, texto: 'Fe³⁺: sale uno más; el 4s ya está vacío, sale del 3d.', ecuacion: ['Fe³⁺: [Ar] 3d⁵'] },
-        { estado: { corte: 3 }, texto: 'Al poner, el orden de llenado; al quitar, primero el mayor n.' },
+        { estado: { corte: 1 }, texto: 'El hierro, Z = 26, es [Ar] 4s² 3d⁶; al llenarse, el 4s entró antes que el 3d.', ecuacion: ['Fe: [Ar] 4s² 3d⁶'] },
+        { estado: { corte: 2 }, texto: 'Para formar el Fe²⁺ salen los dos electrones del 4s, el nivel más alto.', ecuacion: ['Fe²⁺: [Ar] 3d⁶'] },
+        { estado: { corte: 3 }, texto: 'Para el Fe³⁺ sale uno más, y como el 4s ya está vacío, sale del 3d.', ecuacion: ['Fe³⁺: [Ar] 3d⁵'] },
+        { estado: { corte: 3 }, texto: 'Al poner electrones se sigue el orden de llenado; al quitarlos, salen primero los de mayor n.' },
       ],
     },
     regla: {
       // La regla de «a igual n» estaba en la condición y se leía «Vale si…» (auditoría M4): va al texto.
       // Ronda 2 del lector en frío: «a igual n, los de mayor ℓ» con su ejemplo (el Sn²⁺ de los ejemplos).
-      texto: 'Anión: suma en el orden de llenado. Catión: pierde primero los de mayor n (4s antes que 3d) y, a igual n, los de mayor ℓ (5p antes que 5s).',
+      texto: 'Un anión suma electrones en el orden de llenado. Un catión pierde primero los de mayor n (4s antes que 3d) y, a igual n, los de mayor ℓ (5p antes que 5s).',
       ecuacion: [e, ' = ', Z, ' − ', { llave: ['carga'], nota: 'con signo', color: 'c-h' }],
       condicion: 'la especie está aislada y en su estado de menor energía.',
       voz: 'Cuenta los electrones antes de escribir la configuración.',
@@ -2159,11 +2159,11 @@
           dibujo: fig(filasDe(n).slice(-2)),
           pasos: [
             { tipo: 'pide', texto: `Piden cómo quedan los electrones del ${sim}: cuáles salen del átomo de ${NOMBRE[z]}.` },
-            { tipo: 'datos', texto: [`Carga ${signo(q)}: salen ${q}. El átomo neutro tiene `, Ee(`${z} e⁻`), '; el ion, ', Ee(`${z - q} e⁻`), '.'] },
+            { tipo: 'datos', texto: [`La carga es ${signo(q)}, así que ${q === 1 ? 'sale 1 electrón' : `salen ${q} electrones`}: el átomo neutro tiene `, Ee(`${z} e⁻`), ' y el ion, ', Ee(`${z - q} e⁻`), '.'] },
             { tipo: 'regla', texto: 'Al formar un catión salen primero los electrones del nivel más alto, el 4s; recién después, los del 3d.' },
-            { tipo: 'cuentas', texto: del3d ? `Salen los ${s4} del 4s y ${del3d} del 3d.` : `Salen ${q} del 4s; el 3d no cambia.`, ecuacion: [`${sim}: ${abreviada(c)}`],
+            { tipo: 'cuentas', texto: del3d ? `${s4 === 1 ? 'Sale el único electrón' : `Salen los ${s4} electrones`} del 4s, y después ${del3d === 1 ? 'sale 1' : `salen ${del3d}`} del 3d.` : `${q === 1 ? 'Sale 1 electrón' : `Salen ${q} electrones`} del 4s, y el 3d no cambia.`, ecuacion: [`${sim}: ${abreviada(c)}`],
               dibujo: fig(filasIon(z, q).slice(-2)) },
-            { tipo: 'sentido', texto: `De vuelta: 18 + ${totalE(c) - 18} = ${totalE(c)} electrones, ${z} − ${q} como dice la carga.` },
+            { tipo: 'sentido', texto: `Para comprobar: 18 + ${totalE(c) - 18} = ${totalE(c)} electrones, que son ${z} − ${q}, como dice la carga.` },
           ],
           respuesta: `${sim}: ${abreviada(c)}`,
         };
@@ -2201,12 +2201,12 @@
   // Errores con números cuánticos: cada uno con lo que produce.
   function malosQN(x, q) {
     const b = 2 * x.l + 1, k = x.e, out = [];
-    out.push({ id: 'cero', q: Object.assign({}, q, { ml: q.ml + x.l }), error: 'QM-ML-CERO', siFuera: `Bien n y ℓ. Pero las cajas no empiezan en 0: van de mₗ = −${x.l} a +${x.l}.` });
-    out.push({ id: 'ms', q: Object.assign({}, q, { ms: -q.ms }), error: 'QM-MS-AL-REVES', siFuera: `Bien la caja. Pero ese electrón ${q.ms > 0 ? 'está solo: flecha ↑, mₛ = +½' : 'se aparea: flecha ↓, mₛ = −½'}.` });
+    out.push({ id: 'cero', q: Object.assign({}, q, { ml: q.ml + x.l }), error: 'QM-ML-CERO', siFuera: `n y ℓ están bien. Pero las cajas no empiezan en 0: van de mₗ = −${x.l} a +${x.l}.` });
+    out.push({ id: 'ms', q: Object.assign({}, q, { ms: -q.ms }), error: 'QM-MS-AL-REVES', siFuera: `La caja está bien. Pero ese electrón ${q.ms > 0 ? 'está solo, con flecha ↑ y mₛ = +½' : 'se aparea, con flecha ↓ y mₛ = −½'}.` });
     const sh = { n: x.n, l: x.l, ml: -x.l + Math.floor((k - 1) / 2), ms: k % 2 ? 1 : -1 };
     if (b > 1) out.push({ id: 'sinhund', q: sh, error: 'QM-SIN-HUND', siFuera: 'Llenaste cada caja con dos antes de pasar a la otra. Hund pide primero una ↑ en cada caja.' });
-    out.push({ id: 'l1', q: Object.assign({}, q, { l: q.l + 1 }), error: 'QM-L-DESDE-UNO', siFuera: `Bien la caja. Pero ℓ de ${LETRA[x.l]} es ${x.l}: s es 0, p es 1, d es 2.` });
-    out.push({ id: 'n', q: Object.assign({}, q, { n: q.n - 1 }), error: 'QM-N-MENOS', siFuera: `Bien ℓ, mₗ y mₛ. Pero el último electrón está en el ${x.nom}: n = ${x.n}.` });
+    out.push({ id: 'l1', q: Object.assign({}, q, { l: q.l + 1 }), error: 'QM-L-DESDE-UNO', siFuera: `La caja está bien. Pero en un ${LETRA[x.l]}, ℓ vale ${x.l}, porque s es 0, p es 1 y d es 2.` });
+    out.push({ id: 'n', q: Object.assign({}, q, { n: q.n - 1 }), error: 'QM-N-MENOS', siFuera: `ℓ, mₗ y mₛ están bien. Pero el último electrón está en el ${x.nom}, así que n = ${x.n}.` });
     out.push({ id: 'reves', q: Object.assign({}, q, { ml: -q.ml }), error: 'QM-ML-AL-REVES', siFuera: `Numeraste las cajas de +${x.l} a −${x.l}. En el examen van de −${x.l}, a la izquierda, a +${x.l}.` });
     return out.filter(m => qnTxt(m.q) !== qnTxt(q)).map(m => ({ id: m.id, texto: qnTxt(m.q), error: m.error, siFuera: m.siFuera }))
       .filter((m, i, l) => l.findIndex(y => y.texto === m.texto) === i);
@@ -2221,13 +2221,13 @@
       pregunta: ['¿Cuántos electrones desapareados tiene el átomo de ', NOMBRE[z], ' (', Z, ` = ${z})?`],
       datos: [DC.orden36, DC.capacidad, DC.cajasSub, DC.anomalia],
       opciones: opciones(d, [
-        { id: 'hund', valor: c.reduce((a, x) => a + (x.e % 2), 0), error: 'QM-HUND', siFuera: 'Bien la configuración. Pero se aparean antes de llenar las cajas vacías: Hund pide una por caja primero.' },
-        { id: 'todos', valor: u.e !== d ? u.e : null, error: 'QM-HUND-TODOS', siFuera: `Bien mirar el ${u.nom}. Pero con ${u.e} electrones en ${b} cajas, algunos ya van en pareja.` },
-        { id: 'resta', valor: u.e > b ? u.e - b : null, error: 'QM-DESAP-RESTA', siFuera: `Bien que sobren ${u.e - b} después de una por caja. Pero esos se aparean: los solos son los otros.` },
-        { id: 'mas', valor: d + 1, error: 'QM-CUENTA', siFuera: 'Bien usar Hund. Cuenta solo las cajas con una flecha.' },
-        { id: 'menos', valor: d > 0 ? d - 1 : null, error: 'QM-CUENTA', siFuera: 'Bien usar Hund. Cuenta solo las cajas con una flecha.' },
+        { id: 'hund', valor: c.reduce((a, x) => a + (x.e % 2), 0), error: 'QM-HUND', siFuera: 'La configuración está bien. Pero ahí se aparean antes de llenar las cajas vacías, y Hund pide primero una por caja.' },
+        { id: 'todos', valor: u.e !== d ? u.e : null, error: 'QM-HUND-TODOS', siFuera: `Mirar el ${u.nom} está bien. Pero con ${u.e} electrones en ${b} cajas, algunos ya van en pareja.` },
+        { id: 'resta', valor: u.e > b ? u.e - b : null, error: 'QM-DESAP-RESTA', siFuera: `Es cierto que ${u.e - b === 1 ? 'sobra 1' : `sobran ${u.e - b}`} después de poner uno por caja. Pero ${u.e - b === 1 ? 'ese se aparea' : 'esos se aparean'}, y los solos son los otros.` },
+        { id: 'mas', valor: d + 1, error: 'QM-CUENTA', siFuera: 'Usar Hund está bien. Ahora cuenta solo las cajas que tienen una sola flecha.' },
+        { id: 'menos', valor: d > 0 ? d - 1 : null, error: 'QM-CUENTA', siFuera: 'Usar Hund está bien. Ahora cuenta solo las cajas que tienen una sola flecha.' },
       ], x => `${x}`),
-      solucion: { texto: `${abreviada(c)}: por Hund, una flecha por caja antes de aparear.`, ecuacion: [Ee(d), ` ${d === 1 ? 'desapareado' : 'desapareados'}`] },
+      solucion: { texto: `En ${abreviada(c)}, por Hund, va una flecha por caja antes de aparear.`, ecuacion: [Ee(d), ` ${d === 1 ? 'desapareado' : 'desapareados'}`] },
     };
   }
   function casoMagnetico(r) {
@@ -2240,8 +2240,8 @@
       pregunta: '¿Cuál de estas especies es diamagnética, es decir, no la atrae un imán?',
       datos: todos.map(([z, q]) => `${especieTxt(z, q)}: ${cfg([z, q])}`).concat([DC.cajasSub]),
       opciones: todos.map(([z, q], i) => (i === 0 ? { id: 'c', texto: especieTxt(z, q), correcta: true }
-        : { id: `p${i}`, texto: especieTxt(z, q), error: 'QM-PARA-DIA', siFuera: `Bien mirar su configuración. Pero tiene ${solos(configEspecie(z, q))} ${solos(configEspecie(z, q)) === 1 ? 'electrón solo' : 'electrones solos'}: un imán la atrae.` })),
-      solucion: { texto: `${especieTxt(...dia)} tiene todas sus cajas con pareja: 0 electrones solos.`, ecuacion: [`${especieTxt(...dia)}: ${cfg(dia)}`] },
+        : { id: `p${i}`, texto: especieTxt(z, q), error: 'QM-PARA-DIA', siFuera: `Mirar su configuración está bien. Pero tiene ${solos(configEspecie(z, q))} ${solos(configEspecie(z, q)) === 1 ? 'electrón solo' : 'electrones solos'}, así que un imán la atrae.` })),
+      solucion: { texto: `El ${especieTxt(...dia)} tiene todas sus cajas con pareja: 0 electrones solos.`, ecuacion: [`${especieTxt(...dia)}: ${cfg(dia)}`] },
     };
   }
   const QN36 = [3, 5, 6, 7, 8, 9, 11, 13, 14, 15, 16, 17, 21, 22, 23, 25, 26, 27, 28, 31, 33, 34, 35];
@@ -2251,19 +2251,19 @@
       pregunta: ['¿Cuáles son los números cuánticos (n; ℓ; mₗ; mₛ) del último electrón del ', NOMBRE[z], ' (', Z, ` = ${z})?`],
       datos: [DC.orden36, DC.capacidad, DC.conv1, DC.conv2],
       opciones: qnOps(q, malosQN(u, q)).slice(0, 4),
-      solucion: { texto: `Su último subnivel es ${u.nom}${sup(u.e)}: por Hund, el electrón ${u.e} cae en la caja de mₗ = ${ML(q.ml)}.`, ecuacion: [qnTxt(q)] },
+      solucion: { texto: `Su último subnivel es ${u.nom}${sup(u.e)}, y por Hund el electrón número ${u.e} de ese subnivel cae en la caja de mₗ = ${ML(q.ml)}.`, ecuacion: [qnTxt(q)] },
     };
   }
   const QN_CAT = [[26, 2], [27, 2], [28, 2], [25, 2], [29, 2], [26, 3], [27, 3], [24, 3], [22, 2], [23, 3]];
   function casoUltimoCat(r) {
     const [z, q] = r.de(QN_CAT), c = configEspecie(z, q), u = ultimoSub(c), qn = ultimo(c), n = configNeutro(z), un = ultimo(n);
     const malos = malosQN(u, qn);
-    if (qnTxt(un) !== qnTxt(qn)) malos.unshift({ id: 'neutro', texto: qnTxt(un), error: 'QM-ULTIMO-4S', siFuera: 'Bien la convención. Pero ese es el último electrón del átomo neutro; el ion ya perdió electrones.' });
+    if (qnTxt(un) !== qnTxt(qn)) malos.unshift({ id: 'neutro', texto: qnTxt(un), error: 'QM-ULTIMO-4S', siFuera: 'La convención está bien. Pero ese es el último electrón del átomo neutro, y el ion ya perdió electrones.' });
     return {
       pregunta: ['¿Cuáles son los números cuánticos (n; ℓ; mₗ; mₛ) del último electrón del ion ', SIMB_Q(z, q), '?'],
       datos: [`${Nombre(z)} (Z = ${z}): ${abreviada(n)}`, DC.carga, DC.conv1, DC.conv2],
       opciones: qnOps(qn, malos.filter((m, i, l) => l.findIndex(y => y.texto === m.texto) === i && m.texto !== qnTxt(qn))).slice(0, 4),
-      solucion: { texto: `${SIMB_Q(z, q)}: ${abreviada(c)}. El último va en la caja de mₗ = ${ML(qn.ml)}.`, ecuacion: [qnTxt(qn)] },
+      solucion: { texto: `El ${SIMB_Q(z, q)} es ${abreviada(c)}, y su último electrón va en la caja de mₗ = ${ML(qn.ml)}.`, ecuacion: [qnTxt(qn)] },
     };
   }
   const DESAP_CAT = [[26, 3], [27, 2], [28, 2], [29, 2], [25, 2], [30, 2], [24, 3], [27, 3], [29, 1], [26, 2], [23, 3], [22, 2]];
@@ -2274,13 +2274,13 @@
       // El átomo neutro ya escrito (como en casoUltimoCat): se practica la salida del catión y Hund (tope de 6 líneas).
       datos: [`${Nombre(z)} (Z = ${z}): ${abreviada(configNeutro(z))}`, DC.cajasSub],
       opciones: opciones(d, [
-        { id: 'ultimo', valor: ul, error: 'QM-ULTIMO', siFuera: 'Bien Hund. Pero salieron primero los 4s, no los 3d: el 3d quedó con más.' },
-        { id: 'neutro', valor: n, error: 'QM-CARGA-E', siFuera: 'Esos son los solos del átomo neutro. Primero saca los electrones de la carga.' },
-        { id: 'hund', valor: totalE(c) % 2, error: 'QM-HUND', siFuera: 'Bien la configuración. Pero Hund llena las cajas vacías antes de aparear.' },
-        { id: 'mas', valor: d + 1, error: 'QM-CUENTA', siFuera: 'Bien Hund. Cuenta solo las cajas con una flecha.' },
-        { id: 'menos', valor: d > 0 ? d - 1 : null, error: 'QM-CUENTA', siFuera: 'Bien Hund. Cuenta solo las cajas con una flecha.' },
+        { id: 'ultimo', valor: ul, error: 'QM-ULTIMO', siFuera: 'Usar Hund está bien. Pero salieron primero los electrones del 4s, no los del 3d, así que el 3d quedó con más.' },
+        { id: 'neutro', valor: n, error: 'QM-CARGA-E', siFuera: 'Esos son los electrones solos del átomo neutro. Primero hay que sacar los electrones que pide la carga.' },
+        { id: 'hund', valor: totalE(c) % 2, error: 'QM-HUND', siFuera: 'La configuración está bien. Pero Hund llena las cajas vacías antes de aparear.' },
+        { id: 'mas', valor: d + 1, error: 'QM-CUENTA', siFuera: 'Usar Hund está bien. Ahora cuenta solo las cajas que tienen una sola flecha.' },
+        { id: 'menos', valor: d > 0 ? d - 1 : null, error: 'QM-CUENTA', siFuera: 'Usar Hund está bien. Ahora cuenta solo las cajas que tienen una sola flecha.' },
       ], x => `${x}`),
-      solucion: { texto: `${SIMB_Q(z, q)}: ${abreviada(c)}; por Hund quedan ${d} ${d === 1 ? 'solo' : 'solos'}.`, ecuacion: [Ee(d), ` ${d === 1 ? 'desapareado' : 'desapareados'}`] },
+      solucion: { texto: `El ${SIMB_Q(z, q)} es ${abreviada(c)}, y por Hund quedan ${d} ${d === 1 ? 'electrón solo' : 'electrones solos'}.`, ecuacion: [Ee(d), ` ${d === 1 ? 'desapareado' : 'desapareados'}`] },
     };
   }
   const QN54 = [37, 38, 39, 40, 43, 48, 49, 50, 51, 52, 53];
@@ -2290,7 +2290,7 @@
       pregunta: ['¿Cuáles son los números cuánticos (n; ℓ; mₗ; mₛ) del último electrón del ', NOMBRE[z], ' (', Z, ` = ${z})?`],
       datos: [DC.orden, DC.capacidad, DC.kr, DC.conv1, DC.conv2],
       opciones: qnOps(q, malosQN(u, q)).slice(0, 4),
-      solucion: { texto: `${abreviada(c)}: el último entra al ${u.nom}, en la caja de mₗ = ${ML(q.ml)}.`, ecuacion: [qnTxt(q)] },
+      solucion: { texto: `En ${abreviada(c)}, el último electrón entra al ${u.nom}, en la caja de mₗ = ${ML(q.ml)}.`, ecuacion: [qnTxt(q)] },
     };
   }
 
@@ -2320,7 +2320,7 @@
       enunciado: 'El litio es 1s² 2s¹. ¿Cuáles son los números cuánticos de su último electrón?',
       datos: [DC.letras, DC.conv1, DC.conv2],
       figura: VACIA('2s', 1),
-      solucion: [{ texto: 'Está en el 2s: n = 2, ℓ = 0, una sola caja con mₗ = 0; va solo, con ↑.' }],
+      solucion: [{ texto: 'Está en el 2s, con n = 2 y ℓ = 0, en una sola caja con mₗ = 0, y va solo, con ↑.' }],
       respuesta: '(2; 0; 0; +½)' },
     { nivel: 1, titulo: 'El carbono',
       enunciado: 'El carbono tiene 2p². ¿Cuántos electrones desapareados tiene?',
@@ -2333,16 +2333,16 @@
       datos: [DC.letras, DC.conv1, DC.conv2],
       figura: VACIA('2p', 3),
       solucion: [
-        { texto: 'Último subnivel: 2p, n = 2 y ℓ = 1. Las cajas son mₗ = −1, 0 y +1.' },
-        { texto: 'Tres ↑ llenan una por caja; el cuarto es ↓ en −1 y el quinto, ↓ en 0.', ecuacion: ['(2; 1; 0; −½)'] },
+        { texto: 'El último subnivel es el 2p, con n = 2 y ℓ = 1, y sus cajas son mₗ = −1, 0 y +1.' },
+        { texto: 'Tres ↑ ocupan una caja cada una; el cuarto va como ↓ en −1, y el quinto, como ↓ en 0.', ecuacion: ['(2; 1; 0; −½)'] },
       ],
       respuesta: '(2; 1; 0; −½)' },
     { nivel: 2, titulo: 'El fósforo',
       enunciado: '¿Cuántos electrones desapareados tiene el fósforo (Z = 15)? ¿Lo atrae un imán?',
       datos: [DC.orden36, DC.capacidad, DC.cajasSub],
       solucion: [
-        { texto: 'Configuración: 1s² 2s² 2p⁶ 3s² 3p³. Solo el 3p tiene cajas a medio llenar.' },
-        { texto: 'Tres electrones en tres cajas: tres solos. Es paramagnético.' },
+        { texto: 'Su configuración es 1s² 2s² 2p⁶ 3s² 3p³, y solo el 3p tiene cajas a medio llenar.' },
+        { texto: 'Hay tres electrones en tres cajas, así que los tres van solos y el fósforo es paramagnético.' },
       ],
       respuesta: [Ee(3), ' desapareados: paramagnético'] },
     // Ronda 2 del lector en frío: los datos ya no traen la configuración del Mn (la regalaban y dejaban sobrando el Z):
@@ -2353,7 +2353,7 @@
       figura: VACIA('3d', 5, { rotulo: 'Mn²⁺: ¿cuántos solos?' }),
       solucion: [
         { texto: 'Manganeso neutro, 25 electrones: [Ar] 4s² 3d⁵, porque 18 + 2 + 5 = 25. El Mn²⁺ pierde los dos 4s: [Ar] 3d⁵.' },
-        { texto: 'Cinco electrones en cinco cajas: los cinco solos.' },
+        { texto: 'Hay cinco electrones en cinco cajas, así que los cinco van solos.' },
       ],
       respuesta: [Ee(5), ' desapareados'] },
     { nivel: 2, titulo: 'El último del escandio',
@@ -2362,15 +2362,15 @@
       figura: VACIA('3d', 5),
       solucion: [
         { texto: 'El último entró al 3d: n = 3 y ℓ = 2. Las cajas van de mₗ = −2 a +2.' },
-        { texto: 'Es el primero: ↑ en la caja de la izquierda.', ecuacion: ['(3; 2; −2; +½)'] },
+        { texto: 'Es el primer electrón del 3d, así que va como ↑ en la caja de la izquierda.', ecuacion: ['(3; 2; −2; +½)'] },
       ],
       respuesta: '(3; 2; −2; +½)' },
     { nivel: 2, titulo: 'El cinc',
       enunciado: 'El cinc es [Ar] 4s² 3d¹⁰. ¿Es paramagnético o diamagnético?',
       datos: [DC.cajasSub, DC.magnetico],
       solucion: [
-        { texto: 'El 4s² tiene su caja llena. El 3d¹⁰ llena sus cinco cajas con dos.' },
-        { texto: 'No queda ningún electrón solo.' },
+        { texto: 'El 4s² tiene su caja llena, y el 3d¹⁰ llena sus cinco cajas con dos.' },
+        { texto: 'No queda ningún electrón solo, así que el cinc es diamagnético.' },
       ],
       respuesta: ['Diamagnético: ', Ee(0), ' electrones solos'] },
     { nivel: 3, titulo: 'El último del Co²⁺',
@@ -2379,10 +2379,10 @@
       alternativas: ['(4; 0; 0; −½)', '(3; 2; −1; −½)', '(3; 2; +1; +½)', '(3; 2; +1; −½)', '(3; 1; −1; −½)'],
       datos: [DC.orden36, DC.carga, DC.conv1, DC.conv2],
       solucion: [
-        { texto: 'Cobalto: [Ar] 4s² 3d⁷. El Co²⁺ pierde los dos 4s: [Ar] 3d⁷.' },
-        { texto: 'Cinco ↑, una por caja; el sexto ↓ en −2 y el séptimo ↓ en −1.', ecuacion: ['(3; 2; −1; −½)'] },
-        { texto: ['La ', letra('A'), ' es el 4s del átomo neutro. La ', letra('C'), ' llena cada caja con dos antes de pasar.'] },
-        { texto: ['La ', letra('D'), ' numera las cajas desde 0, no desde −2. La ', letra('E'), ' usa ℓ = 1, el de un p.'] },
+        { texto: 'El cobalto es [Ar] 4s² 3d⁷, y el Co²⁺ pierde los dos 4s: queda [Ar] 3d⁷.' },
+        { texto: 'Van cinco ↑, una por caja; el sexto va como ↓ en −2, y el séptimo, como ↓ en −1.', ecuacion: ['(3; 2; −1; −½)'] },
+        { texto: ['La ', letra('A'), ' es el 4s del átomo neutro, y la ', letra('C'), ' llena cada caja con dos antes de pasar.'] },
+        { texto: ['La ', letra('D'), ' numera las cajas desde 0, no desde −2, y la ', letra('E'), ' usa ℓ = 1, el de un p.'] },
       ],
       respuesta: [letra('B'), ', (3; 2; −1; −½)'] },
     { nivel: 3, titulo: 'Los solos del Fe³⁺',
@@ -2390,9 +2390,9 @@
       alternativas: ['3', '4', '1', '5', '6'],
       datos: [DC.orden36, DC.carga, DC.cajasSub],
       solucion: [
-        { texto: 'Hierro: [Ar] 4s² 3d⁶. El Fe³⁺ pierde los dos 4s y uno del 3d: [Ar] 3d⁵.' },
-        { texto: 'Cinco electrones en cinco cajas: cinco solos.' },
-        { texto: ['La ', letra('A'), ' saca los tres del 3d. La ', letra('B'), ' cuenta los del Fe²⁺.'] },
+        { texto: 'El hierro es [Ar] 4s² 3d⁶, y el Fe³⁺ pierde los dos 4s y uno del 3d: queda [Ar] 3d⁵.' },
+        { texto: 'Hay cinco electrones en cinco cajas, así que los cinco van solos.' },
+        { texto: ['La ', letra('A'), ' saca los tres del 3d, y la ', letra('B'), ' cuenta los del Fe²⁺.'] },
         { texto: ['La ', letra('C'), ' aparea antes de llenar las cajas vacías. La ', letra('E'), ' cuenta solos los seis 3d del átomo neutro.'] },
       ],
       respuesta: [letra('D'), ', ', Ee(5), ' desapareados'] },
@@ -2401,9 +2401,9 @@
       alternativas: ['4', '5', '2', '1', '6'],
       datos: [DC.orden36, DC.anomalia, DC.cajasSub],
       solucion: [
-        { texto: 'El cromo es excepción: [Ar] 4s¹ 3d⁵.' },
+        { texto: 'El cromo es una excepción: su configuración es [Ar] 4s¹ 3d⁵.' },
         { texto: 'El 4s¹ tiene uno solo y el 3d⁵, cinco, uno por caja.', ecuacion: ['1 + 5 = ', Ee(6)] },
-        { texto: ['La ', letra('A'), ' olvida la excepción (4s² 3d⁴). La ', letra('B'), ' cuenta solo el 3d.'] },
+        { texto: ['La ', letra('A'), ' olvida la excepción (4s² 3d⁴), y la ', letra('B'), ' cuenta solo el 3d.'] },
         { texto: ['La ', letra('C'), ' aparea antes de llenar: 1 en el 4s y 1 en el 3d. La ', letra('D'), ' mira solo el último nivel, el 4s¹.'] },
       ],
       respuesta: [letra('E'), ', ', Ee(6), ' desapareados'] },
@@ -2423,9 +2423,9 @@
       alternativas: ['(5; 1; 0; −½)', '(5; 1; +1; +½)', '(4; 2; +2; −½)', '(5; 0; 0; −½)', '(5; 1; −1; −½)'],
       datos: [DC.orden, DC.capacidad, DC.kr, DC.conv1, DC.conv2],
       solucion: [
-        { texto: 'Yodo: [Kr] 5s² 4d¹⁰ 5p⁵. El último entró al 5p: n = 5, ℓ = 1.' },
-        { texto: 'Tres ↑ en −1, 0 y +1; el cuarto ↓ en −1 y el quinto ↓ en 0.', ecuacion: ['(5; 1; 0; −½)'] },
-        { texto: ['La ', letra('E'), ' es el cuarto electrón. La ', letra('C'), ' toma el 4d como último.'] },
+        { texto: 'El yodo es [Kr] 5s² 4d¹⁰ 5p⁵, y su último electrón entró al 5p, con n = 5 y ℓ = 1.' },
+        { texto: 'Van tres ↑ en −1, 0 y +1; el cuarto va como ↓ en −1, y el quinto, como ↓ en 0.', ecuacion: ['(5; 1; 0; −½)'] },
+        { texto: ['La ', letra('E'), ' es el cuarto electrón, y la ', letra('B'), ', el tercero. La ', letra('C'), ' toma el 4d como último, y la ', letra('D'), ', el 5s.'] },
       ],
       respuesta: [letra('A'), ', (5; 1; 0; −½)'] },
   ];
@@ -2444,7 +2444,7 @@
       tarjetas: [
         // Ronda 2 del lector en frío: «cada fila tiene dos asientos» no calzaba con lo que se ve (dos hileras de tres). Se
         // dice hacia dónde va la combi y qué es una fila; el dibujo enmarca los dos asientos de cada fila.
-        { titulo: 'La combi', texto: 'La combi, vista desde arriba, va hacia la derecha; el círculo es el timón. Cada fila, de ventana a ventana, tiene dos asientos. Cada pasajero se sienta solo en una fila vacía; recién cuando no quedan, junto a otro. Así se llenan los orbitales.',
+        { titulo: 'La combi', texto: 'La combi, vista desde arriba, va hacia la derecha; el círculo es el timón. Cada fila, de ventana a ventana, tiene dos asientos. Cada pasajero se sienta solo en una fila vacía y, cuando ya no quedan, junto a otro: así se llenan los orbitales.',
           pieza: 'quim-objeto', dibujo: COMBI([{ nombre: '2p', e: 2, cajas: 3 }]) },
         { titulo: 'Imanes diminutos', texto: 'Cada electrón se porta como un imán muy pequeño. Dos electrones en un mismo orbital tienen espín opuesto y sus efectos se anulan. Un electrón solo, en cambio, hace que un imán fuerte atraiga un poco a la sustancia.' },
         { titulo: 'Convención del examen', texto: 'Las cajas de un subnivel se numeran de mₗ = −ℓ, a la izquierda, a +ℓ, a la derecha. Primero va una flecha ↑ en cada caja, de izquierda a derecha, con mₛ = +½; después las ↓, con mₛ = −½. Otros libros usan los signos al revés.' },
@@ -2458,7 +2458,7 @@
       mision: {
         texto: 'Reparte los cuatro electrones 2p del oxígeno como en la combi.',
         logrado: v => v.c1 + v.c2 + v.c3 === 4 && hundOk(v),
-        bien: '2p⁴: una caja con pareja y dos con un electrón solo. El oxígeno tiene 2 desapareados.',
+        bien: 'En 2p⁴ hay una caja con pareja y dos con un electrón solo: 2 desapareados.',
       },
       voz: 'Primero llena las filas vacías.',
       leyenda: [
@@ -2479,8 +2479,8 @@
       // La relación: cuántos electrones y cuántos solos; si hay pareja con una caja vacía, Hund no lo permite.
       lectura: v => {
         const k = [v.c1, v.c2, v.c3], t = k.reduce((a, b) => a + b, 0), d = k.filter(x => x === 1).length;
-        if (t === 4 && hundOk(v)) return ['2p⁴: una pareja y dos solos: ', Ee('2 desapareados'), '.'];
-        if (k.includes(2) && k.includes(0)) return [`${t} en 3 cajas: ${d} ${d === 1 ? 'solo' : 'solos'}; Hund ocupa antes la vacía.`];
+        if (t === 4 && hundOk(v)) return ['En 2p⁴ quedan una pareja y dos solos: ', Ee('2 desapareados'), '.'];
+        if (k.includes(2) && k.includes(0)) return [`${t} en 3 cajas dan ${d} ${d === 1 ? 'solo' : 'solos'}: Hund llena antes la vacía.`];
         return [`${t} ${t === 1 ? 'electrón' : 'electrones'} en 3 cajas: `, Ee(`${d} ${d === 1 ? 'solo' : 'solos'}`), '.'];
       },
       minimo: 3,
@@ -2492,14 +2492,14 @@
       voz: 'Piensa en la combi con cinco filas.',
       opciones: [
         { id: 'c', texto: '4', correcta: true },
-        { id: 'hund', texto: '0', error: 'QM-HUND', siFuera: 'Seis es par, cierto. Pero antes de aparear, cada electrón ocupa una caja vacía.' },
-        { id: 'todos', texto: '6', error: 'QM-HUND-TODOS', siFuera: 'Bien poner uno por caja. Pero hay solo 5 cajas: el sexto tiene que aparearse.' },
-        { id: 'resta', texto: '1', error: 'QM-DESAP-RESTA', siFuera: 'Bien que sobre uno después de llenar las cinco. Pero ese se aparea: los solos son los otros.' },
+        { id: 'hund', texto: '0', error: 'QM-HUND', siFuera: 'Es cierto que seis es par. Pero antes de aparearse, cada electrón ocupa una caja vacía.' },
+        { id: 'todos', texto: '6', error: 'QM-HUND-TODOS', siFuera: 'Poner uno por caja está bien. Pero hay solo 5 cajas, así que el sexto tiene que aparearse.' },
+        { id: 'resta', texto: '1', error: 'QM-DESAP-RESTA', siFuera: 'Es cierto que sobra uno después de llenar las cinco cajas. Pero ese se aparea, y los solos son los otros.' },
       ],
       dibujo: OBJ_CAJAS('frasco', { ml: true, filas: [{ nombre: '3d', e: 0, cajas: 5, vacia: true, oculto: true }], rotulo: 'Fe²⁺, 3d⁶: ¿cuántos solos?' }),
       revelar: OBJ_CAJAS('frasco', { ml: true, desapareados: true, filas: [{ nombre: '3d', e: 6, cajas: 5 }], rotulo: 'Fe²⁺: 4 electrones solos', rotuloColor: 'f' }),
-      coincide: 'Coincide: cinco solos, uno por caja, y el sexto se aparea: quedan 4.',
-      noCoincide: 'Uno por caja en las cinco y el sexto se aparea: quedan 4 solos.',
+      coincide: 'Coincide: cinco van solos, uno por caja, y el sexto se aparea, así que quedan 4 solos.',
+      noCoincide: 'Va uno por caja en las cinco, y el sexto se aparea: quedan 4 solos.',
     },
     mira: {
       pieza: 'quim-cajas',
@@ -2509,17 +2509,17 @@
         ultimos: [{ fila: 0, caja: 0, j: 1, desde: 3 }, { fila: 1, caja: 0, j: 1, desde: 5 }] },
       voz: 'Sigamos al último electrón del oxígeno y del Fe²⁺.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Oxígeno, 2p⁴: cuatro electrones. Los tres primeros, una ↑ en cada caja.' },
-        { estado: { corte: 2 }, texto: 'El cuarto se aparea en la primera caja, mₗ = −1, con ↓.' },
-        { estado: { corte: 3 }, texto: 'Su último electrón: n = 2, ℓ = 1, mₗ = −1, mₛ = −½.', ecuacion: ['(2; 1; −1; −½)'] },
-        { estado: { corte: 4 }, texto: 'Fe²⁺, 3d⁶: cinco ↑, una por caja, y el sexto ↓ en mₗ = −2.' },
-        { estado: { corte: 5 }, texto: 'Último electrón del Fe²⁺: (3; 2; −2; −½). Quedan 4 solos.', ecuacion: ['(3; 2; −2; −½)'] },
+        { estado: { corte: 1 }, texto: 'El oxígeno tiene cuatro electrones en el 2p: los tres primeros ponen una ↑ en cada caja.' },
+        { estado: { corte: 2 }, texto: 'El cuarto se aparea en la primera caja, la de mₗ = −1, con una ↓.' },
+        { estado: { corte: 3 }, texto: 'Su último electrón tiene n = 2, ℓ = 1, mₗ = −1 y mₛ = −½.', ecuacion: ['(2; 1; −1; −½)'] },
+        { estado: { corte: 4 }, texto: 'En el Fe²⁺, 3d⁶, van cinco ↑, una por caja, y el sexto va como ↓ en mₗ = −2.' },
+        { estado: { corte: 5 }, texto: 'Ese sexto electrón es el último del Fe²⁺, y quedan 4 electrones solos.', ecuacion: ['(3; 2; −2; −½)'] },
         { estado: { corte: 5 }, texto: 'Con electrones solos, un imán atrae un poco a la especie: es paramagnética.' },
       ],
     },
     regla: {
-      texto: 'Hund: cada electrón ocupa una caja vacía antes de aparearse. Con electrones solos, paramagnética (un imán la atrae); sin ellos, diamagnética. El último electrón: (n; ℓ; mₗ; mₛ).',
-      condicion: 'se usa la convención del examen: cajas de mₗ = −ℓ a +ℓ; primero las ↑ (+½), después las ↓ (−½).',
+      texto: 'Por la regla de Hund, cada electrón ocupa una caja vacía antes de aparearse. Si quedan electrones solos, la especie es paramagnética (un imán la atrae); si no, es diamagnética. El último electrón se describe con (n; ℓ; mₗ; mₛ).',
+      condicion: 'se usa la convención del examen: las cajas van de mₗ = −ℓ a +ℓ, y primero se ponen las ↑ (+½) y después las ↓ (−½).',
       voz: 'Cajas con una flecha sola: ahí está el paramagnetismo.',
       dibujo: { pieza: 'quim-cajas', datos: { paleta: 'zne', ml: true, desapareados: true, filas: [{ nombre: '3d', e: 6, cajas: 5 }], ultimos: [{ fila: 0, caja: 0, j: 1 }], rotulo: 'Fe²⁺: (3; 2; −2; −½)' } },
     },
@@ -2535,10 +2535,10 @@
           dibujo: fig(false),
           pasos: [
             { tipo: 'pide', texto: `Piden los electrones solos del ${sim} y si un imán lo atrae.` },
-            { tipo: 'datos', texto: `${Nombre(z)}: ${abreviada(configNeutro(z))}. Con carga ${signo(q)} salen primero los 4s (el mayor n): ${abreviada(c)}.` },
+            { tipo: 'datos', texto: `El ${NOMBRE[z]} neutro es ${abreviada(configNeutro(z))}. Con carga ${signo(q)} salen primero los electrones del 4s, el de mayor n, y queda ${abreviada(c)}.` },
             { tipo: 'regla', texto: 'Por Hund, pongo una flecha en cada caja vacía antes de aparear. Si queda alguna sola, es paramagnético.' },
-            { tipo: 'cuentas', texto: `${x3.e} electrones en 5 cajas: ${x3.e <= 5 ? 'todos solos' : `cinco ↑ y ${x3.e - 5} en pareja`}.`, ecuacion: [Ee(d), ` ${d === 1 ? 'desapareado' : 'desapareados'}`], dibujo: fig(true) },
-            { tipo: 'sentido', texto: `De vuelta: ${x3.e - d} en pareja y ${d} ${d === 1 ? 'solo' : 'solos'} suman ${x3.e}, los del 3d.` },
+            { tipo: 'cuentas', texto: `Hay ${x3.e} ${x3.e === 1 ? 'electrón' : 'electrones'} en 5 cajas: ${x3.e <= 5 ? (x3.e === 1 ? 'va solo' : 'todos van solos, uno por caja') : `primero cinco ↑, una por caja, y ${x3.e - 5 === 1 ? 'el que sigue se aparea' : `los ${x3.e - 5} que siguen se aparean`}`}.`, ecuacion: [Ee(d), ` ${d === 1 ? 'desapareado' : 'desapareados'}`], dibujo: fig(true) },
+            { tipo: 'sentido', texto: `Para comprobar: ${x3.e - d} en pareja y ${d} ${d === 1 ? 'solo' : 'solos'} suman ${x3.e}, que son los electrones del 3d.` },
           ],
           respuesta: `${d} ${d === 1 ? 'desapareado' : 'desapareados'}: ${d ? 'paramagnético' : 'diamagnético'}`,
         };
@@ -2609,7 +2609,7 @@
     requiere: ['/nucleo/kit/piezas/quim-atomo.js', '/nucleo/kit/piezas/quim-cajas.js', '/nucleo/kit/piezas/quim-objeto.js', '/nucleo/kit/piezas/quim-hotel.js',
       '/nucleo/kit/piezas/quim-lamina.js', '/plantillas/atomo-y-tabla/motor.js', '/nucleo/kit/piezas/quim-orbital-3d.js'],
     historia: {
-      texto: 'Desde 1808, John Dalton explicó las proporciones de combinación con átomos de masa propia; algunas de sus fórmulas estaban equivocadas. En 1911, la dispersión de partículas alfa llevó a Rutherford al núcleo, y en 1913 Bohr propuso niveles de energía. El modelo actual no es una foto: es la descripción que mejor explica las evidencias que tenemos.',
+      texto: 'En 1808, John Dalton explicó las proporciones de combinación con átomos de masa propia, aunque algunas de sus fórmulas estaban equivocadas. En 1911, la dispersión de partículas alfa llevó a Rutherford al núcleo, y en 1913 Bohr propuso niveles de energía. El modelo actual no es una foto: es la descripción que mejor explica las evidencias que tenemos.',
       pregunta: '¿Cómo sabes qué hay dentro de algo que no puedes ver?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §2.3', url: 'https://openstax.org/books/chemistry-2e/pages/2-3-atomic-structure-and-symbolism' },
     },
@@ -2620,8 +2620,8 @@
       { termino: 'átomo', formas: ['átomo', 'átomos'], def: 'Partícula más pequeña de un elemento: un núcleo con protones y neutrones, rodeado de electrones.',
         ejemplos: ['Un átomo de helio: 2 protones y 2 neutrones en el núcleo, 2 electrones afuera.', 'En un hueso hay muchísimos átomos de carbono.', 'Un átomo de carbono-12 tiene 6 protones, 6 neutrones y 6 electrones.'],
         ver: ['protón', 'electrón', 'elemento'] },
-      { termino: 'protón', formas: ['protón', 'protones'], def: 'Partícula del núcleo con carga positiva. Cuántos hay es el número atómico.',
-        ejemplos: ['El carbono tiene 6 protones en su núcleo.', 'Un protón pesa unas 1836 veces lo que un electrón.', 'En el dibujo, «6p⁺» son 6 protones.'],
+      { termino: 'protón', formas: ['protón', 'protones'], def: 'Partícula del núcleo con carga positiva. La cantidad que tiene un átomo es su número atómico.',
+        ejemplos: ['El carbono tiene 6 protones en su núcleo.', 'Un protón tiene unas 1836 veces la masa de un electrón.', 'En el dibujo, «6p⁺» son 6 protones.'],
         ver: ['número atómico'] },
       { termino: 'neutrón', formas: ['neutrón', 'neutrones'], def: 'Partícula del núcleo sin carga, con masa casi igual a la del protón.',
         ejemplos: ['El carbono-14 tiene 8 neutrones; el carbono-12, 6.', 'El hidrógeno común no tiene neutrones.', 'En el dibujo, «8n⁰» son 8 neutrones.'],
@@ -2658,9 +2658,9 @@
         simple: 'Una idea de cómo es por dentro algo que no se ve.',
         ejemplos: ['El de Dalton: el átomo como una bolita maciza.', 'El de Thomson: electrones dentro de una esfera positiva.', 'El actual: el electrón en orbitales, regiones de probabilidad.'],
         ver: ['partícula alfa', 'orbital'] },
-      { termino: 'partícula alfa', formas: ['partícula alfa', 'partículas alfa', 'alfas', 'alfa'], def: 'Partícula diminuta con carga positiva, unas 7300 veces más pesada que un electrón.',
+      { termino: 'partícula alfa', formas: ['partícula alfa', 'partículas alfa', 'alfas', 'alfa'], def: 'Partícula diminuta con carga positiva y con unas 7300 veces la masa de un electrón.',
         simple: 'Una bala muy pequeña con carga positiva, para explorar el átomo.',
-        ejemplos: ['En 1909 se lanzaron alfas contra una lámina de oro.', 'Una alfa pesa unas 7300 veces lo que un electrón.', 'Dos cargas positivas, como dos alfas, se repelen.'],
+        ejemplos: ['En 1909 se lanzaron alfas contra una lámina de oro.', 'Una alfa tiene unas 7300 veces la masa de un electrón.', 'Dos cargas positivas, como dos alfas, se repelen.'],
         ver: ['modelo atómico'] },
       { termino: 'nivel de energía', formas: ['nivel de energía', 'niveles de energía'], def: 'Cada una de las energías permitidas para un electrón del átomo; se numeran con n.',
         simple: 'Un escalón de energía donde puede estar el electrón.',
@@ -2753,7 +2753,7 @@
             pista: 'Enciende los nodos y recorre los orbitales 3d.' },
           { texto: 'Pon un orbital p con sus dos lóbulos sobre el eje z.',
             logrado: v => MA.orbital(v.orb).l === 1 && MA.orbital(v.orb).eje === 'z',
-            bien: 'Un lóbulo ψ + y otro ψ −: es el signo de ψ, no una carga.',
+            bien: 'ψ es la onda del electrón: cada lóbulo lleva su signo, + o −, y no una carga.',
             pista: 'Mira los rótulos x, y, z y elige el p que va por z.' },
           { texto: 'A la misma escala, encuentra el orbital más grande de la lista.',
             logrado: v => v.esc === 0 && v.orb === MA.mayorOrbital(),
@@ -2764,7 +2764,7 @@
               const x = MA.orbital(a.orb), y = MA.orbital(b.orb);
               return a.esc === 0 && b.esc === 0 && x.l === 1 && y.l === 1 && x.eje === y.eje && x.n === 2 && y.n === 3;
             })),
-            bien: 'Misma forma, más grande. Y el 3p esconde un nodo esférico.',
+            bien: 'Tiene la misma forma, pero es más grande, y el 3p esconde un nodo esférico.',
             pista: 'Guarda el 2pz, cambia al 3pz y guárdalo también.' },
         ],
       },
@@ -2787,16 +2787,16 @@
         invitaciones: [
           { texto: 'Arma otro isótopo del sodio: mismo número atómico, número de masa 25.',
             logrado: v => v.z === 11 && v.z + v.n === 25 && v.q <= v.z,
-            bien: 'Más neutrones y sigue siendo sodio: el elemento lo deciden los protones.' },
+            bien: 'Tiene más neutrones y sigue siendo sodio, porque el elemento lo deciden los protones.' },
           { texto: 'Arma un anión con tantos electrones como el argón.',
             logrado: v => v.q < 0 && v.z - v.q === 18,
-            bien: 'Mismos electrones que el argón, otro núcleo: son isoelectrónicos.' },
+            bien: 'Tiene los mismos electrones que el argón y otro núcleo: son isoelectrónicos.' },
           { texto: 'Deja un catión sin un solo electrón.',
             logrado: v => v.q > 0 && v.z - v.q === 0,
-            bien: 'Solo queda el núcleo. La carga es igual a los protones.' },
+            bien: 'Solo queda el núcleo, así que la carga es igual al número de protones.' },
           { texto: 'Guarda dos núcleos de elementos distintos con el mismo número de masa.',
             logrado: (v, guardados) => guardados.some(a => guardados.some(b => a.z !== b.z && a.z + a.n === b.z + b.n)),
-            bien: 'Mismo A, distinto Z: no son isótopos, son elementos diferentes.' },
+            bien: 'Mismo A, distinto Z: son isóbaros, núcleos de elementos diferentes.' },
         ],
       },
       {
@@ -2825,7 +2825,7 @@
             bien: 'El 4s se llena antes que el 3d: tiene menos energía.' },
           { texto: 'Guarda dos especies distintas con la misma configuración del neón.',
             logrado: (v, guardados) => guardados.some(a => guardados.some(b => a.z !== b.z && a.z - a.q === 10 && b.z - b.q === 10)),
-            bien: 'Isoelectrónicas: mismas cajas, distinto núcleo.' },
+            bien: 'Son isoelectrónicas: tienen las mismas cajas y distinto núcleo.' },
         ],
       },
     ],

@@ -110,7 +110,7 @@ test('salen todos los tipos y subtipos, los tres niveles y los errores pedidos',
     assert.ok(ids.has(id), `no sale ${id}`);
 });
 
-test('errores: del informe, un código por alternativa, «Bien» al empezar y el valor de cada error en su explicación', () => {
+test('errores: del informe, un código por alternativa y el valor de cada error en su explicación', () => {
   const informe = require('node:fs').readFileSync(require('node:path').join(__dirname, '../../docs/investigacion/atomo-enlace-ideas-erroneas.md'), 'utf8');
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s), malas = p.alternativas.filter(x => x.error);
@@ -118,7 +118,6 @@ test('errores: del informe, un código por alternativa, «Bien» al empezar y el
     for (const a of malas) {
       assert.equal(a.error.respaldo, a.error.id === 'AT4' ? 'parcial' : 'hipotesis');
       assert.ok(new RegExp(`(?<![\\w-])${a.error.id}(?![\\w-])`).test(informe), `${a.error.id} no está en el informe`);
-      assert.match(a.error.explicacion, /^Bien/, `semilla ${s}: ${a.error.explicacion}`);
       if (typeof p.respuesta.valor === 'number') {
         assert.ok(dentroDeEscala(a, p.respuesta.valor), `semilla ${s}: ${a.texto} fuera de escala`);
         assert.ok(new RegExp(`(^|\\D)${a.texto}(\\D|$)`).test(a.error.explicacion), `semilla ${s}: «${a.error.explicacion}» no muestra ${a.texto}`);

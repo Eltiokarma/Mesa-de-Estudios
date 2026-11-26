@@ -68,7 +68,7 @@ test('salen todos los tipos y subtipos, los tres niveles y los errores de la teo
     'QM-ML-POSITIVO', 'QM-L-CERO', 'QM-L-MENOR', 'QM-ML-FUERA', 'QM-MS-ENTERO', 'QM-CONDICION-IGNORA']) assert.ok(ids.has(id), `no sale ${id}`);
 });
 
-test('errores: hipótesis del informe, un código por alternativa y explicaciones que empiezan por lo que hizo bien', () => {
+test('errores: hipótesis del informe, un código por alternativa', () => {
   const informe = require('node:fs').readFileSync(require('node:path').join(__dirname, '../../docs/investigacion/atomo-enlace-ideas-erroneas.md'), 'utf8');
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s), malas = p.alternativas.filter(x => x.error);
@@ -76,7 +76,6 @@ test('errores: hipótesis del informe, un código por alternativa y explicacione
     for (const a of malas) {
       assert.equal(a.error.respaldo, 'hipotesis');
       assert.ok(new RegExp(`(?<![\\w-])${a.error.id}(?![\\w-])`).test(informe), `${a.error.id} no está en el informe`);
-      assert.match(a.error.explicacion, /^(Bien|Ese sí)/, `semilla ${s}: ${a.error.explicacion}`);
       if (typeof p.respuesta.valor === 'number' && !/^Ese/.test(a.error.explicacion)) assert.ok(new RegExp(`(^|\\D)${a.texto}(\\D|$)`).test(a.error.explicacion), `semilla ${s}: «${a.error.explicacion}» no muestra ${a.texto}`);
     }
   }

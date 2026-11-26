@@ -9,7 +9,7 @@
       "enunciado": "El ⁵⁸Ni tiene Z = 28. Un núclido del hierro (Z = 26) es isóbaro del ⁵⁸Ni. ¿Cuántos neutrones tiene ese núclido del hierro? Datos: Isótopos: mismo Z. Isóbaros: mismo A. Isótonos: mismo N. A = Z + N. Alternativas: A) 26   B) 58   C) 30   D) 32   E) 28",
       "respuesta": "D) 32",
       "pasos": [
-        "Isóbaros: el mismo A, 58.",
+        "Los isóbaros tienen el mismo A, 58.",
         "N = 58 − 26 = 32 neutrones."
       ]
     },
@@ -39,7 +39,7 @@
       "enunciado": "El ⁴⁰K tiene Z = 19. Un núclido del argón (Z = 18) es isóbaro del ⁴⁰K. ¿Cuántos neutrones tiene ese núclido del argón? Datos: Isótopos: mismo Z. Isóbaros: mismo A. Isótonos: mismo N. A = Z + N. Alternativas: A) 20   B) 18   C) 21   D) 40   E) 22",
       "respuesta": "E) 22",
       "pasos": [
-        "Isóbaros: el mismo A, 40.",
+        "Los isóbaros tienen el mismo A, 40.",
         "N = 40 − 18 = 22 neutrones."
       ]
     },
@@ -49,7 +49,7 @@
       "enunciado": "Se dan varias afirmaciones sobre las partículas de un átomo. ¿Cuál de estas afirmaciones es incorrecta? Datos: Protón: carga +1. Neutrón: sin carga, con casi la misma masa que el protón. Electrón: carga −1; el protón pesa unas 1836 veces más. Alternativas: A) Los electrones se mueven fuera del núcleo.   B) Casi toda la masa del átomo está en el núcleo.   C) Casi toda la masa del átomo está en sus electrones.   D) Los protones y los neutrones están en el núcleo.",
       "respuesta": "C) Casi toda la masa del átomo está en sus electrones.",
       "pasos": [
-        "Casi toda la masa del átomo está en sus electrones. Es falsa: el electrón es el más liviano: la masa está en el núcleo.",
+        "La afirmación «Casi toda la masa del átomo está en sus electrones» es falsa: el electrón es la partícula más liviana, y la masa está en el núcleo.",
         "Las otras son verdaderas."
       ]
     },
@@ -59,7 +59,7 @@
       "enunciado": "El ¹¹B tiene Z = 5. Un núclido del carbono (Z = 6) es isótono del ¹¹B. ¿Cuál es el número de masa de ese núclido del carbono? Datos: Isótopos: mismo Z. Isóbaros: mismo A. Isótonos: mismo N. A = Z + N. Alternativas: A) 10   B) 12   C) 6   D) 11",
       "respuesta": "B) 12",
       "pasos": [
-        "Isótonos: el mismo N. N del ¹¹B = 11 − 5 = 6.",
+        "Los isótonos tienen el mismo N. En el ¹¹B, N = 11 − 5 = 6.",
         "A = 6 + 6 = 12."
       ]
     },
@@ -79,8 +79,8 @@
       "enunciado": "Se comparan los núclidos ¹⁶O y ¹⁸O. ¿Qué son entre sí? Datos: Z del oxígeno = 8. Isótopos: mismo Z. Isóbaros: mismo A. Isótonos: mismo N. A = Z + N. Alternativas: A) Ninguna de las tres   B) Isóbaros   C) Isótonos   D) Isótopos",
       "respuesta": "D) Isótopos",
       "pasos": [
-        "Z: 8 y 8. A: 16 y 18. N = A − Z: 8 y 10.",
-        "Coincide Z (8 en los dos): son isótopos."
+        "Comparo los tres números: Z vale 8 y 8; A vale 16 y 18, y N = A − Z vale 8 y 10.",
+        "Coincide Z (8 en los dos), así que son isótopos."
       ]
     }
   ]

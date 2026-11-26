@@ -448,7 +448,7 @@ test('A1: el electrón es de 1897 en toda la unidad y en su práctica; 1904 es s
   assert.ok(textos.some(t => /electr[oó]n[^.;]*1897|1897[^.;]*electr[oó]n/.test(t)), 'la unidad dice que el electrón es de 1897');
   // Lo que piden los ejercicios de la idea 2 (proporciones fijas, rayos catódicos, postulados de Dalton) se enseña antes.
   const i2 = I('modelos-atomicos'), ense = plano([i2.lee.tarjetas.map(t => t.texto), i2.mira.pasos.map(p => p.texto), i2.regla.texto]);
-  for (const re of [/proporciones fijas/, /rayos catódicos/, /iguales dentro de cada elemento/, /solo se reordenan/, /números enteros sencillos/, /Thomson, 1897/]) assert.match(ense, re);
+  for (const re of [/proporciones fijas/, /rayos catódicos/, /iguales dentro de cada elemento/, /solo se reordenan/, /números enteros sencillos/, /1897, Thomson/]) assert.match(ense, re);
 });
 
 // A3 y nota (c): un gas abreviado en un ejercicio lleva su línea en «Datos» (teoría, práctica y papel).
@@ -634,18 +634,18 @@ function fichasNegrita(x) {
 
 test('ronda 2: lo que marcó el veredicto, en los momentos', () => {
   const I1r = I('nucleo-identidad').regla;
-  assert.match(I1r.texto, /Isóbaros: mismo A \(¹⁴C y ¹⁴N\)/);
-  assert.match(I1r.texto, /Isótonos: mismo N \(¹³C y ¹⁴N\)/);
-  assert.match(I1r.condicion, /el núcleo cambia solo en procesos nucleares/);
+  assert.match(I1r.texto, /isóbaros, el mismo A \(¹⁴C y ¹⁴N\)/);
+  assert.match(I1r.texto, /isótonos, el mismo N \(¹³C y ¹⁴N\)/);
+  assert.match(I1r.condicion, /el núcleo cambia únicamente en procesos nucleares/);
   // Idea 2: qué es 0 y qué es 1 en el control; Dalton y las proporciones fijas en la regla (Ahora tú las pide).
   const i2 = I('modelos-atomicos');
   assert.match(i2.juega.controles.find(c => c.id === 'b').etiqueta, /0: al centro; 1 o −1: al borde/);
-  assert.match(i2.regla.texto, /Dalton: átomos macizos \(proporciones fijas\)/);
-  assert.match(i2.regla.condicion, /de un solo electrón/);
+  assert.match(i2.regla.texto, /Dalton explicó las proporciones fijas con átomos macizos/);
+  assert.match(i2.regla.condicion, /un solo electrón/);
   // Idea 3: la f en la leyenda, el espín en la regla y, en Ahora tú, ningún «cuántos orbitales/electrones del nf».
   const i3 = I('numeros-cuanticos');
   assert.ok(i3.juega.leyenda.some(l => l.s === 'f'));
-  assert.match(i3.regla.texto, /mₛ, espín: \+½ \(↑\) o −½ \(↓\)/);
+  assert.match(i3.regla.texto, /mₛ, el espín, vale \+½ \(↑\) o −½ \(↓\)/);
   for (let s = 0; s < SEMILLAS; s++) assert.ok(!/subnivel \df\?/.test(plano(i3.ahoraTu.generar(s).pregunta)), `semilla ${s}: ${plano(i3.ahoraTu.generar(s).pregunta)}`);
   // Idea 4: «Lee» sin el empate 2p/3s; la regla dice cómo quedan el Cr y el Cu.
   const i4 = I('configuracion-electronica');
@@ -762,4 +762,26 @@ test('cabos: todo código de error de la unidad está en su informe, con la secc
   assert.ok(codigos.size >= 30, `${codigos.size} códigos`);
   const faltan = [...codigos].filter(c => !nombra(informe, c) && !nombra(transversal, c)).sort();
   assert.deepEqual(faltan, [], `códigos sin describir en atomo-enlace-ideas-erroneas.md: ${faltan.join(', ')}`);
+});
+
+// Verificación de cierre (26 nov).
+test('3d de un catión: la explicación del átomo neutro no dice «cambia el 4s, no el 3d» cuando el 3d sí cambia (Cu²⁺)', () => {
+  const I = def.ideas.find(i => i.id === 'configuracion-iones');
+  let vistos = 0;
+  for (let s = 0; s < 600; s++) for (const g of [I.ahoraTu, I.resuelve]) {
+    const a = g.generar(s);
+    for (const o of a.opciones || []) if (o.siFuera && /Esos son los electrones 3d del átomo neutro/.test(o.siFuera)) {
+      vistos++;
+      // Esa alternativa solo sale si el 3d del neutro difiere del del ion: entonces sí salió alguno del 3d.
+      assert.ok(!/cambia el 4s, no el 3d/.test(o.siFuera), `semilla ${s}: ${o.texto} · ${o.siFuera}`);
+    }
+  }
+  assert.ok(vistos > 0);
+});
+
+test('laboratorio: mismo A y distinto Z se llaman isóbaros, y la nube presenta ψ antes de usar su signo', () => {
+  const inv = def.laboratorio.find(m => m.id === 'arma-ion').invitaciones.find(x => /mismo número de masa/.test(x.texto));
+  assert.match(inv.bien, /isóbaros/);
+  const p = def.laboratorio.find(m => m.id === 'nube-orbital').invitaciones.find(x => /eje z/.test(x.texto));
+  assert.match(p.bien, /ψ es la onda del electrón/);
 });

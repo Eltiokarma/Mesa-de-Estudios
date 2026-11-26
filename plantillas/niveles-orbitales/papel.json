@@ -9,8 +9,8 @@
       "enunciado": "Un electrón tiene n = 5 y ℓ = 1. ¿En qué subnivel está y cuántos electrones caben ahí? Datos: ℓ: s es 0, p es 1, d es 2, f es 3. Orbitales de un subnivel: 2ℓ + 1. En un orbital caben 2 electrones, de espín opuesto. Alternativas: A) 5p, con 3 electrones   B) 5p, con 32 electrones   C) 5s, con 2 electrones   D) 5p, con 6 electrones",
       "respuesta": "D) 5p, con 6 electrones",
       "pasos": [
-        "n = 5 es el nivel; ℓ = 1 es la letra p: el 5p.",
-        "2 · 1 + 1 = 3 orbitales, con dos electrones cada uno: 6 electrones."
+        "n = 5 es el nivel y ℓ = 1 es la letra p, así que el electrón está en el 5p.",
+        "Ese subnivel tiene 2 · 1 + 1 = 3 orbitales, con dos electrones cada uno: 6 electrones."
       ]
     },
     {
@@ -19,8 +19,8 @@
       "enunciado": "Se llena el nivel n = 3 de un átomo. ¿Cuántos electrones caben, como máximo, en todo el nivel n = 3? Datos: ℓ va de 0 a n − 1. Orbitales de un subnivel: 2ℓ + 1. En un orbital caben 2 electrones, de espín opuesto. Alternativas: A) 6   B) 8   C) 18   D) 9   E) 32",
       "respuesta": "C) 18",
       "pasos": [
-        "ℓ va de 0 a 2: 1 + 3 + 5 = 9 orbitales.",
-        "Dos electrones en cada uno: 2 · 9 = 18 electrones."
+        "ℓ va de 0 a 2, así que el nivel tiene 1 + 3 + 5 = 9 orbitales.",
+        "En cada orbital caben dos electrones: 2 · 9 = 18 electrones."
       ]
     },
     {
@@ -39,8 +39,8 @@
       "enunciado": "Un electrón está en el subnivel 2p. ¿Cuántos orbitales tiene el subnivel 2p? Datos: ℓ: s es 0, p es 1, d es 2, f es 3. mₗ va de −ℓ a +ℓ: un orbital por cada valor. Orbitales de un subnivel: 2ℓ + 1. Alternativas: A) 5   B) 6   C) 2   D) 3",
       "respuesta": "D) 3",
       "pasos": [
-        "p es ℓ = 1: mₗ va de −1 a +1 (−1, 0 y +1).",
-        "Un orbital por cada valor: 2 · 1 + 1 = 3 orbitales."
+        "La p es ℓ = 1, así que mₗ va de −1 a +1 (−1, 0 y +1).",
+        "Hay un orbital por cada valor: 2 · 1 + 1 = 3 orbitales."
       ]
     },
     {
@@ -49,8 +49,8 @@
       "enunciado": "Se llena el subnivel 2s de un átomo. ¿Cuántos electrones caben, como máximo, en el subnivel 2s? Datos: ℓ: s es 0, p es 1, d es 2, f es 3. Orbitales de un subnivel: 2ℓ + 1. En un orbital caben 2 electrones, de espín opuesto. Alternativas: A) 1   B) 2   C) 6   D) 8",
       "respuesta": "B) 2",
       "pasos": [
-        "s es ℓ = 0: 2 · 0 + 1 = 1 orbital.",
-        "Dos electrones en cada uno: 2 · 1 = 2 electrones."
+        "La s es ℓ = 0, así que tiene 2 · 0 + 1 = 1 orbital.",
+        "En cada orbital caben dos electrones: 2 · 1 = 2 electrones."
       ]
     },
     {
@@ -60,7 +60,7 @@
       "respuesta": "B) 4",
       "pasos": [
         "mₗ = +2 existe solo donde ℓ ≥ 2: 4d y 4f.",
-        "Un orbital con ese mₗ en cada uno, con dos electrones: 2 · 2 = 4 electrones."
+        "Hay un orbital con ese mₗ en cada uno, y cada orbital lleva dos electrones: 2 · 2 = 4 electrones."
       ]
     },
     {
@@ -69,8 +69,8 @@
       "enunciado": "Un electrón tiene n = 4 y ℓ = 1. ¿En qué subnivel está y cuántos electrones caben ahí? Datos: ℓ: s es 0, p es 1, d es 2, f es 3. Orbitales de un subnivel: 2ℓ + 1. En un orbital caben 2 electrones, de espín opuesto. Alternativas: A) 4s, con 2 electrones   B) 4p, con 6 electrones   C) 4p, con 3 electrones   D) 4p, con 32 electrones",
       "respuesta": "B) 4p, con 6 electrones",
       "pasos": [
-        "n = 4 es el nivel; ℓ = 1 es la letra p: el 4p.",
-        "2 · 1 + 1 = 3 orbitales, con dos electrones cada uno: 6 electrones."
+        "n = 4 es el nivel y ℓ = 1 es la letra p, así que el electrón está en el 4p.",
+        "Ese subnivel tiene 2 · 1 + 1 = 3 orbitales, con dos electrones cada uno: 6 electrones."
       ]
     },
     {

@@ -103,8 +103,8 @@
       pregunta: ['¿Cuántos ', v('o', 'orbitales'), ` tiene el subnivel ${s}?`],
       datos: [D.letras, D.mlDe, D.orbitales], alternativas: numericas(rng, o, errores), valor: o,
       solucion: [
-        [`${LETRA[l]} es ℓ = ${l}: mₗ va de −${l} a +${l} (${lista(valoresMl(l).map(ML))}).`],
-        ['Un orbital por cada valor: 2 · ', String(l), ' + 1 = ', v('o', plural(o, 'orbital', 'orbitales')), '.'],
+        [`La ${LETRA[l]} es ℓ = ${l}, así que mₗ va de −${l} a +${l} (${lista(valoresMl(l).map(ML))}).`],
+        ['Hay un orbital por cada valor: 2 · ', String(l), ' + 1 = ', v('o', plural(o, 'orbital', 'orbitales')), '.'],
       ], _datos: { tipo: 'orb-sub', nivel: 1, n, l } });
   }
 
@@ -124,8 +124,8 @@
       pregunta: ['¿Cuántos ', v('e', 'electrones'), ` caben, como máximo, en el subnivel ${s}?`],
       datos: [D.letras, D.orbitales, D.dos], alternativas: numericas(rng, k, errores), valor: k,
       solucion: [
-        [`${LETRA[l]} es ℓ = ${l}: 2 · ${l} + 1 = `, v('o', plural(orbSub(l), 'orbital', 'orbitales')), '.'],
-        ['Dos electrones en cada uno: 2 · ', v('o', String(orbSub(l))), ' = ', v('e', `${k} electrones`), '.'],
+        [`La ${LETRA[l]} es ℓ = ${l}, así que tiene 2 · ${l} + 1 = `, v('o', plural(orbSub(l), 'orbital', 'orbitales')), '.'],
+        ['En cada orbital caben dos electrones: 2 · ', v('o', String(orbSub(l))), ' = ', v('e', `${k} electrones`), '.'],
       ], _datos: { tipo: 'e-sub', nivel: 1, n, l } });
   }
 
@@ -175,8 +175,8 @@
       pregunta: ['¿Cuántos ', v('o', 'orbitales'), ` tiene en total el nivel n = ${n}?`],
       datos: [D.lDe, D.orbitales], alternativas: numericas(rng, o, errores), valor: o,
       solucion: [
-        [`ℓ va de 0 a ${n - 1}: ${valoresL(n).map(l => sub(n, l)).join(', ')}.`],
-        [`Orbitales: ${partes.join(' + ')} = `, v('o', `${o} orbitales`), '.'],
+        [`ℓ va de 0 a ${n - 1}, así que el nivel tiene ${lista(valoresL(n).map(l => sub(n, l)))}.`],
+        [`Sumo los orbitales de cada subnivel: ${partes.join(' + ')} = `, v('o', `${o} orbitales`), '.'],
       ], _datos: { tipo: 'orb-nivel', nivel: 2, n } });
   }
 
@@ -194,8 +194,8 @@
       pregunta: ['¿Cuántos ', v('e', 'electrones'), ` caben, como máximo, en todo el nivel n = ${n}?`],
       datos: [D.lDe, D.orbitales, D.dos], alternativas: numericas(rng, k, errores), valor: k,
       solucion: [
-        [`ℓ va de 0 a ${n - 1}: ${partes.join(' + ')} = `, v('o', `${o} orbitales`), '.'],
-        ['Dos electrones en cada uno: 2 · ', v('o', String(o)), ' = ', v('e', `${k} electrones`), '.'],
+        [`ℓ va de 0 a ${n - 1}, así que el nivel tiene ${partes.join(' + ')} = `, v('o', `${o} orbitales`), '.'],
+        ['En cada orbital caben dos electrones: 2 · ', v('o', String(o)), ' = ', v('e', `${k} electrones`), '.'],
       ], _datos: { tipo: 'e-nivel', nivel: 2, n } });
   }
 
@@ -212,8 +212,8 @@
     return cerrar({ variables: usa('e'), enunciado: [`Un electrón tiene n = ${n} y ℓ = ${l}.`],
       pregunta: ['¿En qué subnivel está y cuántos ', v('e', 'electrones'), ' caben ahí?'],
       datos: [D.letras, D.orbitales, D.dos], alternativas: P.armarTexto({ correcta: c, errores, rng }), valor: c.clave,
-      solucion: [[`n = ${n} es el nivel; ℓ = ${l} es la letra ${LETRA[l]}: el ${s}.`],
-        [`2 · ${l} + 1 = ${orbSub(l)} orbitales, con dos electrones cada uno: `, v('e', `${k} electrones`), '.']],
+      solucion: [[`n = ${n} es el nivel y ℓ = ${l} es la letra ${LETRA[l]}, así que el electrón está en el ${s}.`],
+        [`Ese subnivel tiene 2 · ${l} + 1 = ${orbSub(l)} orbitales, con dos electrones cada uno: `, v('e', `${k} electrones`), '.']],
       _datos: { tipo: 'subnivel', nivel: 2, n, l } });
   }
 
@@ -272,7 +272,7 @@
         pregunta: ['¿Cuántos ', v('e', 'electrones'), ` de ese nivel tienen mₗ = ${ML(ml)}?`],
         datos: [D.lDe, D.mlDe, D.dos], alternativas: numericas(rng, k, errores), valor: k,
         solucion: [[`mₗ = ${ML(ml)} existe solo donde ℓ ≥ ${Math.abs(ml)}: ${lista(subs.map(l => sub(n, l)))}.`],
-          [`Un orbital con ese mₗ en cada uno, con dos electrones: 2 · ${subs.length} = `, v('e', `${k} electrones`), '.']],
+          [`Hay un orbital con ese mₗ en cada uno, y cada orbital lleva dos electrones: 2 · ${subs.length} = `, v('e', `${k} electrones`), '.']],
         _datos: { tipo: 'condicion', nivel: 3, sub: 'ml', n, ml } });
     }
     const n = rng.entero(2, 4), m2 = rng.elegir([1, -1]), k = conMs(n);
