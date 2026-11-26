@@ -6,7 +6,7 @@ da la CARPETA, las IDEAS y el archivo de INFORME.
 
 **Parte 1: momentos.** Para cada idea, en el orden de su número (1 Lee … 7 Ahora tú), mira las imágenes
 `CARPETA/claro-cel-<IDEA>-N-*.png`. Para cada pantalla responde:
-1. ¿Qué ves? Nombra cada cosa del dibujo.
+1. ¿Qué ves? Nombra cada cosa del dibujo. Si el texto nombra un objeto (un columpio, una veleta, una bandeja), ¿lo reconocerías en el dibujo sin leer el texto? Si no, dilo: es una falla.
 2. ¿Qué te piden hacer?
 3. ¿Qué significa cada letra o símbolo?
 4. (Después de Juega y de Mira) ¿Qué aprendiste, en una frase?
