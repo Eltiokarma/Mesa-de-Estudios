@@ -209,7 +209,7 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 |---|---|---|---|---|
 | trig-arco · abanico | a medias | abanico: sector con varillas; se lee a medias (falta el plisado y el mango) | [ver](capturas/trig-arco--abanico.webp) |  |
 | trig-arco · bici | a medias | plato y piñón con cadena: se leen como engranajes, no como bicicleta | [ver](capturas/trig-arco--bici.webp) |  |
-| trig-arco · columpio | no se reconoce | columpio: dos rayas en A, una línea naranja y un palito; no se reconoce (caso de Gerson) | [ver](capturas/trig-arco--columpio.webp) |  |
+| trig-arco · columpio | no se reconoce | columpio: dos rayas en A, una línea naranja y un palito; no se reconoce (caso de Gerson) | [ver](capturas/trig-arco--columpio.webp) | redibujado: armazón de madera en perspectiva con travesaño, dos cadenas con eslabones, asiento de tabla y pasto ([antes y después](antes-despues/trig-arco--columpio.webp)) |
 | trig-arco · engranajes | se reconoce | dos engranajes con su marca | [ver](capturas/trig-arco--engranajes.webp) |  |
 | trig-arco · figura | se reconoce | sector de examen (diagrama propio) | [ver](capturas/trig-arco--figura.webp) |  |
 | trig-arco · limpia | a medias | limpiaparabrisas: el parabrisas se adivina; el brazo es una raya gruesa sin pivote ni jebe | [ver](capturas/trig-arco--limpia.webp) |  |

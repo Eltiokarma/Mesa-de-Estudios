@@ -130,22 +130,48 @@
     const r = Math.min(2.5, Math.max(1, num(enPaso(d.r, e), 2))), t = Math.min(1.3, Math.max(0, num(enPaso(d.t, e), 0)));
     const R = r * KC, a = -90 + t / RAD, G = G_COL, abre = 0.2 * (G - CP[1]), ro = rots(d, e), cajas = [];
     let s = linea([M + 2, G], [W - M - 2, G], tinta(2, 0.6));
-    // El armazón, de lado: dos patas en A desde el travesaño hasta el piso.
-    s += linea(CP, [CP[0] - abre, G], tinta(5, 0.3)) + linea(CP, [CP[0] + abre, G], tinta(5, 0.3));
+    // Pasto al pie del armazón (26 nov, dibujos reconocibles): unas matas cortas que dicen «parque».
+    for (const x of [22, 118, 196, 262, 300]) s += `<path d="M${x - 5} ${n(G)}L${x - 3} ${n(G - 7)}M${x} ${n(G)}L${x} ${n(G - 9)}M${x + 5} ${n(G)}L${x + 3} ${n(G - 7)}" ${tinta(1.5, 0.4)}/>`;
+    // El armazón de madera, en perspectiva (26 nov): el de atrás, corrido arriba a la derecha y tenue; un travesaño los
+    // une. Así se lee el columpio del parque y no un par de rayas en A. El pivote y la cadena de adelante no se mueven.
+    const DP = [16, -3], postes = (o, op) => {
+      const c = [CP[0] + o[0], CP[1] + o[1]];
+      return [[c[0] - abre, G + o[1]], [c[0] + abre, G + o[1]]].map(q => {
+        const L = Math.hypot(q[0] - c[0], q[1] - c[1]), w = [-(q[1] - c[1]) / L * 4.5, (q[0] - c[0]) / L * 4.5];
+        return poli([[c[0] + w[0], c[1] + w[1]], [q[0] + w[0], q[1] + w[1]], [q[0] - w[0], q[1] - w[1]], [c[0] - w[0], c[1] - w[1]]],
+          `fill="var(--card)" stroke="currentColor" stroke-width="2" stroke-opacity="${op}" stroke-linejoin="round"`) +
+          linea([c[0] + w[0] * 0.2, c[1] + w[1] * 0.2], [q[0] + w[0] * 0.2, q[1] + w[1] * 0.2], tinta(1, op * 0.5));
+      }).join('');
+    };
+    s += postes(DP, 0.35);
+    // El travesaño: la viga que va de un armazón al otro, vista de canto.
+    s += poli([[CP[0] - 6, CP[1] - 5], [CP[0] + DP[0] - 6, CP[1] + DP[1] - 5], [CP[0] + DP[0] + 6, CP[1] + DP[1] - 5], [CP[0] + DP[0] + 6, CP[1] + DP[1] + 5], [CP[0] + 6, CP[1] + 5], [CP[0] - 6, CP[1] + 5]],
+      'fill="var(--card)" stroke="currentColor" stroke-width="2" stroke-opacity="0.6" stroke-linejoin="round"');
+    // El armazón de adelante, debajo de la cadena y del arco (lo que se mide va encima).
+    s += postes([0, 0], 0.65);
     // El camino que puede seguir el asiento: la circunferencia de la cadena, con centro en el travesaño (tenue, punteada).
     const camino = arcoPs(CP, R, -90 - 60, -90 + 78).filter(q => q[0] >= M + 3 && q[0] <= W - M - 3);
     if (camino.length > 1) s += poli(camino, tinta(1.5, 0.3) + ' stroke-dasharray="3 6"', false);
-    s += circulo(CP, 6, 'fill="var(--card)" stroke="currentColor" stroke-width="2.5"');
     // Quieta: la cadena cuelga derecho (el lado inicial), punteada, y el asiento quieto, tenue.
     const abajo = pt(CP, R, -90), asiento = pt(CP, R, a);
     s += linea(CP, abajo, tinta(2, 0.55) + PUNTOS);
-    s += linea([abajo[0] - 13, abajo[1]], [abajo[0] + 13, abajo[1]], tinta(5, 0.22));
+    s += rect(abajo[0] - 15, abajo[1] - 3, 30, 6, 2, 'fill="none" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.3"');
     // El arco que recorre el asiento: sobre esa circunferencia, desde el asiento quieto hasta el asiento.
     if (t > 0.01) s += poli(arcoPs(CP, R, -90, a), trazo('i', 4.5), false);
-    // La cadena, el radio: naranja; el asiento, centrado en la punta de la cadena.
-    s += linea(CP, asiento, trazo('o', 3.5));
     const u = [Math.cos(a * RAD), -Math.sin(a * RAD)], v = [-u[1], u[0]];
-    s += linea([asiento[0] - v[0] * 14, asiento[1] - v[1] * 14], [asiento[0] + v[0] * 14, asiento[1] + v[1] * 14], tinta(6));
+    // La cadena de atrás (la otra del asiento), tenue, y después el armazón de adelante.
+    s += linea([CP[0] + DP[0], CP[1] + DP[1]], [asiento[0] + DP[0], asiento[1] + DP[1]], trazo('o', 2, ' stroke-opacity="0.35" stroke-dasharray="4 2"'));
+    s += circulo(CP, 6, 'fill="var(--card)" stroke="currentColor" stroke-width="2.5"');
+    // La cadena, el radio: naranja, con sus eslabones; el asiento, una tabla con canto, centrada en la punta de la cadena.
+    s += linea(CP, asiento, trazo('o', 3.5));
+    const nE = Math.max(4, Math.round(R / 13));
+    for (let i = 1; i < nE; i++) {
+      const q = [CP[0] + (asiento[0] - CP[0]) * i / nE, CP[1] + (asiento[1] - CP[1]) * i / nE], ang = Math.atan2(asiento[1] - CP[1], asiento[0] - CP[0]) / RAD;
+      s += `<ellipse cx="${n(q[0])}" cy="${n(q[1])}" rx="${i % 2 ? 5 : 3.5}" ry="${i % 2 ? 2.6 : 1.4}" transform="rotate(${n(ang)} ${n(q[0])} ${n(q[1])})" ${trazo('o', 1.6)} fill="var(--card)"/>`;
+    }
+    const tabla = [[-16, -2], [16, -2], [16, 5], [-16, 5]].map(([x, y]) => [asiento[0] + v[0] * x + u[0] * y, asiento[1] + v[1] * x + u[1] * y]);
+    s += poli(tabla, 'fill="var(--card)" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"');
+    s += linea([asiento[0] - v[0] * 12 + u[0] * 2, asiento[1] - v[1] * 12 + u[1] * 2], [asiento[0] + v[0] * 12 + u[0] * 2, asiento[1] + v[1] * 12 + u[1] * 2], tinta(1, 0.4));
     // El ángulo, desde la cadena quieta hasta la cadena: carmín, con su flecha.
     if (t > 0.01) s += arcoAngulo(CP, 30, -90, a);
     const mitad = (-90 + a) / 2;
