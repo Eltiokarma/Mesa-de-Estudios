@@ -343,6 +343,322 @@ const idea1 = (() => {
   };
 })();
 
+const idea2 = (() => {
+  const fmt = x => f(x, 3), q = (k, x, u = '') => Q(k, x, u, 6);
+  const exacto = x => Math.abs(x - Number(x.toFixed(3))) < 1e-8;
+  const signo = x => exacto(x) ? ' = ' : ' ≈ ';
+  const mostrar = (x, u) => (exacto(x) ? '' : '≈ ') + fmt(x) + ' ' + u;
+  const pa = sub(S.p, 'atm'), pc = sub(S.p, 'cámara'), pt = sub(S.p, 'sup'), pm = sub(S.p, 'man');
+  const rl = sub(S.rho, 'ligero'), rb = sub(S.rho, 'base'), hl = sub(S.h, 'ligero'), hb = sub(S.h, 'base');
+  const dz = ['Δ', S.z], dh = ['Δ', S.h], z0 = sub(S.z, '0'), zf = sub(S.z, 'final');
+  const er = (operacion, valor, causa, corto) => ({ operacion, valor, causa, corto });
+  const unir = xs => xs.flatMap((x, i) => i ? ['; ', x] : [x]);
+  const final = (simbolo, expresion, valor, k, u) => [simbolo, ' = ', expresion, signo(valor), Q(k, valor, u, 3)];
+  const modelo = ['Los líquidos están en reposo; se desprecia la capilaridad.', ['Para el modelo, ', S.g, ' = ', q('g', 10, 'm/s²'), '.']];
+
+  function tubo(izquierda, derecha, rotulos = [], cerrado = false, extra = {}) {
+    return flu({ tipo: 'tubo-u', escala: { vertical: 450, transversal: 450 },
+      tuboU: { alto: 0.42, ancho: 0.045, ramas: [
+        { id: 'izquierda', cerrada: cerrado, capas: izquierda.map((alto, i) => ({ alto, tono: i + 1 })) },
+        { id: 'derecha', capas: derecha.map((alto, i) => ({ alto, tono: i + 1 })) }
+      ] }, rotulos, ...extra });
+  }
+  function previo() {
+    return flu({ tipo: 'tubo-u', modo: 'esquema', tuboU: { ramas: [
+      { id: 'izquierda', capas: [{}] }, { id: 'derecha', capas: [{}] }
+    ] }, rotulos: [{ texto: 'Antes de añadir el líquido' }],
+    alt: 'Estado previo: el mismo líquido ocupa las ramas abiertas de un tubo en U.' });
+  }
+  function barometro(c, alturaConocida) {
+    return flu({ tipo: 'barometro', ...(alturaConocida ? { escala: { vertical: 190, transversal: 190 } } : { modo: 'esquema' }),
+      barometro: { ...(alturaConocida ? { alto: 1.05, ancho: 0.1, columna: c.h } : {}), camara: c.pTop === 0 ? 'vacio' : 'gas' },
+      ...(alturaConocida ? { cotas: [{ de: 'cubeta', a: 'columna', separacion: 44, texto: fmt(c.h) + ' m', color: 'd' }] } : {}),
+      rotulos: [{ texto: 'Cubeta abierta al aire' }, { fila: 1, texto: 'Arriba: ' + fmt(c.pTop) + ' Pa', color: 'i' }],
+      alt: alturaConocida ? 'Barómetro con altura medida desde la superficie de la cubeta y presión superior indicada.' : 'Esquema de un barómetro; la altura desconocida no está representada a escala.' });
+  }
+  function figura(c) {
+    if (c.tipo.startsWith('manometro')) {
+      const h = c.h ?? c.hCm / 100, izq = 0.1 + (c.sentido < 0 ? h : 0), der = 0.1 + (c.sentido > 0 ? h : 0);
+      return tubo([izq], [der], [{ ref: 'izquierda', texto: 'Cámara' }, { ref: 'derecha', texto: 'Aire exterior' },
+        { texto: 'Desnivel: ' + fmt(h * 100) + ' cm', fila: 1, color: 'd' }], true,
+        { cotas: [{ de: 'superficie-izquierda', a: 'superficie-derecha', separacion: 28, texto: 'h', color: 'd' }],
+          alt: 'Manómetro con cámara a la izquierda. La superficie ' + (c.sentido > 0 ? 'derecha' : 'izquierda') + ' está más alta; se indica el desnivel conocido.' });
+    }
+    if (c.tipo === 'barometro-presion') return barometro(c, true);
+    if (c.tipo === 'barometro-altura') return barometro(c, false);
+    if (c.tipo === 'barometro-calibracion') {
+      const d = barometro({ h: c.h1, pTop: c.pTop1 }, true);
+      d.datos.rotulos.push({ texto: 'Primer estado', fila: 2 });
+      d.datos.alt = 'Primer estado del barómetro: la altura y la presión superior son datos conocidos.';
+      return d;
+    }
+    if (c.tipo === 'capas-gas') return tubo([0.06, ...c.capas.map(x => x.h)], [0.06 + c.hBase],
+      [{ ref: 'izquierda', texto: 'Gas sobre dos capas' }, { ref: 'derecha', texto: 'Aire exterior' }], true,
+      { alt: 'Dos capas conocidas están sobre el líquido base; la rama derecha está abierta al aire. La presión del gas no se muestra.' });
+    return previo();
+  }
+
+  function calcular(c, conOpciones = false) {
+    c = { ...c, g: 10 };
+    const rho = c.rho ?? c.rhoGcm3 * 1000, h = c.h ?? c.hCm / 100;
+    let valor, k = 'p', u = 'Pa', enunciado, regla, cuentas, entradas = [], errores = [], intermedios = {};
+    let condiciones = [...modelo];
+    const dato = (...partes) => entradas.push(partes);
+    const presion = c.tipo.startsWith('manometro');
+    if (presion) {
+      dato('Densidad: ', q('rho', c.rho ?? c.rhoGcm3, c.rho === undefined ? 'g/cm³' : 'kg/m³'), '; desnivel: ', q('h', c.h ?? c.hCm, c.h === undefined ? 'cm' : 'm'), '.');
+      dato('Presión absoluta del aire: ', q('p', c.pAtm, 'Pa'), '.');
+      condiciones.push('La cámara está a la izquierda; la superficie ' + (c.sentido > 0 ? 'derecha' : 'izquierda') + ' está más alta.');
+      const dp = c.sentido * rho * 10 * h;
+      valor = c.tipo === 'manometro-gauge' ? dp : c.pAtm + dp;
+      enunciado = c.tipo === 'manometro-gauge' ? 'Un manómetro abierto contiene el líquido indicado. ¿Qué presión manométrica tiene la cámara?' : 'El manómetro compara una cámara con el aire exterior. ¿Cuál es la presión absoluta de la cámara?';
+      regla = paso('Bajando aumenta la presión; subiendo disminuye. Usamos el desnivel entre ambas superficies.',
+        [pc, ' = ', pa, c.sentido > 0 ? ' + ' : ' − ', S.rho, ' · ', S.g, ' · ', S.h, '   ·   ', pm, ' = ', pc, ' − ', pa]);
+      const producto = [q('rho', rho), ' · ', q('g', 10), ' · ', q('h', h)];
+      cuentas = [paso('Aplicamos el sentido del recorrido y la referencia pedida.',
+        final(c.tipo === 'manometro-gauge' ? pm : pc,
+          c.tipo === 'manometro-gauge' ? [c.sentido < 0 ? '−(' : '(', ...producto, ')'] : [q('p', c.pAtm), c.sentido > 0 ? ' + ' : ' − ', ...producto], valor, k, u))];
+      if (c.rhoGcm3 !== undefined) cuentas.unshift(paso('Convertimos densidad y longitud antes de calcular.',
+        [S.rho, ' = ', q('rho', c.rhoGcm3), ' · 1000 = ', q('rho', rho, 'kg/m³'), '   ·   ', S.h, ' = ', frac(q('h', c.hCm), '100'), ' = ', q('h', h, 'm')]));
+      const base = c.tipo === 'manometro-gauge' ? 0 : c.pAtm;
+      errores = [er('SIGNO', base - dp, 'invertiste cuál superficie está más alta', 'invierte el signo'),
+        er('MEDIO_DESNIVEL', base + dp / 2, 'usaste medio desnivel como altura completa', 'usa medio desnivel'),
+        er('DOBLE_DESNIVEL', base + 2 * dp, 'duplicaste el desnivel entre superficies', 'duplica el desnivel')];
+    } else if (c.tipo === 'barometro-presion' || c.tipo === 'barometro-altura') {
+      dato('Densidad: ', q('rho', c.rho, 'kg/m³'), '; presión superior: ', q('p', c.pTop, 'Pa'), '.');
+      const inversa = c.tipo === 'barometro-altura';
+      dato(inversa ? 'Presión absoluta del aire: ' : 'Altura sobre la cubeta: ', q(inversa ? 'p' : 'h', inversa ? c.pAtm : c.h, inversa ? 'Pa' : 'm'), '.');
+      condiciones.push('La cubeta está abierta; su superficie no cambia apreciablemente de nivel.');
+      k = inversa ? 'h' : 'p'; u = inversa ? 'm' : 'Pa';
+      valor = inversa ? (c.pAtm - c.pTop) / (c.rho * 10) : c.pTop + c.rho * 10 * c.h;
+      enunciado = inversa ? 'La cámara superior del barómetro tiene la presión indicada. ¿Qué altura alcanza la columna sobre la cubeta?' : 'La columna del barómetro está en equilibrio. ¿Cuál es la presión del aire sobre la cubeta?';
+      regla = paso('La presión de arriba más el aporte de la columna iguala la del aire sobre la cubeta.',
+        [pa, ' = ', pt, ' + ', S.rho, ' · ', S.g, ' · ', S.h,
+          ...(inversa ? ['   ·   ', S.h, ' = ', frac([pa, ' − ', pt], [S.rho, ' · ', S.g])] : [])]);
+      cuentas = [paso(inversa ? 'Restamos las presiones antes de dividir.' : 'Sumamos la presión superior y la columna.',
+        final(inversa ? S.h : pa, inversa ? frac([q('p', c.pAtm), ' − ', q('p', c.pTop)], [q('rho', c.rho), ' · ', q('g', 10)])
+          : [q('p', c.pTop), ' + ', q('rho', c.rho), ' · ', q('g', 10), ' · ', q('h', c.h)], valor, k, u))];
+      errores = inversa ? [er('OMITE_SUPERIOR', c.pAtm / (c.rho * 10), 'omitiste la presión superior', 'omite presión superior'),
+        er('SUMA_SUPERIOR', (c.pAtm + c.pTop) / (c.rho * 10), 'sumaste las presiones en vez de restarlas', 'suma las presiones'),
+        er('DOS_COLUMNAS', valor / 2, 'contaste dos columnas en el mismo desnivel', 'cuenta dos columnas'),
+        er('SIN_GRAVEDAD', (c.pAtm - c.pTop) / c.rho, 'omitiste la aceleración gravitatoria', 'omite la gravedad')]
+        : [er('OMITE_SUPERIOR', c.rho * 10 * c.h, 'omitiste la presión superior', 'omite presión superior'),
+          er('DOBLE_COLUMNA', c.pTop + 2 * c.rho * 10 * c.h, 'contaste dos veces la columna', 'duplica la columna'),
+          er('MEDIA_COLUMNA', c.pTop + c.rho * 10 * c.h / 2, 'usaste la mitad de la altura', 'usa media altura'),
+          er('SIN_GRAVEDAD', c.pTop + c.rho * c.h, 'omitiste la aceleración gravitatoria', 'omite la gravedad')];
+    } else if (c.tipo.startsWith('dosliquidos')) {
+      const alto = c.hLigero ?? (c.volumenCm3 !== undefined ? c.volumenCm3 / 1e6 : c.mLigeroG / 1000 / c.rhoLigero) / (c.areaCm2 / 10000);
+      const densidad = c.tipo === 'dosliquidos-densidad';
+      const alturaBase = densidad ? alto - c.desnivel : c.rhoLigero * alto / c.rhoBase;
+      condiciones.push('Ramas de igual sección constante, abiertas al mismo aire; líquidos inmiscibles.');
+      dato('Densidad base: ', q('rho', c.rhoBase, 'kg/m³'), ...(densidad ? [] : ['; densidad añadida: ', q('rho', c.rhoLigero, 'kg/m³')]), '.');
+      if (c.hLigero !== undefined) dato('Columna añadida: ', q('h', c.hLigero, 'm'), ...(densidad ? ['; desnivel entre superficies: ', q('h', c.desnivel, 'm')] : []), '.');
+      else dato(c.volumenCm3 !== undefined ? 'Volumen añadido: ' : 'Masa añadida: ', q(c.volumenCm3 !== undefined ? 'V' : 'm', c.volumenCm3 ?? c.mLigeroG, c.volumenCm3 !== undefined ? 'cm³' : 'g'), '; área de cada rama: ', q('A', c.areaCm2, 'cm²'), '.');
+      if (densidad && c.hLigero === undefined) dato('Desnivel entre superficies: ', q('h', c.desnivel, 'm'), '.');
+      if (c.tipo === 'dosliquidos-ascenso') dato('Nivel inicial sobre el fondo: ', q('z', c.zInicial, 'm'), '.');
+      intermedios = { hLigero: alto, hBase: alturaBase };
+      k = densidad ? 'rho' : c.tipo === 'dosliquidos-ascenso' ? 'z' : 'h'; u = densidad ? 'kg/m³' : 'm';
+      valor = densidad ? c.rhoBase * alturaBase / alto : c.tipo === 'dosliquidos-desnivel' ? alto - alturaBase : alturaBase / 2 + (c.pide === 'nivel-final' ? c.zInicial : 0);
+      enunciado = densidad ? (c.volumenCm3 !== undefined ? 'Se conoce el volumen añadido al tubo en U. ¿Qué densidad tiene el líquido más ligero?' : 'Se añade un líquido inmiscible más ligero al tubo en U. ¿Qué densidad tiene ese líquido?')
+        : c.tipo === 'dosliquidos-desnivel' ? 'Se añade la columna ligera indicada. ¿Qué diferencia vertical queda entre las dos superficies libres?'
+          : c.pide === 'nivel-final' ? 'Se añade la masa indicada a la rama izquierda. ¿A qué altura sobre el fondo queda el líquido base en la derecha?'
+            : 'Se añade la columna ligera a la izquierda. ¿Cuánto sube la superficie de la rama derecha desde su posición inicial?';
+      const balance = [rl, ' · ', hl, ' = ', rb, ' · ', hb];
+      regla = paso('A la altura de la interfaz igualamos presiones; el aire común y la gravedad se cancelan.',
+        [...balance, '   ·   ', densidad ? rl : hb, ' = ', densidad ? frac([rb, ' · ', hb], hl) : frac([rl, ' · ', hl], rb)]);
+      if (c.mLigeroG !== undefined) regla.ecuacion.unshift(rl, ' = ', frac(S.m, S.V), '   ·   ', S.V, ' = ', frac(S.m, rl), '   ·   ', hl, ' = ', frac(S.V, S.A), '   ·   ');
+      if (c.volumenCm3 !== undefined) regla.ecuacion.unshift(S.V, ' = ', S.A, ' · ', hl, '   ·   ', hl, ' = ', frac(S.V, S.A), '   ·   ');
+      const preparacion = [];
+      if (c.volumenCm3 !== undefined) preparacion.push(hl, ' = ', frac([q('V', c.volumenCm3), ' ÷ 1000000'], [q('A', c.areaCm2), ' ÷ 10000']), ' = ', q('h', alto, 'm'), '   ·   ');
+      if (c.mLigeroG !== undefined) preparacion.push(S.V, ' = ', frac([q('m', c.mLigeroG), ' ÷ 1000'], q('rho', c.rhoLigero)), ' = ', q('V', c.mLigeroG / 1000 / c.rhoLigero, 'm³'), '   ·   ', hl, ' = ', frac(S.V, S.A), ' = ', frac(q('V', c.mLigeroG / 1000 / c.rhoLigero), [q('A', c.areaCm2), ' ÷ 10000']), ' = ', q('h', alto, 'm'), '   ·   ');
+      if (densidad) {
+        preparacion.push(hb, ' = ', hl, ' − ', dh, ' = ', q('h', alto), ' − ', q('h', c.desnivel), ' = ', q('h', alturaBase, 'm'));
+        cuentas = [paso('Reconstruimos las alturas desde los datos geométricos.', preparacion),
+          paso('Sustituimos las alturas medidas desde la interfaz.', final(rl, frac([q('rho', c.rhoBase), ' · ', q('h', alturaBase)], q('h', alto)), valor, k, u))];
+        errores = [er('USA_DESNIVEL', c.rhoBase * c.desnivel / alto, 'usaste el desnivel como columna base', 'confunde desnivel y columna'),
+          er('INVIERTE_ALTURAS', c.rhoBase * alto / alturaBase, 'invertiste la razón de alturas', 'invierte las alturas'),
+          er('IGUALA_DENSIDADES', c.rhoBase, 'supusiste iguales las densidades de ambos líquidos', 'iguala las densidades')];
+      } else {
+        preparacion.push(hb, ' = ', frac([q('rho', c.rhoLigero), ' · ', q('h', alto)], q('rho', c.rhoBase)), signo(alturaBase), Q('h', alturaBase, 'm', 3));
+        cuentas = [paso('Calculamos la columna base sobre la interfaz.', preparacion)];
+        if (c.tipo === 'dosliquidos-desnivel') {
+          cuentas.push(paso('Restamos las alturas desde la misma interfaz.', final(dh, [q('h', alto), ' − ', q('h', alturaBase)], valor, k, u)));
+          errores = [er('COLUMNA_BASE', alturaBase, 'respondiste la columna base sobre la interfaz', 'da la columna base'),
+            er('COLUMNA_LIGERA', alto, 'respondiste toda la columna añadida', 'da toda la columna'), er('NIVELES_IGUALES', 0, 'igualaste superficies de líquidos distintos', 'iguala las superficies')];
+        } else {
+          const base = c.pide === 'nivel-final' ? c.zInicial : 0;
+          cuentas.push(paso('La misma sección reparte el desnivel en dos movimientos iguales; añadimos el nivel inicial cuando corresponde.',
+            [hb, ' = 2 · ', dz, '   ·   ', dz, ' = ', frac(hb, '2'), ...(base ? ['   ·   ', zf, ' = ', z0, ' + ', dz] : []),
+              '   ·   ', ...final(base ? zf : dz, base ? [q('z', base), ' + ', frac(q('h', alturaBase), '2')] : frac(q('h', alturaBase), '2'), valor, k, u)]));
+          errores = [er('TODO_DESNIVEL', base + alturaBase, 'confundiste el desnivel con el ascenso individual', 'da todo el desnivel'),
+            er('OTRO_DESNIVEL', base + (alto - alturaBase) / 2, 'repartiste la diferencia entre superficies libres', 'reparte otro desnivel'),
+            er('IGUALA_DENSIDADES', base + alto / 2, 'supusiste iguales ambas densidades', 'iguala las densidades')];
+        }
+      }
+    } else if (c.tipo === 'capas-gas') {
+      const suma = c.capas.reduce((s, x) => s + x.rho * x.h, 0), aporteBase = c.rhoBase * 10 * c.hBase;
+      valor = c.pAtm + aporteBase - 10 * suma;
+      condiciones.push('Las capas son inmiscibles; la inferior es más densa. La rama derecha está abierta.');
+      dato('Aire: ', q('p', c.pAtm, 'Pa'), '; líquido base: ', q('rho', c.rhoBase, 'kg/m³'), '; altura sobre interfaz: ', q('h', c.hBase, 'm'), '.');
+      dato('Capa inferior: ', q('rho', c.capas[0].rho, 'kg/m³'), ' y ', q('h', c.capas[0].h, 'm'), '; superior: ', q('rho', c.capas[1].rho, 'kg/m³'), ' y ', q('h', c.capas[1].h, 'm'), '.');
+      enunciado = 'Un gas actúa sobre dos capas en la rama izquierda. ¿Cuál es su presión absoluta?';
+      const sumaSim = [sub(S.rho, '1'), ' · ', sub(S.h, '1'), ' + ', sub(S.rho, '2'), ' · ', sub(S.h, '2')];
+      regla = paso('Igualamos presiones en la interfaz inferior y despejamos la presión del gas.',
+        [pc, ' + ', S.g, ' · (', ...sumaSim, ') = ', pa, ' + ', rb, ' · ', S.g, ' · ', hb,
+          '   ·   ', pc, ' = ', pa, ' + ', rb, ' · ', S.g, ' · ', hb, ' − ', S.g, ' · (', ...sumaSim, ')']);
+      cuentas = [paso('Bajamos desde el aire y subimos por las dos capas.', final(pc,
+        [q('p', c.pAtm), ' + ', q('rho', c.rhoBase), ' · ', q('g', 10), ' · ', q('h', c.hBase), ' − ', q('g', 10), ' · (', q('rho', c.capas[0].rho), ' · ', q('h', c.capas[0].h), ' + ', q('rho', c.capas[1].rho), ' · ', q('h', c.capas[1].h), ')'], valor, k, u))];
+      errores = [er('INVIERTE_RECORRIDO', c.pAtm - aporteBase + 10 * suma, 'invertiste las subidas y bajadas', 'invierte el recorrido'),
+        er('SUMA_CAPAS', c.pAtm + aporteBase + 10 * suma, 'sumaste presión al subir por las capas', 'suma al subir'),
+        er('OMITE_SUPERIOR', valor + 10 * c.capas[1].rho * c.capas[1].h, 'omitiste la capa superior', 'omite la capa superior')];
+    } else if (c.tipo === 'barometro-calibracion') {
+      const densidad = (c.pAtm1 - c.pTop1) / (10 * c.h1), inversa = c.pide === 'altura';
+      k = inversa ? 'h' : 'p'; u = inversa ? 'm' : 'Pa';
+      valor = inversa ? (c.pAtm2 - c.pTop2) / (densidad * 10) : c.pTop2 + densidad * 10 * c.h2;
+      intermedios = { rho: densidad };
+      condiciones.push('El líquido conserva su densidad; la cubeta tiene superficie prácticamente inmóvil.');
+      dato('Al inicio: aire ', q('p', c.pAtm1, 'Pa'), ', arriba ', q('p', c.pTop1, 'Pa'), ' y altura ', q('h', c.h1, 'm'), '.');
+      dato('Después: arriba ', q('p', c.pTop2, 'Pa'), inversa ? ', aire ' : ', altura ', q(inversa ? 'p' : 'h', inversa ? c.pAtm2 : c.h2, inversa ? 'Pa' : 'm'), '.');
+      enunciado = inversa ? 'El primer estado calibra el líquido del barómetro. ¿Qué altura tendrá la columna en el segundo estado?' : 'El primer estado calibra el líquido del barómetro. ¿Qué presión tendrá el aire en el segundo estado?';
+      regla = paso('El primer equilibrio permite despejar la densidad; usamos la misma en el segundo.',
+        [sub(pa, '1'), ' = ', sub(pt, '1'), ' + ', S.rho, ' · ', S.g, ' · ', sub(S.h, '1'),
+          '   ·   ', S.rho, ' = ', frac([sub(pa, '1'), ' − ', sub(pt, '1')], [S.g, ' · ', sub(S.h, '1')])]);
+      cuentas = [paso('Calculamos la densidad a partir de la primera lectura.', final(S.rho,
+        frac([q('p', c.pAtm1), ' − ', q('p', c.pTop1)], [q('g', 10), ' · ', q('h', c.h1)]), densidad, 'rho', 'kg/m³')),
+        paso(inversa ? 'Despejamos la segunda altura y sustituimos.' : 'Sumamos la presión superior y la nueva columna.',
+          [inversa ? sub(S.h, '2') : sub(pa, '2'), ' = ', inversa ? frac([sub(pa, '2'), ' − ', sub(pt, '2')], [S.rho, ' · ', S.g]) : [sub(pt, '2'), ' + ', S.rho, ' · ', S.g, ' · ', sub(S.h, '2')],
+            '   ·   ', ...final(inversa ? sub(S.h, '2') : sub(pa, '2'), inversa ? frac([q('p', c.pAtm2), ' − ', q('p', c.pTop2)], [q('rho', densidad), ' · ', q('g', 10)])
+              : [q('p', c.pTop2), ' + ', q('rho', densidad), ' · ', q('g', 10), ' · ', q('h', c.h2)], valor, k, u)])];
+      const rhoSin = c.pAtm1 / (10 * c.h1), rhoSuma = (c.pAtm1 + c.pTop1) / (10 * c.h1);
+      errores = [er('OMITE_PRIMERA_SUPERIOR', inversa ? (c.pAtm2 - c.pTop2) / (rhoSin * 10) : c.pTop2 + rhoSin * 10 * c.h2, 'omitiste la presión superior al calibrar', 'omite presión al calibrar'),
+        er('OMITE_SEGUNDA_SUPERIOR', inversa ? c.pAtm2 / (densidad * 10) : densidad * 10 * c.h2, 'omitiste la presión superior del segundo estado', 'omite segunda presión superior'),
+        er('SUMA_PRIMERA_SUPERIOR', inversa ? (c.pAtm2 - c.pTop2) / (rhoSuma * 10) : c.pTop2 + rhoSuma * 10 * c.h2, 'sumaste las presiones al calibrar', 'suma al calibrar')];
+    } else throw new Error('Familia de columnas desconocida: ' + c.tipo);
+
+    const usados = new Set([mostrar(valor, u)]);
+    errores = errores.filter(e => { const s = mostrar(e.valor, u); if (!Number.isFinite(e.valor) || usados.has(s)) return false; usados.add(s); return true; }).slice(0, 3);
+    if (conOpciones && errores.length !== 3) throw new Error('Faltan tres errores distintos de columnas.');
+    const ops = conOpciones ? opciones(valor, errores.map(e => ({ valor: e.valor, error: 'FL12-C-' + e.operacion,
+      siFuera: 'Identificaste los datos; ' + e.causa + '. Obtienes ' + mostrar(e.valor, u) + '.' })), x => mostrar(x, u)) : [];
+    enunciado = [...entradas[0], ' ', enunciado];
+    const datos = [...condiciones, ...entradas.slice(1)];
+    return { enunciado, datos, dibujo: figura(c), pide: ['Busco ', V(k, k === 'p' ? 'la presión solicitada' : k === 'rho' ? 'la densidad añadida' : 'la medida vertical solicitada'), '.'],
+      tengo: unir(entradas), regla, cuentas, sentido: ['La respuesta es ', V(k, mostrar(valor, u)), ', según la referencia indicada.'],
+      respuesta: [V(k, mostrar(valor, u))], opciones: ops,
+      caso: { ...c, valor, unidad: u, intermedios, errores: errores.map(({ operacion, valor }) => ({ operacion, valor })) },
+      erroresEjemplo: errores.map(e => mostrar(e.valor, u) + ': ' + e.corto).join('; ') + '.' };
+  }
+
+  // Las entradas de ejemplo se mantienen explícitas para su auditoría independiente.
+  const muestras = [
+    {"tipo":"manometro-gauge","rho":1000,"g":10,"h":0.18,"sentido":1,"pAtm":100000,"titulo":"Una diferencia positiva"},
+    {"tipo":"manometro-gauge","rho":1200,"g":10,"h":0.05,"sentido":-1,"pAtm":100000,"titulo":"Una cámara por debajo del aire"},
+    {"tipo":"manometro-absoluta","rho":800,"g":10,"h":0.125,"sentido":1,"pAtm":96000,"titulo":"La referencia del aire"},
+    {"tipo":"barometro-presion","rho":13600,"g":10,"h":0.7,"pTop":0,"titulo":"Una columna con cámara vacía"},
+    {"tipo":"barometro-presion","rho":12500,"g":10,"h":0.64,"pTop":2000,"titulo":"La presión sobre la columna"},
+    {"tipo":"barometro-altura","rho":13600,"g":10,"pAtm":104000,"pTop":2000,"titulo":"Despejar la altura"},
+    {"tipo":"dosliquidos-desnivel","rhoLigero":750,"rhoBase":1000,"hLigero":0.16,"titulo":"Dos superficies diferentes"},
+    {"tipo":"manometro-gauge","rhoGcm3":0.9,"hCm":8,"g":10,"sentido":-1,"pAtm":100000,"titulo":"Densidad y longitud en otras unidades"},
+    {"tipo":"dosliquidos-densidad","rhoBase":1200,"hLigero":0.2,"desnivel":0.05,"titulo":"Reconstruir la densidad"},
+    {"tipo":"dosliquidos-ascenso","rhoLigero":600,"rhoBase":1000,"hLigero":0.1,"zInicial":0.18,"pide":"ascenso","titulo":"El movimiento de una rama"},
+    {"tipo":"barometro-calibracion","g":10,"pAtm1":100000,"pTop1":2000,"h1":0.7,"pTop2":3000,"h2":0.65,"pide":"presion","titulo":"Calibrar antes de comparar"},
+    {"tipo":"capas-gas","rhoBase":1000,"g":10,"hBase":0.3,"pAtm":100000,"capas":[{"rho":800,"h":0.15},{"rho":600,"h":0.1}],"titulo":"Dos capas bajo un gas"},
+    {"tipo":"dosliquidos-ascenso","rhoLigero":600,"rhoBase":1000,"mLigeroG":300,"areaCm2":25,"zInicial":0.22,"pide":"nivel-final","titulo":"Masa añadida y nivel final"},
+    {"tipo":"dosliquidos-densidad","rhoBase":1200,"volumenCm3":360,"areaCm2":24,"desnivel":0.045,"titulo":"Del volumen a la densidad"},
+    {"tipo":"barometro-calibracion","g":10,"pAtm1":98000,"pTop1":2000,"h1":0.64,"pTop2":2000,"pAtm2":104000,"pide":"altura","titulo":"Una nueva altura tras calibrar"}
+  ];
+
+  const familias = ['manometro-gauge', 'manometro-absoluta', 'barometro-presion', 'barometro-altura', 'dosliquidos-desnivel', 'dosliquidos-densidad', 'dosliquidos-ascenso', 'capas-gas', 'barometro-calibracion'];
+  function generar(semilla, practica) {
+    const r = azar(semilla + (practica ? 27000 : 19000));
+    const primeras = practica ? [1, 3, 5, 6, 8] : [0, 2, 4, 7];
+    for (let intento = 0; intento < 100; intento++) {
+      const tipo = familias[semilla < (practica ? 12 : 4) ? primeras[semilla % primeras.length] : r.ent(0, 8)];
+      const base = r.de(practica ? [1040, 1120, 1440] : [960, 1080, 1280]);
+      const h = r.de([0.04, 0.08, 0.12, 0.16, 0.2]), atm = r.de(practica ? [93000, 101000, 109000] : [91000, 99000, 107000]);
+      const razon = r.de([0.25, 0.6, 0.75]), ligero = base * razon;
+      let c = { tipo };
+      if (tipo.startsWith('manometro')) c = { ...c, rho: base, h, sentido: r.de([-1, 1]), pAtm: atm };
+      if (tipo === 'barometro-presion') c = { ...c, rho: base * 10, h: r.de([0.55, 0.6, 0.65, 0.8]), pTop: practica ? 1500 : 2500 };
+      if (tipo === 'barometro-altura') { const rho = base * 10, pTop = practica ? 1500 : 2500; c = { ...c, rho, pTop, pAtm: pTop + rho * 10 * r.de([0.45, 0.5, 0.6, 0.8]) }; }
+      if (tipo === 'dosliquidos-desnivel') c = { ...c, rhoLigero: ligero, rhoBase: base, hLigero: h };
+      if (tipo === 'dosliquidos-densidad') c = { ...c, rhoBase: base, hLigero: h, desnivel: Number((h * (1 - razon)).toFixed(8)) };
+      if (tipo === 'dosliquidos-ascenso') c = { ...c, rhoLigero: ligero, rhoBase: base, hLigero: h, zInicial: practica ? 0.24 : 0.16, pide: practica ? 'nivel-final' : 'ascenso' };
+      if (tipo === 'capas-gas') c = { ...c, rhoBase: base, hBase: 0.24, pAtm: atm, capas: [{ rho: base * 0.75, h: 0.12 }, { rho: base * 0.5, h: h / 2 }] };
+      if (tipo === 'barometro-calibracion') { const rho = base * 10, h1 = r.de([0.5, 0.6, 0.8]), pTop1 = practica ? 1700 : 2300, pTop2 = practica ? 3100 : 3700;
+        c = { ...c, pAtm1: pTop1 + rho * 10 * h1, pTop1, h1, pTop2, ...(practica ? { pAtm2: pTop2 + rho * 10 * 0.7, pide: 'altura' } : { h2: 0.7, pide: 'presion' }) }; }
+      const resultado = calcular(c, practica);
+      if (practica && resultado.caso.errores.some(e => e.valor !== 0 && (Math.abs(e.valor / resultado.caso.valor) < 0.05 || Math.abs(e.valor / resultado.caso.valor) > 20))) continue;
+      return practica ? pregunta(resultado) : resuelto(resultado);
+    }
+    throw new Error('No se encontró un caso de columnas con opciones distintas.');
+  }
+
+  const presionControl = v => Number(Number(v.p).toFixed(0));
+  const juego = v => { const p = presionControl(v), h = p / 10000;
+    return tubo([0.2 - h / 2], [0.2 + h / 2], [
+      { x: 85, y: 24, texto: 'ρ = 1000 kg/m³', color: 'f' }, { x: 235, y: 24, texto: 'g = 10 m/s²', color: 'h' },
+      { ref: 'izquierda', texto: 'Cámara' }, { ref: 'derecha', texto: 'Aire exterior' },
+      { texto: 'p = ' + fmt(p) + ' Pa', fila: 1, color: 'i' },
+      { texto: 'h' + signo(h * 100) + fmt(h * 100) + ' cm', fila: 2, color: 'd' }
+    ], true, { alt: 'Un manómetro compara la cámara con el aire. Ambas superficies se desplazan conservando el volumen del líquido.' }); };
+  const inicial = tubo([0.2], [0.2], [{ texto: 'Antes de añadir el líquido' }], false,
+    { alt: 'Antes de verter, el mismo líquido alcanza igual nivel en ambas ramas abiertas.' });
+  const hp = 0.15, rhoP = 800, rhoB = 1000, hbP = rhoP * hp / rhoB, dp = hp - hbP;
+  const revelada = tubo([0.2 - hbP / 2, hp], [0.2 + hbP / 2], [
+    { ref: 'izquierda', texto: 'Ligero: 800 kg/m³', color: 'f' }, { ref: 'derecha', texto: 'Base: 1000 kg/m³', color: 'f' },
+    { texto: 'Entre superficies: ' + fmt(dp * 100) + ' cm', fila: 1, color: 'd' },
+    { texto: 'Ascenso derecho: ' + fmt(hbP * 50) + ' cm', fila: 2, color: 'd' }
+  ], false, { alt: 'Después de añadir el líquido ligero, la diferencia entre superficies es ' + fmt(dp * 100) + ' cm y la superficie derecha sube ' + fmt(hbP * 50) + ' cm.' });
+
+  glosario.push(
+    { termino: 'manómetro', formas: ['manómetro', 'manómetros'], simple: 'Instrumento que compara presiones mediante una lectura.', def: 'Instrumento que permite medir la presión de un fluido respecto de una referencia.', ejemplos: ['Un manómetro conecta una cámara con el aire exterior.', 'Un tubo en U permite observar dos superficies líquidas.', 'La referencia debe indicarse junto con la lectura.'] },
+    { termino: 'barómetro', formas: ['barómetro', 'barómetros'], simple: 'Instrumento que mide la presión del aire exterior.', def: 'Instrumento usado para medir la presión atmosférica, por ejemplo mediante una columna de líquido.', ejemplos: ['Un barómetro de líquido incluye un tubo y una cubeta.', 'La parte superior del tubo tiene una presión que debe especificarse.', 'La columna se mide desde la superficie de la cubeta.'] },
+    { termino: 'interfaz', formas: ['interfaz', 'interfaces'], simple: 'Superficie que separa dos materiales en contacto.', def: 'Superficie de contacto entre dos medios, como dos líquidos inmiscibles.', ejemplos: ['Dos líquidos que no se mezclan tienen una interfaz visible.', 'Una interfaz sirve como referencia para medir una columna.', 'Una superficie entre líquido y gas también es una interfaz.'] },
+    { termino: 'vasos comunicantes', formas: ['vasos comunicantes'], simple: 'Recipientes unidos por una conexión que permite pasar líquido.', def: 'Conjunto de recipientes conectados por una región por la que puede circular un líquido.', ejemplos: ['Las dos ramas de un tubo en U están comunicadas por abajo.', 'Dos recipientes pueden comunicarse mediante un tubo.', 'Una válvula cerrada interrumpe la comunicación entre recipientes.'] }
+  );
+
+  return {
+    id: 'vasos-comunicantes', titulo: 'Leer columnas de líquido', pregunta: '¿Qué información contienen las alturas de un líquido conectado?',
+    temas: ['Manómetro, barómetro y vasos comunicantes'], pieza: 'fis-fluidos-e12',
+    aprendizaje: 'Relaciono presiones mediante columnas y distingo una altura desde la interfaz del movimiento de una superficie.',
+    actividad: 'Cambiar la presión de una cámara y observar dos superficies conectadas.',
+    lee: { tarjetas: [
+      { titulo: 'Dos superficies y una conexión', texto: 'Los vasos comunicantes permiten que un líquido pase de una rama a otra. El tubo en U sirve como manómetro: una rama se conecta a la cámara y la otra al aire.', dibujo: juego({ p: 0 }) },
+      { titulo: 'Desde dónde se mide', texto: ['Una altura ', S.h, ' necesita dos niveles de referencia. La interfaz separa materiales en contacto. El ascenso de una superficie se mide desde su posición anterior, no desde otra superficie.'] },
+      { titulo: 'Comparar y medir', texto: 'El manómetro compara la cámara con el aire exterior. El barómetro mide la presión del aire. En ambos casos importa qué hay sobre cada columna; no se supone un vacío sin indicarlo.' }
+    ] },
+    ejemplos: muestras.map((c, i) => ejemplo(calcular(c, i >= 10), Math.floor(i / 5) + 1, c.titulo, i - 10)),
+    juega: { pieza: 'fis-fluidos-e12', consigna: 'Ajusta lentamente la presión añadida en la cámara y compara los niveles de las dos ramas.', voz: 'Observa la diferencia entre superficies, no el movimiento de una sola.',
+      mision: { texto: 'Consigue un desnivel de 10 cm entre las superficies.', logrado: v => presionControl(v) === 1000, bien: 'La separación entre las superficies llegó a 10 cm.', pista: 'Cambia la presión y lee el desnivel completo.' },
+      controles: [{ id: 'p', etiqueta: 'Presión manométrica, p', min: 0, max: 1500, paso: 500, inicio: 0, decimales: 0, unidad: 'Pa', color: 'c-i', auto: { velocidad: 250 } }],
+      leyenda: [{ s: S.p, t: 'presión de la cámara respecto al aire exterior' }, { s: S.h, t: 'desnivel completo entre las superficies' },
+        { s: S.rho, t: 'densidad del líquido: 1000 kg/m³' }, { s: S.g, t: 'gravedad del modelo: 10 m/s²' },
+        { s: 'Modelo', t: 'ramas iguales; cambio lento entre estados de equilibrio' }],
+      dibujo: juego, lectura: v => ['El desnivel ', S.h, ' = ', Q('h', presionControl(v) / 100, 'cm', 3), ' crece con ', S.p, '.'], resumen: { p: 500 }, minimo: 3 },
+    predice: { pregunta: ['Se añaden ', q('h', hp * 100, 'cm'), ' de líquido de ', q('rho', rhoP, 'kg/m³'), ' sobre otro de ', q('rho', rhoB, 'kg/m³'), '. ¿Cuánto más alta queda su superficie que la de la otra rama?'],
+      datos: ['Ambas ramas están abiertas al mismo aire; los líquidos no se mezclan.', 'La figura muestra el estado previo a añadir el segundo líquido.', 'El líquido está en reposo; se desprecia la capilaridad.'], dibujo: inicial, revelar: revelada,
+      opciones: opciones(dp * 100, [
+        { valor: hbP * 100, error: 'FL12-C-COLUMNA_BASE', siFuera: 'Relacionaste ambas columnas; respondiste la altura sobre la interfaz: ' + fmt(hbP * 100) + ' cm.' },
+        { valor: hp * 100, error: 'FL12-C-COLUMNA_LIGERA', siFuera: 'Identificaste la columna añadida; esa longitud completa mide ' + fmt(hp * 100) + ' cm.' },
+        { valor: 0, error: 'FL12-C-NIVELES_IGUALES', siFuera: 'Reconociste el mismo aire; impusiste superficies iguales pese a las distintas densidades: 0 cm.' }
+      ], x => fmt(x) + ' cm'), coincide: 'Coincide: primero comparamos columnas desde la interfaz; después restamos sus alturas.' },
+    mira: { pieza: 'fis-fluidos-e12', datos: revelada.datos, pasos: [
+      { estado: { paso: 0 }, texto: 'A la altura de la interfaz, el líquido base comunicado tiene igual presión.', ecuacion: [pa, ' + ', rl, ' · ', S.g, ' · ', hl, ' = ', pa, ' + ', rb, ' · ', S.g, ' · ', hb] },
+      { estado: { paso: 1 }, texto: 'Cancelamos aire y gravedad comunes; despejamos la altura de la columna base.', ecuacion: [hb, ' = ', frac([rl, ' · ', hl], rb), ' = ', frac([q('rho', rhoP), ' · ', q('h', hp)], q('rho', rhoB)), ' = ', q('h', hbP, 'm')] },
+      { estado: { paso: 2 }, texto: 'La diferencia entre superficies resta alturas medidas desde la misma interfaz.', ecuacion: [dh, ' = ', hl, ' − ', hb, ' = ', q('h', hp), ' − ', q('h', hbP), ' = ', q('h', dp, 'm')] },
+      { estado: { paso: 3 }, texto: 'En ramas iguales, una superficie baja lo mismo que sube la otra.', ecuacion: [dz, ' = ', frac(hb, '2'), ' = ', frac(q('h', hbP), '2'), ' = ', q('z', hbP / 2, 'm')] },
+      { estado: { datos: barometro({ pTop: 2000 }, false).datos }, texto: 'En un barómetro sumamos la presión superior; no siempre es despreciable.', ecuacion: [pa, ' = ', pt, ' + ', S.rho, ' · ', S.g, ' · ', S.h] }
+    ] },
+    regla: { texto: 'Al bajar por un líquido aumenta la presión; al subir disminuye. Igualamos presiones donde corresponde y medimos cada altura desde referencias explícitas.',
+      ecuacion: [sub(S.p, 'abajo'), ' = ', sub(S.p, 'arriba'), ' + ', S.rho, ' · ', S.g, ' · ', S.h, '   ·   ', rl, ' · ', hl, ' = ', rb, ' · ', hb],
+      condicion: 'Fluidos en reposo, densidades constantes y gravedad uniforme. La igualdad de columnas requiere la misma presión sobre ambas superficies.',
+      voz: 'El ascenso individual y la diferencia entre superficies son medidas distintas.', dibujo: revelada },
+    resuelve: { pieza: 'fis-fluidos-e12', generar: s => generar(s, false) },
+    ahoraTu: { pieza: 'fis-fluidos-e12', generar: s => generar(s, true) }
+  };
+})();
+
   return {
     unidad:'fisica.fluidos', version:'1.0.0', estado:'borrador',
     colores: COLORES,
@@ -355,6 +671,6 @@ const idea1 = (() => {
       fuente:{titulo:'Museo Galileo: el experimento de Torricelli',url:'https://catalogue.museogalileo.it/indepth/TorricellianExperiment.html'},
     },
     
-    ideas:[idea1],
+    ideas:[idea1, idea2],
   };
 });
