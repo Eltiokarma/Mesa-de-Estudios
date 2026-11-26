@@ -102,3 +102,20 @@ test('auditoría: sin «electrónes», «cambian 1 electrón» ni «tiene ningú
     assert.ok(!/electrónes|cambian 1 electrón|tiene ningún|grupo \d+ \([IV]+A\)/.test(t), `${idea} ${s}: ${t.match(/electrónes|cambian 1 electrón|tiene ningún|grupo \d+ \([IV]+A\)/)}`);
   }
 });
+
+// Verificación de la pasada de redacción (26 nov, rutinas/redaccion/quimica.enlace-quimico.md): en la carga formal, el
+// error EN7 (tomar la carga de la especie entera) da esa carga; antes el O₃ y el NH₄⁺ daban «+2», que no salía de ningún
+// error. El NH₄⁺ sigue saliendo, con el error de no restar los enlaces en su lugar.
+test('redacción: EN7 de la carga formal da la carga de la especie; el NH₄⁺ sigue saliendo', () => {
+  const CARGA = { 'NO₃⁻': '−1', 'CO₃²⁻': '−2', 'O₃': '0', 'NH₄⁺': '+1' }, vistas = new Set();
+  for (let s = 0; s < 800; s++) {
+    const p = gen.generar(s, { idea: gen.TIPOS_POR_IDEA['carga-formal'] ? 'carga-formal' : Object.keys(gen.TIPOS_POR_IDEA).find(k => gen.TIPOS_POR_IDEA[k].includes('carga-formal')) }), d = p._datos;
+    if (d.tipo !== 'carga-formal') continue;
+    vistas.add(d.sp);
+    for (const a of p.alternativas) {
+      if (a.error && a.error.id === 'EN7') assert.equal(a.texto, CARGA[d.sp], `${s} ${d.sp}`);
+      if (a.error && a.error.id === 'QM-CF-SIN-ENLACES') { const c = d.va - d.li; assert.equal(a.texto, c === 0 ? '0' : `${c > 0 ? '+' : '−'}${Math.abs(c)}`); }
+    }
+  }
+  for (const sp of Object.keys(CARGA)) assert.ok(vistas.has(sp), sp);
+});

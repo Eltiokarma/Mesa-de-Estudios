@@ -14,7 +14,8 @@
  *   resonancia           cuantas-estructuras (1) · orden-promedio (2) · carga-formal (3)
  * Colores (los de la unidad): Z naranja, electronegatividad turquesa, electrones violeta, carga carmín.
  * Errores: EN1 a EN7 de docs/investigacion/atomo-enlace-ideas-erroneas.md y los QM- de la teoría (hipótesis). Cada
- * explicación empieza por lo que el alumno hizo bien. Respuesta: p.respuesta.valor es el texto de la alternativa correcta.
+ * explicación dice qué haría falta para que esa alternativa fuera cierta, o reconoce en una oración completa lo que el
+ * alumno hizo bien y dice qué falló (redacción, 26 nov: sin el molde «Bien X. Pero Y.»). Respuesta: p.respuesta.valor es el texto de la alternativa correcta.
  * Nada de nombres de compuestos (Nomenclatura inorgánica viene después): se dicen por su fórmula.
  * Cuentas comprobadas con un script aparte (casos.json, «verificacion») y con el recálculo de generador.test.js.
  */
@@ -36,7 +37,7 @@
     ['Ca', 'calcio', 2, 2, 1.00, 1], ['Br', 'bromo', 17, 7, 2.96, 0], ['I', 'yodo', 17, 7, 2.66, 0], ['Xe', 'xenón', 18, 8, 2.60, 0], ['Fe', 'hierro', 8, 2, 1.83, 1],
     ['Cu', 'cobre', 11, 1, 1.90, 1], ['Zn', 'cinc', 12, 2, 1.65, 1], ['Ag', 'plata', 11, 1, 1.93, 1]]
     .forEach(([s, nombre, g, val, en, met]) => { EL[s] = { s, nombre, g, val, en, metal: !!met }; });
-  const SUB = { 1: '', 2: '₂', 3: '₃', 4: '₄', 5: '₅', 6: '₆' }, SUP = { 1: '', 2: '²', 3: '³' };
+  const SUB = { 1: '', 2: '₂', 3: '₃', 4: '₄', 5: '₅', 6: '₆' }, SUP = { 1: '', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷' };
   const f2 = x => (Math.round(x * 100) / 100).toFixed(2).replace('.', ',');
   // El grupo con su número, como en la teoría, y «electrones» sin tilde (auditoría, 19 nov).
   const eTxt = k => (k === 1 ? '1 electrón' : `${k} electrones`);
@@ -101,38 +102,39 @@
   const SUSTANCIAS = [['KBr', ['K', 'Br']], ['Fe', ['Fe']], ['CO₂', ['C', 'O']], ['MgO', ['Mg', 'O']], ['Al', ['Al']], ['NH₃', ['N', 'H']], ['CaF₂', ['Ca', 'F']], ['Cl₂', ['Cl']],
     ['Cu', ['Cu']], ['CH₄', ['C', 'H']], ['Li₂O', ['Li', 'O']], ['H₂S', ['H', 'S']], ['Zn', ['Zn']], ['NaI', ['Na', 'I']], ['KCl', ['K', 'Cl']], ['Ag', ['Ag']], ['PCl₃', ['P', 'Cl']], ['CaO', ['Ca', 'O']]];
   function tipoElementos(rng) {
-    const [fo, els] = rng.elegir(SUSTANCIAS), t = tipoDe(els), quien = els.length === 1 && fo === els[0] ? `del ${EL[fo].nombre} (${fo})` : `del ${fo}`;
-    const SI = { ionico: ['QM-IONICO-MAL', 'Sería iónico si se uniera un metal con un no metal.'], covalente: ['EN5', 'Sería covalente si solo hubiera no metales.'], metalico: ['QM-TIPO-METAL', 'Sería metálico si fuera un metal solo.'] };
+    const [fo, els] = rng.elegir(SUSTANCIAS), t = tipoDe(els), quien = els.length === 1 && fo === els[0] ? `${fo === 'Ag' ? 'de la' : 'del'} ${EL[fo].nombre} (${fo})` : `del ${fo}`;
+    const hay = els.map(s => `${s} (${EL[s].metal ? 'metal' : 'no metal'})`).join(' y ');
+    const SI = { ionico: ['QM-IONICO-MAL', 'Sería iónico si se unieran un metal y un no metal.'], covalente: ['EN5', 'Sería covalente si solo hubiera no metales.'], metalico: ['QM-TIPO-METAL', 'Sería metálico si hubiera un metal solo.'] };
     return { correcta: TIPO[t], _datos: { fo, els },
-      enunciado: [`Las partículas ${quien}.`], pregunta: ['¿Qué tipo de enlace las une?'], datos: [D.metales, D.noMetales],
-      errores: [...Object.keys(TIPO).filter(k => k !== t).map(k => err(SI[k][0], TIPO[k], `Bien mirar los elementos. ${SI[k][1]}`)),
-        err('QM-SIN-ENLACE', 'Ninguno: sus átomos están sueltos', 'Es una sustancia estable: sus partículas están unidas.')],
-      solucion: [[{ ionico: 'Un metal con un no metal: iones que se atraen.', covalente: 'Solo no metales: comparten pares de electrones.', metalico: 'Un metal solo: un mar de electrones.' }[t]],
-        [`${fo}: ${els.map(s => `${s} ${EL[s].metal ? 'metal' : 'no metal'}`).join(', ')}.`]] };
+      enunciado: [`Piensa en las partículas ${quien}.`], pregunta: ['¿Qué tipo de enlace las une?'], datos: [D.metales, D.noMetales],
+      errores: [...Object.keys(TIPO).filter(k => k !== t).map(k => err(SI[k][0], TIPO[k], `${SI[k][1]} Aquí hay ${hay}.`)),
+        err('QM-SIN-ENLACE', 'Ninguno: sus átomos están sueltos', 'Sería así si sus átomos anduvieran sueltos. Aquí están unidos y forman una sustancia estable.')],
+      solucion: [[els.length === 1 ? `La sustancia ${fo} tiene un solo elemento: ${hay}.` : `En el ${fo} hay ${hay}.`],
+        [{ ionico: 'Un metal y un no metal forman iones que se atraen: enlace iónico.', covalente: 'Solo hay no metales, así que comparten pares de electrones: enlace covalente.', metalico: 'Es un metal solo: sus electrones se mueven entre los átomos como un mar. Es enlace metálico.' }[t]]] };
   }
   const PARES_DELTA = [['H', 'Cl'], ['H', 'O'], ['N', 'H'], ['C', 'O'], ['P', 'Cl'], ['C', 'Cl'], ['S', 'O'], ['H', 'Br'], ['C', 'N'], ['H', 'S'], ['O', 'F'], ['N', 'Cl'], ['C', 'H'], ['B', 'F'], ['P', 'O'], ['C', 'F']];
   function deltaSigno(rng) {
     const [a, b] = rng.barajar(rng.elegir(PARES_DELTA)), m = EL[a].en > EL[b].en ? a : b, o = m === a ? b : a;
     return { correcta: `El ${EL[m].nombre}`, _datos: { a, b },
-      enunciado: [`El enlace ${a}–${b}.`], pregunta: ['¿Qué átomo queda con ', v('q', 'carga parcial negativa (δ−)'), '?'], datos: [enTxt([a, b])],
-      errores: [err('QM-DELTA-SIGNO', `El ${EL[o].nombre}`, `Bien buscar quién jala. Pero el par va hacia el de mayor EN: el ${m}.`),
-        err('QM-DELTA-CERO', 'Ninguno: comparten el par por igual', 'Comparten el par, cierto. Pero no por igual: jalan distinto.'),
-        err('QM-DELTA-LOS-DOS', 'Los dos: el par está entre ellos', 'El par está entre ellos, cierto. Pero se corre hacia uno solo.')],
-      solucion: [[`El par se corre hacia el ${m}, que jala más.`], [v('EN', `EN (${m}) = ${f2(EL[m].en)}`), ' > ', v('EN', `EN (${o}) = ${f2(EL[o].en)}`)]] };
+      enunciado: [`Dos átomos forman el enlace ${a}–${b}.`], pregunta: ['¿Qué átomo queda con ', v('q', 'carga parcial negativa (δ−)'), '?'], datos: [enTxt([a, b])],
+      errores: [err('QM-DELTA-SIGNO', `El ${EL[o].nombre}`, `Sería así si el ${EL[o].nombre} tuviera la mayor EN. El par se corre hacia el ${EL[m].nombre}, que jala más.`),
+        err('QM-DELTA-CERO', 'Ninguno: comparten el par por igual', 'Sería así si los dos jalaran igual. Comparten el par, pero sus EN son distintas.'),
+        err('QM-DELTA-LOS-DOS', 'Los dos: el par está entre ellos', 'Sería así si el par quedara al medio, pero se corre hacia el átomo de mayor EN.')],
+      solucion: [[`El par se corre hacia el ${EL[m].nombre}, que jala más, y ahí queda la carga parcial negativa.`], [v('EN', `EN (${m}) = ${f2(EL[m].en)}`), ' > ', v('EN', `EN (${o}) = ${f2(EL[o].en)}`)]] };
   }
   const PARES_DEN = [['Na', 'Cl'], ['K', 'F'], ['Mg', 'O'], ['Ca', 'O'], ['Li', 'F'], ['K', 'Cl'], ['K', 'Br'], ['Na', 'F'], ['H', 'Cl'], ['H', 'O'], ['N', 'H'], ['C', 'O'], ['P', 'Cl'], ['C', 'Cl'], ['S', 'O'],
     ['Cl', 'Cl'], ['O', 'O'], ['N', 'N'], ['H', 'H'], ['F', 'F'], ['Br', 'Br']];
   const DEN = { ionico: 'Iónico', polar: 'Covalente polar', apolar: 'Covalente apolar' };
   function tipoDen(rng) {
     const [a, b] = rng.barajar(rng.elegir(PARES_DEN)), d = Math.round(Math.abs(EL[a].en - EL[b].en) * 100) / 100, t = a === b ? 'apolar' : d >= 1.7 ? 'ionico' : 'polar';
-    const SI = { ionico: ['QM-DEN-IONICO', 'Sería iónico con 1,7 o más, entre un metal y un no metal.'], polar: ['QM-POL-IGUALES', 'Sería polar si los dos jalaran distinto.'], apolar: ['QM-APOLAR-DIST', 'Sería apolar si jalaran igual: ΔEN = 0.'] };
+    const SI = { ionico: ['QM-DEN-IONICO', 'Sería iónico si se unieran un metal y un no metal, con una ΔEN de 1,7 o más.'], polar: ['QM-POL-IGUALES', 'Sería covalente polar si fueran dos no metales distintos, con una ΔEN menor que 1,7.'], apolar: ['QM-APOLAR-DIST', 'Sería apolar si los dos átomos jalaran igual, con una ΔEN de 0.'] };
     return { correcta: DEN[t], _datos: { a, b },
-      enunciado: [a === b ? `Los dos átomos de la molécula ${a}₂.` : `El enlace entre ${EL[a].nombre} y ${EL[b].nombre} (${a}–${b}).`], pregunta: ['¿Qué tipo de enlace es?'],
+      enunciado: [a === b ? `Dos átomos iguales forman la molécula ${a}₂.` : `El ${EL[a].nombre} y el ${EL[b].nombre} se unen en el enlace ${a}–${b}.`], pregunta: ['¿Qué tipo de enlace es?'],
       datos: [enTxt([a, b]), D.delta, D.guia],
-      errores: [...Object.keys(DEN).filter(k => k !== t).map(k => err(SI[k][0], DEN[k], `Bien calcular ΔEN. ${SI[k][1]}`)), err('QM-TIPO-METAL', 'Metálico', 'Sería metálico si los dos fueran metales.')],
-      solucion: [[a === b ? 'Dos átomos iguales jalan igual el par.' : `Resto: ${f2(Math.max(EL[a].en, EL[b].en))} − ${f2(Math.min(EL[a].en, EL[b].en))}.`], ['ΔEN = ', v('EN', f2(d)), `: ${DEN[t].toLowerCase()}.`]] };
+      errores: [...Object.keys(DEN).filter(k => k !== t).map(k => err(SI[k][0], DEN[k], SI[k][1])), err('QM-TIPO-METAL', 'Metálico', 'Sería metálico si los dos átomos fueran de un metal.')],
+      solucion: [[a === b ? 'Los dos átomos son iguales y jalan igual el par.' : `Resto las electronegatividades: ${f2(Math.max(EL[a].en, EL[b].en))} − ${f2(Math.min(EL[a].en, EL[b].en))}.`], ['ΔEN = ', v('EN', f2(d)), `: ${DEN[t].toLowerCase()}.`]] };
   }
-  const PROPS = [['ionico', 'Un sólido blanco y duro funde a unos 770 °C. Sólido no conduce la corriente; disuelto en agua, sí.'],
+  const PROPS = [['ionico', 'Un sólido blanco y duro funde a unos 770 °C. No conduce la corriente cuando está sólido; disuelto en agua, sí.'],
     ['ionico', 'Un sólido funde a unos 2800 °C, se quiebra al golpearlo y conduce la corriente solo cuando está fundido.'],
     ['metalico', 'Un sólido brillante funde a unos 1085 °C, se deja estirar en alambres y conduce la corriente en estado sólido.'],
     ['metalico', 'Un sólido gris funde a unos 660 °C, se lamina en hojas delgadas y conduce la corriente y el calor.'],
@@ -140,11 +142,11 @@
     ['covalente', 'Un líquido hierve a unos 77 °C, no conduce la corriente y no se mezcla con el agua.']];
   function tipoPropiedades(rng) {
     const i = rng.entero(0, PROPS.length - 1), [t, txt] = PROPS[i];
-    const SI = { ionico: ['QM-CONDUCE-IONICO', 'Un iónico conduce fundido o disuelto, nunca sólido.'], covalente: ['QM-PF-ALTO', 'Un covalente molecular funde bajo y no conduce.'], metalico: ['QM-CONDUCE-METAL', 'Un metal conduce también sólido.'] };
+    const SI = { ionico: ['QM-CONDUCE-IONICO', 'Sería iónico si condujera fundido o disuelto, pero nunca sólido.'], covalente: ['QM-PF-ALTO', 'Sería covalente molecular si fundiera a baja temperatura y no condujera.'], metalico: ['QM-CONDUCE-METAL', 'Sería metálico si condujera la corriente también en estado sólido.'] };
     return { correcta: TIPO[t], _datos: { i },
       enunciado: [txt], pregunta: ['¿Qué tipo de enlace tiene?'], datos: [D.props],
-      errores: [...Object.keys(TIPO).filter(k => k !== t).map(k => err(SI[k][0], TIPO[k], `Bien mirar la conducción. ${SI[k][1]}`)), err('QM-SIN-LEY', 'No se puede saber sin su fórmula', 'Las propiedades ya lo dicen: la conducción y la fusión.')],
-      solucion: [[{ ionico: 'Conduce solo fundido o disuelto: sus iones se mueven recién ahí.', metalico: 'Conduce sólido: tiene electrones que se mueven.', covalente: 'Funde bajo y no conduce: son moléculas sin carga.' }[t]]] };
+      errores: [...Object.keys(TIPO).filter(k => k !== t).map(k => err(SI[k][0], TIPO[k], SI[k][1])), err('QM-SIN-LEY', 'No se puede saber sin su fórmula', 'Sí se puede: la fusión y la manera de conducir la corriente delatan el tipo de enlace.')],
+      solucion: [[{ ionico: 'Conduce solo fundido o disuelto, porque recién ahí sus iones se mueven: es iónico.', metalico: 'Conduce en estado sólido porque tiene electrones que se mueven: es metálico.', covalente: 'Cambia de estado a baja temperatura y no conduce, porque es de moléculas sin carga: es covalente.' }[t]]] };
   }
 
   // ---- Idea 2: enlace iónico ----
@@ -159,28 +161,28 @@
     const s = rng.elegir([...MET, 'F', 'Cl', 'Br', 'O', 'S', 'N']), q = qIon(s), val = EL[s].val, met = EL[s].metal, t = q2 => `${s}${cargaSup(q2)}`;
     return { correcta: t(q), _datos: { s },
       enunciado: [`El ${EL[s].nombre} se une con ${met ? 'un no metal' : 'un metal'}.`], pregunta: ['¿Qué ', v('q', 'ion'), ' forma?'], datos: [lugarTxt(s), D.octeto],
-      errores: [err('QM-ION-SIGNO', t(-q), met ? 'Bien la cantidad. Pero un metal entrega electrones: queda positivo.' : 'Bien la cantidad. Pero un no metal recibe electrones: queda negativo.'),
-        err('QM-ION-OCTETO', met ? t(val - 8) : t(val), met ? `Bien buscar el 8. Pero entregar ${val} es más fácil que recibir ${8 - val}.` : `Bien mirar sus ${val}. Pero recibir ${8 - val} es más fácil.`),
-        err('QM-ION-UNO', Math.abs(q) === 1 ? t(2 * q) : t(Math.sign(q)), `Bien el signo. Pero ${Math.abs(q) === 1 ? 'cambia' : 'cambian'} ${eTxt(Math.abs(q))}.`)],
-      solucion: [[met ? `Entrega sus ${val} de valencia.` : `Recibe ${8 - val} y completa 8.`], [v('q', t(q))]] };
+      errores: [err('QM-ION-SIGNO', t(-q), met ? 'Sería así si el metal recibiera electrones. Un metal los entrega y queda con carga positiva.' : 'Sería así si el no metal entregara electrones. Un no metal los recibe y queda con carga negativa.'),
+        err('QM-ION-OCTETO', met ? t(val - 8) : t(val), met ? `Sería así si recibiera ${8 - val}, pero le es más fácil entregar ${val === 1 ? 'su único electrón' : `sus ${val} electrones`}.` : `Sería así si entregara sus ${val} electrones, pero le es más fácil recibir ${eTxt(8 - val)}.`),
+        err('QM-ION-UNO', Math.abs(q) === 1 ? t(2 * q) : t(Math.sign(q)), `El signo está bien, pero la carga no: ${met ? 'entrega' : 'recibe'} ${eTxt(Math.abs(q))}.`)],
+      solucion: [[met ? `Entrega ${val === 1 ? 'su único electrón' : `sus ${val} electrones`} de valencia y queda con carga positiva.` : `Recibe ${eTxt(8 - val)}, completa 8 y queda con carga negativa.`], [v('q', t(q))]] };
   }
   function formulaIonica(rng) {
-    const [m, x] = rng.elegir(PARES_I), F = formula(m, x), uno = `${m}${x}`, inv = `${m}${SUB[F.qm] || F.qm}${x}${SUB[F.qx] || F.qx}`, sinS = `${m}${SUB[F.qx] || F.qx}${x}${SUB[F.qm] || F.qm}`;
+    const [m, x] = rng.elegir(PARES_I), F = formula(m, x), uno = `${m}${x}`, inv = `${m}${SUB[F.qm] ?? F.qm}${x}${SUB[F.qx] ?? F.qx}`, sinS = `${m}${SUB[F.qx] ?? F.qx}${x}${SUB[F.qm] ?? F.qm}`;
     return { correcta: F.texto, _datos: { m, x },
       enunciado: [`El ${EL[m].nombre} y el ${EL[x].nombre} forman un compuesto iónico.`], pregunta: ['¿Cuál es su fórmula?'], datos: [`Iones: ${ionTxt(m)} y ${ionTxt(x)}`, D.cero],
-      errores: [err('QM-FORM-UNO', uno, 'Bien juntar los dos. Pero las cargas no se anulan uno a uno.'), err('QM-FORM-INVERSA', inv, 'Bien usar las cargas. Pero cada ion lleva la cantidad del otro.'),
-        err('QM-FORM-SIN-SIMPLIFICAR', sinS, 'Bien la proporción. Pero se escribe con los números más chicos.'),
-        err('QM-FORM-DOBLE', `${m}${SUB[2 * F.a] || 2 * F.a}${x}${SUB[F.b] || F.b}`, 'Así la carga total no da cero.')],
-      solucion: [[`${F.a} · (+${F.qm}) + ${F.b} · (−${F.qx}) = 0.`], [v('q', ionTxt(m)), ' y ', v('q', ionTxt(x)), ` → ${F.texto}`]] };
+      errores: [err('QM-FORM-UNO', uno, 'Sería así si las cargas se anularan uno a uno, pero no se anulan.'), err('QM-FORM-INVERSA', inv, 'Ahí cada ion lleva su propia carga como subíndice; el subíndice de cada uno es la carga del otro.'),
+        err('QM-FORM-SIN-SIMPLIFICAR', sinS, 'La proporción está bien, pero se escribe con los números más chicos.'),
+        err('QM-FORM-DOBLE', `${m}${SUB[2 * F.a] ?? 2 * F.a}${x}${SUB[F.b] ?? F.b}`, 'Con esos subíndices, la carga total no da cero.')],
+      solucion: [[`Con ${F.a} ${ionTxt(m)} y ${F.b} ${ionTxt(x)}, la carga total da cero: ${F.a} · (+${F.qm}) + ${F.b} · (−${F.qx}) = 0.`], [v('q', ionTxt(m)), ' y ', v('q', ionTxt(x)), ` → ${F.texto}`]] };
   }
   function electronesTransferidos(rng) {
     const [m, x] = rng.elegir(PARES_I.filter(([a, b]) => formula(a, b).transfiere > 1)), F = formula(m, x);
     return { correcta: String(F.transfiere), _datos: { m, x },
-      enunciado: [`El compuesto ${F.texto}.`], pregunta: [`¿Cuántos `, v('e', 'electrones'), ` pasan en total del ${EL[m].nombre} al ${EL[x].nombre} por cada unidad de la fórmula?`],
+      enunciado: [`Piensa en el compuesto iónico ${F.texto}.`], pregunta: [`¿Cuántos `, v('e', 'electrones'), ` pasan en total del ${EL[m].nombre} al ${EL[x].nombre} por cada unidad de la fórmula?`],
       datos: [`Iones: ${ionTxt(m)} y ${ionTxt(x)}`],
-      errores: [err('QM-TRANSF-UNO', String(F.qm), `Bien la carga del ${ionTxt(m)}. Pero hay ${F.a} átomo${F.a > 1 ? 's' : ''} de ${m}.`), err('QM-TRANSF-ATOMOS', String(F.a + F.b), 'Eso cuenta átomos; se cuentan electrones.'),
-        err('QM-TRANSF-SUMA', String(F.qm + F.qx), 'Eso suma las dos cargas.'), err('QM-TRANSF-DOBLE', String(2 * F.transfiere), 'Eso cuenta dos veces: lo que entrega uno lo recibe el otro.')],
-      solucion: [[`Cada ${m} entrega ${F.qm}; hay ${F.a}.`], [`${F.a} · ${F.qm} = `, v('e', `${F.transfiere} e⁻`)]] };
+      errores: [err('QM-TRANSF-UNO', String(F.qm), `Esa es la carga de un ${ionTxt(m)}, pero hay ${F.a} átomo${F.a > 1 ? 's' : ''} de ${m}.`), err('QM-TRANSF-ATOMOS', String(F.a + F.b), 'Ese número cuenta átomos, y se piden electrones.'),
+        err('QM-TRANSF-SUMA', String(F.qm + F.qx), 'Ese número suma las dos cargas; se cuentan los electrones que entrega el metal.'), err('QM-TRANSF-DOBLE', String(2 * F.transfiere), 'Ese número cuenta dos veces: lo que entrega el metal es lo que recibe el no metal.')],
+      solucion: [[`Hay ${F.a} átomo${F.a > 1 ? 's' : ''} de ${m} y cada uno entrega ${eTxt(F.qm)}.`], [`${F.a} · ${F.qm} = `, v('e', `${F.transfiere} e⁻`)]] };
   }
 
   // ---- Idea 3: Lewis y octeto ----
@@ -191,11 +193,11 @@
   function electronesRepartir(rng) {
     const [t, ats, q] = rng.elegir(ESPECIES), n = suma(ats) - q;
     return { correcta: String(n), _datos: { t, ats, q },
-      enunciado: [`La estructura de Lewis del ${t}.`], pregunta: ['¿Cuántos ', v('e', 'electrones'), ' hay que repartir?'], datos: [valTxt(ats), D.carga],
-      errores: [q ? err('EN4', String(suma(ats)), 'Bien sumar los de valencia. Pero falta la carga.') : err('EN4', String(ats.length - 1), 'Eso cuenta enlaces.'),
-        q ? err('QM-NVAL-SIGNO', String(suma(ats) + q), 'Bien usar la carga. Pero va con el signo al revés.') : err('QM-NVAL-OCTETOS', String(8 * ats.filter(s => s !== 'H').length + 2 * ats.filter(s => s === 'H').length), 'Eso suma los octetos.'),
-        err('EN4', String(ats.length), 'Eso cuenta átomos.'), err('QM-LIBRES-ELECTRONES', String(n / 2), 'Eso cuenta pares, no electrones.')],
-      solucion: [[q ? `Sumo los de valencia y ${q > 0 ? 'resto' : 'sumo'} la carga.` : 'Sumo los de valencia.'], [`${suma(ats)}${q ? ` ${q > 0 ? '−' : '+'} ${Math.abs(q)}` : ''} = `, v('e', `${n} e⁻`)]] };
+      enunciado: [`Vas a dibujar la estructura de Lewis del ${t}.`], pregunta: ['¿Cuántos ', v('e', 'electrones'), ' hay que repartir?'], datos: [valTxt(ats), D.carga],
+      errores: [q ? err('EN4', String(suma(ats)), 'Sumar los de valencia está bien, pero falta la carga del ion.') : err('EN4', String(ats.length - 1), 'Ese número cuenta enlaces, no electrones.'),
+        q ? err('QM-NVAL-SIGNO', String(suma(ats) + q), 'Usar la carga está bien, pero con el signo al revés: un anión suma y un catión resta.') : err('QM-NVAL-OCTETOS', String(8 * ats.filter(s => s !== 'H').length + 2 * ats.filter(s => s === 'H').length), 'Ese número suma los octetos; se reparten los electrones de valencia.'),
+        err('EN4', String(ats.length), 'Ese número cuenta átomos, no electrones.'), err('QM-LIBRES-ELECTRONES', String(n / 2), 'Ese número cuenta pares, no electrones.')],
+      solucion: [[q ? `Sumo los electrones de valencia de todos los átomos y ${q > 0 ? 'resto' : 'sumo'} ${Math.abs(q)} por la carga.` : 'Sumo los electrones de valencia de todos los átomos.'], [`${suma(ats)}${q ? ` ${q > 0 ? '−' : '+'} ${Math.abs(q)}` : ''} = `, v('e', `${n} e⁻`)]] };
   }
   // Centrales con enlaces simples a H o halógenos, con su octeto: [fórmula, central, n.º de ligandos, ligando].
   const CENTRALES = [['H₂O', 'O', 2, 'H'], ['H₂S', 'S', 2, 'H'], ['PCl₃', 'P', 3, 'Cl'], ['NF₃', 'N', 3, 'F'], ['SCl₂', 'S', 2, 'Cl'], ['CCl₄', 'C', 4, 'Cl'], ['NH₃', 'N', 3, 'H'],
@@ -204,11 +206,11 @@
   function libresCentral(rng) {
     const [fo, c, n, l] = rng.elegir(CENTRALES), lib = (EL[c].val - n) / 2;
     return { correcta: String(lib), _datos: { fo, c, n },
-      enunciado: [`La estructura de Lewis del ${fo}, con el ${EL[c].nombre} al centro.`], pregunta: ['¿Cuántos ', v('e', 'pares libres'), ' tiene el átomo central?'], datos: [valTxt([c, l]), D.enlace, D.meta],
-      errores: [err('QM-LIBRES-TODOS', '4', `Bien la meta de 8. Pero ${n} de sus 4 pares se comparten.`), err('QM-LIBRES-ELECTRONES', String(EL[c].val - n), 'Eso cuenta electrones sueltos, no pares.'),
-        err('QM-LIBRES-UNO', String(lib + 1), 'Sobra uno: cuenta de nuevo los 8.'), err('QM-LIBRES-ENLACES', String(n), 'Eso cuenta los enlaces del central, no sus pares libres.'),
-        err('QM-LIBRES-UNO', String(lib + 2), 'Sobran dos: cuenta de nuevo los 8.')],
-      solucion: [[`El ${c} usa ${n} electrones en enlaces; le quedan ${EL[c].val - n}.`], [`(${EL[c].val} − ${n}) ÷ 2 = `, v('e', `${lib}`)]] };
+      enunciado: [`En la estructura de Lewis del ${fo}, el ${EL[c].nombre} está al centro.`], pregunta: ['¿Cuántos ', v('e', 'pares libres'), ' tiene el átomo central?'], datos: [valTxt([c, l]), D.enlace, D.meta],
+      errores: [err('QM-LIBRES-TODOS', '4', `La meta de 8 está bien, pero ${n === 4 ? 'sus 4 pares' : `${n} de sus 4 pares`} están en enlaces.`), err('QM-LIBRES-ELECTRONES', String(EL[c].val - n), 'Ese número cuenta electrones, no pares.'),
+        err('QM-LIBRES-UNO', String(lib + 1), 'Sobra un par: con él, el átomo central pasaría de 8.'), err('QM-LIBRES-ENLACES', String(n), 'Ese número cuenta los enlaces del átomo central, no sus pares libres.'),
+        err('QM-LIBRES-UNO', String(lib + 2), 'Sobran dos pares: con ellos, el átomo central pasaría de 8.')],
+      solucion: [[EL[c].val === n ? `El ${c} usa sus ${n} electrones en enlaces y no le queda ninguno libre.` : `El ${c} usa ${n} de sus ${EL[c].val} electrones en enlaces, y le quedan ${EL[c].val - n}.`], [`(${EL[c].val} − ${n}) ÷ 2 = `, v('e', `${lib}`)]] };
   }
   const ORDENES = [['O₂', 'los dos oxígenos', 2, ['O']], ['CO₂', 'el carbono y un oxígeno', 2, ['C', 'O']], ['HCN', 'el carbono y el nitrógeno', 3, ['H', 'C', 'N']],
     ['CH₂O', 'el carbono y el oxígeno', 2, ['C', 'H', 'O']], ['Cl₂', 'los dos cloros', 1, ['Cl']], ['N₂', 'los dos nitrógenos', 3, ['N']], ['HCl', 'el hidrógeno y el cloro', 1, ['H', 'Cl']], ['CN⁻', 'el carbono y el nitrógeno', 3, ['C', 'N']]];
@@ -217,8 +219,8 @@
     const [fo, quien, o, ats] = rng.elegir(ORDENES);
     return { correcta: OTX[o], _datos: { fo, o },
       enunciado: [`En el ${fo}, todos los átomos cumplen su octeto (el H, 2).`], pregunta: [`¿Cómo es el enlace entre ${quien}?`], datos: [valTxt(ats), D.meta],
-      errores: [...[1, 2, 3].filter(x => x !== o).map(x => err(x < o ? 'QM-OCTETO-FALTA' : 'QM-OCTETO-SOBRA', OTX[x], x < o ? 'Bien unirlos. Pero así a alguno le faltan electrones.' : 'Bien buscar el octeto. Pero así alguno pasa de 8.')),
-        err('EN5', 'Iónico: uno le entrega electrones al otro', 'Entregar sería con un metal; aquí solo hay no metales.')],
+      errores: [...[1, 2, 3].filter(x => x !== o).map(x => err(x < o ? 'QM-OCTETO-FALTA' : 'QM-OCTETO-SOBRA', OTX[x], x < o ? 'Con menos pares compartidos, a alguno de los dos le faltarían electrones.' : 'Con más pares compartidos, alguno de los dos pasaría de su meta.')),
+        err('EN5', 'Iónico: uno le entrega electrones al otro', 'Sería así si uno fuera un metal; aquí solo hay no metales, que comparten pares.')],
       solucion: [[`Con ${o === 1 ? 'un enlace simple' : o === 2 ? 'un doble' : 'un triple'}, cada átomo llega a su meta.`]] };
   }
 
@@ -228,8 +230,8 @@
     const [fo, pone, como, otro] = rng.elegir(DATIVOS);
     return { correcta: `El ${EL[pone].nombre}`, _datos: { fo, pone },
       enunciado: [`El ${fo} se forma cuando ${como}.`], pregunta: ['¿Qué átomo pone los dos ', v('e', 'electrones'), ' del enlace dativo?'], datos: [D.dativo, D.meta],
-      errores: [err('QM-DATIVO-ACEPTA', `El ${EL[otro].nombre}`, `El ${EL[otro].nombre} recibe el par; lo pone el que tiene un par libre.`), err('QM-DATIVO-UNO', 'Cada uno pone un electrón', 'Así es un enlace común; en el dativo, uno solo.'),
-        err('EN5', 'Ninguno: es un enlace iónico', 'Comparten un par: es covalente.')],
+      errores: [err('QM-DATIVO-ACEPTA', `El ${EL[otro].nombre}`, `Sería así si el ${EL[otro].nombre} tuviera el par libre. El ${EL[otro].nombre} recibe el par, y lo pone el ${EL[pone].nombre}.`), err('QM-DATIVO-UNO', 'Cada uno pone un electrón', 'Sería así en un enlace covalente común; en el dativo, un solo átomo pone el par.'),
+        err('EN5', 'Ninguno: es un enlace iónico', 'Sería así si un átomo entregara electrones; aquí comparten un par, así que es covalente.')],
       solucion: [[`El ${EL[pone].nombre} tiene un par libre y lo comparte entero.`]] };
   }
   // Electrones alrededor del central: [fórmula, central, enlaces simples, pares libres del central].
@@ -240,9 +242,9 @@
     return { correcta: String(e), _datos: { fo, n, l },
       enunciado: [`En la estructura de Lewis del ${fo}, el ${EL[c].nombre} forma ${n} enlaces simples y ${l === 0 ? 'no tiene pares libres' : `tiene ${l} par${l > 1 ? 'es' : ''} libre${l > 1 ? 's' : ''}`}.`],
       pregunta: ['¿Cuántos ', v('e', 'electrones'), ' lo rodean?'], datos: [D.cuenta],
-      errores: [err('QM-CENTRAL-OCHO', '8', 'Bien la idea del octeto. Pero aquí no se cumple: cuenta.'), err('QM-CENTRAL-ENLACES', String(n), 'Eso cuenta enlaces; cada uno son 2 electrones.'),
-        err('QM-CENTRAL-SIN-LIBRES', String(2 * n), l ? 'Bien los enlaces. Pero faltan sus pares libres.' : 'Bien los enlaces; revisa si sobran.'), err('QM-CENTRAL-UNO', String(e + 2), 'Sobran dos.')],
-      solucion: [[`${n} enlaces${l ? ` y ${l} par${l > 1 ? 'es' : ''} libre${l > 1 ? 's' : ''}` : ''}.`], [`2 · ${n}${l ? ` + 2 · ${l}` : ''} = `, v('e', `${e} e⁻`)]] };
+      errores: [err('QM-CENTRAL-OCHO', '8', 'Sería así si cumpliera el octeto; cuenta 2 por cada enlace y 2 por cada par libre.'), err('QM-CENTRAL-ENLACES', String(n), 'Ese número cuenta enlaces, y cada enlace pone 2 electrones.'),
+        err('QM-CENTRAL-SIN-LIBRES', String(2 * n), l ? 'Los enlaces están bien contados, pero faltan sus pares libres.' : 'Los enlaces están bien contados; revisa si sobra algo.'), err('QM-CENTRAL-UNO', String(e + 2), 'Sobran dos electrones: revisa los pares libres del átomo central.')],
+      solucion: [[`Alrededor del ${c} hay ${n} enlaces${l ? ` y ${l} par${l > 1 ? 'es' : ''} libre${l > 1 ? 's' : ''}` : ''}, y cada uno pone 2 electrones.`], [`2 · ${n}${l ? ` + 2 · ${l}` : ''} = `, v('e', `${e} e⁻`)]] };
   }
   const RAD = [['NO', ['N', 'O'], 0], ['NO₂', ['N', 'O', 'O'], 0], ['OH', ['O', 'H'], 0], ['ClO₂', ['Cl', 'O', 'O'], 0], ['OH⁻', ['O', 'H'], -1], ['H₂O₂', ['H', 'H', 'O', 'O'], 0], ['O₂²⁻', ['O', 'O'], -2],
     ['HO₂⁻', ['H', 'O', 'O'], -1], ['NO₂⁻', ['N', 'O', 'O'], -1], ['NO⁺', ['N', 'O'], 1], ['CN⁻', ['C', 'N'], -1], ['H₂O', ['H', 'H', 'O'], 0]];
@@ -250,9 +252,9 @@
   function radical(rng) {
     const rad = rng.elegir(RAD.filter(x => nE(x) % 2)), no = rng.barajar(RAD.filter(x => nE(x) % 2 === 0)).slice(0, 3);
     return { correcta: rad[0], _datos: { rad: rad[0], no: no.map(x => x[0]) },
-      enunciado: [`Las especies ${rng.barajar([rad, ...no]).map(x => x[0]).join(', ')}.`], pregunta: ['¿Cuál es un radical libre?'], datos: [valTxt([...rad[1], ...no.flatMap(x => x[1])]), D.carga, D.radical],
-      errores: no.map(x => err(x[2] ? 'QM-RADICAL-ION' : 'QM-RADICAL-PAR', x[0], `${x[0]}: ${nE(x)} electrones, número par.${x[2] ? ' La carga no la hace radical.' : ''}`)),
-      solucion: [[`${rad[0]}: ${rad[1].map(s => EL[s].val).join(' + ')} = ${nE(rad)}, impar.`]] };
+      enunciado: [`Compara estas especies: ${rng.barajar([rad, ...no]).map(x => x[0]).join(', ')}.`], pregunta: ['¿Cuál es un radical libre?'], datos: [valTxt([...rad[1], ...no.flatMap(x => x[1])]), D.carga, D.radical],
+      errores: no.map(x => err(x[2] ? 'QM-RADICAL-ION' : 'QM-RADICAL-PAR', x[0], `El ${x[0]} tiene ${nE(x)} electrones, un número par.${x[2] ? ' Tener carga no lo hace radical.' : ''}`)),
+      solucion: [[`El ${rad[0]} tiene ${rad[1].map(s => EL[s].val).join(' + ')} = ${nE(rad)} electrones, un número impar, así que uno queda sin pareja.`]] };
   }
 
   // ---- Idea 5: resonancia ----
@@ -263,17 +265,17 @@
     return { correcta: String(pos), _datos: { fo, pos },
       enunciado: [`En el ${fo}, el doble enlace puede ir en cualquiera de sus ${pos} enlaces ${enl} iguales.`], pregunta: ['¿Cuántas estructuras de resonancia tiene?'],
       datos: [`${fo}: un ${enl} doble en cada dibujo`],
-      errores: [err('QM-RES-UNO', '1', 'Bien dibujar una. Pero el doble puede ir en otro lugar.'), err('QM-RES-POSICIONES', String(pos + 1), 'Eso cuenta también el híbrido, que no es una estructura más.'),
-        err('QM-RES-POSICIONES', String(2 * pos), 'Eso cuenta dos veces cada lugar.')],
-      solucion: [['Un dibujo por cada enlace donde puede ir el doble.']] };
+      errores: [err('QM-RES-UNO', '1', 'Sería así si el doble solo pudiera ir en un enlace; puede ir en cualquiera de los iguales.'), err('QM-RES-POSICIONES', String(pos + 1), 'Ese número cuenta también el híbrido, que no es una estructura más.'),
+        err('QM-RES-POSICIONES', String(2 * pos), 'Ese número cuenta dos veces cada lugar donde puede ir el doble.')],
+      solucion: [['Hay un dibujo por cada enlace donde puede ir el doble.']] };
   }
   function ordenPromedio(rng) {
     const [fo, enl, tot, pos] = rng.elegir(RES);
     return { correcta: fr(tot, pos), _datos: { fo, tot, pos },
       enunciado: [`El ${fo} tiene ${pos} estructuras de resonancia; en cada una, un ${enl} es doble.`], pregunta: [`¿Qué orden tiene cada ${enl} en la especie real?`], datos: [D.orden, D.promedio],
-      errores: [err('QM-RES-UNO', '2', 'Sería 2 si el doble estuviera fijo.'), err('QM-RES-UNO', '1', 'Sería 1 sin ningún doble.'), err('QM-RES-CUENTA', tot === 4 ? '3/2' : '4/3', `Esa fracción es de otro número de enlaces: aquí son ${pos}.`),
-        err('QM-RES-TODOS', String(tot), 'Eso cuenta todos los pares juntos; se reparten entre los enlaces.')],
-      solucion: [[`${tot} pares en ${pos} enlaces.`], [`${tot} ÷ ${pos} = ${fr(tot, pos)}`]] };
+      errores: [err('QM-RES-UNO', '2', 'Sería 2 si el doble estuviera fijo; en la especie real se reparte.'), err('QM-RES-UNO', '1', 'Sería 1 si no hubiera ningún doble; hay uno, repartido entre todos.'), err('QM-RES-CUENTA', tot === 4 ? '3/2' : '4/3', `Esa fracción es de otro número de enlaces: aquí son ${pos}.`),
+        err('QM-RES-TODOS', String(tot), 'Ese número cuenta todos los pares juntos, pero se reparten entre los enlaces.')],
+      solucion: [[`Los ${tot} pares compartidos se reparten entre ${pos} enlaces iguales.`], [`${tot} ÷ ${pos} = ${fr(tot, pos)}`]] };
   }
   const CF = [['un oxígeno con enlace simple y tres pares libres', 6, 6, 1, 'NO₃⁻'], ['el oxígeno del doble enlace, con dos pares libres', 6, 4, 2, 'CO₃²⁻'],
     ['el nitrógeno central, con cuatro enlaces y sin pares libres', 5, 0, 4, 'NO₃⁻'], ['el oxígeno central, con tres enlaces y un par libre', 6, 2, 3, 'O₃'],
@@ -281,13 +283,16 @@
   const cfT = x => (x === 0 ? '0' : `${x > 0 ? '+' : '−'}${Math.abs(x)}`);
   function cargaFormal(rng) {
     const [quien, va, li, en, sp] = rng.elegir(CF), cf = va - li - en;
-    const ion = { 'NO₃⁻': '−1', 'CO₃²⁻': '−2', 'O₃': '+2', 'NH₄⁺': '+2' }[sp];
-    return { correcta: cfT(cf), _datos: { va, li, en },
-      enunciado: [`Una estructura de Lewis del ${sp}.`], pregunta: [`¿Qué `, v('q', 'carga formal'), ` tiene ${quien}?`], datos: [D.cf],
-      errores: [err(cf ? 'QM-CF-SIGNO' : 'QM-CF-CARGA', cfT(-cf || 1), cf ? 'Bien la cuenta. Pero el signo va al revés.' : 'Ese átomo tiene justo sus electrones: 0.'),
-        err('QM-CF-PARES', cfT(va - li / 2 - en), 'Se restan electrones libres, no pares.'), err('QM-CF-ENLACES', cfT(va - li - 2 * en), 'De cada enlace le toca un electrón, no dos.'),
-        err('EN7', ion, 'Esa es otra cuenta: la carga formal es átomo por átomo.')],
-      solucion: [['Valencia menos electrones libres menos enlaces.'], [`${va} − ${li} − ${en} = `, v('q', cfT(cf))]] };
+    // EN7: la carga de la especie entera (verificación, 26 nov: antes el O₃ y el NH₄⁺ daban «+2», que no salía de ningún
+    // error). En el NH₄⁺ coincide con la correcta y se descarta; ahí entra el error de no restar los enlaces.
+    const ion = { 'NO₃⁻': '−1', 'CO₃²⁻': '−2', 'O₃': '0', 'NH₄⁺': '+1' }[sp];
+    return { correcta: cfT(cf), _datos: { va, li, en, sp },
+      enunciado: [`Piensa en una estructura de Lewis del ${sp}.`], pregunta: [`¿Qué `, v('q', 'carga formal'), ` tiene ${quien}?`], datos: [D.cf],
+      errores: [err(cf ? 'QM-CF-SIGNO' : 'QM-CF-CARGA', cfT(-cf || 1), cf ? 'La cuenta está bien, pero el signo va al revés.' : 'Sería así si el átomo tuviera electrones de más o de menos; tiene justo los suyos.'),
+        err('QM-CF-PARES', cfT(va - li / 2 - en), 'Ese número resta pares, y se restan los electrones libres.'), err('QM-CF-ENLACES', cfT(va - li - 2 * en), 'Ese número resta dos por enlace, y de cada enlace al átomo le toca uno.'),
+        err('EN7', ion, ion === '0' ? 'Sería así si la carga formal fuera la de la molécula entera. Se cuenta átomo por átomo, y este no queda en 0.' : 'Esa es la carga del ion entero, y la carga formal se cuenta átomo por átomo.'),
+        err('QM-CF-SIN-ENLACES', cfT(va - li), 'Ese número no resta los enlaces: de cada enlace, al átomo le toca un electrón.')],
+      solucion: [['A la valencia le resto los electrones de sus pares libres y sus enlaces.'], [`${va} − ${li} − ${en} = `, v('q', cfT(cf))]] };
   }
 
   const CONSTRUIR = { 'tipo-elementos': tipoElementos, 'delta-signo': deltaSigno, 'tipo-den': tipoDen, 'tipo-propiedades': tipoPropiedades, 'carga-ion': cargaIon, 'formula-ionica': formulaIonica,

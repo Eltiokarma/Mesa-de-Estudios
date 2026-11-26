@@ -368,3 +368,10 @@ test('auditoría: la EN va con dos decimales («2,20») y «Ahora tú» de la re
     for (const k of [2, 4]) { const a = plano(def.ideas[k].ahoraTu.generar(s).pregunta); if (/^Indica verdadero/.test(a)) assert.notDeepEqual(a.split(/\b(?:III|II|I)\. /).slice(1).map(x => x.trim()), vfEj(def.ideas[k]), `${def.ideas[k].id} ${s}: el V/F del ejemplo`); }
   }
 });
+
+// Verificación de la pasada de redacción (26 nov): un grano de sal tiene del orden de 10¹⁸ iones (un trillón), no
+// «billones» (10¹²).
+test('redacción: el grano de sal del «Lee» no dice «billones»', () => {
+  const lee = def.ideas.flatMap(i => (i.lee && i.lee.tarjetas) || []).map(t => plano(t.texto)).join(' ');
+  assert.ok(/grano/.test(lee) && !/billones/.test(lee));
+});
