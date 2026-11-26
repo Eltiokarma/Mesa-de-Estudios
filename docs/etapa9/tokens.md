@@ -21,3 +21,4 @@ contra los límites semanales de los planes.
 | razonamiento-verbal.cohesion-y-coherencia | redactor (Escribidor Escribano) | 303 487 | 13 min | 45 herramientas |
 | razonamiento-matematico.arreglos-numericos | escritura (fases 1 a 5) | 733 098 | 81 min 40 s | 241 herramientas |
 | razonamiento-verbal.cohesion-y-coherencia | lector en frío B (ideas 4–5) | 111 600 | 2 min 15 s | 23 herramientas |
+| razonamiento-verbal.cohesion-y-coherencia | lector en frío A (ideas 1–3) | 129 120 | 2 min 27 s | 33 herramientas |
