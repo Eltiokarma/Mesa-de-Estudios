@@ -1,0 +1,93 @@
+{
+  "titulo": "Fluidos: presión, empuje y flujo: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una muestra de líquido tiene masa 2,4 kg y volumen 3 L. ¿Cuál es su densidad en kilogramos por litro? Datos: La muestra es homogénea y ocupa el volumen indicado. Alternativas: A) 7,2 kg/L   B) 0,8 kg/L   C) ≈ 0,267 kg/L   D) 1,25 kg/L",
+      "respuesta": "B) 0,8 kg/L",
+      "pasos": [
+        "La densidad relaciona la masa de la muestra con el volumen que ocupa.",
+        "Dividimos: ρ = 2,4 / 3 = 0,8 kg/L."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un manómetro contiene líquido de 840 kg/m³. La rama conectada al gas tiene la superficie 15 cm más alta. Afuera hay 100 kPa absolutos. ¿Cuál es la presión manométrica del gas? Datos: Hay un solo líquido en reposo; una rama conecta al gas y la otra está abierta al aire. La presión manométrica se mide respecto del aire exterior. En este modelo, g = 10 m/s². 1 m = 100 cm. 1 kPa = 1000 Pa. Alternativas: A) −2,52 kPa   B) −1,26 kPa   C) −0,63 kPa   D) 1,26 kPa",
+      "respuesta": "B) −1,26 kPa",
+      "pasos": [
+        "La columna mayor queda del lado del gas: su presión es menor que la del aire.",
+        "Aplicamos ese signo al desnivel vertical: presión manométrica = −840 × 10 × (15 / 100) / 1000 = −1,26 kPa."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una prensa tiene áreas de entrada 7 cm² y salida 28 cm². La fuerza de entrada es 21 N. ¿Qué fuerza exterior resistente equilibra el pistón de salida? Datos: Pistones ideales sin masa ni roce; el mismo aire actúa afuera. Líquido incompresible, sin fugas; las fuerzas son normales y adicionales. Los pistones tienen ejes horizontales a la misma cota y están en equilibrio. Alternativas: A) 84 N   B) 21 N   C) 336 N   D) 5,25 N",
+      "respuesta": "A) 84 N",
+      "pasos": [
+        "Igualamos las presiones añadidas y despejamos: fuerza de salida = fuerza de entrada × área de salida / área de entrada.",
+        "Las áreas usan la misma unidad: fuerza de salida = 21 × 28 / 7 = 84 N."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un cuerpo de 0,84 kg y 1 200 cm³ está en un líquido de 1 000 kg/m³. Flota libremente en equilibrio. ¿Qué porcentaje de su volumen queda sumergido? Datos: Fluido homogéneo en reposo; el cuerpo no toca paredes ni fondo. Se desprecia el empuje del aire y la tensión superficial. No hay cuerda ni sostén; el cuerpo mantiene una orientación estable. En este modelo, g = 10 m/s². 1 m³ = 1 000 000 cm³. Alternativas: A) 70 %   B) 30 %   C) 100 %   D) ≈ 142,857 %",
+      "respuesta": "A) 70 %",
+      "pasos": [
+        "En flotación libre, el empuje equilibra el peso. La gravedad se cancela al despejar el volumen sumergido.",
+        "Despejamos y expresamos el volumen en centímetros cúbicos: volumen sumergido = 0,84 / 1 000 × 1 000 000 = 840 cm³.",
+        "Comparamos con el volumen total: porcentaje sumergido = 100 × 840 / 1 200 = 70 %."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un alambre de 0,2 g forma el borde superior de una película de 2 caras, con 10 cm de contacto. El sostén ejerce 11,2 mN hacia arriba. ¿Cuál es el coeficiente de tensión superficial? Datos: El alambre horizontal está en equilibrio y la película vertical queda debajo. Peso y tracción superficial apuntan hacia abajo; el sostén apunta hacia arriba. En este modelo, g = 10 m/s². 1 m = 100 cm. 1 g = 0,001 kg; 1 N = 1000 mN. Alternativas: A) 46 mN/m   B) 23 mN/m   C) 56 mN/m   D) 66 mN/m",
+      "respuesta": "A) 46 mN/m",
+      "pasos": [
+        "Expresamos el peso en milinewtons: P = (0,2 / 1000) × 10 × 1000 = 2 mN.",
+        "Despejamos la fuerza superficial del equilibrio: fuerza superficial = 11,2 − 2 = 9,2 mN.",
+        "Dividimos por el contacto de todas las caras: γ = 9,2 / (2 × (10 / 100)) = 46 mN/m."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un líquido entra a 4,5 m/s. El diámetro pasa de 4 cm en la entrada a 6 cm en la salida. ¿Cuál es la rapidez en la sección de salida? Datos: Flujo estacionario e incompresible, sin fugas ni viscosidad apreciable. Las secciones pertenecen a la misma línea de corriente. Ambas secciones son circulares. Alternativas: A) 4,5 m/s   B) 2 m/s   C) ≈ 0,889 m/s   D) 3 m/s",
+      "respuesta": "B) 2 m/s",
+      "pasos": [
+        "Conservamos el caudal; la razón de áreas es el cuadrado de la razón de diámetros.",
+        "Reemplazamos las cantidades: rapidez de salida = 4,5 × (4 / 6)² = 2 m/s."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una muestra de 2 L tiene masa 2,2 kg. En el depósito, la superficie está a 88 kPa y un sensor marca 121 kPa. ¿A qué profundidad está el sensor? Datos: El líquido es homogéneo y está en reposo; la muestra pertenece al mismo líquido. Ambas presiones son absolutas; la profundidad se mide verticalmente desde la superficie. En este modelo, g = 10 m/s². 1 L = 0,001 m³. 1 kPa = 1000 Pa. Alternativas: A) 19 m   B) 0,75 m   C) 3 m   D) 11 m",
+      "respuesta": "C) 3 m",
+      "pasos": [
+        "Hallamos la densidad de la muestra: ρ = 2,2 / (2 / 1000) = 1 100 kg/m³.",
+        "Restamos la referencia: presión del sensor − presión superficial = ρ × g × h.",
+        "Despejamos: h = (presión del sensor − presión superficial) / (ρ × g).",
+        "Reemplazamos con presiones en pascales: h = (121 − 88) × 1000 / (1 100 × 10) = 3 m."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un líquido de 1 000 kg/m³ entra por una sección de 9 cm², a 2 m/s, con presión 120 kPa y cota 1 m. La salida tiene 6 cm² y cota 0 m. ¿Cuál es la presión absoluta en la salida? Datos: Flujo estacionario e incompresible, sin fugas ni viscosidad apreciable. Las secciones pertenecen a la misma línea de corriente. Las presiones son absolutas y las cotas usan el mismo nivel de referencia. En este modelo, g = 10 m/s². 1 kPa = 1000 Pa. Alternativas: A) 107,5 kPa   B) 130 kPa   C) 132,5 kPa   D) 127,5 kPa",
+      "respuesta": "D) 127,5 kPa",
+      "pasos": [
+        "Conservamos el caudal para hallar la rapidez: rapidez de salida = 2 × 9 / 6 = 3 m/s.",
+        "Al despejar presión, el cambio por rapidez es: cambio por rapidez = 1 000 × (2² − 3²) / 2000 = −2,5 kPa.",
+        "El cambio por altura es: cambio por altura = 1 000 × 10 × (1 − 0) / 1000 = 10 kPa.",
+        "Sumamos ambos cambios a la presión inicial: presión de salida = 120 + (−2,5) + (10) = 127,5 kPa."
+      ]
+    }
+  ]
+}

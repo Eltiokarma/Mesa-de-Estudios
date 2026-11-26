@@ -1,0 +1,13 @@
+{
+  "id": "fis-fluidos",
+  "titulo": "Fluidos: presión, empuje y flujo",
+  "formato": "predicciones",
+  "unidades": ["fisica.fluidos"],
+  "temas": ["Densidad y presión hidrostática", "Manómetros y vasos comunicantes", "Prensa hidráulica", "Principio de Arquímedes", "Tensión superficial y capilaridad", "Caudal, continuidad y Bernoulli"],
+  "estado": "probada",
+  "version": "1.0.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

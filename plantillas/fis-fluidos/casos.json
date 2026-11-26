@@ -1,0 +1,618 @@
+{
+  "plantilla": "fis-fluidos",
+  "nota": "Veinte referencias reproducibles: dieciocho familias, flotación libre y salida desde un depósito.",
+  "verificacion": "Los resultados se obtuvieron solo desde las entradas originales mediante balances y fracciones exactas de oraculo-independiente.cjs. No se leyeron respuesta.valor, alternativas ni formateadores del generador.",
+  "casos": [
+    {
+      "semilla": 12001,
+      "opciones": {
+        "tipo": "densidad-muestra"
+      },
+      "entrada": {
+        "idea": "presion-profundidad",
+        "tipo": "densidad-muestra",
+        "nivel": 1,
+        "masaKg": 2.4,
+        "volumenL": 3
+      },
+      "esperado": {
+        "respuesta": 0.8,
+        "unidad": "kg/L",
+        "texto": "0,8 kg/L",
+        "fraccionExacta": {
+          "numerador": "4",
+          "denominador": "5"
+        }
+      },
+      "erroresEsperados": {
+        "INVIERTE_COCIENTE": 1.25,
+        "MULTIPLICA_VOLUMEN": 7.2,
+        "DIVIDE_VOLUMEN_DOS_VECES": 0.26666666666666666
+      },
+      "metodo": "Fracciones exactas: masa de la muestra, peso de una columna de sección arbitraria y balance de fuerzas sobre esa sección."
+    },
+    {
+      "semilla": 12002,
+      "opciones": {
+        "tipo": "presion-cara"
+      },
+      "entrada": {
+        "idea": "presion-profundidad",
+        "tipo": "presion-cara",
+        "nivel": 2,
+        "fuerzaN": 210,
+        "areaCm2": 35
+      },
+      "esperado": {
+        "respuesta": 60,
+        "unidad": "kPa",
+        "texto": "60 kPa",
+        "fraccionExacta": {
+          "numerador": "60",
+          "denominador": "1"
+        }
+      },
+      "erroresEsperados": {
+        "CONVERSION_AREA_POR_DIEZ": 6,
+        "DUPLICA_CARA": 30,
+        "USA_FUERZA_COMO_PRESION": 210
+      },
+      "metodo": "Fracciones exactas: masa de la muestra, peso de una columna de sección arbitraria y balance de fuerzas sobre esa sección."
+    },
+    {
+      "semilla": 12003,
+      "opciones": {
+        "tipo": "referencia-profundidad"
+      },
+      "entrada": {
+        "idea": "presion-profundidad",
+        "tipo": "referencia-profundidad",
+        "nivel": 3,
+        "masaKg": 2.2,
+        "volumenL": 2,
+        "pSuperficialKPa": 88,
+        "pSensorKPa": 121,
+        "g": 10
+      },
+      "esperado": {
+        "respuesta": 3,
+        "unidad": "m",
+        "texto": "3 m",
+        "fraccionExacta": {
+          "numerador": "3",
+          "denominador": "1"
+        }
+      },
+      "erroresEsperados": {
+        "OMITE_REFERENCIA": 11,
+        "SUMA_REFERENCIA": 19,
+        "MULTIPLICA_MUESTRA": 0.75
+      },
+      "metodo": "Fracciones exactas: masa de la muestra, peso de una columna de sección arbitraria y balance de fuerzas sobre esa sección."
+    },
+    {
+      "semilla": 12004,
+      "opciones": {
+        "tipo": "manometro-signo"
+      },
+      "entrada": {
+        "idea": "vasos-comunicantes",
+        "tipo": "manometro-signo",
+        "nivel": 1,
+        "rho": 840,
+        "g": 10,
+        "desnivelCm": 15,
+        "ramaMasAlta": "gas",
+        "pAtmKPa": 100
+      },
+      "esperado": {
+        "respuesta": -1.26,
+        "unidad": "kPa",
+        "texto": "-1,26 kPa",
+        "fraccionExacta": {
+          "numerador": "-63",
+          "denominador": "50"
+        }
+      },
+      "erroresEsperados": {
+        "INVIERTE_SIGNO": 1.26,
+        "CONFUNDE_DESNIVEL_CON_DOBLE": -0.63,
+        "DUPLICA_DESNIVEL": -2.52
+      },
+      "metodo": "Fracciones exactas: recorrer las columnas desde la referencia y resolver el balance de pesos y presiones."
+    },
+    {
+      "semilla": 12005,
+      "opciones": {
+        "tipo": "columnas-inmiscibles"
+      },
+      "entrada": {
+        "idea": "vasos-comunicantes",
+        "tipo": "columnas-inmiscibles",
+        "nivel": 2,
+        "volumenLigeroCm3": 420,
+        "areaRamaCm2": 28,
+        "rhoLigero": 840,
+        "rhoBase": 1400,
+        "g": 10
+      },
+      "esperado": {
+        "respuesta": 6,
+        "unidad": "cm",
+        "texto": "6 cm",
+        "fraccionExacta": {
+          "numerador": "6",
+          "denominador": "1"
+        }
+      },
+      "erroresEsperados": {
+        "DA_COLUMNA_BASE": 9,
+        "DA_COLUMNA_LIGERA": 15,
+        "INVIERTE_DENSIDADES": -10
+      },
+      "metodo": "Fracciones exactas: recorrer las columnas desde la referencia y resolver el balance de pesos y presiones."
+    },
+    {
+      "semilla": 12006,
+      "opciones": {
+        "tipo": "barometro-referencia"
+      },
+      "entrada": {
+        "idea": "vasos-comunicantes",
+        "tipo": "barometro-referencia",
+        "nivel": 3,
+        "pAtmInicialKPa": 102,
+        "pTopeInicialKPa": 2,
+        "alturaInicialCm": 80,
+        "pTopeFinalKPa": 4,
+        "alturaFinalCm": 72,
+        "g": 10
+      },
+      "esperado": {
+        "respuesta": 94,
+        "unidad": "kPa",
+        "texto": "94 kPa",
+        "fraccionExacta": {
+          "numerador": "94",
+          "denominador": "1"
+        }
+      },
+      "erroresEsperados": {
+        "OMITE_TOPE_INICIAL": 95.8,
+        "OMITE_TOPE_FINAL": 90,
+        "INVIERTE_ALTURAS": 115.11111111111111
+      },
+      "metodo": "Fracciones exactas: recorrer las columnas desde la referencia y resolver el balance de pesos y presiones."
+    },
+    {
+      "semilla": 12007,
+      "opciones": {
+        "tipo": "fuerza-pistones"
+      },
+      "entrada": {
+        "idea": "prensa-hidraulica",
+        "tipo": "fuerza-pistones",
+        "nivel": 1,
+        "areaEntradaCm2": 7,
+        "areaSalidaCm2": 28,
+        "fuerzaEntradaN": 21
+      },
+      "esperado": {
+        "respuesta": 84,
+        "unidad": "N",
+        "texto": "84 N",
+        "fraccionExacta": {
+          "numerador": "84",
+          "denominador": "1"
+        }
+      },
+      "erroresEsperados": {
+        "CONSERVA_FUERZA": 21,
+        "INVIERTE_AREAS": 5.25,
+        "CUADRA_AREAS": 336
+      },
+      "metodo": "Equilibrio en cada cara, suma de trabajo por 16 desplazamientos y conservación del volumen transferido; presión hidrostática cuando cambia la altura."
+    },
+    {
+      "semilla": 12008,
+      "opciones": {
+        "tipo": "recorrido-volumen"
+      },
+      "entrada": {
+        "idea": "prensa-hidraulica",
+        "tipo": "recorrido-volumen",
+        "nivel": 2,
+        "variante": "diametros",
+        "diametroEntradaCm": 3,
+        "diametroSalidaCm": 6,
+        "recorridoEntradaCm": 24
+      },
+      "esperado": {
+        "respuesta": 6,
+        "unidad": "cm",
+        "texto": "6 cm",
+        "fraccionExacta": {
+          "numerador": "6",
+          "denominador": "1"
+        }
+      },
+      "erroresEsperados": {
+        "USA_DIAMETROS": 12,
+        "OMITE_CAMBIO_DE_AREA": 24,
+        "CUADRA_AREAS": 1.5
+      },
+      "metodo": "Equilibrio en cada cara, suma de trabajo por 16 desplazamientos y conservación del volumen transferido; presión hidrostática cuando cambia la altura."
+    },
+    {
+      "semilla": 12009,
+      "opciones": {
+        "tipo": "prensa-desnivel"
+      },
+      "entrada": {
+        "idea": "prensa-hidraulica",
+        "tipo": "prensa-desnivel",
+        "nivel": 3,
+        "areaEntradaCm2": 10,
+        "areaSalidaCm2": 30,
+        "fuerzaEntradaN": 50,
+        "rho": 1000,
+        "g": 10,
+        "alturaEntradaM": 0,
+        "alturaSalidaM": 0.4
+      },
+      "esperado": {
+        "respuesta": 138,
+        "unidad": "N",
+        "texto": "138 N",
+        "fraccionExacta": {
+          "numerador": "138",
+          "denominador": "1"
+        }
+      },
+      "erroresEsperados": {
+        "OMITE_DESNIVEL": 150,
+        "INVIERTE_DESNIVEL": 162,
+        "USA_AREA_ENTRADA": 46
+      },
+      "metodo": "Equilibrio en cada cara, suma de trabajo por 16 desplazamientos y conservación del volumen transferido; presión hidrostática cuando cambia la altura."
+    },
+    {
+      "semilla": 12010,
+      "opciones": {
+        "tipo": "volumen-desplazado"
+      },
+      "entrada": {
+        "idea": "empuje",
+        "tipo": "volumen-desplazado",
+        "nivel": 1,
+        "volumenTotalCm3": 800,
+        "volumenSumergidoCm3": 300,
+        "rho": 1100,
+        "g": 10
+      },
+      "esperado": {
+        "respuesta": 3.3,
+        "unidad": "N",
+        "texto": "3,3 N",
+        "fraccionExacta": {
+          "numerador": "33",
+          "denominador": "10"
+        }
+      },
+      "erroresEsperados": {
+        "USA_VOLUMEN_TOTAL": 8.8,
+        "USA_VOLUMEN_EMERGIDO": 5.5,
+        "OMITE_GRAVEDAD": 0.33
+      },
+      "metodo": "Masa del líquido desplazado y suma vertical de fuerzas; volumen sumergido obtenido al anular el balance."
+    },
+    {
+      "semilla": 12011,
+      "opciones": {
+        "tipo": "equilibrio-cuerpo"
+      },
+      "entrada": {
+        "idea": "empuje",
+        "tipo": "equilibrio-cuerpo",
+        "nivel": 2,
+        "variante": "suspension",
+        "masaKg": 1.6,
+        "volumenTotalCm3": 600,
+        "rho": 1000,
+        "g": 10
+      },
+      "esperado": {
+        "respuesta": 10,
+        "unidad": "N",
+        "texto": "10 N",
+        "fraccionExacta": {
+          "numerador": "10",
+          "denominador": "1"
+        }
+      },
+      "erroresEsperados": {
+        "USA_PESO_SOLO": 16,
+        "USA_EMPUJE_SOLO": 6,
+        "SUMA_FUERZAS": 22
+      },
+      "metodo": "Masa del líquido desplazado y suma vertical de fuerzas; volumen sumergido obtenido al anular el balance."
+    },
+    {
+      "semilla": 12012,
+      "opciones": {
+        "tipo": "densidad-dos-lecturas"
+      },
+      "entrada": {
+        "idea": "empuje",
+        "tipo": "densidad-dos-lecturas",
+        "nivel": 3,
+        "lecturaAireN": 28,
+        "lecturaLiquidoN": 20,
+        "rhoLiquido": 800,
+        "g": 10
+      },
+      "esperado": {
+        "respuesta": 2800,
+        "unidad": "kg/m³",
+        "texto": "2 800 kg/m³",
+        "fraccionExacta": {
+          "numerador": "2800",
+          "denominador": "1"
+        }
+      },
+      "erroresEsperados": {
+        "USA_LECTURA_LIQUIDO": 2000,
+        "SUMA_EN_DENOMINADOR": 466.6666666666667,
+        "SUMA_EN_NUMERADOR": 4800
+      },
+      "metodo": "Masa del líquido desplazado y suma vertical de fuerzas; volumen sumergido obtenido al anular el balance."
+    },
+    {
+      "semilla": 12013,
+      "opciones": {
+        "tipo": "pelicula-caras"
+      },
+      "entrada": {
+        "idea": "tension-superficial",
+        "tipo": "pelicula-caras",
+        "nivel": 1,
+        "caras": 2,
+        "gammaMNPorM": 34,
+        "longitudContactoCm": 14
+      },
+      "esperado": {
+        "respuesta": 9.52,
+        "unidad": "mN",
+        "texto": "9,52 mN",
+        "fraccionExacta": {
+          "numerador": "238",
+          "denominador": "25"
+        }
+      },
+      "erroresEsperados": {
+        "CAMBIA_NUMERO_CARAS": 4.76,
+        "USA_AREA_EN_VEZ_CONTACTO": 1.3328,
+        "USA_COEFICIENTE_COMO_FUERZA": 34
+      },
+      "metodo": "Trabajo de crear área en cada cara; tensión por balance vertical. Capilar: peso del cilindro frente a la fuerza de todo el perímetro."
+    },
+    {
+      "semilla": 12014,
+      "opciones": {
+        "tipo": "coeficiente-pelicula"
+      },
+      "entrada": {
+        "idea": "tension-superficial",
+        "tipo": "coeficiente-pelicula",
+        "nivel": 2,
+        "fuerzaSostenMN": 11.2,
+        "masaAlambreG": 0.2,
+        "longitudContactoCm": 10,
+        "caras": 2,
+        "g": 10
+      },
+      "esperado": {
+        "respuesta": 46,
+        "unidad": "mN/m",
+        "texto": "46 mN/m",
+        "fraccionExacta": {
+          "numerador": "46",
+          "denominador": "1"
+        }
+      },
+      "erroresEsperados": {
+        "IGNORA_PESO": 56,
+        "SUMA_PESO": 66,
+        "DUPLICA_CARAS": 23
+      },
+      "metodo": "Trabajo de crear área en cada cara; tensión por balance vertical. Capilar: peso del cilindro frente a la fuerza de todo el perímetro."
+    },
+    {
+      "semilla": 12015,
+      "opciones": {
+        "tipo": "capilaridad-radio"
+      },
+      "entrada": {
+        "idea": "tension-superficial",
+        "tipo": "capilaridad-radio",
+        "nivel": 3,
+        "fuerzaPeliculaMN": 4.4,
+        "longitudContactoCm": 10,
+        "caras": 2,
+        "rho": 1100,
+        "g": 10,
+        "ascensoCm": 2,
+        "pide": "radio"
+      },
+      "esperado": {
+        "respuesta": 0.2,
+        "unidad": "mm",
+        "texto": "0,2 mm",
+        "fraccionExacta": {
+          "numerador": "1",
+          "denominador": "5"
+        }
+      },
+      "erroresEsperados": {
+        "OMITE_CARAS_CALIBRACION": 0.4,
+        "OMITE_FACTOR_DOS": 0.1,
+        "CONVERSION_ALTURA_POR_DIEZ": 0.02
+      },
+      "metodo": "Trabajo de crear área en cada cara; tensión por balance vertical. Capilar: peso del cilindro frente a la fuerza de todo el perímetro."
+    },
+    {
+      "semilla": 12016,
+      "opciones": {
+        "tipo": "caudal-volumen"
+      },
+      "entrada": {
+        "idea": "bernoulli",
+        "tipo": "caudal-volumen",
+        "nivel": 1,
+        "volumenL": 4.8,
+        "tiempoS": 8
+      },
+      "esperado": {
+        "respuesta": 0.6,
+        "unidad": "L/s",
+        "texto": "0,6 L/s",
+        "fraccionExacta": {
+          "numerador": "3",
+          "denominador": "5"
+        }
+      },
+      "erroresEsperados": {
+        "INVIERTE_COCIENTE": 1.6666666666666667,
+        "OMITE_TIEMPO": 4.8,
+        "DIVIDE_TIEMPO_DOS_VECES": 0.075
+      },
+      "metodo": "Volumen transportado durante un intervalo de 0,37 s; trabajo de presión y cambios de energía de una porción de líquido de 0,017 m³."
+    },
+    {
+      "semilla": 12017,
+      "opciones": {
+        "tipo": "continuidad-secciones"
+      },
+      "entrada": {
+        "idea": "bernoulli",
+        "tipo": "continuidad-secciones",
+        "nivel": 2,
+        "variante": "diametros",
+        "diametroEntradaCm": 4,
+        "diametroSalidaCm": 6,
+        "rapidezEntrada": 4.5
+      },
+      "esperado": {
+        "respuesta": 2,
+        "unidad": "m/s",
+        "texto": "2 m/s",
+        "fraccionExacta": {
+          "numerador": "2",
+          "denominador": "1"
+        }
+      },
+      "erroresEsperados": {
+        "USA_DIAMETROS": 3,
+        "CONSERVA_RAPIDEZ": 4.5,
+        "CUADRA_AREAS": 0.8888888888888888
+      },
+      "metodo": "Volumen transportado durante un intervalo de 0,37 s; trabajo de presión y cambios de energía de una porción de líquido de 0,017 m³."
+    },
+    {
+      "semilla": 12018,
+      "opciones": {
+        "tipo": "bernoulli-desnivel"
+      },
+      "entrada": {
+        "idea": "bernoulli",
+        "tipo": "bernoulli-desnivel",
+        "nivel": 3,
+        "variante": "tuberia",
+        "rho": 1000,
+        "g": 10,
+        "areaEntradaCm2": 9,
+        "areaSalidaCm2": 6,
+        "rapidezEntrada": 2,
+        "pEntradaKPa": 120,
+        "alturaEntradaM": 1,
+        "alturaSalidaM": 0
+      },
+      "esperado": {
+        "respuesta": 127.5,
+        "unidad": "kPa",
+        "texto": "127,5 kPa",
+        "fraccionExacta": {
+          "numerador": "255",
+          "denominador": "2"
+        }
+      },
+      "erroresEsperados": {
+        "INVIERTE_CAMBIO_CINETICO": 132.5,
+        "INVIERTE_CAMBIO_ALTURA": 107.5,
+        "CONSERVA_RAPIDEZ": 130
+      },
+      "metodo": "Volumen transportado durante un intervalo de 0,37 s; trabajo de presión y cambios de energía de una porción de líquido de 0,017 m³."
+    },
+    {
+      "semilla": 12019,
+      "opciones": {
+        "tipo": "equilibrio-cuerpo"
+      },
+      "entrada": {
+        "idea": "empuje",
+        "tipo": "equilibrio-cuerpo",
+        "nivel": 2,
+        "variante": "libre",
+        "masaKg": 0.84,
+        "volumenTotalCm3": 1200,
+        "rho": 1000,
+        "g": 10
+      },
+      "esperado": {
+        "respuesta": 70,
+        "unidad": "%",
+        "texto": "70 %",
+        "fraccionExacta": {
+          "numerador": "70",
+          "denominador": "1"
+        }
+      },
+      "erroresEsperados": {
+        "USA_VOLUMEN_TOTAL": 100,
+        "DA_PORCENTAJE_EMERGIDO": 30,
+        "INVIERTE_DENSIDADES": 142.85714285714286
+      },
+      "metodo": "Masa del líquido desplazado y suma vertical de fuerzas; volumen sumergido obtenido al anular el balance."
+    },
+    {
+      "semilla": 12020,
+      "opciones": {
+        "tipo": "bernoulli-desnivel"
+      },
+      "entrada": {
+        "idea": "bernoulli",
+        "tipo": "bernoulli-desnivel",
+        "nivel": 3,
+        "variante": "deposito",
+        "g": 10,
+        "caudalLPorS": 5.6,
+        "areaOrificioCm2": 8
+      },
+      "esperado": {
+        "respuesta": 2.45,
+        "unidad": "m",
+        "texto": "2,45 m",
+        "fraccionExacta": {
+          "numerador": "49",
+          "denominador": "20"
+        }
+      },
+      "erroresEsperados": {
+        "OMITE_FACTOR_DOS": 4.9,
+        "DUPLICA_AREA_ORIFICIO": 0.6125,
+        "USA_CAUDAL_COMO_RAPIDEZ": 1.568
+      },
+      "metodo": "Volumen transportado durante un intervalo de 0,37 s; trabajo de presión y cambios de energía de una porción de líquido de 0,017 m³."
+    }
+  ]
+}
