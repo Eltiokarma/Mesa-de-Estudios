@@ -58,3 +58,4 @@ contra los límites semanales de los planes.
 | algebra.binomio-de-newton | auditoría y correcciones (cierre) | 311 334 | 36 min | 146 herramientas |
 | quimica.mol-y-composicion | redactor, unidad ya cerrada | 444 323 | 25 min | 82 herramientas |
 | quimica.nomenclatura-inorganica | redactor, unidad ya cerrada | 424 039 | 25 min | 81 herramientas |
+| geometria.puntos-notables | auditoría y correcciones (cierre) | 430 839 | 63 min 45 s | 176 herramientas |

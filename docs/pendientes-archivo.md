@@ -4,6 +4,34 @@ Estados anteriores y pendientes viejos, sacados de `docs/pendientes.md` el 21 no
 
 
 
+## Estado al 20 nov: Etapa 8 cerrada (ocho unidades con calidad 2)
+
+Mismo método, con las lecciones 18 y 19 nuevas en `etapa-delegada.md`. La sesión revisa la idea 1 de cada unidad en
+capturas y le manda notas al agente mientras sigue escribiendo.
+
+- **Hecho y en main (v313, unas 12 520 pruebas):** Conectores, Ecuaciones polinomiales, Mol y composición, Números
+  racionales, Razonamiento inductivo, Ángulos en posición normal, Trabajo y energía y Proporcionalidad y semejanza,
+  todas con `calidad: 2`. En química, razonamiento matemático, verbal y trigonometría se abrió la segunda rama.
+  Resumen y decisiones para Gerson en `docs/etapa8/decisiones.md`; informes en `rutinas/auditoria/` y `rutinas/frio/`;
+  tarjetas en la mesa (ronda 14).
+- **Integración:** los bloques de archivos compartidos se copian por unidad con las ayudas de
+  `herramientas/integracion/` (`verblk.py` para `catalogo/pruebas/verificar.js`, `avblk.py` para `nucleo/avance.js` y
+  su prueba; ver su LEEME), y se comprueba con `node -e require`.
+  Cuando cierran varias unidades juntas, se apilan en un worktree y se corre una sola suite.
+- **Siguiente:**
+  1. Lo que dejó la etapa (`docs/etapa8/decisiones.md`, «Pendientes»): `trig-plano` con el rótulo que esquiva líneas,
+     `balanza` numerada solo con más de una, la letra sin serifa de la app, el resultado corto pegado al «=».
+  2. Etapa 9: la unidad siguiente de cada rama (álgebra: Binomio de Newton; aritmética: Potenciación y radicación;
+     física: Impulso y choques; geometría: Puntos notables; química: Reacciones y balance; RM: Arreglos numéricos;
+     verbal: Cohesión y coherencia; trigonometría: Reducción al primer cuadrante).
+     Hay investigación previa de ChatGPT, por verificar, para las ocho: `docs/investigacion/etapa9/` (léase su LEEME).
+     Para las etapas 10 a 12 también hay (una versión más corta por unidad): `docs/investigacion/etapa10/` a `etapa12/`.
+     Etapas 13 a 22 (22 nov): investigación larga en `docs/investigacion/etapa13/` a `etapa16/`, `etapas-17-20/`
+     (17 y 18), `etapa19/` a `etapa22/`, cada una con su `estado.md`. Con esto tienen investigación las 108 unidades
+     por rehacer.
+     Las etapas 10 a 12 tienen la versión breve en `etapa10/breve/` a `etapa12/breve/` (unos 11 KB por unidad); la
+     larga llega a la raíz de cada carpeta.
+
 ## Estado al 19 nov, cierre: Etapa 7 cerrada (ocho unidades con calidad 2)
 
 Mismo método que la Etapa 6 (`docs/metodo/unidad/`), con las lecciones 13 a 17 nuevas en `etapa-delegada.md`. Todos

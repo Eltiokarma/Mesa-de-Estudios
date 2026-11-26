@@ -1,36 +1,26 @@
 # Pendientes y traspaso
 
-Actualizado el 21 de noviembre de 2026. La siguiente sesión empieza aquí, después de `CLAUDE.md`: el estado más reciente, cómo arrancar y lo siguiente. Lo anterior está en `docs/pendientes-archivo.md`, con el índice al final de este archivo; no se lee entero, solo la sección que haga falta (búscala por su título).
+Actualizado el 26 de noviembre de 2026. La siguiente sesión empieza aquí, después de `CLAUDE.md`: el estado más reciente, cómo arrancar y lo siguiente. Lo anterior está en `docs/pendientes-archivo.md`, con el índice al final de este archivo; no se lee entero, solo la sección que haga falta (búscala por su título).
 
 Al cerrar una etapa, escribe su «Estado al…» arriba y mueve el anterior al principio de `docs/pendientes-archivo.md`, para que este archivo siga corto.
 
-## Estado al 20 nov: Etapa 8 cerrada (ocho unidades con calidad 2)
+## Estado al 26 nov: Etapa 9 cerrada (siete unidades y la física de Codex con calidad 2)
 
-Mismo método, con las lecciones 18 y 19 nuevas en `etapa-delegada.md`. La sesión revisa la idea 1 de cada unidad en
-capturas y le manda notas al agente mientras sigue escribiendo.
+Mismo método, con un paso nuevo: el **redactor** (skill Escribidor Escribano) entre el escritor y el auditor, y topes
+de texto más holgados para lo que explica. Resumen, decisiones para Gerson y pendientes en `docs/etapa9/decisiones.md`;
+tokens por agente en `docs/etapa9/tokens.md`.
 
-- **Hecho y en main (v313, unas 12 520 pruebas):** Conectores, Ecuaciones polinomiales, Mol y composición, Números
-  racionales, Razonamiento inductivo, Ángulos en posición normal, Trabajo y energía y Proporcionalidad y semejanza,
-  todas con `calidad: 2`. En química, razonamiento matemático, verbal y trigonometría se abrió la segunda rama.
-  Resumen y decisiones para Gerson en `docs/etapa8/decisiones.md`; informes en `rutinas/auditoria/` y `rutinas/frio/`;
-  tarjetas en la mesa (ronda 14).
-- **Integración:** los bloques de archivos compartidos se copian por unidad con las ayudas de
-  `herramientas/integracion/` (`verblk.py` para `catalogo/pruebas/verificar.js`, `avblk.py` para `nucleo/avance.js` y
-  su prueba; ver su LEEME), y se comprueba con `node -e require`.
-  Cuando cierran varias unidades juntas, se apilan en un worktree y se corre una sola suite.
+- **Hecho:** Binomio de Newton, Potenciación y radicación, Puntos notables, Reacciones y balance, Arreglos numéricos,
+  Cohesión y coherencia y Reducción al primer cuadrante; Impulso y choques y Gravitación (Codex) con el mismo cierre.
+  Redactor y verificación en las 8 unidades de química ya cerradas (tanda 2 por integrar si no está en la rama).
+  App v315.
+- **En otra sesión:** «Dibujos reconocibles» (`docs/metodo/dibujos-reconocibles.md`, rama `claude/dibujos-reconocibles`):
+  revisar su rama e integrar.
+- **Codex:** Oscilaciones y Fluidos (`docs/etapa9/encargo-codex.md`); cada una pasa por redactor, auditor y lectores.
 - **Siguiente:**
-  1. Lo que dejó la etapa (`docs/etapa8/decisiones.md`, «Pendientes»): `trig-plano` con el rótulo que esquiva líneas,
-     `balanza` numerada solo con más de una, la letra sin serifa de la app, el resultado corto pegado al «=».
-  2. Etapa 9: la unidad siguiente de cada rama (álgebra: Binomio de Newton; aritmética: Potenciación y radicación;
-     física: Impulso y choques; geometría: Puntos notables; química: Reacciones y balance; RM: Arreglos numéricos;
-     verbal: Cohesión y coherencia; trigonometría: Reducción al primer cuadrante).
-     Hay investigación previa de ChatGPT, por verificar, para las ocho: `docs/investigacion/etapa9/` (léase su LEEME).
-     Para las etapas 10 a 12 también hay (una versión más corta por unidad): `docs/investigacion/etapa10/` a `etapa12/`.
-     Etapas 13 a 22 (22 nov): investigación larga en `docs/investigacion/etapa13/` a `etapa16/`, `etapas-17-20/`
-     (17 y 18), `etapa19/` a `etapa22/`, cada una con su `estado.md`. Con esto tienen investigación las 108 unidades
-     por rehacer.
-     Las etapas 10 a 12 tienen la versión breve en `etapa10/breve/` a `etapa12/breve/` (unos 11 KB por unidad); la
-     larga llega a la raíz de cada carpeta.
+  1. Pasada del redactor por las demás unidades cerradas, curso por curso (química ya está).
+  2. Etapa 10: la unidad siguiente de cada rama, con la investigación de `docs/investigacion/etapa10/`.
+  3. Los pendientes de `docs/etapa9/decisiones.md`.
 
 ## Cómo arrancar una sesión nueva
 
@@ -64,6 +54,7 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 
 ## Índice de `docs/pendientes-archivo.md`
 
+- Estado al 20 nov: Etapa 8 cerrada (ocho unidades con calidad 2)
 - Estado al 19 nov, cierre: Etapa 7 cerrada (ocho unidades con calidad 2)
 - Estado al 19 nov, noche: Etapa 6 cerrada (nueve unidades con calidad 2)
 - Estado al 19 nov: Etapa 5 cerrada (diez unidades con calidad 2)
