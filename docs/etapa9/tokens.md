@@ -24,3 +24,4 @@ contra los límites semanales de los planes.
 | razonamiento-verbal.cohesion-y-coherencia | lector en frío A (ideas 1–3) | 129 120 | 2 min 27 s | 33 herramientas |
 | trigonometria.reduccion-al-primer-cuadrante | redactor (Escribidor Escribano) | 381 857 | 28 min 48 s | 83 herramientas |
 | quimica.reacciones-y-balance | redactor (Escribidor Escribano) | 415 520 | 27 min | 71 herramientas |
+| trigonometria.reduccion-al-primer-cuadrante | lector en frío B (ideas 4–5) | 111 025 | 2 min 10 s | 23 herramientas |
