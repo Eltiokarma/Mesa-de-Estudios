@@ -996,6 +996,33 @@ const V = {
     const sin = E.rapidez(d.h, 0, 0), nmg = Math.sqrt(2 * (E.G * d.h + r.WroceConNmg));
     return { correcta: r.v, errores: { 'CE-ROCE-sin-rozamiento': sin, 'RZ-NMG-normal-igual-peso': nmg, 'CE-SIN-RAIZ': r.v2 } }; },
 
+  // Etapa 9 (22 nov): reserva de Impulso y choques. El motor calcula el cambio firmado de movimiento
+  // y el centro a partir de las posiciones finales. Las cuatro formas tienen cuentas independientes en su prueba propia.
+  'fis-33': d => {
+    const m = d.masaG / 1000, dt = d.duracionMs / 1000, u = d.rapidezLlegada, w = d.rapidezSalida;
+    const r = motor('choques').impulso({ m, v1: u, v2: -w, dt });
+    return { correcta: r.Fmedia, errores: {
+      'IC9-ignora-rebote': -m * u / dt,
+      'IC9-omite-sentido-salida': m * (w - u) / dt,
+      'IC9-resta-invertida': m * (u + w) / dt,
+      'IC9-impulso-como-fuerza': -m * (u + w),
+    } };
+  },
+  'fis-34': d => {
+    const M = d.mA + d.mB, X = (d.mA * d.xA + d.mB * d.xB) / M;
+    const V = (d.mA * d.rapidezA - d.mB * d.rapidezB) / M;
+    const r = motor('choques').centroMasa([
+      { m: d.mA, x: d.xA + d.rapidezA * d.t },
+      { m: d.mB, x: d.xB - d.rapidezB * d.t },
+    ]);
+    return { correcta: r.x, errores: {
+      'IC9-centro-sin-avance': X,
+      'IC9-posicion-promedio-simple': (d.xA + d.xB) / 2 + V * d.t,
+      'IC9-velocidad-promedio-simple': X + (d.rapidezA - d.rapidezB) * d.t / 2,
+      'IC9-velocidades-sin-signo': X + (d.mA * d.rapidezA + d.mB * d.rapidezB) * d.t / M,
+    } };
+  },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },

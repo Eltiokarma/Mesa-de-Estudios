@@ -2,6 +2,7 @@
   "id": "impulso-grafica",
   "titulo": "La patada en la gráfica",
   "formato": "predicciones",
+  "rehacer": true,
   "unidades": [
     "fisica.impulso-y-choques"
   ],
