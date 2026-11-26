@@ -556,8 +556,7 @@
     requiere: ['/nucleo/kit/piezas/rm-fichas.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/rm-plano.js'],
     // Glosario (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso.
     glosario: [
-      { termino: 'cota', def: 'Valor que el resultado no puede cruzar, como «al menos 4». Con un caso que lo alcanza, prueba el mejor.',
-        formas: ['cota', 'cotas'], ejemplo: 'Hay 4 músicos: al menos 4 personas. Si 4 alcanzan, el mínimo es 4.' },
+      // «cota» se mudó a Arreglos numéricos (etapa 9, 26 nov), que va antes en la rama; aquí el lector la marca igual.
       { termino: 'recaudación', simbolo: 'R', medida: 'S/', def: 'Dinero total que se junta al vender: el precio de cada entrada por las entradas vendidas.',
         ejemplo: 'A S/ 20 se venden 80 − 40 = 40 entradas: R = S/ 800.', ver: ['modelo de ventas'] },
       { termino: 'modelo de ventas', def: 'Fórmula que dice cuántas entradas se venden a cada precio. Con ella se calcula lo que se junta.',

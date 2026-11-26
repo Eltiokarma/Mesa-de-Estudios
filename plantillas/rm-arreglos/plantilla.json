@@ -6,6 +6,9 @@
     "razonamiento-matematico.arreglos-numericos"
   ],
   "estado": "borrador",
+  "rehacer": [
+    "razonamiento-matematico.arreglos-numericos"
+  ],
   "version": "0.1.0",
   "generador": "generador.js",
   "casos": "casos.json",

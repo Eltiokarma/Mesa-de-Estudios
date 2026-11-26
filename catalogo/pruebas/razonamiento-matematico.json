@@ -288,7 +288,13 @@
     "RMP27-ultima": {
       "respaldo": "hipotesis",
       "describe": "En un ciclo, toma la última del ciclo, como si no sobrara nada"
-    }
+    },
+    "RMP1-sin-centro": {"respaldo": "hipotesis", "describe": "Reparte el total entre la fila y la columna, como si el centro estuviera en una sola"},
+    "RMP183-el-centro": {"respaldo": "hipotesis", "describe": "Responde la tarjeta del centro en vez de lo que suma la línea"},
+    "RMP61-las-dos": {"respaldo": "hipotesis", "describe": "Da lo que suman la fila y la columna juntas, sin repartir"},
+    "RMP188-entre-cuatro": {"respaldo": "hipotesis", "describe": "Divide el producto entre las cuatro líneas que pasan por el centro"},
+    "RMP194-dos-veces": {"respaldo": "hipotesis", "describe": "Toma el centro por sí mismo dos veces en vez de tres"},
+    "RMP65-suma": {"respaldo": "hipotesis", "describe": "Suma el centro tres veces en vez de multiplicarlo (como en el de sumas)"}
   },
   "pares": [
     {
@@ -2478,6 +2484,8 @@
           }
         ]
       }
-    }
+    },
+    {"par": "rm-28", "plantilla": "rm-arreglos-ideas", "unidad": "razonamiento-matematico.arreglos-numericos", "nombreUnidad": "Arreglos numéricos y cuadrados mágicos", "mide": "La tarjeta del centro de una cruz está en la fila y en la columna: fila más columna es el total más el centro (2S = total + centro)", "A": {"enunciado": "En el patio, cinco alumnos con los números 3, 4, 5, 6 y 7 en el polo forman una cruz: una fila de tres y una columna de tres, y el del centro está en las dos. Si el del centro lleva el 5 y la fila y la columna suman lo mismo, ¿cuánto suma cada una?", "datos": {"desde": 3, "hasta": 7, "c": 5, "modelo": {"paso": 1}}, "opciones": [{"texto": "12,5", "valor": 12.5, "error": "RMP1-sin-centro"}, {"texto": "15", "valor": 15, "correcta": true}, {"texto": "30", "valor": 30, "error": "RMP61-las-dos"}, {"texto": "5", "valor": 5, "error": "RMP183-el-centro"}]}, "B": {"enunciado": "En el patio, cinco alumnos con los números 4, 5, 6, 7 y 8 en el polo forman una cruz: una fila de tres y una columna de tres, y el del centro está en las dos. Si el del centro lleva el 6 y la fila y la columna suman lo mismo, ¿cuánto suma cada una?", "datos": {"desde": 4, "hasta": 8, "c": 6, "modelo": {"paso": 1}}, "opciones": [{"texto": "36", "valor": 36, "error": "RMP61-las-dos"}, {"texto": "6", "valor": 6, "error": "RMP183-el-centro"}, {"texto": "18", "valor": 18, "correcta": true}, {"texto": "15", "valor": 15, "error": "RMP1-sin-centro"}]}},
+    {"par": "rm-29", "plantilla": "rm-arreglos-ideas", "unidad": "razonamiento-matematico.arreglos-numericos", "nombreUnidad": "Arreglos numéricos y cuadrados mágicos", "mide": "En el cuadrado mágico que multiplica, el centro por sí mismo tres veces da el producto de cada línea (no se divide entre 3, como en el de sumas)", "A": {"enunciado": "En un cuadrado mágico de 3 × 3, cada fila, cada columna y cada diagonal multiplican lo mismo: 1000. ¿Qué número va en la casilla del centro?", "datos": {"P": 1000}, "opciones": [{"texto": "250", "valor": 250, "error": "RMP188-entre-cuatro"}, {"texto": "100", "valor": 100, "error": "RMP194-dos-veces"}, {"texto": "30", "valor": 30, "error": "RMP65-suma"}, {"texto": "10", "valor": 10, "correcta": true}]}, "B": {"enunciado": "En un cuadrado mágico de 3 × 3, cada fila, cada columna y cada diagonal multiplican lo mismo: 2744. ¿Qué número va en la casilla del centro?", "datos": {"P": 2744}, "opciones": [{"texto": "14", "valor": 14, "correcta": true}, {"texto": "686", "valor": 686, "error": "RMP188-entre-cuatro"}, {"texto": "196", "valor": 196, "error": "RMP194-dos-veces"}, {"texto": "42", "valor": 42, "error": "RMP65-suma"}]}}
   ]
 }

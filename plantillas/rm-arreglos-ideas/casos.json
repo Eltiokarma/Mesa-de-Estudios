@@ -1,0 +1,374 @@
+{
+  "plantilla": "rm-arreglos-ideas",
+  "tolerancia": 0,
+  "nota": "Un caso por tipo (18), con la idea de la teoría a la que sirve. La respuesta es un número; en se-puede, la clave (si, impar o par).",
+  "verificacion": "Etapa 9 (26 nov 2026): los 18 casos se resolvieron aparte desde su entrada, sin el generador (scratchpad e9-rm/casos.py, Python): todos los acomodos de los marcos por permutaciones, todos los subconjuntos de la lista, el muro armado fila por fila y el centro buscado entero por entero. 18/18 coinciden.",
+  "casos": [
+    {
+      "semilla": "caso-0",
+      "opciones": {
+        "idea": "reparto-parejo"
+      },
+      "entrada": {
+        "idea": "reparto-parejo",
+        "tipo": "grupos",
+        "a": 2,
+        "d": 2,
+        "k": 3,
+        "r": 4
+      },
+      "esperado": {
+        "respuesta": 52
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "opciones": {
+        "idea": "reparto-parejo"
+      },
+      "entrada": {
+        "idea": "reparto-parejo",
+        "tipo": "se-puede",
+        "nums": [
+          3,
+          5,
+          13,
+          20,
+          23
+        ]
+      },
+      "esperado": {
+        "respuesta": "par"
+      }
+    },
+    {
+      "semilla": "caso-5",
+      "opciones": {
+        "idea": "reparto-parejo"
+      },
+      "entrada": {
+        "idea": "reparto-parejo",
+        "tipo": "falta",
+        "a": 9,
+        "d": 1,
+        "k": 2,
+        "r": 4,
+        "tiene": [
+          10,
+          15,
+          16
+        ]
+      },
+      "esperado": {
+        "respuesta": 9
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "opciones": {
+        "idea": "vertices-dos-veces"
+      },
+      "entrada": {
+        "idea": "vertices-dos-veces",
+        "tipo": "lado",
+        "nums": [
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20
+        ],
+        "L": 5,
+        "esq": [
+          2,
+          8,
+          14,
+          16,
+          20
+        ]
+      },
+      "esperado": {
+        "respuesta": 34
+      }
+    },
+    {
+      "semilla": "caso-8",
+      "opciones": {
+        "idea": "vertices-dos-veces"
+      },
+      "entrada": {
+        "idea": "vertices-dos-veces",
+        "tipo": "esquinas",
+        "nums": [
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "L": 4,
+        "S": 39
+      },
+      "esperado": {
+        "respuesta": 56
+      }
+    },
+    {
+      "semilla": "caso-0",
+      "opciones": {
+        "idea": "vertices-dos-veces"
+      },
+      "entrada": {
+        "idea": "vertices-dos-veces",
+        "tipo": "cruz",
+        "nums": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "c": 10
+      },
+      "esperado": {
+        "respuesta": 25
+      }
+    },
+    {
+      "semilla": "caso-0",
+      "opciones": {
+        "idea": "mayor-suma"
+      },
+      "entrada": {
+        "idea": "mayor-suma",
+        "tipo": "mayor",
+        "nums": [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "L": 3
+      },
+      "esperado": {
+        "respuesta": 45
+      }
+    },
+    {
+      "semilla": "caso-4",
+      "opciones": {
+        "idea": "mayor-suma"
+      },
+      "entrada": {
+        "idea": "mayor-suma",
+        "tipo": "menor",
+        "nums": [
+          5,
+          7,
+          9,
+          11,
+          13,
+          15,
+          17,
+          19,
+          21,
+          23
+        ],
+        "L": 5
+      },
+      "esperado": {
+        "respuesta": 37
+      }
+    },
+    {
+      "semilla": "caso-2",
+      "opciones": {
+        "idea": "mayor-suma"
+      },
+      "entrada": {
+        "idea": "mayor-suma",
+        "tipo": "diferencia",
+        "nums": [
+          13,
+          14,
+          15,
+          16,
+          17,
+          18
+        ],
+        "L": 3
+      },
+      "esperado": {
+        "respuesta": 3
+      }
+    },
+    {
+      "semilla": "caso-0",
+      "opciones": {
+        "idea": "suma-magica"
+      },
+      "entrada": {
+        "idea": "suma-magica",
+        "tipo": "suma3",
+        "nums": [
+          3,
+          5,
+          7,
+          9,
+          11,
+          13,
+          15,
+          17,
+          19
+        ]
+      },
+      "esperado": {
+        "respuesta": 33
+      }
+    },
+    {
+      "semilla": "caso-2",
+      "opciones": {
+        "idea": "suma-magica"
+      },
+      "entrada": {
+        "idea": "suma-magica",
+        "tipo": "opuesta",
+        "c": 14,
+        "a": 17
+      },
+      "esperado": {
+        "respuesta": 11
+      }
+    },
+    {
+      "semilla": "caso-8",
+      "opciones": {
+        "idea": "suma-magica"
+      },
+      "entrada": {
+        "idea": "suma-magica",
+        "tipo": "suma4",
+        "a": 11,
+        "d": 1
+      },
+      "esperado": {
+        "respuesta": 74
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "opciones": {
+        "idea": "producto-magico"
+      },
+      "entrada": {
+        "idea": "producto-magico",
+        "tipo": "centro",
+        "P": 3375
+      },
+      "esperado": {
+        "respuesta": 15
+      }
+    },
+    {
+      "semilla": "caso-2",
+      "opciones": {
+        "idea": "producto-magico"
+      },
+      "entrada": {
+        "idea": "producto-magico",
+        "tipo": "opuestaP",
+        "c": 6,
+        "a": 4
+      },
+      "esperado": {
+        "respuesta": 9
+      }
+    },
+    {
+      "semilla": "caso-0",
+      "opciones": {
+        "idea": "producto-magico"
+      },
+      "entrada": {
+        "idea": "producto-magico",
+        "tipo": "filaP",
+        "P": 216,
+        "a": 9,
+        "b": 12
+      },
+      "esperado": {
+        "respuesta": 2
+      }
+    },
+    {
+      "semilla": "caso-2",
+      "opciones": {
+        "idea": "piramide-de-sumas"
+      },
+      "entrada": {
+        "idea": "piramide-de-sumas",
+        "tipo": "cima",
+        "base": [
+          2,
+          11,
+          10,
+          8
+        ]
+      },
+      "esperado": {
+        "respuesta": 73
+      }
+    },
+    {
+      "semilla": "caso-3",
+      "opciones": {
+        "idea": "piramide-de-sumas"
+      },
+      "entrada": {
+        "idea": "piramide-de-sumas",
+        "tipo": "base",
+        "base": [
+          6,
+          4,
+          5,
+          12
+        ],
+        "j": 1,
+        "cima": 45
+      },
+      "esperado": {
+        "respuesta": 4
+      }
+    },
+    {
+      "semilla": "caso-0",
+      "opciones": {
+        "idea": "piramide-de-sumas"
+      },
+      "entrada": {
+        "idea": "piramide-de-sumas",
+        "tipo": "mayorCima",
+        "nums": [
+          2,
+          4,
+          7,
+          10
+        ]
+      },
+      "esperado": {
+        "respuesta": 57
+      }
+    }
+  ]
+}

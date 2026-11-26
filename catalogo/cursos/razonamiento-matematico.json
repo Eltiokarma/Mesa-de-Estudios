@@ -87,8 +87,8 @@
       "potencial_visual": "medio",
       "grado": 3,
       "requiere": [],
-      "plantillas": ["arreglos-giros", "rm-arreglos"],
-      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
+      "plantillas": ["rm-arreglos-ideas", "arreglos-giros", "rm-arreglos"],
+      "investigacion": "docs/investigacion/codigos-rm-procesos.md"
     },
     {
       "id": "razonamiento-matematico.razonamiento-inductivo",

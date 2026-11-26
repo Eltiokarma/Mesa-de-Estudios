@@ -1,0 +1,95 @@
+{
+  "titulo": "Repartos, marcos y cuadrados mágicos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Las tarjetas pares del 14 al 32 van en un marco con forma de pentágono, una por casilla, y cada lado suma 74. ¿Cuánto suman las esquinas? Datos: El total es lo que suman todas las tarjetas del reto, contando cada una una sola vez. Cada lado tiene sus dos esquinas y la tarjeta del medio. Al sumar todas las líneas, cada número entra una vez por cada línea que lo tiene. Los números que van con un mismo salto suman (primero + último) × cuántos son ÷ 2. Alternativas: A) 90   B) 140   C) 370   D) 230   E) 74",
+      "respuesta": "B) 140",
+      "pasos": [
+        "Los lados juntos suman 5 × 74 = 370.",
+        "Lo que pasa del total es lo que se contó dos veces, las esquinas: 370 − 230 = 140.",
+        "Respuesta: 140."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En un muro de adobes van cuatro abajo y la cima vale 60. Abajo están 10, ?, 11, 8. ¿Qué número falta? Datos: Cada adobe vale la suma de los dos que tiene debajo. Caminos de cada adobe: 1, 2, 1 (tres abajo); 1, 3, 3, 1 (cuatro); 1, 4, 6, 4, 1 (cinco). Alternativas: A) 20   B) 31   C) 3   D) 9",
+      "respuesta": "C) 3",
+      "pasos": [
+        "Los caminos son 1, 3, 3, 1, así que los adobes conocidos aportan 51.",
+        "Lo que queda se reparte entre los 3 caminos del que falta: (60 − 51) ÷ 3 = 3.",
+        "Respuesta: 3."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Las tarjetas pares del 10 al 18 van en una cruz: una fila de tres y una columna de tres, con el 18 en el centro. Fila y columna suman lo mismo. ¿Cuánto suma cada una? Datos: El total es lo que suman todas las tarjetas del reto, contando cada una una sola vez. La fila y la columna comparten la tarjeta del centro. Al sumar todas las líneas, cada número entra una vez por cada línea que lo tiene. Alternativas: A) 88   B) 44   C) 18   D) 35   E) 53",
+      "respuesta": "B) 44",
+      "pasos": [
+        "Fila más columna da el total, 70, más el centro otra vez: 88.",
+        "La fila y la columna se reparten esa suma: 88 ÷ 2 = 44.",
+        "Respuesta: 44."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En un cuadrado mágico 3 × 3, el centro es 24 y una esquina es 20. ¿Qué número va en la esquina opuesta? Datos: En un cuadrado mágico, cada fila, cada columna y las dos diagonales suman lo mismo. Por el centro del 3 × 3 pasan cuatro líneas: la fila y la columna del medio y las dos diagonales. En el 3 × 3, la suma mágica es el triple del centro. Alternativas: A) 20   B) 44   C) 52   D) 28   E) 4",
+      "respuesta": "D) 28",
+      "pasos": [
+        "En el 3 × 3, la diagonal suma el triple del centro, 72.",
+        "A la diagonal le falta la esquina opuesta: 72 − 20 − 24 = 28.",
+        "Respuesta: 28."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Las tarjetas del 7 al 16 van en un marco con forma de pentágono, una por casilla. Las esquinas son 7, 9, 11, 13 y 15 y los lados suman lo mismo. ¿Cuánto suma cada lado? Datos: El total es lo que suman todas las tarjetas del reto, contando cada una una sola vez. Cada lado tiene sus dos esquinas y la tarjeta del medio. Al sumar todas las líneas, cada número entra una vez por cada línea que lo tiene. Los números que van con un mismo salto suman (primero + último) × cuántos son ÷ 2. Alternativas: A) 170   B) 55   C) 34   D) 35   E) 23",
+      "respuesta": "C) 34",
+      "pasos": [
+        "Los 5 lados juntos cuentan el total, 115, y las esquinas otra vez, 55: suman 170.",
+        "Cada lado se lleva la misma parte: 170 ÷ 5 = 34.",
+        "Respuesta: 34."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un cuadrado mágico 3 × 3 multiplica 1 000 en cada línea. Una fila tiene 10 y 50. ¿Qué número la completa? Datos: En un cuadrado mágico multiplicativo, cada fila, columna y diagonal da el mismo producto P. Alternativas: A) 10   B) 2   C) 100   D) 940   E) 500",
+      "respuesta": "B) 2",
+      "pasos": [
+        "Las dos casillas que ya están multiplican 500.",
+        "Como la fila multiplica, se divide: 1 000 ÷ 500 = 2.",
+        "Respuesta: 2."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Las tarjetas del 5 al 14 van en un marco con forma de pentágono, una por casilla, y los lados suman lo mismo. ¿Cuánto es la mayor suma por lado menos la menor? Datos: El total es lo que suman todas las tarjetas del reto, contando cada una una sola vez. Cada lado tiene sus dos esquinas y la tarjeta del medio. Cada lado suma (total + esquinas) ÷ el número de lados. Una suma por lado vale si con esas esquinas las del medio salen de las tarjetas que quedan, sin repetir. Alternativas: A) 31   B) 57   C) 5   D) 26",
+      "respuesta": "C) 5",
+      "pasos": [
+        "La cuenta con las esquinas mayores da un tope, y desde ahí se baja hasta el primer valor que se arma.",
+        "La mayor que se arma es 31 y la menor, 26: 31 − 26 = 5.",
+        "Respuesta: 5."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Las tarjetas del 14 al 23 van en un marco con forma de pentágono, una por casilla, y los lados suman lo mismo. ¿Cuánto es la mayor suma por lado menos la menor? Datos: El total es lo que suman todas las tarjetas del reto, contando cada una una sola vez. Cada lado tiene sus dos esquinas y la tarjeta del medio. Cada lado suma (total + esquinas) ÷ el número de lados. Una suma por lado vale si con esas esquinas las del medio salen de las tarjetas que quedan, sin repetir. Alternativas: A) 111   B) 5   C) 58   D) 53",
+      "respuesta": "B) 5",
+      "pasos": [
+        "La cuenta con las esquinas mayores da un tope, y desde ahí se baja hasta el primer valor que se arma.",
+        "La mayor que se arma es 58 y la menor, 53: 58 − 53 = 5.",
+        "Respuesta: 5."
+      ]
+    }
+  ]
+}

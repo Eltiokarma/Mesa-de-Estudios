@@ -43,12 +43,13 @@ D.registrar('razonamiento-matematico', {
   'razonamiento-matematico.traslados-y-puntos-cardinales': P =>
     P.l([[132, 20], [132, 50]], 'd') + P.l([[118, 36], [146, 36]], 'f') + P.punta(132, 16, -90, 'tn') + P.t(132, 64, 'N', 15)
     + P.l([[22, 104], [96, 28]], 'g') + P.ac('M22 104V64H64V28H96') + P.c(22, 104, 6, 'tn') + P.c(96, 28, 6, 'a'),
-  // En el cuadrado mágico, filas, columnas y diagonales suman lo mismo.
+  // Arreglos numéricos (etapa 9, sin números: el ícono no delata ninguna predicción): un marco triangular con una tarjeta
+  // en cada esquina y a mitad de cada lado; las del medio, con «?».
   'razonamiento-matematico.arreglos-numericos': P => {
-    const nums = [2, 7, 6, 9, 5, 1, 4, 3, 8];
-    return nums.map((v, i) => { const x = 18 + (i % 3) * 27, y = 20 + Math.floor(i / 3) * 27;
-      return P.r(x, y, 27, 27, i === 4 ? 'a' : 'b', 2) + P.t(x + 13.5, y + 20, v, 17); }).join('')
-      + P.l([[106, 60], [124, 60]], 'd') + P.punta(128, 60, 0, 'tn') + P.t(146, 66, '15', 17);
+    const V = [[80, 16], [138, 104], [22, 104]];
+    const M = V.map((v, k) => [(v[0] + V[(k + 1) % 3][0]) / 2, (v[1] + V[(k + 1) % 3][1]) / 2]);
+    return P.p('M80 16L138 104L22 104Z') + V.map(([x, y]) => P.r(x - 12, y - 12, 24, 24, 'a', 2)).join('')
+      + M.map(([x, y]) => P.r(x - 12, y - 12, 24, 24, 'b', 2) + P.t(x, y + 6, '?', 17)).join('');
   },
   // Se prueban casos chicos, se mira cómo crece y se generaliza: 4, 7, 10…
   'razonamiento-matematico.razonamiento-inductivo': P => {

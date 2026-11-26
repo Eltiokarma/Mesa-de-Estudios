@@ -304,3 +304,32 @@ RMP171-cociente y RMP27-una-de-mas.
 | RMP169 | Quedarse con el primer caso: creer que siempre da lo mismo, o tomar el primero del ciclo | RMT-IND-10 |
 | RMP170 | Contar una parte de las cifras del resultado (los nueves, sin el 8 y el 1), o contar las cifras en vez de sumarlas | nueva (cuentas largas) |
 | RMP171 | Mirar el cociente y no el residuo al buscar un lugar en un ciclo | UNMSM 2024-II p. 25 («equivocar el residuo y tomar el bloque completo»), junto a RMP27 |
+
+## Arreglos numéricos y cuadrados mágicos (teoría de la unidad y `rm-arreglos-ideas` por idea, etapa 9, 26 nov 2026)
+
+Códigos nuevos de `contenido/teoria/razonamiento-matematico/arreglos-numericos.js` y de la práctica `rm-arreglos-ideas`
+(propuesta: `docs/etapa9/propuesta-razonamiento-matematico.md`, §7). Todos son **hipótesis**: salen de las trampas de los
+solucionarios de San Marcos (30 preguntas de la unidad en `docs/datos/admision-unmsm.csv`: «olvidar que la casilla común
+se cuenta dos veces», «tratarlo como aditivo», «olvidar la paridad») y de la investigación de ChatGPT
+(`docs/investigacion/etapa9/razonamiento-matematico.arreglos-numericos.md`, errores PAR, INV, CON, OPT y MUL, también
+hipótesis). Reemplazan a los RMT-ARR-1 a 10 de la teoría vieja (1 → RMP186; 2 → RMP61; 3 → RMP187; 4 → RMP63; 5 → RMP184;
+6 → RMP185; 8 → RMP180; 9 → RMP181; 10 → RMP181; el 7 salía de un redondeo y se fue). Reutilizan RMP1, RMP2, RMP61, RMP63
+y RMP65. En la práctica van con un sufijo (RMP1-una-vez, RMP184-la-cota…).
+
+| Código | Error | Trampa de origen |
+| --- | --- | --- |
+| RMP180 | Creer que un total par (o divisible) ya asegura el reparto | RMT-ARR-8; investigación (PAR) |
+| RMP181 | Dar por bueno un reparto con un grupo mal sumado, o sin comprobar los demás | RMT-ARR-9 y 10; investigación (PAR) |
+| RMP182 | Contar dos veces lo que no se comparte (las tarjetas del medio) | investigación (CON) |
+| RMP183 | Responder lo que suma lo compartido (las esquinas, el centro) en vez de la suma de la línea | nueva |
+| RMP184 | Tomar la cota (las esquinas más grandes) como respuesta aunque no dé entera o no se arme | RMT-ARR-5; investigación (OPT); UNMSM 2027-I p. 27 |
+| RMP185 | Poner los mayores en cada línea a la vez, como si una tarjeta se pudiera usar dos veces | RMT-ARR-6; investigación (INV) |
+| RMP186 | Poner el mayor (o el del medio de la lista) en la casilla compartida sin hacer la cuenta | RMT-ARR-1 |
+| RMP187 | Creer que el centro del 3 × 3 no queda fijo («cualquiera», «falta información») | RMT-ARR-3 |
+| RMP188 | Dividir entre las cuatro líneas que pasan por el centro | nueva |
+| RMP189 | Usar los caminos de un muro más chico (1, 2, 2, 1 con cuatro abajo) | nueva |
+| RMP190 | Suponer que cada fila del muro suma el doble de la de abajo | nueva |
+| RMP191 | Hallar la opuesta sin el centro (S − a) o restando del centro | nueva |
+| RMP192 | Repartir el total entre las tarjetas y no entre las filas | nueva |
+| RMP193 | Olvidar el «÷ 2» de la suma de números seguidos | nueva |
+| RMP194 | En el multiplicativo, el centro por sí mismo dos veces en vez de tres | investigación (MUL) |

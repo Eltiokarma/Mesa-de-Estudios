@@ -5,6 +5,7 @@
     {
       "id": "p1",
       "nivel": "básico",
+      "unidades": ["razonamiento-matematico.arreglos-numericos"],
       "enunciado": "Se quieren poner los números del 3 al 11 en un cuadrado de 3 × 3, uno por casilla, de modo que cada fila, cada columna y cada diagonal sumen lo mismo. ¿Cuánto suma cada línea? ¿Qué número va en la casilla del centro?",
       "respuesta": "Cada línea suma 21 y en el centro va el 7.",
       "pasos": [
@@ -19,6 +20,7 @@
     {
       "id": "p2",
       "nivel": "intermedio",
+      "unidades": ["razonamiento-matematico.arreglos-numericos"],
       "enunciado": "En un cuadrado mágico de 3 × 3 con los números del 1 al 9, la esquina de arriba a la izquierda tiene un 2 y la de arriba a la derecha tiene un 4. ¿Qué número va en la casilla del medio de la fila de abajo?",
       "respuesta": "El 1.",
       "pasos": [
@@ -32,6 +34,7 @@
     {
       "id": "p3",
       "nivel": "básico",
+      "unidades": ["razonamiento-matematico.arreglos-numericos"],
       "enunciado": "Los números del 1 al 6 se colocan en los tres vértices y en los puntos medios de los lados de un triángulo, uno en cada lugar, de modo que los tres números de cada lado sumen lo mismo. ¿Cuál es la mayor suma por lado que se puede conseguir?",
       "respuesta": "12, con 4, 5 y 6 en los vértices.",
       "pasos": [
@@ -46,6 +49,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
+      "unidades": ["razonamiento-matematico.arreglos-numericos"],
       "enunciado": "Los números del 1 al 9 se colocan en un triángulo con cuatro números en cada lado (los tres vértices y dos números más en cada lado). Cada lado suma 20. ¿Cuánto suman los tres números de los vértices?",
       "respuesta": "15.",
       "pasos": [
@@ -58,6 +62,7 @@
     {
       "id": "p5",
       "nivel": "avanzado",
+      "unidades": ["razonamiento-matematico.arreglos-numericos"],
       "enunciado": "Los números del 1 al 8 se colocan en un cuadrado: uno en cada vértice y uno en el medio de cada lado, de modo que los tres números de cada lado sumen lo mismo. ¿Cuál es la menor suma por lado posible?",
       "respuesta": "12.",
       "pasos": [
@@ -71,6 +76,7 @@
     {
       "id": "p6",
       "nivel": "básico",
+      "unidades": ["razonamiento-matematico.transformaciones-de-figuras"],
       "enunciado": "Una pieza en forma de L está hecha con 4 cuadraditos: tres en columna y uno más al pie, a la derecha. Sobre una cuadrícula, ¿cuántas orientaciones distintas puede tener (sin contar los desplazamientos) si solo se gira sobre la mesa? ¿Y si también se le puede dar la vuelta?",
       "respuesta": "4 orientaciones solo girando; 8 si también se le da la vuelta.",
       "pasos": [
@@ -83,6 +89,7 @@
     {
       "id": "p7",
       "nivel": "intermedio",
+      "unidades": ["razonamiento-matematico.transformaciones-de-figuras"],
       "enunciado": "Una moneda de radio 1 cm rueda, sin resbalar, alrededor de un disco fijo de radio 3 cm, siempre pegada a su borde, hasta volver al punto de partida. ¿Cuántas vueltas da la moneda sobre sí misma (cuántas veces una flecha pintada en la moneda vuelve a apuntar arriba) si rueda por fuera del disco? ¿Y si rueda por dentro de un aro de radio 3 cm?",
       "respuesta": "4 vueltas por fuera; 2 por dentro.",
       "pasos": [
@@ -96,6 +103,7 @@
     {
       "id": "p8",
       "nivel": "básico",
+      "unidades": ["razonamiento-matematico.transformaciones-de-figuras"],
       "enunciado": "La rueda de una bicicleta tiene 35 cm de radio y da 200 vueltas sobre una pista recta, sin resbalar. ¿Cuántos metros avanza la bicicleta?",
       "respuesta": "140π m (unos 440 m).",
       "pasos": [
@@ -108,6 +116,7 @@
     {
       "id": "p9",
       "nivel": "intermedio",
+      "unidades": ["razonamiento-matematico.transformaciones-de-figuras"],
       "enunciado": "Un cuadrado ABCD de 4 m de lado está apoyado en el suelo sobre su lado AB, con A a la izquierda. Se vuelca hacia la derecha, girando sobre el vértice de abajo a la derecha, hasta que se apoya en otro lado; esto se repite hasta completar 4 vuelcos, y el cuadrado queda otra vez con AB en el suelo y A a la izquierda. ¿Qué longitud recorre el vértice A?",
       "respuesta": "(4 + 2√2)π m.",
       "pasos": [
@@ -121,6 +130,7 @@
     {
       "id": "p10",
       "nivel": "intermedio",
+      "unidades": ["razonamiento-matematico.transformaciones-de-figuras"],
       "enunciado": "La plumilla de un limpiaparabrisas empieza a 20 cm del eje y termina a 60 cm. Si gira 120°, ¿qué área del vidrio limpia?",
       "respuesta": "3200π/3 cm² (unos 3351 cm²).",
       "pasos": [

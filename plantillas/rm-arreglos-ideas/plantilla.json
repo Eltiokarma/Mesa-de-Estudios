@@ -1,0 +1,19 @@
+{
+  "id": "rm-arreglos-ideas",
+  "titulo": "Repartos, marcos y cuadrados mágicos",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.arreglos-numericos"
+  ],
+  "temas": [
+    "Arreglos en polígonos",
+    "Cuadrados mágicos",
+    "Distribución de números con condiciones"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
