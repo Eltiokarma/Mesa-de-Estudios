@@ -34,7 +34,11 @@ Quien te llama te da: `UNIDAD`, `ARCHIVO`, el árbol de trabajo y `SCRATCH`. Mis
      hierve antes»).
    - **Cada `siFuera` y cada explicación de alternativa** nombra el razonamiento equivocado con un caso («si cuentas
      el hielo como otra sustancia…»), dice por qué falla y qué se debió mirar.
-   - **El glosario**: `simple` en palabras de un alumno de 5.º, con un ejemplo de su vida.
+   - **El glosario**: `simple` en palabras de un alumno de 5.º, con un ejemplo de su vida. Sí se reescribe: no corras
+     `npm run catalogo` (lo corre la sesión al integrar); la prueba «glosario … archivos de la app al día» de
+     `teoria.test.js` fallará mientras tanto, y está bien.
+   - **Textos fijados en una prueba**: si una prueba exige un texto letra por letra, cambia el texto y ajusta esa
+     comprobación para que siga comprobando lo mismo (no la borres).
    Puedes agregar oraciones de explicación (el porqué, un ejemplo cotidiano, qué pasaría si no), siempre que sean
    ciertas y no delaten respuestas. Lo que no cambias sigue siendo lo de abajo.
 5. **«Vale si».** La app antepone «Vale si» a cada `condicion`: la condición debe continuar esa frase («Vale si el
