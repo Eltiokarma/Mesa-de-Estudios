@@ -105,10 +105,15 @@
           const L = Math.hypot(f.p1[0] - f.p0[0], f.p1[1] - f.p0[1]); if (L < 1) continue;
           const ux = (f.p1[0] - f.p0[0]) / L, uy = (f.p1[1] - f.p0[1]) / L, e = Math.min(18, L * 0.25);
           s += `<line x1="${n(f.p0[0])}" y1="${n(f.p0[1])}" x2="${n(f.p1[0] + ux * e)}" y2="${n(f.p1[1] + uy * e)}" stroke="currentColor" stroke-opacity="0.45" stroke-width="5" stroke-linecap="round"/>`;
+          // 26 nov (dibujos reconocibles): las hebras torcidas de la soga, en el tramo que asoma después de la punta.
+          s += `<line x1="${n(f.p1[0] + ux * 2)}" y1="${n(f.p1[1] + uy * 2)}" x2="${n(f.p1[0] + ux * (e - 1))}" y2="${n(f.p1[1] + uy * (e - 1))}" stroke="var(--card)" stroke-opacity="0.7" stroke-width="5" stroke-dasharray="1.5 2.5"/>`;
         }
         return `<g class="kit-cuerdas">${s}</g>`;
       },
-      cuerpo: (d, g) => obj('nudo', `<circle cx="${n(g.ax)}" cy="${n(g.ay)}" r="8" fill="var(--card)" ${tinta(3)}/><circle cx="${n(g.ax)}" cy="${n(g.ay)}" r="3" fill="currentColor"/>`),
+      // El nudo (26 nov, dibujos reconocibles): dos lazadas de soga cruzadas y apretadas, no un círculo con un punto.
+      cuerpo: (d, g) => obj('nudo', `<ellipse cx="${n(g.ax - 2)}" cy="${n(g.ay)}" rx="8" ry="5" transform="rotate(35 ${n(g.ax - 2)} ${n(g.ay)})" fill="var(--card)" ${tinta(2.5)}/>`
+        + `<ellipse cx="${n(g.ax + 2)}" cy="${n(g.ay)}" rx="8" ry="5" transform="rotate(-35 ${n(g.ax + 2)} ${n(g.ay)})" fill="var(--card)" ${tinta(2.5)}/>`
+        + `<path d="M${n(g.ax - 4)} ${n(g.ay - 3)}L${n(g.ax + 4)} ${n(g.ay + 3)}" ${tinta(2)}/>`),
       nombre: () => 'un nudo donde se juntan las cuerdas',
     },
     bote: {
@@ -132,8 +137,13 @@
       },
       cuerpo(d, g) {
         const r = Number.isFinite(d.rumbo) ? d.rumbo : 90, o = [g.ax, g.ay];
-        let s = `<path d="${camino([[-22, -9], [10, -9], [24, 0], [10, 9], [-22, 9]], r, o)}" fill="var(--c-o)" fill-opacity="0.25" ${tinta()}/>`;
-        s += `<path d="${camino([[-8, -5], [-2, -5], [-2, 5], [-8, 5]], r, o)}" fill="currentColor" fill-opacity="0.35"/>`;
+        // 26 nov (dibujos reconocibles): el casco visto desde arriba, con la popa recta, los costados curvos hasta la
+        // proa, la borda por dentro, dos bancas y los remos: un pentágono con una raya se leía como lápiz.
+        const casco = [[-22, -6], [-20, -9], [-8, -10.5], [4, -9.5], [14, -6.5], [21, -3], [24, 0], [21, 3], [14, 6.5], [4, 9.5], [-8, 10.5], [-20, 9], [-22, 6]];
+        let s = `<path d="${camino(casco.map(([x, y]) => [x, y * 1.25]), r, o)}" fill="var(--c-o)" fill-opacity="0.25" ${tinta()}/>`;
+        s += `<path d="${camino(casco.map(([x, y]) => [x * 0.82 - 1, y * 0.85]), r, o)}" fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.2"/>`;
+        for (const x of [-10, 4]) s += `<path d="${camino([[x - 2, -9], [x + 2, -9], [x + 2, 9], [x - 2, 9]], r, o)}" fill="currentColor" fill-opacity="0.35"/>`;
+        for (const sg of [-1, 1]) s += `<path d="${camino([[-6, sg * 11], [-4, sg * 20], [-1, sg * 26], [-3, sg * 27], [-6, sg * 21], [-8, sg * 12]], r, o)}" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>`;
         return obj('bote', s);
       },
       nombre: d => (d.orillas ? 'un bote en un río que corre hacia la derecha' : 'un bote en el lago'),

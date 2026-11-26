@@ -58,7 +58,7 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | arit-cintas · (sin objeto) | a medias | rollo de cinta: dos tiras con corte; no se ve el rollo | [ver](capturas/arit-cintas--sin-objeto.webp) |  |
 | arit-monedas · (sin objeto) | se reconoce | monedas con su valor | [ver](capturas/arit-monedas--sin-objeto.webp) |  |
 | arit-puesto · (sin objeto) | se reconoce | puesto con toldo, bolsitas y caramelos | [ver](capturas/arit-puesto--sin-objeto.webp) |  |
-| arit-queque · (sin objeto) | a medias | queque: bandeja marrón partida; se lee como barra o chocolate, falta el bizcocho (corteza, molde) | [ver](capturas/arit-queque--sin-objeto.webp) |  |
+| arit-queque · (sin objeto) | a medias | queque: bandeja marrón partida; se lee como barra o chocolate, falta el bizcocho (corteza, molde) | [ver](capturas/arit-queque--sin-objeto.webp) | para diseñador: se probó miga y cobertura chorreada y no mejoró (visto desde arriba sigue siendo un rectángulo; una vista con volumen cambia la grilla de porciones) |
 | arit-reparto · (sin objeto) | a medias | bolsitas de caramelo en íconos muy chicos | [ver](capturas/arit-reparto--sin-objeto.webp) |  |
 | arit-talonario · (sin objeto) | se reconoce | talonario de rifa y último boleto | [ver](capturas/arit-talonario--sin-objeto.webp) |  |
 
@@ -70,11 +70,11 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | fis-dron · (sin objeto) | a medias | mapa con la plaza y la escala: el mapa se lee, pero el dron no aparece | [ver](capturas/fis-dron--sin-objeto.webp) |  |
 | fis-estatica · (sin objeto) | a medias | persona de palitos jalando un carrito de papas | [ver](capturas/fis-estatica--sin-objeto.webp) | Etapa 9 |
 | fis-fuerzas · avion | se reconoce | avioncito con sus componentes | [ver](capturas/fis-fuerzas--avion.webp) |  |
-| fis-fuerzas · bote | a medias | bote: pentágono con una raya; se lee como lápiz o flecha | [ver](capturas/fis-fuerzas--bote.webp) |  |
+| fis-fuerzas · bote | a medias | bote: pentágono con una raya; se lee como lápiz o flecha | [ver](capturas/fis-fuerzas--bote.webp) | redibujado: bote de remos visto desde arriba: casco curvo, borda, dos bancas y remos ([antes y después](antes-despues/fis-fuerzas--bote.webp)) |
 | fis-fuerzas · caja | se reconoce | caja en el piso | [ver](capturas/fis-fuerzas--caja.webp) |  |
 | fis-fuerzas · carretilla | se reconoce | carretilla con mango y rueda | [ver](capturas/fis-fuerzas--carretilla.webp) |  |
 | fis-fuerzas · cuadras | a medias | cuadras: franja gris; falta la calle con veredas o manzanas | [ver](capturas/fis-fuerzas--cuadras.webp) |  |
-| fis-fuerzas · nudo | no se reconoce | nudo: un circulito con dos flechas; no hay sogas | [ver](capturas/fis-fuerzas--nudo.webp) |  |
+| fis-fuerzas · nudo | no se reconoce | nudo: un circulito con dos flechas; no hay sogas | [ver](capturas/fis-fuerzas--nudo.webp) | redibujado: dos lazadas cruzadas y soga con hebras en las puntas; mejora a medias (el nudo mide 16 px), para diseñador ([antes y después](antes-despues/fis-fuerzas--nudo.webp)) |
 | fis-giro · (sin objeto) | se reconoce | rueda de la fortuna con cabinas | [ver](capturas/fis-giro--sin-objeto.webp) |  |
 | fis-mruv · (sin objeto) | se reconoce | pista con corredor y gráfica v–t | [ver](capturas/fis-mruv--sin-objeto.webp) |  |
 | fis-objeto · atleta | se reconoce | atleta, pista y cronómetro | [ver](capturas/fis-objeto--atleta.webp) |  |
