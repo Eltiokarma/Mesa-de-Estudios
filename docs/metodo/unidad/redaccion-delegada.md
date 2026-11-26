@@ -18,7 +18,10 @@ Quien te llama te da: `UNIDAD`, `ARCHIVO`, el árbol de trabajo y `SCRATCH`. Mis
 3. Reescribe lo que está telegráfico, entrecortado, ambiguo, en jerga o que no se sigue de lo anterior: frases
    completas, con sujeto y verbo, conectores donde hacen falta y el porqué dicho. Cada paso debe seguirse del anterior
    sin saltos. Un término técnico se dice en palabras la primera vez.
-4. Los topes de palabras subieron el 26 nov para los textos que explican (`docs/teoria.md` §5: regla 45, condición 35,
+4. **«Vale si».** La app antepone «Vale si» a cada `condicion`: la condición debe continuar esa frase («Vale si el
+   lado final no cae sobre un eje»), no empezar otra («Vale si Fuera de los ejes.», «Vale si Atajo: …»). Al 26 nov
+   había 33 condiciones así en 14 unidades.
+5. Los topes de palabras subieron el 26 nov para los textos que explican (`docs/teoria.md` §5: regla 45, condición 35,
    `siFuera` 30, paso de Mira 25, solución 30, paso de «Así se resuelve» 40). Úsalos cuando haga falta; no alargues por
    alargar. Lo que va junto al dibujo (título, voz, opción, lectura en vivo) sigue corto.
 
