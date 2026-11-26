@@ -1327,18 +1327,348 @@
     };
   })();
 
+  // 6. Solo resorte horizontal. Los balances conservan energía y no inventan el sentido de v.
+  const idea6 = (() => {
+    const EP = (k, x) => k * x * x / 2, EC = (m, v) => m * v * v / 2;
+    const n = (clave, valor, unidad = '') => Q(clave, valor, unidad, 4);
+    const aprox = x => Math.abs(x - Math.round(x * 1000) / 1000) > 1e-9;
+    const EV = x => [aprox(x) ? ' ≈ ' : ' = ', n('EC', x, 'J')];
+    const vel = ['|', S.v, '|'], xi = sub(S.x, '1'), xf = sub(S.x, '2'), vi = sub(S.v, '1'), vf = sub(S.v, '2');
+    const CUADRADO = x => sup({ par: x });
+    function escena(p, o = {}) {
+      const xx = o.x === undefined ? (p.xcm === undefined ? (p.Acm === undefined ? 12 : p.Acm) : p.xcm) : o.x;
+      const d = carrito(xx, { A: o.ocultarA ? undefined : p.Acm, rotuloX: o.ocultarX ? false : undefined,
+        textos: [{ x: 160, y: 48, texto: `${p.k === undefined ? 'Resorte ideal' : `k = ${f(p.k)} N/m`}${p.m === undefined ? '' : `; m = ${f(p.m)} kg`}`, color: 'f', ancla: 'middle' }],
+        alt: o.alt || 'Bloque unido a un resorte horizontal sobre una mesa sin rozamiento. La posición corresponde al estado descrito.' });
+      if (o.esquema) { d.alto = 258; d.textos.push({ x: 160, y: 244, texto: 'Esquema sin escala', ancla: 'middle' }); }
+      if (o.estado) d.textos.push({ x: 160, y: 68, texto: o.estado, ancla: 'middle' });
+      return est(d);
+    }
+    // Cada conjunto de barras comparte 36 px/J. Nunca aparecen las partes antes de Predice.
+    function reparto(p) {
+      const total = EP(p.k, p.Acm / 100), elastica = EP(p.k, p.xcm / 100), cinetica = total - elastica;
+      const v = escena(p), d = v.datos; d.alto = 422;
+      const partes = [['E_C', cinetica, 'o'], ['E_PE', elastica, 'i'], ['E_M', total, 'f']];
+      partes.forEach(([nombre, valor, color], j) => {
+        const x = 62 + 98 * j;
+        d.objetos.push({ tipo: 'barra-e', x, y: 374, w: 30, h: 36 * valor, color });
+        d.textos.push({ x, y: 398, texto: `${nombre} = ${f(valor, 3)} J`, color, ancla: 'middle' });
+      });
+      d.alt += ' Las tres barras de energía tienen la misma escala en joules por píxel.';
+      return v;
+    }
+    function caso(tipo, p) {
+      let valor, unidad = 'J', clave = 'EC', enunciado, formula, cuentas, sentido, malos;
+      const err = (valor, id, corta, explicacion) => ({ valor, id, corta, siFuera: `Bien reconocer las energías; ${explicacion}` });
+      const A = p.Acm === undefined ? undefined : p.Acm / 100, x = p.xcm === undefined ? undefined : p.xcm / 100;
+      let datos = ['Resorte horizontal ideal y mesa sin rozamiento.', 'La posición se mide desde el equilibrio, que coincide con la longitud natural del resorte.'];
+      const dibujoOpciones = {};
+      switch (tipo) {
+        case 'total':
+          valor = EP(p.k, A); clave = 'EM';
+          enunciado = ['Se suelta un bloque desde el extremo derecho de un resorte de ', Q('k', p.k, 'N/m'), ', con amplitud ', Q('A', p.metros ? A : p.Acm, p.metros ? 'm' : 'cm'), '. ¿Cuál es su energía mecánica?'];
+          formula = [S.EM, ' = ', frac([S.k, ' · ', sup(S.A)], '2')];
+          cuentas = [paso('En el extremo, el bloque está instantáneamente en reposo.', [S.EM, ' = ', frac([Q('k', p.k), ' · ', sup(n('A', A))], '2'), ' = ', n('EM', valor, 'J')])];
+          malos = [err(2 * valor, 'sin-medio', 'omite el medio', 'omitiste dividir entre dos.'), err(valor / 2, 'doble-medio', 'divide dos veces', 'dividiste dos veces entre dos.'), err(p.k * A / 2, 'sin-cuadrado', 'omite el cuadrado', 'no elevaste la amplitud al cuadrado.'), err(valor * 10000, 'centimetros', 'usa centímetros', 'usaste centímetros como si fueran metros.')];
+          sentido = 'La energía total queda fijada al soltar el bloque y se conserva.'; dibujoOpciones.x = p.Acm; break;
+        case 'potencial':
+          valor = EP(p.k, x); clave = 'EPE';
+          enunciado = ['Un resorte horizontal de ', Q('k', p.k, 'N/m'), ' tiene su bloque en ', S.x, ' = ', Q('x', p.metros ? x : p.xcm, p.metros ? 'm' : 'cm'), '. ¿Cuánta energía potencial elástica almacena?'];
+          formula = [S.EPE, ' = ', frac([S.k, ' · ', sup(S.x)], '2')];
+          cuentas = [paso('El cuadrado hace positiva la energía al estirar o comprimir.', [S.EPE, ' = ', frac([Q('k', p.k), ' · ', CUADRADO(n('x', x))], '2'), ' = ', n('EPE', valor, 'J')])];
+          malos = [err(2 * valor, 'sin-medio', 'omite el medio', 'omitiste dividir entre dos.'), err(valor / 2, 'doble-medio', 'divide dos veces', 'dividiste dos veces entre dos.'), err(p.k * Math.abs(x) / 2, 'sin-cuadrado', 'omite el cuadrado', 'no elevaste la distancia al cuadrado.'), err(-valor, 'signo', 'da energía negativa', 'trasladaste a la energía un signo de posición.')];
+          sentido = 'La energía elástica no cambia al invertir el signo de una misma deformación.'; break;
+        case 'cinetica-directa':
+          valor = EC(p.m, p.v);
+          enunciado = ['Un bloque de ', Q('m', p.m, 'kg'), ' pasa por el equilibrio con rapidez ', Q('v', p.v, 'm/s'), '. ¿Cuál es su energía cinética?'];
+          formula = [S.EC, ' = ', frac([S.m, ' · ', sup(S.v)], '2')];
+          cuentas = [paso('Usamos la rapidez al cuadrado y la masa en kilogramos.', [S.EC, ' = ', frac([Q('m', p.m), ' · ', sup(Q('v', p.v))], '2'), ' = ', n('EC', valor, 'J')])];
+          malos = [err(2 * valor, 'sin-medio', 'omite el medio', 'omitiste dividir entre dos.'), err(valor / 2, 'doble-medio', 'divide dos veces', 'dividiste dos veces entre dos.'), err(p.m * p.v / 2, 'sin-cuadrado', 'omite el cuadrado', 'no elevaste la rapidez al cuadrado.'), err(valor / p.m, 'sin-masa', 'omite masa', 'omitiste multiplicar por la masa.')];
+          sentido = 'La energía cinética es positiva aunque el bloque pueda moverse hacia cualquiera de los lados.'; dibujoOpciones.x = 0; break;
+        case 'cinetica-datos':
+          valor = p.EM - p.EPE;
+          enunciado = ['Un oscilador tiene energía mecánica ', n('EM', p.EM, 'J'), ' y energía potencial elástica ', n('EPE', p.EPE, 'J'), '. ¿Cuál es su energía cinética?'];
+          formula = [S.EC, ' = ', S.EM, ' − ', S.EPE];
+          cuentas = [paso('Restamos la energía que permanece en el resorte.', [S.EC, ' = ', n('EM', p.EM), ' − ', n('EPE', p.EPE), ' = ', n('EC', valor, 'J')])];
+          malos = [err(p.EM + p.EPE, 'suma', 'suma energías', 'sumaste en vez de restar.'), err(p.EM, 'total', 'da energía total', 'usaste toda la energía mecánica.'), err(p.EPE, 'potencial', 'da energía elástica', 'respondiste con la energía del resorte.'), err(-valor, 'resta-inversa', 'invierte resta', 'restaste las energías en orden inverso.')];
+          sentido = 'La suma de las partes debe recuperar la energía mecánica.'; dibujoOpciones.ocultarX = true; dibujoOpciones.esquema = true; break;
+        case 'mecanica-datos':
+          valor = p.EC + p.EPE; clave = 'EM';
+          enunciado = ['El bloque tiene energía cinética ', n('EC', p.EC, 'J'), ' y el resorte energía potencial ', n('EPE', p.EPE, 'J'), '. ¿Cuál es la energía mecánica?'];
+          formula = [S.EM, ' = ', S.EC, ' + ', S.EPE];
+          cuentas = [paso('Sumamos ambas formas de energía del oscilador.', [S.EM, ' = ', n('EC', p.EC), ' + ', n('EPE', p.EPE), ' = ', n('EM', valor, 'J')])];
+          malos = [err(p.EC - p.EPE, 'resta', 'resta energías', 'restaste la energía del resorte.'), err(p.EC, 'solo-cinetica', 'solo cinética', 'omitiste la energía del resorte.'), err(p.EPE, 'solo-potencial', 'solo elástica', 'omitiste la energía del movimiento.'), err(valor / 2, 'promedio', 'promedia energías', 'calculaste un promedio en vez de una suma.')];
+          sentido = 'Las energías se suman, no se promedian.'; dibujoOpciones.ocultarX = true; dibujoOpciones.esquema = true; break;
+        case 'cinetica-balance': {
+          const total = EP(p.k, A), potencial = EP(p.k, x); valor = total - potencial;
+          enunciado = ['Un resorte de ', Q('k', p.k, 'N/m'), ' oscila con amplitud ', Q('A', p.Acm, 'cm'), '. ¿Qué energía cinética tiene el bloque al pasar por ', S.x, ' = ', Q('x', p.xcm, 'cm'), '?'];
+          formula = [S.EC, ' = ', S.EM, ' − ', S.EPE];
+          cuentas = [paso('La energía total es la energía elástica en un extremo.', [S.EM, ' = ', frac([Q('k', p.k), ' · ', sup(n('A', A))], '2'), ' = ', n('EM', total, 'J')]), paso('Restamos la energía elástica de la posición actual.', [S.EC, ' = ', n('EM', total), ' − ', frac([Q('k', p.k), ' · ', CUADRADO(n('x', x))], '2'), ' = ', n('EC', valor, 'J')])];
+          malos = [err(potencial, 'potencial', 'da energía elástica', 'diste la energía que permanece en el resorte.'), err(total, 'total', 'da energía total', 'omitiste restar la energía del resorte.'), err(total + potencial, 'suma', 'suma energías', 'sumaste en vez de restar.'), err(-valor, 'resta-inversa', 'invierte resta', 'invertiste el orden de la resta.')];
+          sentido = 'La energía del movimiento es la parte que no queda almacenada en el resorte.'; break;
+        }
+        case 'rapidez-datos': {
+          const cin = p.EM - p.EPE; valor = Math.sqrt(2 * cin / p.m); unidad = 'm/s'; clave = 'v';
+          enunciado = ['Un bloque de ', Q('m', p.m, 'kg'), ' tiene energía mecánica ', n('EM', p.EM, 'J'), ' y energía elástica ', n('EPE', p.EPE, 'J'), '. ¿Cuál es su rapidez?'];
+          formula = [S.EC, ' = ', S.EM, ' − ', S.EPE, '; ', S.EC, ' = ', frac([S.m, ' · ', sup(S.v)], '2')];
+          cuentas = [paso('Restamos las energías y despejamos la rapidez positiva.', [S.EC, ' = ', n('EM', p.EM), ' − ', n('EPE', p.EPE), ' = ', n('EC', cin, 'J'), '; ', vel, ' = ', raiz(frac(['2 · ', S.EC], S.m))]), paso('Reemplazamos la energía cinética calculada.', [vel, ' = ', raiz(frac(['2 · ', n('EC', cin)], Q('m', p.m))), aprox(valor) ? ' ≈ ' : ' = ', Q('v', valor, unidad, 3)])];
+          malos = [err(valor / Math.SQRT2, 'sin-dos', 'omite el dos', 'omitiste el dos al despejar la rapidez.'), err(Math.sqrt(2 * p.EM / p.m), 'total', 'usa energía total', 'usaste la energía total como cinética.'), err(Math.sqrt(2 * p.EPE / p.m), 'potencial', 'usa energía elástica', 'usaste la energía elástica como cinética.'), err(valor * valor, 'sin-raiz', 'omite raíz', 'no extrajiste la raíz cuadrada.')];
+          sentido = 'La rapidez no determina hacia qué lado se mueve el bloque.'; dibujoOpciones.ocultarX = true; dibujoOpciones.esquema = true; break;
+        }
+        case 'amplitud':
+          valor = 100 * Math.sqrt(2 * p.EM / p.k); unidad = 'cm'; clave = 'A';
+          enunciado = ['Se suelta un bloque desde el extremo derecho. El sistema formado por bloque y resorte tiene energía mecánica ', n('EM', p.EM, 'J'), ' y rigidez ', Q('k', p.k, 'N/m'), '. ¿Cuál es la amplitud?'];
+          formula = [S.EM, ' = ', frac([S.k, ' · ', sup(S.A)], '2')];
+          cuentas = [paso('Multiplicamos por dos, dividimos entre la rigidez y extraemos raíz.', [S.A, ' = ', raiz(frac(['2 · ', S.EM], S.k))]), paso('Calculamos la longitud en metros y la expresamos en centímetros.', [S.A, ' = 100 · ', raiz(frac(['2 · ', n('EM', p.EM)], Q('k', p.k))), aprox(valor) ? ' ≈ ' : ' = ', Q('A', valor, 'cm', 3)])];
+          malos = [err(valor / Math.SQRT2, 'sin-dos', 'omite el dos', 'omitiste el dos del despeje.'), err(100 * 2 * p.EM / p.k, 'sin-raiz', 'omite raíz', 'convertiste a centímetros sin extraer la raíz.'), err(valor / 100, 'metros', 'deja metros', 'dejaste el valor en metros y escribiste centímetros.'), err(valor * 2, 'extremos', 'da entre extremos', 'diste la distancia entre extremos.')];
+          sentido = 'La amplitud es una distancia positiva desde el equilibrio hasta un extremo.'; dibujoOpciones.ocultarX = true; dibujoOpciones.ocultarA = true; dibujoOpciones.esquema = true; dibujoOpciones.estado = 'Extremo derecho al soltar'; break;
+        case 'posicion':
+          valor = 100 * Math.sqrt(2 * p.EPE / p.k); unidad = 'cm'; clave = 'x';
+          enunciado = ['Un resorte estirado de ', Q('k', p.k, 'N/m'), ' almacena energía potencial elástica ', n('EPE', p.EPE, 'J'), '. ¿A qué distancia del equilibrio está su bloque?'];
+          formula = [S.EPE, ' = ', frac([S.k, ' · ', sup(S.x)], '2')];
+          cuentas = [paso('Despejamos la distancia positiva al equilibrio.', ['|', S.x, '| = ', raiz(frac(['2 · ', S.EPE], S.k))]), paso('Convertimos la distancia calculada a centímetros.', ['|', S.x, '| = 100 · ', raiz(frac(['2 · ', n('EPE', p.EPE)], Q('k', p.k))), aprox(valor) ? ' ≈ ' : ' = ', Q('x', valor, 'cm', 3)])];
+          malos = [err(valor / Math.SQRT2, 'sin-dos', 'omite el dos', 'omitiste el dos del despeje.'), err(100 * 2 * p.EPE / p.k, 'sin-raiz', 'omite raíz', 'omitiste la raíz cuadrada.'), err(valor / 100, 'metros', 'deja metros', 'dejaste metros y escribiste centímetros.'), err(-valor, 'signo', 'da distancia negativa', 'diste signo negativo a una distancia.')];
+          sentido = 'La distancia es positiva; el resorte estirado sitúa el bloque a la derecha.'; dibujoOpciones.ocultarX = true; dibujoOpciones.esquema = true; break;
+        case 'velocidad': {
+          const rapidez = Math.sqrt(2 * p.EC / p.m); valor = p.sentido * rapidez; unidad = 'm/s'; clave = 'v';
+          enunciado = ['Un bloque de ', Q('m', p.m, 'kg'), ' tiene energía cinética ', n('EC', p.EC, 'J'), ' y se mueve hacia ', p.sentido < 0 ? 'la izquierda' : 'la derecha', '. ¿Cuál es su velocidad con signo?'];
+          datos.push('El sentido positivo del eje es hacia la derecha.');
+          formula = [S.EC, ' = ', frac([S.m, ' · ', sup(S.v)], '2')];
+          cuentas = [paso('La energía permite obtener primero la rapidez.', [vel, ' = ', raiz(frac(['2 · ', n('EC', p.EC)], Q('m', p.m))), aprox(rapidez) ? ' ≈ ' : ' = ', Q('v', rapidez, 'm/s', 3)]), paso('Asignamos el signo que corresponde al sentido indicado.', [S.v, aprox(valor) ? ' ≈ ' : ' = ', Q('v', valor, 'm/s', 3)])];
+          malos = [err(-valor, 'signo', 'invierte sentido', 'asignaste el signo del sentido opuesto.'), err(valor / Math.SQRT2, 'sin-dos', 'omite el dos', 'omitiste el dos al despejar la rapidez.'), err(p.sentido * rapidez ** 2, 'sin-raiz', 'omite raíz', 'asignaste el signo sin extraer la raíz.'), err(0, 'equilibrio', 'supone reposo', 'supusiste reposo aunque la energía cinética no es cero.')];
+          sentido = 'El signo procede del sentido dado; no puede deducirse solo de la energía.'; dibujoOpciones.ocultarX = true; dibujoOpciones.esquema = true; break;
+        }
+        case 'rapidez-balance': {
+          valor = Math.sqrt(p.k * (A * A - x * x) / p.m); unidad = 'm/s'; clave = 'v';
+          const total = EP(p.k, A), pot = EP(p.k, x);
+          enunciado = ['Un bloque de ', Q('m', p.m, 'kg'), ' oscila con resorte de ', Q('k', p.k, 'N/m'), ' y amplitud ', Q('A', p.Acm, 'cm'), '. ¿Cuál es su rapidez en ', S.x, ' = ', Q('x', p.xcm, 'cm'), '?'];
+          formula = [frac([S.m, ' · ', sup(S.v)], '2'), ' = ', frac([S.k, ' · ', sup(S.A)], '2'), ' − ', frac([S.k, ' · ', sup(S.x)], '2')];
+          cuentas = [paso('Multiplicamos por dos y dividimos entre la masa antes de extraer raíz.', [sup(S.v), ' = ', frac(S.k, S.m), ' · (', sup(S.A), ' − ', sup(S.x), ')']), paso('Usamos posiciones en metros y tomamos la raíz positiva.', [vel, ' = ', raiz([frac(Q('k', p.k), Q('m', p.m)), ' · (', sup(n('A', A)), ' − ', CUADRADO(n('x', x)), ')']), aprox(valor) ? ' ≈ ' : ' = ', Q('v', valor, 'm/s', 3)])];
+          malos = [err(Math.sqrt(2 * total / p.m), 'total', 'usa energía total', 'omitiste la energía elástica actual.'), err(Math.sqrt(2 * pot / p.m), 'potencial', 'usa energía elástica', 'tomaste la energía elástica como cinética.'), err(valor / Math.SQRT2, 'sin-dos', 'omite el dos', 'omitiste el dos al despejar desde la energía cinética.'), err(valor * valor, 'sin-raiz', 'omite raíz', 'no extrajiste la raíz.')];
+          sentido = 'La energía fija la rapidez en esa posición, pero no el sentido.'; break;
+        }
+        case 'amplitud-estado': {
+          valor = 100 * Math.sqrt(x * x + p.m * p.v * p.v / p.k); unidad = 'cm'; clave = 'A';
+          enunciado = ['Un bloque de ', Q('m', p.m, 'kg'), ' pasa por ', S.x, ' = ', Q('x', p.xcm, 'cm'), ' con rapidez ', Q('v', p.v, 'm/s'), '. Con ', S.k, ' = ', Q('k', p.k, 'N/m'), ', ¿cuál es su amplitud?'];
+          formula = [frac([S.k, ' · ', sup(S.A)], '2'), ' = ', frac([S.m, ' · ', sup(S.v)], '2'), ' + ', frac([S.k, ' · ', sup(S.x)], '2')];
+          cuentas = [paso('Multiplicamos por dos y dividimos entre la rigidez para despejar la amplitud al cuadrado.', [sup(S.A), ' = ', frac(S.m, S.k), ' · ', sup(S.v), ' + ', sup(S.x)]), paso('Extraemos raíz y expresamos la amplitud en centímetros.', [S.A, ' = 100 · ', raiz([frac(Q('m', p.m), Q('k', p.k)), ' · ', sup(Q('v', p.v)), ' + ', CUADRADO(n('x', x))]), aprox(valor) ? ' ≈ ' : ' = ', Q('A', valor, 'cm', 3)])];
+          malos = [err(100 * Math.sqrt(p.m * p.v * p.v / p.k), 'sin-posicion', 'omite energía elástica', 'omitiste la energía elástica actual.'), err(Math.abs(p.xcm), 'posicion', 'da posición actual', 'confundiste la posición actual con un extremo.'), err(100 * (x * x + p.m * p.v * p.v / p.k), 'sin-raiz', 'omite raíz', 'no extrajiste la raíz final.'), err(100 * Math.sqrt(x * x + p.m * p.v * p.v / (2 * p.k)), 'sin-dos', 'no cancela medios', 'conservaste el medio solo en el término cinético.')];
+          sentido = 'La amplitud supera la distancia actual porque el bloque todavía se mueve.'; dibujoOpciones.ocultarA = true; break;
+        }
+        case 'posicion-cinetica': {
+          const total = EP(p.k, A); valor = 100 * Math.sqrt(A * A - 2 * p.EC / p.k); unidad = 'cm'; clave = 'x';
+          enunciado = ['Se suelta el bloque desde ', S.x, ' = ', Q('A', p.Acm, 'cm'), ' con ', S.k, ' = ', Q('k', p.k, 'N/m'), '. ¿A qué distancia del equilibrio tendrá energía cinética ', n('EC', p.EC, 'J'), '?'];
+          formula = [frac([S.k, ' · ', sup(S.x)], '2'), ' = ', frac([S.k, ' · ', sup(S.A)], '2'), ' − ', S.EC];
+          cuentas = [paso('Despejamos la posición al cuadrado sin confundir energía cinética y elástica.', [sup(S.x), ' = ', sup(S.A), ' − ', frac(['2 · ', S.EC], S.k)]), paso('La raíz positiva da la distancia; puede alcanzarse a ambos lados.', ['|', S.x, '| = 100 · ', raiz([sup(n('A', A)), ' − ', frac(['2 · ', n('EC', p.EC)], Q('k', p.k))]), aprox(valor) ? ' ≈ ' : ' = ', Q('x', valor, 'cm', 3)])];
+          malos = [err(100 * Math.sqrt(2 * p.EC / p.k), 'cinetica-por-elastica', 'intercambia energías', 'usaste la cinética como energía elástica.'), err(p.Acm, 'amplitud', 'da amplitud', 'usaste toda la energía como elástica.'), err(100 * (A * A - 2 * p.EC / p.k), 'sin-raiz', 'omite raíz', 'no extrajiste la raíz final.'), err(100 * Math.sqrt(A * A - p.EC / p.k), 'sin-dos', 'omite el dos', 'omitiste el dos al despejar.')];
+          sentido = 'Dos posiciones simétricas tienen la misma energía cinética; se pide su distancia al centro.'; dibujoOpciones.x = p.Acm; dibujoOpciones.estado = 'Estado inicial al soltar'; break;
+        }
+        case 'rigidez':
+          valor = p.m * p.v * p.v / (A * A); unidad = 'N/m'; clave = 'k';
+          enunciado = ['Un bloque de ', Q('m', p.m, 'kg'), ' oscila con amplitud ', Q('A', p.Acm, 'cm'), ' y pasa por el equilibrio a ', Q('v', p.v, 'm/s'), '. ¿Cuál es la rigidez del resorte?'];
+          formula = [frac([S.k, ' · ', sup(S.A)], '2'), ' = ', frac([S.m, ' · ', sup(S.v)], '2')];
+          cuentas = [paso('Se cancelan los medios y dividimos entre la amplitud al cuadrado.', [S.k, ' = ', frac([S.m, ' · ', sup(S.v)], sup(S.A))]), paso('Usamos la amplitud en metros.', [S.k, ' = ', frac([Q('m', p.m), ' · ', sup(Q('v', p.v))], sup(n('A', A))), aprox(valor) ? ' ≈ ' : ' = ', Q('k', valor, 'N/m', 3)])];
+          malos = [err(valor / 2, 'medio', 'conserva un medio', 'conservaste un medio después de cancelar el otro.'), err(p.m * p.v * p.v / A, 'sin-cuadrado-A', 'no eleva amplitud', 'no elevaste la amplitud al cuadrado.'), err(p.m * p.v / (A * A), 'sin-cuadrado-v', 'no eleva rapidez', 'no elevaste la rapidez al cuadrado.'), err(valor / 10000, 'centimetros', 'usa centímetros', 'usaste centímetros como si fueran metros.')];
+          sentido = 'La rapidez del equilibrio corresponde a toda la energía del oscilador.'; dibujoOpciones.x = 0; break;
+        case 'rapidez-estados': {
+          const x1 = p.x1cm / 100, x2 = p.x2cm / 100;
+          valor = Math.sqrt(p.v1 * p.v1 + p.k * (x1 * x1 - x2 * x2) / p.m); unidad = 'm/s'; clave = 'v';
+          enunciado = ['Un bloque de ', Q('m', p.m, 'kg'), ' pasa por ', Q('x', p.x1cm, 'cm'), ' a ', Q('v', p.v1, 'm/s'), ', con ', S.k, ' = ', Q('k', p.k, 'N/m'), '. ¿Qué rapidez tendrá al pasar por ', Q('x', p.x2cm, 'cm'), '?'];
+          formula = [frac([S.m, ' · ', sup(vi)], '2'), ' + ', frac([S.k, ' · ', sup(xi)], '2'), ' = ', frac([S.m, ' · ', sup(vf)], '2'), ' + ', frac([S.k, ' · ', sup(xf)], '2')];
+          cuentas = [paso('Pasamos la energía elástica final al otro lado y despejamos la rapidez al cuadrado.', [sup(vf), ' = ', sup(vi), ' + ', frac(S.k, S.m), ' · (', sup(xi), ' − ', sup(xf), ')']), paso('Reemplazamos los dos estados con posiciones en metros.', ['|', vf, '| = ', raiz([sup(Q('v', p.v1)), ' + ', frac(Q('k', p.k), Q('m', p.m)), ' · (', CUADRADO(n('x', x1)), ' − ', CUADRADO(n('x', x2)), ')']), aprox(valor) ? ' ≈ ' : ' = ', Q('v', valor, 'm/s', 3)])];
+          malos = [err(p.v1, 'sin-cambio', 'conserva rapidez', 'ignoraste el cambio de energía elástica.'), err(Math.sqrt(p.k * (x1 * x1 - x2 * x2) / p.m), 'sin-inicial', 'omite cinética inicial', 'omitiste la energía cinética inicial.'), err(valor * valor, 'sin-raiz', 'omite raíz', 'no extrajiste la raíz final.'), err(Math.sqrt(p.v1 * p.v1 + p.k * (x1 * x1 + x2 * x2) / p.m), 'suma-posiciones', 'suma energías elásticas', 'sumaste las energías elásticas en vez de restarlas.')];
+          sentido = 'Al acercarse al equilibrio, disminuye la energía elástica y aumenta la rapidez.'; dibujoOpciones.x = p.x1cm; dibujoOpciones.estado = 'Primer estado conocido'; break;
+        }
+        default: throw new Error('Energía MAS: familia desconocida ' + tipo);
+      }
+      if (!p.metros && ['total', 'potencial', 'cinetica-balance', 'amplitud', 'posicion', 'rapidez-balance', 'amplitud-estado', 'posicion-cinetica', 'rigidez', 'rapidez-estados'].includes(tipo)) datos.push('1 m = 100 cm.');
+      const fmt = a => `${aprox(a) ? '≈ ' : ''}${f(a, 3)} ${unidad}`;
+      const magnitudPedida = { EC: 'la energía cinética', EPE: 'la energía potencial elástica', EM: 'la energía mecánica', A: 'la amplitud', x: 'la distancia al equilibrio', k: 'la rigidez del resorte', v: tipo === 'velocidad' ? 'la velocidad con su signo' : 'la rapidez' }[clave];
+      const nombres = { m: ['la masa de ', 'm', 'kg'], k: ['la rigidez de ', 'k', 'N/m'], Acm: ['la amplitud de ', 'A', 'cm'], xcm: ['la posición de ', 'x', 'cm'],
+        x1cm: ['la posición inicial de ', 'x', 'cm'], x2cm: ['la posición final de ', 'x', 'cm'], v: ['la rapidez de ', 'v', 'm/s'], v1: ['la rapidez inicial de ', 'v', 'm/s'],
+        EM: ['la energía mecánica de ', 'EM', 'J'], EPE: ['la energía elástica de ', 'EPE', 'J'], EC: ['la energía cinética de ', 'EC', 'J'] };
+      const entradas = Object.entries(p).filter(([k]) => nombres[k]);
+      const tengo = tipo === 'rapidez-estados' ? 'Conozco la masa y la rigidez del sistema, las dos posiciones y la rapidez del primer estado.' : ['Conozco ', ...entradas.flatMap(([k, valor], j) => [j ? j === entradas.length - 1 ? ' y ' : ', ' : '', nombres[k][0], n(nombres[k][1], p.metros && ['Acm', 'xcm'].includes(k) ? valor / 100 : valor, p.metros && ['Acm', 'xcm'].includes(k) ? 'm' : nombres[k][2])]), '.'];
+      let ops;
+      try { ops = opciones(valor, malos.map(e => ({ valor: e.valor, error: `OS-ENE-${e.id}`, siFuera: e.siFuera })), fmt); }
+      catch (e) { throw new Error(`Energía ${tipo}: ${JSON.stringify([p, valor, malos])}; ${e.message}`); }
+      return { enunciado, datos, dibujo: escena(p, dibujoOpciones), pide: `Se pide ${magnitudPedida}.`, tengo,
+        regla: paso('Escribimos el balance o la energía que corresponde a ese estado.', formula), cuentas, sentido,
+        respuesta: [aprox(valor) ? '≈ ' : '', Q(clave, valor, unidad, 3)],
+        opciones: ops,
+        caso: { tipo, ...p, valor, unidad, aproximado: aprox(valor), errores: malos.map(e => ({ id: e.id, valor: e.valor })) },
+        erroresEjemplo: malos.map(e => `${fmt(e.valor)}: ${e.corta}.`).join(' ') };
+    }
+    const lista = [
+      ['total', { k: 100, Acm: 10, metros: true }, 'Energía al soltar'],
+      ['potencial', { k: 50, xcm: -20, metros: true }, 'El resorte comprimido'],
+      ['cinetica-directa', { m: 0.4, v: 3 }, 'Al pasar por el centro'],
+      ['cinetica-datos', { EM: 3, EPE: 1.2 }, 'La parte del movimiento'],
+      ['mecanica-datos', { EC: 1.8, EPE: 0.8 }, 'Sumar las energías'],
+      ['cinetica-balance', { k: 120, Acm: 15, xcm: 5 }, 'Una posición interior'],
+      ['rapidez-datos', { m: 0.4, EM: 1.5, EPE: 0.7 }, 'Del balance a la rapidez'],
+      ['amplitud', { k: 160, EM: 1.8 }, 'Reconstruir el extremo'],
+      ['posicion', { k: 200, EPE: 0.36 }, 'La distancia al equilibrio'],
+      ['velocidad', { m: 0.5, EC: 1, sentido: -1 }, 'El sentido sí importa'],
+      ['rapidez-balance', { k: 80, m: 0.5, Acm: 20, xcm: 10 }, 'Rapidez fuera del centro'],
+      ['amplitud-estado', { k: 160, m: 0.4, xcm: 10, v: 3 }, 'Amplitud desde un estado'],
+      ['posicion-cinetica', { k: 100, Acm: 16, EC: 0.96 }, 'Buscar la posición'],
+      ['rigidez', { m: 0.6, v: 3, Acm: 15 }, 'Rigidez desde el movimiento'],
+      ['rapidez-estados', { k: 80, m: 0.5, x1cm: 10, v1: 1.2, x2cm: 4 }, 'Dos posiciones interiores'],
+    ];
+    const ejemplos = lista.map(([t, p, titulo], i) => ejemplo(caso(t, p), 1 + Math.floor(i / 5), titulo, (5 - (i - 10)) % 5));
+    const tiempo = v => Number(v.t.toFixed(2));
+    function estado(v) { const omega = Math.sqrt(80 / 0.4), A = v.A / 100, t = tiempo(v); return { x: 100 * A * Math.cos(omega * t), EM: EP(80, A), t }; }
+    function vista(v) {
+      const z = estado(v), d = escena({ k: 80, m: 0.4, Acm: v.A }, { x: z.x }).datos; d.alto = 422;
+      [[96, EP(80, 0.1), 'Referencia', 10], [224, z.EM, 'Ensayo', v.A]].forEach(([x, energia, nombre, A]) => {
+        d.objetos.push({ tipo: 'barra-e', x, y: 356, w: 34, h: 60 * energia, color: 'f' });
+        d.textos.push({ x, y: 256, texto: nombre, ancla: 'middle' }, { x, y: 380, texto: `E_M = ${f(energia, 3)} J`, color: 'f', ancla: 'middle' }, { x, y: 404, texto: `A = ${f(A)} cm`, color: 'i', ancla: 'middle' });
+      });
+      d.alt += ' Las dos barras totales usan 60 píxeles por joule; solo cambia la amplitud del ensayo.';
+      return est(d);
+    }
+    const pred = { k: 200, Acm: 20, xcm: 10 }, cp = caso('cinetica-balance', pred);
+    const totalPred = EP(pred.k, pred.Acm / 100), potencialPred = EP(pred.k, pred.xcm / 100);
+    const predFigura = escena(pred, { x: pred.Acm, estado: 'Estado inicial al soltar' });
+    glosario.push(
+      { termino: 'oscilación libre', formas: ['oscilación libre', 'oscilaciones libres'], simple: 'Un vaivén que continúa después de soltar el cuerpo.', def: 'Oscilación que ocurre después de una perturbación inicial, sin una fuerza externa que siga impulsando el movimiento.', ejemplos: ['El bloque se separa del equilibrio y luego se suelta.', 'No hay una mano que empuje en cada vuelta.', 'El modelo ideal desprecia el rozamiento que frenaría el vaivén.'] },
+      { termino: 'punto de retorno', formas: ['punto de retorno', 'puntos de retorno'], simple: 'El lugar donde el cuerpo deja de avanzar y vuelve.', def: 'Extremo del recorrido en el que la velocidad se anula instantáneamente antes de cambiar de sentido.', ejemplos: ['El bloque llega al extremo derecho y luego vuelve hacia la izquierda.', 'En un extremo, el bloque está quieto solo un instante.', 'Los dos extremos están a la misma distancia del equilibrio.'] },
+    );
+    return { id: 'energia-mas', titulo: 'Energía durante el vaivén', pregunta: '¿Cómo se reparte la energía mientras el bloque va y vuelve?', temas: ['Energía en el MAS'], pieza: 'fis-estatica',
+      aprendizaje: 'Uso la conservación de energía del resorte horizontal para calcular energía, rapidez y amplitud, sin confundir rapidez con sentido.', actividad: 'Cambiar la amplitud y seguir la energía total durante el movimiento.', ejemplos,
+      lee: { tarjetas: [
+        { titulo: 'Después de soltar el bloque', texto: 'Al separar el bloque y soltarlo comienza una oscilación libre. El resorte es horizontal y la mesa no tiene rozamiento. No hay una mano que siga empujando.', dibujo: vista({ A: 10, t: 0 }) },
+        { titulo: 'Las energías del sistema', texto: ['La energía cinética ', S.EC, ' pertenece al movimiento; la potencial elástica ', S.EPE, ', al resorte deformado. La energía mecánica ', S.EM, ' es su suma. Observaremos primero la barra total.'] },
+        { titulo: 'El extremo no es reposo permanente', texto: 'En un punto de retorno, el bloque se detiene un instante y cambia de sentido. Elige una amplitud y observa la energía total mientras avanza el reloj.' },
+      ] },
+      juega: { pieza: 'fis-estatica', consigna: 'El bloque oscila sin rozamiento. Compara la energía total del ensayo con la referencia y sigue su movimiento.',
+        mision: { texto: 'Consigue una energía mecánica de 0,9 J.', logrado: v => Math.abs(estado(v).EM - 0.9) < 1e-10, bien: 'Esa amplitud fija la energía total; la barra conserva su altura durante el vaivén.' },
+        voz: 'La referencia conserva su amplitud; cambia solo la del ensayo.',
+        leyenda: [{ s: S.A, t: 'distancia del equilibrio a cada extremo' }, { s: S.x, t: 'posición actual con signo' }, { s: S.k, t: 'rigidez del resorte horizontal' }, { s: S.m, t: 'masa del bloque' }, { s: S.EM, t: 'energía mecánica total' }, { s: S.t, t: 'tiempo desde que soltamos el bloque' }],
+        controles: [{ id: 'A', etiqueta: 'Amplitud, A', min: 5, max: 20, paso: 5, inicio: 10, unidad: 'cm', decimales: 0, color: 'c-i' }, { id: 't', etiqueta: 'Tiempo, t', min: 0, max: 3, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, color: 'c-h', auto: { velocidad: 0.2 } }],
+        dibujo: vista, lectura: v => [S.EM, ' = ', Q('EM', estado(v).EM, 'J', 3), ': se conserva durante el movimiento.'], minimo: 3 },
+      predice: { pregunta: ['Se suelta el bloque desde el reposo con ', S.A, ' = ', Q('A', pred.Acm, 'cm'), ' y ', S.k, ' = ', Q('k', pred.k, 'N/m'), '. ¿Qué energía cinética tendrá en ', S.x, ' = ', Q('x', pred.xcm, 'cm'), '?'],
+        datos: ['Resorte horizontal ideal, sin rozamiento ni empujes posteriores.', '1 m = 100 cm.'], dibujo: predFigura, revelar: reparto(pred), opciones: cp.opciones.slice(0, 4), caso: { tipo: 'cinetica-balance', ...pred, valor: cp.caso.valor }, coincide: 'La energía del movimiento es la parte que ya no está en el resorte.' },
+      mira: { pieza: 'fis-estatica', datos: reparto(pred).datos, pasos: [
+        paso('Al soltarlo desde el extremo, toda la energía está en el resorte.', [S.EM, ' = ', frac([Q('k', pred.k), ' · ', sup(n('A', pred.Acm / 100))], '2'), ' = ', n('EM', totalPred, 'J')]),
+        paso('En la posición interior todavía queda energía elástica.', [S.EPE, ' = ', frac([Q('k', pred.k), ' · ', sup(n('x', pred.xcm / 100))], '2'), ' = ', n('EPE', potencialPred, 'J')]),
+        paso('Restamos esa parte para obtener la energía del movimiento.', [S.EC, ' = ', n('EM', totalPred), ' − ', n('EPE', potencialPred), ' = ', n('EC', cp.caso.valor, 'J')]),
+        paso('La rapidez se obtiene despejando la energía cinética; el signo necesita el sentido.', [S.EC, ' = ', frac([S.m, ' · ', sup(S.v)], '2'), '; ', vel, ' = ', raiz(frac(['2 · ', S.EC], S.m))]),
+        paso('En el extremo la rapidez es cero; en el equilibrio es máxima.'),
+        paso('Para hallar una amplitud o posición, despejamos la energía elástica y extraemos raíz.', [S.A, ' = ', raiz(frac(['2 · ', S.EM], S.k)), '; |', S.x, '| = ', raiz(frac(['2 · ', S.EPE], S.k))]),
+      ] },
+      regla: { texto: 'Sin rozamiento, la energía mecánica se conserva. La energía cinética es el total menos la elástica. La energía determina la rapidez, pero el sentido requiere información adicional.',
+        ecuacion: [S.EM, ' = ', S.EC, ' + ', S.EPE, '   ;   ', S.EC, ' = ', frac([S.m, ' · ', sup(S.v)], '2'), '   ;   ', S.EPE, ' = ', frac([S.k, ' · ', sup(S.x)], '2'), '   ;   ', S.EM, ' = ', frac([S.k, ' · ', sup(S.A)], '2')],
+        condicion: 'resorte horizontal ideal, masa constante, sin rozamiento; x se mide desde la longitud natural y su módulo no supera A.', dibujo: reparto({ k: 100, m: 0.5, Acm: 20, xcm: 12 }) },
+      resuelve: { pieza: 'fis-estatica', generar(s) { const z = Math.floor(s / 4) % 31, j = s % 4, tipos = ['cinetica-balance', 'rapidez-datos', 'amplitud-estado', 'rapidez-estados']; const ps = [
+        { k: 80 + 4 * z, Acm: 18, xcm: 6 }, { m: 0.4, EM: 1.71 + z * 0.04, EPE: 0.51 },
+        { k: 120, m: 0.4, xcm: 8, v: 1.61 + z * 0.01 }, { k: 100, m: 0.5, x1cm: 12, x2cm: 5, v1: 1.31 + z * 0.01 } ]; return resuelto(caso(tipos[j], ps[j])); } },
+      ahoraTu: { pieza: 'fis-estatica', generar(s) { const z = Math.floor(s / 6) % 31, j = s % 6, tipos = ['total', 'potencial', 'amplitud', 'posicion-cinetica', 'rigidez', 'velocidad']; const ps = [
+        { k: 140 + 4 * z, Acm: 12 }, { k: 180 + 4 * z, xcm: -9 }, { k: 120 + 4 * z, EM: 1.37 + z * 0.03 },
+        { k: 160, Acm: 20, EC: 1.61 + z * 0.02 }, { m: 0.45, v: 1.51 + z * 0.01, Acm: 14 }, { m: 0.4, EC: 1.31 + z * 0.02, sentido: -1 } ]; return pregunta(caso(tipos[j], ps[j])); } },
+    };
+  })();
+  // Mesas propias: conservan los cuatro identificadores publicados y abren controles adicionales.
+  const laboratorio = (() => {
+    const tiempo = val => Number(val.t.toFixed(2));
+    const omega = val => Math.sqrt(val.k / val.m);
+    const periodo = val => 2 * Math.PI / omega(val);
+    const posicion = val => val.A * Math.cos(omega(val) * tiempo(val));
+    const libre = val => {
+      const aceleracion = -val.k * val.x / 100 / val.m;
+      const datos = carrito(val.x, { textos: [
+        { x: 12, y: 54, texto: `m = ${f(val.m)} kg`, color: 'f' },
+        { x: 308, y: 54, texto: `k = ${f(val.k)} N/m`, color: 'f', ancla: 'end' },
+        { x: 160, y: 212, texto: `a ${Math.abs(aceleracion * 100 - Math.round(aceleracion * 100)) < 1e-7 ? '=' : '≈'} ${f(aceleracion)} m/s²`, color: 'd', ancla: 'middle' },
+      ], alt: 'Un bloque se suelta desde la posición elegida. Una flecha muestra su aceleración inicial hacia el equilibrio.' });
+      if (Math.abs(aceleracion) > 1e-9) datos.flechas.push({ de: [178 + 4 * val.x, 76], ang: aceleracion > 0 ? 0 : 180, largo: 2 * Math.abs(aceleracion), color: 'd', texto: 'a', rumbo: [0, -1] });
+      return est(datos);
+    };
+    const curva = val => ({
+      x: { min: 0, max: 8, paso: 2, nombre: 't', unidad: 's', decimales: 0, color: 'h' },
+      y: { min: -25, max: 25, paso: 10, nombre: 'x', unidad: 'cm', decimales: 0, color: 'i' },
+      curvas: [{ puntos: Array.from({ length: 161 }, (_, j) => [j / 20, val.A * Math.cos(2 * Math.PI * j / 20 / val.T)]), color: 'i' }],
+      puntos: [{ x: tiempo(val), y: val.A * Math.cos(2 * Math.PI * tiempo(val) / val.T), color: 'i', guias: true }], ajustado: true,
+    });
+    const pendulo = val => {
+      const tt = tiempo(val), theta = 8 * Math.PI / 180 * Math.cos(Math.sqrt(val.g / val.L) * tt);
+      const apoyo = [160, 32], bob = [160 + 180 * val.L * Math.sin(theta), 32 + 180 * val.L * Math.cos(theta)];
+      return est({ alto: 280, objetos: [{ tipo: 'viga', x0: 116, x1: 204, y: 32 }, { tipo: 'cuerda', de: apoyo, a: bob }, { tipo: 'pelota', x: bob[0], y: bob[1], r: 9 }],
+        lineas: [{ de: apoyo, a: [160, 225], discontinua: true }],
+        cotas: [{ de: apoyo, a: bob, texto: `L = ${f(val.L)} m`, color: 'i', lado: -1, sep: 30 }],
+        textos: [{ x: 12, y: 20, texto: `g ≈ ${f(val.g)} m/s²`, color: 'h' }, { x: 308, y: 250, texto: `t = ${f(tt)} s`, color: 'h', ancla: 'end' }, { x: 12, y: 270, texto: 'Ángulo máximo: 8°', color: 'h' }],
+        alt: 'Péndulo simple con longitud medida desde el apoyo hasta el centro de la esfera. Oscila con un ángulo máximo de ocho grados.' });
+    };
+    return [
+      { id: 'resorte-vivo', titulo: 'El resorte que oscila', pieza: 'fis-estatica',
+        consigna: 'Cambia la masa, la rigidez y la amplitud. El reloj y el bloque siguen el mismo movimiento sobre una mesa sin rozamiento.',
+        controles: [
+          { id: 'A', etiqueta: 'Amplitud, A', min: 5, max: 20, paso: 5, inicio: 10, unidad: 'cm', decimales: 0, color: 'c-i' },
+          { id: 'k', etiqueta: 'Rigidez, k', min: 20, max: 80, paso: 20, inicio: 40, unidad: 'N/m', decimales: 0, color: 'c-f' },
+          { id: 'm', etiqueta: 'Masa, m', min: 0.5, max: 2, paso: 0.5, inicio: 1, unidad: 'kg', decimales: 1, color: 'c-f' },
+          { id: 't', etiqueta: 'Tiempo, t', min: 0, max: 6, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, color: 'c-h', auto: { velocidad: 0.25 } },
+        ],
+        dibujo: val => est(carrito(posicion(val), { A: val.A, textos: [{ x: 160, y: 48, texto: `m = ${f(val.m)} kg; k = ${f(val.k)} N/m`, color: 'f', ancla: 'middle' }, { x: 308, y: 208, texto: `t = ${f(tiempo(val))} s`, color: 'h', ancla: 'end' }] })),
+        lectura: val => [S.T, ' ≈ ', Q('T', periodo(val), 's'), '; ', S.t, ' = ', Q('t', tiempo(val), 's')],
+        invitaciones: [
+          { texto: 'Encuentra el período más largo que permite la mesa.', logrado: val => val.k === 20 && val.m === 2, bien: 'El resorte menos rígido y la mayor masa producen el período más largo.' },
+          { texto: 'Consigue el mismo período que con 1 kg y 40 N/m, usando otra masa.', logrado: val => val.m !== 1 && Math.abs(val.k / val.m - 40) < 1e-9, bien: 'La razón entre rigidez y masa se conserva, por eso se conserva el período.' },
+          { texto: 'Haz que la amplitud sea el doble de los 10 cm iniciales.', logrado: val => val.A === 20, bien: 'Llega dos veces más lejos. El período sigue dependiendo de la masa y la rigidez.' },
+        ],
+      },
+      { id: 'resorte-libre', titulo: 'Al soltar el bloque', pieza: 'fis-estatica', consigna: 'Elige dónde sueltas el bloque desde el reposo. Compara su aceleración inicial con otra masa o con otro resorte.',
+        controles: [
+          { id: 'x', etiqueta: 'Posición inicial, x', min: -20, max: 20, paso: 5, inicio: 5, unidad: 'cm', decimales: 0, color: 'c-i' },
+          { id: 'k', etiqueta: 'Rigidez, k', min: 20, max: 80, paso: 20, inicio: 40, unidad: 'N/m', decimales: 0, color: 'c-f' },
+          { id: 'm', etiqueta: 'Masa, m', min: 0.5, max: 2, paso: 0.5, inicio: 1, unidad: 'kg', decimales: 1, color: 'c-f' },
+        ], dibujo: libre,
+        lectura: val => { const aa = -val.k * val.x / 100 / val.m; return [S.a, Math.abs(aa * 100 - Math.round(aa * 100)) < 1e-7 ? ' = ' : ' ≈ ', Q('a', aa, 'm/s²')]; },
+        invitaciones: [
+          { texto: 'Consigue la mayor aceleración inicial posible hacia la derecha.', logrado: val => val.x === -20 && val.k === 80 && val.m === 0.5, bien: 'Se suelta a la izquierda, con poca masa y el resorte más rígido.' },
+          { texto: 'Encuentra una posición donde el bloque pueda quedarse en reposo al soltarlo.', logrado: val => val.x === 0, bien: 'En el equilibrio, con velocidad inicial cero, no comienza el vaivén.' },
+          { texto: 'Obtén una aceleración inicial de 4 m/s² hacia la izquierda.', logrado: val => Math.abs(val.k * val.x / 100 / val.m - 4) < 1e-9, bien: 'Está a la derecha; la fuerza del resorte inicia el movimiento hacia la izquierda.' },
+        ],
+      },
+      { id: 'pendulo-libre', titulo: 'Longitud y gravedad', pieza: 'fis-estatica', consigna: 'Compara péndulos de distintas longitudes y gravedades. Son modelos de cálculo: el ángulo máximo se mantiene en ocho grados.',
+        controles: [
+          { id: 'L', etiqueta: 'Longitud, L', min: 0.25, max: 1, paso: 0.25, inicio: 0.5, unidad: 'm', decimales: 2, color: 'c-i' },
+          { id: 'g', etiqueta: 'Gravedad aproximada, g', opciones: [{ valor: 2.5, texto: '2,5 m/s²' }, { valor: 5, texto: '5 m/s²' }, { valor: 10, texto: '10 m/s²' }], inicio: 10, color: 'c-h' },
+          { id: 't', etiqueta: 'Tiempo, t', min: 0, max: 6, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, color: 'c-h', auto: { velocidad: 0.3 } },
+        ], dibujo: pendulo, lectura: val => [S.T, ' ≈ ', Q('T', 2 * Math.PI * Math.sqrt(val.L / val.g), 's')],
+        invitaciones: [
+          { texto: 'Consigue el período más largo de esta mesa.', logrado: val => val.L === 1 && val.g === 2.5, bien: 'La mayor longitud y la menor gravedad hacen más lento el vaivén.' },
+          { texto: 'Duplica el período del péndulo de 25 cm manteniendo g en 10 m/s².', logrado: val => val.L === 1 && val.g === 10, bien: 'La longitud aumentó cuatro veces; en el modelo, el período aumenta dos veces.' },
+          { texto: 'Iguala el período de L = 1 m y g = 10 m/s² con menos gravedad.', logrado: val => val.g < 10 && Math.abs(val.L / val.g - 0.1) < 1e-9, bien: 'La longitud y la gravedad disminuyeron en la misma proporción.' },
+        ],
+      },
+      { id: 'coseno', titulo: 'La curva de la posición', pieza: 'ejes', consigna: 'Cambia amplitud y período. La curva conserva la misma escala; el punto señala la posición en el instante del reloj.',
+        controles: [
+          { id: 'A', etiqueta: 'Amplitud, A', min: 5, max: 20, paso: 5, inicio: 10, unidad: 'cm', decimales: 0, color: 'c-i' },
+          { id: 'T', etiqueta: 'Período, T', min: 2, max: 8, paso: 2, inicio: 4, unidad: 's', decimales: 0, color: 'c-h' },
+          { id: 't', etiqueta: 'Tiempo, t', min: 0, max: 8, paso: 0.5, inicio: 0, unidad: 's', decimales: 2, color: 'c-h', auto: { velocidad: 0.5 } },
+        ], dibujo: val => ejes(curva(val)), lectura: val => [S.A, ' = ', Q('A', val.A, 'cm'), '; ', S.T, ' = ', Q('T', val.T, 's')],
+        invitaciones: [
+          { texto: 'Haz que se vean cuatro ciclos completos en los ocho segundos de la gráfica.', logrado: val => val.T === 2, bien: 'Cada ciclo dura dos segundos; cuatro ciclos completan ocho segundos.' },
+          { texto: 'Haz que los extremos de la gráfica estén separados por 40 cm.', logrado: val => val.A === 20, bien: 'Los extremos están en −20 cm y +20 cm respecto del equilibrio.' },
+          { texto: 'Sitúa el punto en el primer cruce del centro hacia la derecha.', logrado: val => Math.abs(tiempo(val) - 3 * val.T / 4) < 1e-9, bien: 'Ya pasó por el extremo izquierdo y vuelve hacia el derecho.' },
+        ],
+      },
+    ];
+  })();
+
   return {
-    unidad: 'fisica.oscilaciones', version: '1.0.0', estado: 'borrador',
+    unidad: 'fisica.oscilaciones', version: '1.0.0', estado: 'completa',
     colores: COLORES,
     letras: {x:'posición desde el equilibrio', A:'amplitud', d:'distancia recorrida', δ:'deformación del resorte desde su longitud natural', v:'velocidad con signo', a:'aceleración con signo', F:'fuerza del resorte', t:'tiempo', T:'período', f:'frecuencia', N:'número de ciclos', m:'masa', k:'constante elástica', L:'longitud del péndulo', g:'aceleración de la gravedad', ω:'frecuencia angular', φ:'fase inicial', θ:'inclinación del péndulo', E_C:'energía cinética', E_PE:'energía potencial elástica', E_M:'energía mecánica'},
     requiere: ['/nucleo/kit/piezas/fis-estatica.js','/nucleo/kit/piezas/ejes.js'],
     glosario,
-    
+    laboratorio, laboratorioIdeas: {'resorte-vivo':['periodo-resorte'], 'resorte-libre':['aceleracion-al-centro'], 'pendulo-libre':['pendulo'], coseno:['graficas-mas']},
     historia: {
       texto: 'En 1657, Christiaan Huygens patentó un reloj de péndulo. El mecanismo contaba vaivenes para medir el tiempo. La regularidad del movimiento permitió mejorar los relojes, pero exigía cuidar las condiciones del péndulo: una oscilación muy amplia no tarda exactamente lo mismo que una pequeña.',
       pregunta: '¿Qué tendría que conservar un péndulo para que su reloj mida bien?',
       fuente: {titulo:'APS: Huygens y el primer reloj de péndulo',url:'https://www.aps.org/apsnews/2017/06/huygens-patents-first-pendulum-clock'},
     },
-    ideas: [idea1, idea2, idea3, idea4, idea5],
+    ideas: [idea1, idea2, idea3, idea4, idea5, idea6],
   };
 });
