@@ -138,20 +138,34 @@
       const r = a * Math.PI / 180, ex = cx + 40 * Math.cos(r), ey = cy + 30 * Math.sin(r);
       const rot = a + 90;
       s += `<ellipse class="kit-globo" cx="${n(ex)}" cy="${n(ey)}" rx="${k === 2 ? 30 : 22}" ry="${k === 2 ? 20 : 18}" transform="rotate(${n(rot + 90)} ${n(ex)} ${n(ey)})" fill="currentColor" fill-opacity="0.14" ${tinta(2)}/>`;
+      // 26 nov (dibujos reconocibles): la boquilla amarrada de cada globo, su pita hasta el nudo y un brillo.
+      const R = k === 2 ? 30 : 22, ux = Math.cos(r), uy = Math.sin(r), tip = [ex - ux * R, ey - uy * R], vx = -uy, vy = ux;
+      s += `<path d="M${n(tip[0])} ${n(tip[1])}L${n(tip[0] - ux * 5 + vx * 3)} ${n(tip[1] - uy * 5 + vy * 3)}L${n(tip[0] - ux * 5 - vx * 3)} ${n(tip[1] - uy * 5 - vy * 3)}Z" fill="currentColor" ${tinta(1.2)}/>`;
+      s += `<line x1="${n(tip[0] - ux * 5)}" y1="${n(tip[1] - uy * 5)}" x2="${cx}" y2="${cy}" ${tinta(1.2)} stroke-opacity="0.7"/>`;
+      s += `<path d="M${n(ex + ux * R * 0.35 + vx * 6)} ${n(ey + uy * R * 0.35 + vy * 6)}L${n(ex + ux * R * 0.6 + vx * 4)} ${n(ey + uy * R * 0.6 + vy * 4)}" stroke="var(--card)" stroke-width="3" stroke-linecap="round"/>`;
     }
     s += `<circle cx="${cx}" cy="${cy}" r="5" fill="currentColor"/>`;
     return s;
   }
+  // 26 nov (dibujos reconocibles): el soplete de gasfitero: el balón de gas parado, la válvula con su perilla, el tubo
+  // y la boquilla, y la llama con su cono de adentro. El bloque con una hoja de antes no se reconocía.
   function soplete() {
-    let s = `<rect x="60" y="88" width="34" height="48" rx="8" fill="currentColor" fill-opacity="0.14" ${tinta(2)}/>`;
-    s += `<path d="M94 106H168L176 100V114L168 108" fill="none" ${tinta(2)}/>`;
-    s += `<path d="M178 107Q206 92 246 107Q206 122 178 107Z" fill="currentColor" fill-opacity="0.2" ${tinta(1.8)}/>`;
-    s += `<path d="M180 107Q198 100 216 107Q198 114 180 107Z" fill="currentColor" fill-opacity="0.35"/>`;
+    let s = `<path d="M60 136V102Q60 93 76 93Q92 93 92 102V136Z" fill="currentColor" fill-opacity="0.14" ${tinta(2)}/>`;
+    s += `<rect x="60" y="110" width="32" height="12" fill="currentColor" fill-opacity="0.18" stroke="none"/>`;
+    s += `<rect x="70" y="86" width="12" height="8" rx="2" fill="var(--card)" ${tinta(1.8)}/><circle cx="66" cy="90" r="3.5" fill="var(--card)" ${tinta(1.6)}/>`;
+    s += `<path d="M82 90L120 92L164 101" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`;
+    s += `<path d="M162 96L176 101L176 107L162 106Z" fill="var(--card)" ${tinta(1.8)}/>`;
+    s += `<path d="M178 104Q206 89 250 104Q206 119 178 104Z" fill="currentColor" fill-opacity="0.18" ${tinta(1.8)}/>`;
+    s += `<path d="M180 104Q192 98 210 104Q192 110 180 104Z" fill="currentColor" fill-opacity="0.4"/>`;
     s += `<line x1="40" y1="137" x2="280" y2="137" ${tinta(2)}/>`;
     return s;
   }
   function chorro() {
-    let s = `<path d="M60 40H120V52H104V60H92V52H60Z" fill="currentColor" fill-opacity="0.14" ${tinta(2)}/>`;
+    // 26 nov (dibujos reconocibles): el caño con su plancha en la pared, la llave arriba y el pico que baja; antes era
+    // una T sin rasgo de caño.
+    let s = `<rect x="50" y="38" width="8" height="26" rx="2" fill="currentColor" fill-opacity="0.2" ${tinta(1.8)}/>`;
+    s += `<path d="M58 44H96Q104 44 104 52V60H92V56H58Z" fill="currentColor" fill-opacity="0.14" ${tinta(2)} stroke-linejoin="round"/>`;
+    s += `<path d="M78 44V39M70 39H86" ${tinta(2.4)}/>`;
     s += `<path d="M98 60Q100 100 132 134" fill="none" stroke="currentColor" stroke-width="3" stroke-opacity="0.55" stroke-linecap="round"/>`;
     s += `<g transform="rotate(-20 176 100)"><rect x="150" y="94" width="58" height="10" rx="3" fill="currentColor" fill-opacity="0.2" ${tinta(1.6)}/>`;
     for (let x = 154; x <= 204; x += 6) s += `<line x1="${x}" y1="104" x2="${x}" y2="112" ${tinta(1.2)}/>`;

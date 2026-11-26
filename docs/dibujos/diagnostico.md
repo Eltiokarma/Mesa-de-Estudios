@@ -148,13 +148,13 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 |---|---|---|---|---|
 | quim-cocina · (sin objeto) | se reconoce | balanza y probeta con la piedra | [ver](capturas/quim-cocina--sin-objeto.webp) |  |
 | quim-enlace · (sin objeto) | se reconoce | símbolos de Lewis (notación propia del tema) | [ver](capturas/quim-enlace--sin-objeto.webp) |  |
-| quim-enlace · chorro | a medias | chorro de agua y peine: el peine se ve; el caño es una T y el chorro una raya gris | [ver](capturas/quim-enlace--chorro.webp) |  |
-| quim-enlace · globos | a medias | cuatro óvalos alrededor de un punto: sin pitas ni nudo no dicen globos | [ver](capturas/quim-enlace--globos.webp) |  |
+| quim-enlace · chorro | a medias | chorro de agua y peine: el peine se ve; el caño es una T y el chorro una raya gris | [ver](capturas/quim-enlace--chorro.webp) | redibujado: caño con plancha en la pared, llave y pico ([antes y después](antes-despues/quim-enlace--chorro.webp)) |
+| quim-enlace · globos | a medias | cuatro óvalos alrededor de un punto: sin pitas ni nudo no dicen globos | [ver](capturas/quim-enlace--globos.webp) | redibujado: boquilla amarrada, pita al nudo y brillo en cada globo ([antes y después](antes-despues/quim-enlace--globos.webp)) |
 | quim-enlace · limpiador | se reconoce | botella de limpiador con etiqueta | [ver](capturas/quim-enlace--limpiador.webp) |  |
 | quim-enlace · olla | se reconoce | olla con agua hirviendo | [ver](capturas/quim-enlace--olla.webp) |  |
 | quim-enlace · probador | se reconoce | pila, foco y vaso con cables | [ver](capturas/quim-enlace--probador.webp) |  |
 | quim-enlace · sal | a medias | sal en una cuchara: los cuadraditos se leen; la cuchara es una media luna con palito | [ver](capturas/quim-enlace--sal.webp) |  |
-| quim-enlace · soplete | no se reconoce | soplete: un bloque con una hoja; no se reconoce | [ver](capturas/quim-enlace--soplete.webp) |  |
+| quim-enlace · soplete | no se reconoce | soplete: un bloque con una hoja; no se reconoce | [ver](capturas/quim-enlace--soplete.webp) | redibujado: balón de gas con válvula y perilla, tubo, boquilla y llama con su cono ([antes y después](antes-despues/quim-enlace--soplete.webp)) |
 | quim-enlace · tiza | se reconoce | tiza y pizarra con un garabato | [ver](capturas/quim-enlace--tiza.webp) |  |
 | quim-enlace · ventana | a medias | ventana con moléculas: el marco se lee como cuadro partido | [ver](capturas/quim-enlace--ventana.webp) |  |
 | quim-hotel · (sin objeto) | se reconoce | hotel del electrón (diagrama propio del tema) | [ver](capturas/quim-hotel--sin-objeto.webp) |  |
