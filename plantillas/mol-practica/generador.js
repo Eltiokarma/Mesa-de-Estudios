@@ -14,8 +14,8 @@
  *   leyes-ponderales              lavoisier (1) · abierto (2) · proust (2) · dalton (3)
  * Colores (los de la unidad): m naranja, M turquesa, n violeta, N y porcentajes carmín.
  * Errores: ES3 a ES19 de docs/investigacion/estequiometria-ideas-erroneas.md (ES3, ES4, ES7, ES16, ES17 y ES18 con datos;
- * ES6, ES13, ES15 y ES19 parciales) y los QM- de la teoría (hipótesis). Cada explicación empieza por lo que el alumno
- * hizo bien y da el valor de su error.
+ * ES6, ES13, ES15 y ES19 parciales) y los QM- de la teoría (hipótesis). Cada explicación dice lo que el alumno hizo bien
+ * o en qué caso su respuesta sería cierta, y da el valor de su error (redacción, 26 nov: sin el molde «Bien X. Pero Y.»).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -123,11 +123,11 @@
     return { correcta: uT(bien), _datos: { masas: [a, b], abund: [p, 100 - p] },
       enunciado: [`Un elemento X tiene dos isótopos: ${p} % con número de masa ${a} y ${100 - p} % con número de masa ${b}.`], pregunta: ['¿Cuál es su masa atómica?'],
       datos: [D.casi, D.prom],
-      errores: [err('QM-PROMEDIO-SIMPLE', uT((a + b) / 2), `Bien promediar. Pero ${uT((a + b) / 2)} sería con los dos igual de abundantes.`),
-        err('QM-PROMEDIO-CRUZADO', uT(((100 - p) * a + p * b) / 100), `Bien la cuenta pesada, pero cruzada: el ${p} % va con ${a} u.`),
-        err('AT4', uT(mas), `Bien ver cuál abunda más. Pero el otro también aporta: no es ${mas} u.`),
-        err('QM-PROMEDIO-SIMPLE', uT(a + b), 'Bien juntar las masas. Pero sumarlas no promedia: faltan las abundancias.')],
-      solucion: [['Cada masa por su abundancia entre 100, y se suman.'], [`${F(p / 100, 2)} × ${a} + ${F((100 - p) / 100, 2)} × ${b}${ig(bien, uT(bien))}`, v('M', uT(bien))]] };
+      errores: [err('QM-PROMEDIO-SIMPLE', uT((a + b) / 2), `La masa atómica sería ${uT((a + b) / 2)} si los dos isótopos fueran igual de abundantes; aquí abunda más el de ${mas} u.`),
+        err('QM-PROMEDIO-CRUZADO', uT(((100 - p) * a + p * b) / 100), `Pesar cada masa por su abundancia está bien, pero las abundancias quedaron cruzadas: el ${p} % va con ${a} u.`),
+        err('AT4', uT(mas), `Sería ${mas} u si todos los átomos fueran del isótopo que más abunda, pero el otro también aporta al promedio.`),
+        err('QM-PROMEDIO-SIMPLE', uT(a + b), 'Sumar las dos masas no da un promedio: antes de sumar, cada masa se multiplica por su abundancia entre 100.')],
+      solucion: [['Cada masa se multiplica por su abundancia entre 100, y los dos productos se suman.'], [`${F(p / 100, 2)} × ${a} + ${F((100 - p) / 100, 2)} × ${b}${ig(bien, uT(bien))}`, v('M', uT(bien))]] };
   }
   function promedioTres(rng) {
     let a, ps;
@@ -136,22 +136,22 @@
     return { correcta: uT(bien), _datos: { masas: ms, abund: ps },
       enunciado: [`Un elemento X tiene tres isótopos, de números de masa ${ms[0]}, ${ms[1]} y ${ms[2]}, con ${ps[0]} %, ${ps[1]} % y ${ps[2]} %.`], pregunta: ['¿Cuál es su masa atómica?'],
       datos: [D.casi, D.prom],
-      errores: [err('QM-PROMEDIO-SIMPLE', uT(a + 1), `Bien promediar. Pero ${uT(a + 1)} sería con los tres igual de abundantes.`),
-        err('AT4', uT(ms[kmax]), `Bien ver cuál abunda más. Pero los otros también aportan: no es ${ms[kmax]} u.`),
-        err('QM-PROMEDIO-CRUZADO', uT(ms.reduce((t, m, i) => t + m * ps[2 - i] / 100, 0)), `Bien pesar, pero con las abundancias al revés: el ${ps[0]} % va con ${a} u.`),
-        err('QM-PROMEDIO-SIMPLE', uT(3 * a + 3), 'Bien juntar las tres masas. Pero sumarlas no promedia.')],
-      solucion: [['Cada masa por su abundancia entre 100, y se suman las tres.'], [`${ms.map((m, i) => `${F(ps[i] / 100, 2)} × ${m}`).join(' + ')}${ig(bien, uT(bien))}`, v('M', uT(bien))]] };
+      errores: [err('QM-PROMEDIO-SIMPLE', uT(a + 1), `La masa atómica sería ${uT(a + 1)} si los tres isótopos fueran igual de abundantes, pero sus abundancias son distintas.`),
+        err('AT4', uT(ms[kmax]), `Sería ${ms[kmax]} u si todos los átomos fueran del isótopo que más abunda, pero los otros dos también aportan.`),
+        err('QM-PROMEDIO-CRUZADO', uT(ms.reduce((t, m, i) => t + m * ps[2 - i] / 100, 0)), `Pesar cada masa por su abundancia está bien, pero las abundancias quedaron al revés: el ${ps[0]} % va con ${a} u.`),
+        err('QM-PROMEDIO-SIMPLE', uT(3 * a + 3), 'Sumar las tres masas no da un promedio: antes de sumar, cada masa se multiplica por su abundancia entre 100.')],
+      solucion: [['Cada masa se multiplica por su abundancia entre 100, y se suman los tres productos.'], [`${ms.map((m, i) => `${F(ps[i] / 100, 2)} × ${m}`).join(' + ')}${ig(bien, uT(bien))}`, v('M', uT(bien))]] };
   }
   function abundancia(rng) {
     const a = rng.entero(10, 90), p = 5 * rng.entero(11, 19), b = a + 2, x = a + 2 * (100 - p) / 100;
     return { correcta: `${p} %`, _datos: { masas: [a, b], media: x },
       enunciado: [`Un elemento X tiene isótopos de números de masa ${a} y ${b}, y su masa atómica es ${F(x, 2)} u.`], pregunta: [`¿Qué porcentaje de sus átomos tiene número de masa ${a}?`],
       datos: [D.casi, D.prom],
-      errores: [err('QM-PROMEDIO-CRUZADO', `${100 - p} %`, `Bien plantear el promedio. Pero ${100 - p} % es el del isótopo de ${b} u.`),
+      errores: [err('QM-PROMEDIO-CRUZADO', `${100 - p} %`, `El planteo del promedio está bien, pero ${100 - p} % es la abundancia del isótopo de ${b} u, no la del de ${a} u.`),
         err('QM-PROMEDIO-SIMPLE', '50 %', `Con 50 % de cada uno, la masa atómica sería ${a + 1} u, no ${F(x, 2)} u.`),
-        err('QM-ABUND-DIFERENCIA', `${2 * (100 - p)} %`, `Bien restar ${F(x, 2)} − ${a}. Falta dividir entre 2, la diferencia de masas.`),
-        err('QM-ABUND-DIFERENCIA', `${F(p / 100, 2)} %`, 'Bien la fracción, pero falta pasarla a porcentaje: por 100.')],
-      solucion: [[`Con p el porcentaje del isótopo de ${a}: ${a} · p + ${b} · (100 − p) = ${100 * a + 2 * (100 - p)}.`], ['p = ', v('pct', `${p} %`)]] };
+        err('QM-ABUND-DIFERENCIA', `${2 * (100 - p)} %`, `Restar ${F(x, 2)} − ${a} va bien, pero falta dividir entre 2, la diferencia de masas, y eso da la fracción del isótopo pesado.`),
+        err('QM-ABUND-DIFERENCIA', `${F(p / 100, 2)} %`, 'La fracción está bien, pero falta pasarla a porcentaje multiplicándola por 100.')],
+      solucion: [[`Con p el porcentaje del isótopo de ${a} u, el promedio se plantea así: ${a} · p + ${b} · (100 − p) = ${100 * a + 2 * (100 - p)}.`], ['p = ', v('pct', `${p} %`)]] };
   }
 
   // ---- Idea 2: mol y masa molar ----
@@ -161,32 +161,32 @@
   function gramosMoles(rng) {
     const f = rng.elegir(SUST2), M = masaMolar(f), n = rng.elegir([0.25, 0.5, 1.5, 2, 2.5, 3, 4, 5]), m = n * M;
     return { correcta: molT(n), _datos: { f, m },
-      enunciado: [`Una muestra de ${gT(m)} de ${bonita(f)}.`], pregunta: ['¿Cuántos ', v('n', 'moles'), ' son?'], datos: [masasDe(f), D.M, D.nm],
-      errores: [err('ES7', molT(M / m), `Bien la masa molar, ${F(M, 1)} g/mol. Pero va abajo: más gramos dan más moles.`),
-        err('ES18', molT(m / sinSub(f)), `Bien dividir. Pero cada masa atómica va por su subíndice: M no es ${F(sinSub(f), 1)}.`),
-        err('ES3', molT(m), 'Esos son los gramos. Un mol no es un gramo: falta dividir entre M.'),
-        err('ES7', molT(m * M), 'Bien usar la masa molar. Pero se divide entre ella, no se multiplica.')],
-      solucion: [[`M(${bonita(f)}) = ${F(M, 1)} g/mol.`], ['n = ', `${F(m, 2)} / ${F(M, 1)} = `, v('n', molT(n))]] };
+      enunciado: [`Se tiene una muestra de ${gT(m)} de ${bonita(f)}.`], pregunta: ['¿Cuántos ', v('n', 'moles'), ' hay en ella?'], datos: [masasDe(f), D.M, D.nm],
+      errores: [err('ES7', molT(M / m), `La masa molar, ${F(M, 1)} g/mol, está bien, pero va abajo: n = m/M, porque más gramos tienen que dar más moles.`),
+        err('ES18', molT(m / sinSub(f)), `Dividir entre la masa molar está bien, pero en ella cada masa atómica va por su subíndice, y así M no es ${F(sinSub(f), 1)} g/mol.`),
+        err('ES3', molT(m), 'Ese número son los gramos, y un mol no es un gramo: falta dividir la masa entre M.'),
+        err('ES7', molT(m * M), 'Usar la masa molar está bien, pero la masa se divide entre ella, no se multiplica.')],
+      solucion: [[`La masa molar es M(${bonita(f)}) = ${F(M, 1)} g/mol, y la masa se divide entre ella.`], ['n = ', `${F(m, 2)} / ${F(M, 1)} = `, v('n', molT(n))]] };
   }
   function molesMoleculas(rng) {
     const f = rng.elegir(MOLEC2), n = rng.elegir([0.25, 0.5, 1.5, 2, 2.5, 3, 4]), at = total(f);
     return { correcta: cien(n * NA), _datos: { f, n },
-      enunciado: [`Una muestra de ${F(n, 2)} mol de ${bonita(f)}.`], pregunta: ['¿Cuántas ', v('N', 'moléculas'), ' tiene?'], datos: [D.NN],
-      errores: [err('QM-NA', cien(NA / n), `Bien usar Nₐ. Pero cada mol trae Nₐ moléculas: se multiplica por ${F(n, 2)}.`),
-        err('ES6', cien(NA), `Esas son las moléculas de un solo mol. Aquí hay ${F(n, 2)} mol.`),
-        err('ES6', cien(n * NA * at), `Eso cuenta átomos: cada ${bonita(f)} trae ${at}. Se piden moléculas.`),
-        err('QM-NA', cien(n / NA, 3), 'Bien los moles. Pero se multiplica por Nₐ, no se divide.')],
-      solucion: [['Cada mol trae Nₐ moléculas.'], ['N = ', `${F(n, 2)} · ${NA_TXT}${ig(n * NA, cien(n * NA))}`, v('N', cien(n * NA))]] };
+      enunciado: [`Se tiene una muestra de ${F(n, 2)} mol de ${bonita(f)}.`], pregunta: ['¿Cuántas ', v('N', 'moléculas'), ' tiene?'], datos: [D.NN],
+      errores: [err('QM-NA', cien(NA / n), `Usar Nₐ está bien, pero cada mol trae Nₐ moléculas, así que Nₐ se multiplica por ${F(n, 2)}, no se divide.`),
+        err('ES6', cien(NA), `Esas son las moléculas de un solo mol, y aquí hay ${F(n, 2)} mol.`),
+        err('ES6', cien(n * NA * at), `Ese número cuenta átomos: cada molécula de ${bonita(f)} trae ${at}, y se piden moléculas.`),
+        err('QM-NA', cien(n / NA, 3), 'Los moles están bien, pero se multiplican por Nₐ, no se dividen.')],
+      solucion: [['Cada mol trae Nₐ moléculas, así que los moles se multiplican por Nₐ.'], ['N = ', `${F(n, 2)} · ${NA_TXT}${ig(n * NA, cien(n * NA))}`, v('N', cien(n * NA))]] };
   }
   function gramosMoleculas(rng) {
     const f = rng.elegir(MOLEC2), M = masaMolar(f), n = rng.elegir([0.25, 0.5, 1.5, 2, 2.5, 3]), m = n * M;
     return { correcta: cien(n * NA), _datos: { f, m },
-      enunciado: [`Una muestra de ${gT(m)} de ${bonita(f)}.`], pregunta: ['¿Cuántas ', v('N', 'moléculas'), ' tiene?'], datos: [masasDe(f), D.M, D.nm, D.NN],
-      errores: [err('ES7', cien(M / m * NA), `Bien multiplicar por Nₐ. Pero n = m/M: la masa molar, ${F(M, 1)}, va abajo.`),
-        err('ES3', cien(m * NA), 'Bien usar Nₐ. Pero los gramos no son moles: falta dividir entre M.'),
-        err('ES18', cien(m / sinSub(f) * NA), `Bien el camino. Pero cada masa atómica va por su subíndice: M no es ${F(sinSub(f), 1)}.`),
-        err('ES6', cien(n * NA * total(f)), `Eso cuenta átomos: cada ${bonita(f)} trae ${total(f)}.`)],
-      solucion: [[`M = ${F(M, 1)} g/mol: n = ${F(m, 2)} / ${F(M, 1)} = ${F(n, 3)} mol.`], ['N = ', `${F(n, 3)} · ${NA_TXT}${ig(n * NA, cien(n * NA))}`, v('N', cien(n * NA))]] };
+      enunciado: [`Se tiene una muestra de ${gT(m)} de ${bonita(f)}.`], pregunta: ['¿Cuántas ', v('N', 'moléculas'), ' tiene?'], datos: [masasDe(f), D.M, D.nm, D.NN],
+      errores: [err('ES7', cien(M / m * NA), `Multiplicar por Nₐ está bien, pero n = m/M: la masa molar, ${F(M, 1)} g/mol, va abajo.`),
+        err('ES3', cien(m * NA), 'Usar Nₐ está bien, pero los gramos no son moles: antes falta dividir entre M.'),
+        err('ES18', cien(m / sinSub(f) * NA), `El camino está bien, pero cada masa atómica va por su subíndice, y así M no es ${F(sinSub(f), 1)} g/mol.`),
+        err('ES6', cien(n * NA * total(f)), `Ese número cuenta átomos: cada molécula de ${bonita(f)} trae ${total(f)}, y se piden moléculas.`)],
+      solucion: [[`Con M = ${F(M, 1)} g/mol, n = ${F(m, 2)} / ${F(M, 1)} = ${F(n, 3)} mol, y cada mol trae Nₐ moléculas.`], ['N = ', `${F(n, 3)} · ${NA_TXT}${ig(n * NA, cien(n * NA))}`, v('N', cien(n * NA))]] };
   }
   const DOSIS = [['paracetamol', 'C8H9NO2', 500, 'una tableta'], ['ibuprofeno', 'C13H18O2', 400, 'una tableta'], ['ácido acetilsalicílico', 'C9H8O4', 500, 'una tableta'],
     ['vitamina C', 'C6H8O6', 500, 'una tableta'], ['ibuprofeno', 'C13H18O2', 200, 'una cápsula'], ['paracetamol', 'C8H9NO2', 1000, 'un sobre']];
@@ -195,37 +195,38 @@
     return { correcta: cien(n * NA), _datos: { f, mg },
       enunciado: [`${que[0].toUpperCase() + que.slice(1)} de ${nom}, ${bonita(f)}, tiene ${mg} mg.`], pregunta: ['¿Cuántas ', v('N', 'moléculas'), ` de ${nom} tiene?`],
       datos: [masasDe(f), D.M, D.mg, D.nm, D.NN],
-      errores: [err('QU', cien(mg / M * NA), `Bien el camino. Pero ${mg} mg son ${F(mg / 1000, 2)} g: se pasa a gramos antes.`),
-        err('ES7', cien(M / (mg / 1000) * NA), 'Bien pasar a gramos. Pero n = m/M: la masa molar va abajo.'),
-        err('QM-NA', cien(n / NA), 'Bien los moles. Pero cada mol trae Nₐ moléculas: se multiplica.'),
-        err('ES18', cien(mg / 1000 / sinSub(f) * NA), `Bien el camino. Pero cada masa atómica va por su subíndice: M no es ${F(sinSub(f), 1)}.`)],
-      solucion: [[`M = ${F(M, 1)} g/mol y ${mg} mg = ${F(mg / 1000, 2)} g.`], ['N = ', `${F(mg / 1000, 2)} / ${F(M, 1)} · ${NA_TXT}${ig(n * NA, cien(n * NA))}`, v('N', cien(n * NA))]] };
+      errores: [err('QU', cien(mg / M * NA), `El camino está bien, pero ${mg} mg son ${F(mg / 1000, 2)} g, y hay que pasar a gramos antes de dividir.`),
+        err('ES7', cien(M / (mg / 1000) * NA), 'Pasar a gramos está bien, pero n = m/M: la masa molar va abajo, no arriba.'),
+        err('QM-NA', cien(n / NA), 'Los moles están bien, pero cada mol trae Nₐ moléculas, así que se multiplica por Nₐ, no se divide.'),
+        err('ES18', cien(mg / 1000 / sinSub(f) * NA), `El camino está bien, pero cada masa atómica va por su subíndice, y así M no es ${F(sinSub(f), 1)} g/mol.`)],
+      solucion: [[`La masa molar es ${F(M, 1)} g/mol y ${mg} mg son ${F(mg / 1000, 2)} g; los moles por Nₐ dan las moléculas.`], ['N = ', `${F(mg / 1000, 2)} / ${F(M, 1)} · ${NA_TXT}${ig(n * NA, cien(n * NA))}`, v('N', cien(n * NA))]] };
   }
 
   // ---- Idea 3: moles de átomos en una fórmula ----
   const FORM3 = ['Mg(NO3)2', 'Fe2(SO4)3', '(NH4)3PO4', 'Mg3(PO4)2', 'MgSO4·7H2O', 'Na2CO3·10H2O', 'C3H8', 'Ba(OH)2', 'K2Cr2O7', 'Al(OH)3', 'C12H22O11', 'Zn(NO3)2', 'Ca(NO3)2', 'CuSO4·5H2O', 'Al2(SO4)3'];
   const sinPar = (f, e) => atomos(f.replace(/\)\d+/g, ')').replace(/·\d+/, '·'))[e] || 0;
   const datosF = f => [D.rel, ...(/\(/.test(f) ? [D.par] : []), ...(/·/.test(f) ? [`En un hidrato, ·${f.match(/·(\d+)/)[1]}H₂O son ${f.match(/·(\d+)/)[1]} moléculas de agua por unidad`] : [])];
+  const pluralAt = (x, e) => `${x} ${x === 1 ? 'átomo' : 'átomos'} de ${e}`;
   const elDe = (rng, f) => { const a = atomos(f), con = Object.keys(a).filter(e => sinPar(f, e) !== a[e]); return rng.elegir(con.length && rng.sig() < 0.7 ? con : Object.keys(a)); };
   function molesElemento(rng) {
     const f = rng.elegir(FORM3), e = elDe(rng, f), c = atomos(f)[e], n = rng.elegir([0.5, 2, 3, 0.25, 1.5, 4]);
     return { correcta: molT(n * c), _datos: { f, e, n },
-      enunciado: [`Una muestra de ${F(n, 2)} mol de ${bonita(f)}.`], pregunta: ['¿Cuántos ', v('n', 'moles'), ` de átomos de ${NOMBRE[e]} tiene?`], datos: datosF(f),
-      errores: [sinPar(f, e) !== c ? err('ES18', molT(n * sinPar(f, e)), `Bien multiplicar por ${F(n, 2)}. Pero hay ${c} de ${e} por unidad, no ${sinPar(f, e)}.`) : null,
-        err('QM-POR-N', molT(c), `${c} de ${e} hay en una sola unidad. Aquí hay ${F(n, 2)} mol.`),
-        err('ES14', molT(n), `Esos son los moles de ${bonita(f)}. Cada unidad trae ${c} de ${e}.`),
-        err('QM-POR-N', molT(2 * n * c), `Bien los ${c} de ${e} y los ${F(n, 2)} mol. Sobra multiplicar otra vez por 2.`)],
-      solucion: [[`Cada unidad de ${bonita(f)} trae ${c} de ${e}.`], [`n(${e}) = ${F(n, 2)} · ${c} = `, v('n', molT(n * c))]] };
+      enunciado: [`Se tiene una muestra de ${F(n, 2)} mol de ${bonita(f)}.`], pregunta: ['¿Cuántos ', v('n', 'moles'), ` de átomos de ${NOMBRE[e]} tiene?`], datos: datosF(f),
+      errores: [sinPar(f, e) !== c ? err('ES18', molT(n * sinPar(f, e)), `Multiplicar por ${F(n, 2)} está bien, pero ${/·/.test(f) ? 'el número delante del H₂O' : 'el subíndice de afuera del paréntesis'} también multiplica: cada unidad trae ${pluralAt(c, e)}, no ${sinPar(f, e)}.`) : null,
+        err('QM-POR-N', molT(c), `Una sola unidad trae ${pluralAt(c, e)}, pero aquí hay ${F(n, 2)} mol de unidades, así que falta multiplicar.`),
+        err('ES14', molT(n), `Esos son los moles de ${bonita(f)}, y cada unidad trae ${pluralAt(c, e)}: falta multiplicar por ${c}.`),
+        err('QM-POR-N', molT(2 * n * c), `Contar ${pluralAt(c, e)} por unidad y usar los ${F(n, 2)} mol está bien, pero sobra multiplicar otra vez por 2.`)],
+      solucion: [[`Cada unidad de ${bonita(f)} trae ${pluralAt(c, e)}, así que se multiplica por los moles.`], [`n(${e}) = ${F(n, 2)} · ${c} = `, v('n', molT(n * c))]] };
   }
   function gramosElemento(rng) {
     const f = rng.elegir(FORM3.filter(x => !/·/.test(x))), e = elDe(rng, f), c = atomos(f)[e], M = masaMolar(f), n = rng.elegir([0.1, 0.2, 0.25, 0.5, 2]), m = n * M;
     return { correcta: molT(n * c), _datos: { f, e, m },
-      enunciado: [`Una muestra de ${gT(m)} de ${bonita(f)}.`], pregunta: ['¿Cuántos ', v('n', 'moles'), ` de átomos de ${NOMBRE[e]} tiene?`], datos: [masasDe(f), D.M, D.nm, ...datosF(f)],
-      errores: [err('ES14', molT(n), `Bien los moles de ${bonita(f)}. Falta multiplicar por los ${c} de ${e} de cada unidad.`),
-        sinPar(f, e) !== c ? err('ES18', molT(n * sinPar(f, e)), `Bien el camino. Pero el subíndice de afuera multiplica: ${c} de ${e} por unidad.`) : null,
-        err('QM-MASA-ATOMICA', molT(m / MASA[e]), `Eso divide toda la masa entre la del ${e}: como si la muestra fuera solo ${e}.`),
-        err('ES7', molT(M / m * c), 'Bien multiplicar por el subíndice. Pero n = m/M: la masa molar va abajo.')],
-      solucion: [[`M = ${F(M, 1)} g/mol: hay ${F(n, 3)} mol de ${bonita(f)}.`], [`n(${e}) = ${F(n, 3)} · ${c} = `, v('n', molT(n * c))]] };
+      enunciado: [`Se tiene una muestra de ${gT(m)} de ${bonita(f)}.`], pregunta: ['¿Cuántos ', v('n', 'moles'), ` de átomos de ${NOMBRE[e]} tiene?`], datos: [masasDe(f), D.M, D.nm, ...datosF(f)],
+      errores: [err('ES14', molT(n), `Los moles de ${bonita(f)} están bien, pero falta multiplicar por ${c}, los átomos de ${e} de cada unidad.`),
+        sinPar(f, e) !== c ? err('ES18', molT(n * sinPar(f, e)), `El camino está bien, pero el subíndice de afuera del paréntesis también multiplica: cada unidad trae ${pluralAt(c, e)}.`) : null,
+        err('QM-MASA-ATOMICA', molT(m / MASA[e]), `Ese número divide toda la masa entre la masa atómica del ${e}, como si la muestra fuera solo ${e}.`),
+        err('ES7', molT(M / m * c), 'Multiplicar por el subíndice está bien, pero n = m/M: la masa molar va abajo, no arriba.')],
+      solucion: [[`Con M = ${F(M, 1)} g/mol hay ${F(n, 3)} mol de ${bonita(f)}, y cada unidad trae ${pluralAt(c, e)}.`], [`n(${e}) = ${F(n, 3)} · ${c} = `, v('n', molT(n * c))]] };
   }
   const IONES = [['Na2SO4', 2, 1, 'Na⁺', 'SO₄²⁻'], ['K3PO4', 3, 1, 'K⁺', 'PO₄³⁻'], ['Mg(NO3)2', 1, 2, 'Mg²⁺', 'NO₃⁻'], ['(NH4)2CO3', 2, 1, 'NH₄⁺', 'CO₃²⁻'],
     ['Mg3(PO4)2', 3, 2, 'Mg²⁺', 'PO₄³⁻'], ['Al(NO3)3', 1, 3, 'Al³⁺', 'NO₃⁻'], ['Ba(OH)2', 1, 2, 'Ba²⁺', 'OH⁻'], ['Na3PO4', 3, 1, 'Na⁺', 'PO₄³⁻'], ['Fe2(SO4)3', 2, 3, 'Fe³⁺', 'SO₄²⁻'], ['K2SO4', 2, 1, 'K⁺', 'SO₄²⁻']];
@@ -234,10 +235,10 @@
     return { correcta: molT(n * (a + b)), _datos: { f, n, iones: [a, b] },
       enunciado: [`En agua, el ${bonita(f)} se separa en ${ca} y ${an}.`], pregunta: ['¿Cuántos ', v('n', 'moles'), ` de iones en total da ${F(n, 2)} mol de ${bonita(f)}?`],
       datos: ['Un ion poliatómico cuenta como un solo ion', 'La sal es neutra: las cargas de sus iones suman 0', D.rel],
-      errores: [err('QM-IONES-UNO', molT(n * b), `Esos son solo los ${an}. Los ${ca} también son iones.`), err('QM-IONES-UNO', molT(n * a), `Esos son solo los ${ca}. Los ${an} también son iones.`),
-        err('QM-IONES-ATOMOS', molT(n * total(f)), `Eso cuenta los ${total(f)} átomos de la fórmula. Un ion poliatómico cuenta como uno.`),
-        err('QM-POR-N', molT(a + b), `${a + b} iones da una sola unidad. Aquí hay ${F(n, 2)} mol.`)],
-      solucion: [[`Cada unidad da ${a} ${ca} y ${b} ${an}: ${a + b} iones.`], [`n(iones) = ${F(n, 2)} · ${a + b} = `, v('n', molT(n * (a + b)))]] };
+      errores: [err('QM-IONES-UNO', molT(n * b), `Ese número cuenta solo los ${an}, pero los ${ca} también son iones.`), err('QM-IONES-UNO', molT(n * a), `Ese número cuenta solo los ${ca}, pero los ${an} también son iones.`),
+        err('QM-IONES-ATOMOS', molT(n * total(f)), `Ese número cuenta los ${total(f)} átomos de la fórmula, pero un ion poliatómico cuenta como un solo ion.`),
+        err('QM-POR-N', molT(a + b), `Una sola unidad da ${a + b} iones, pero aquí hay ${F(n, 2)} mol de unidades.`)],
+      solucion: [[`Cada unidad da ${a} ${ca} y ${b} ${an}, es decir, ${a + b} iones.`], [`n(iones) = ${F(n, 2)} · ${a + b} = `, v('n', molT(n * (a + b)))]] };
   }
   // Átomos de un elemento en una dosis: mg → g → mol → mol del elemento → átomos (la trampa 2 de San Marcos).
   const DOSIS3 = [['amoxicilina', 'C16H19N3O5S', 500, 'O'], ['paracetamol', 'C8H9NO2', 500, 'H'], ['ácido acetilsalicílico', 'C9H8O4', 500, 'O'], ['ibuprofeno', 'C13H18O2', 400, 'C'], ['vitamina C', 'C6H8O6', 500, 'O']];
@@ -246,11 +247,11 @@
     return { correcta: cien(bien), _datos: { f, mg, k, e },
       enunciado: [`En un día, un paciente toma ${k === 1 ? 'una tableta' : `${k} tabletas`} de ${mg} mg de ${nom}, ${bonita(f)}.`], pregunta: ['¿Cuántos ', v('N', 'átomos'), ` de ${NOMBRE[e]} recibe?`],
       datos: [masasDe(f), D.M, D.mg, D.nm, D.rel, D.NN],
-      errores: [err('ES6', cien(n * NA), `Bien las moléculas: ${cien(n * NA)}. Cada una trae ${c} de ${e}.`),
-        k > 1 ? err('QM-POR-N', cien(bien / k), `Eso es una sola tableta. Son ${k}.`) : err('QU', cien(bien * 1000), `Bien el camino. Pero ${mg} mg son ${F(mg / 1000, 2)} g.`),
-        err('QM-NA', cien(n * c), 'Bien los moles de átomos. Pero falta multiplicar por Nₐ para contarlos.'),
-        err('ES6', cien(n * total(f) * NA), `Eso cuenta los ${total(f)} átomos de cada molécula; se piden solo los de ${e}.`)],
-      solucion: [[`M = ${F(M, 1)} g/mol; ${k} · ${mg} mg = ${F(k * mg / 1000, 2)} g; n = ${F(n, 5)} mol.`], [`N(${e === 'N' ? 'nitrógeno' : e}) ≈ ${F(n, 5)} · ${c} · ${NA_TXT} ≈ `, v('N', cien(bien))]] };
+      errores: [err('ES6', cien(n * NA), `Las moléculas, ${cien(n * NA)}, están bien, pero cada una trae ${pluralAt(c, e)}, y se piden los átomos.`),
+        k > 1 ? err('QM-POR-N', cien(bien / k), `Ese número es el de una sola tableta, y el paciente toma ${k}.`) : err('QU', cien(bien * 1000), `El camino está bien, pero ${mg} mg son ${F(mg / 1000, 2)} g, y hay que pasar a gramos antes de dividir.`),
+        err('QM-NA', cien(n * c), 'Los moles de átomos están bien, pero para contar los átomos falta multiplicar por Nₐ.'),
+        err('ES6', cien(n * total(f) * NA), `Ese número cuenta los ${total(f)} átomos de cada molécula, y se piden solo los de ${e}.`)],
+      solucion: [[`Con M = ${F(M, 1)} g/mol y ${k} · ${mg} mg = ${F(k * mg / 1000, 2)} g, hay n ≈ ${F(n, 5)} mol, y cada molécula trae ${pluralAt(c, e)}.`], [`N(${e === 'N' ? 'nitrógeno' : e}) ≈ ${F(n, 5)} · ${c} · ${NA_TXT} ≈ `, v('N', cien(bien))]] };
   }
 
   // ---- Idea 4: composición centesimal ----
@@ -259,32 +260,32 @@
   function porcentaje(rng) {
     const f = rng.elegir(FORM4), a = atomos(f), e = rng.elegir(Object.keys(a)), p = pctDe(f, e), tot = total(f), M = masaMolar(f);
     return { correcta: pT(p), _datos: { f, e },
-      enunciado: [`El compuesto ${bonita(f)}.`], pregunta: ['¿Qué ', v('pct', 'porcentaje'), ` de su masa es ${NOMBRE[e]}?`], datos: [masasDe(f), D.M, D.pct],
-      errores: [err('ES19', pT(100 * a[e] / tot), `Ese es el porcentaje de átomos, ${a[e]} de ${tot}. En masa cuenta lo que pesa cada uno.`),
-        a[e] > 1 ? err('ES18', pT(100 * MASA[e] / M), `Bien dividir entre ${F(M, 1)}. Pero hay ${a[e]} de ${e}: su masa va por ${a[e]}.`) : null,
-        err('QM-PORCENTAJE', pT(100 - p), `Ese es el resto: lo que pesan los otros elementos.`),
-        err('ES18', pT(100 * MASA[e] / sinSub(f)), 'Bien el camino. Pero en la masa molar cada masa atómica va por su subíndice.')],
-      solucion: [[`M = ${F(M, 1)} g/mol; el ${e} aporta ${F(a[e] * MASA[e], 1)} g.`], [`% ${e} = 100 · ${F(a[e] * MASA[e], 1)} / ${F(M, 1)}${ig(p, pT(p))}`, v('pct', pT(p))]] };
+      enunciado: [`Se analiza el compuesto ${bonita(f)}.`], pregunta: ['¿Qué ', v('pct', 'porcentaje'), ` de su masa es ${NOMBRE[e]}?`], datos: [masasDe(f), D.M, D.pct],
+      errores: [err('ES19', pT(100 * a[e] / tot), `Ese es el porcentaje de átomos, ${a[e]} de ${tot}, pero en masa cuenta lo que pesa cada uno.`),
+        a[e] > 1 ? err('ES18', pT(100 * MASA[e] / M), `Dividir entre ${F(M, 1)} está bien, pero cada unidad trae ${a[e]} átomos de ${e}, así que su masa atómica va por ${a[e]}.`) : null,
+        err('QM-PORCENTAJE', pT(100 - p), `Ese es el porcentaje de los otros elementos, que sumado con el del ${e} da 100 %.`),
+        err('ES18', pT(100 * MASA[e] / sinSub(f)), 'El camino está bien, pero en la masa molar cada masa atómica va por su subíndice.')],
+      solucion: [[`Con M = ${F(M, 1)} g/mol, el ${e} aporta ${F(a[e] * MASA[e], 1)} g de cada mol.`], [`% ${e} = 100 · ${F(a[e] * MASA[e], 1)} / ${F(M, 1)}${ig(p, pT(p))}`, v('pct', pT(p))]] };
   }
   function masaElemento(rng) {
     const f = rng.elegir(FORM4), a = atomos(f), e = rng.elegir(Object.keys(a)), M = masaMolar(f), m = M * rng.elegir([0.5, 2, 1.5, 0.25, 3]), bien = m * a[e] * MASA[e] / M, tot = total(f);
     return { correcta: gT(bien), _datos: { f, e, m },
-      enunciado: [`Una muestra de ${gT(m)} de ${bonita(f)}.`], pregunta: ['¿Cuántos gramos de ', NOMBRE[e], ' tiene?'], datos: [masasDe(f), D.M, D.pct, D.muestra],
-      errores: [a[e] > 1 ? err('ES18', gT(m * MASA[e] / M), `Bien la proporción. Pero hay ${a[e]} de ${e} por unidad.`) : null,
-        err('ES19', gT(m * a[e] / tot), `Eso reparte la masa por átomos, ${a[e]} de ${tot}. Cada átomo pesa distinto.`),
-        err('QM-PCT-GRAMOS', gT(a[e] * MASA[e]), `Esos gramos de ${e} hay en un mol, ${F(M, 1)} g. Aquí hay ${gT(m)}.`),
-        err('QM-PORCENTAJE', gT(m - bien), `Eso es lo que pesan los otros elementos.`)],
-      solucion: [[`El ${e} es ${F(pctDe(f, e), 2)} % de la masa.`], [`${F(a[e] * MASA[e], 1)} · ${F(m, 2)} / ${F(M, 1)}${ig(bien, gT(bien))}`, v('m', gT(bien))]] };
+      enunciado: [`Se tiene una muestra de ${gT(m)} de ${bonita(f)}.`], pregunta: ['¿Cuántos gramos de ', NOMBRE[e], ' tiene?'], datos: [masasDe(f), D.M, D.pct, D.muestra],
+      errores: [a[e] > 1 ? err('ES18', gT(m * MASA[e] / M), `La proporción está bien, pero cada unidad trae ${a[e]} átomos de ${e}, así que su masa atómica va por ${a[e]}.`) : null,
+        err('ES19', gT(m * a[e] / tot), `Ese número reparte la masa según los átomos, ${a[e]} de ${tot}, pero cada átomo pesa distinto.`),
+        err('QM-PCT-GRAMOS', gT(a[e] * MASA[e]), `Esos gramos de ${e} hay en un mol, ${F(M, 1)} g, pero aquí la muestra es de ${gT(m)}.`),
+        err('QM-PORCENTAJE', gT(m - bien), `Ese número es lo que pesan los otros elementos, y se pide el ${e}.`)],
+      solucion: [[`El ${e} es el ${F(pctDe(f, e), 2)} % de la masa, así que en la muestra pesa:`], [`${F(a[e] * MASA[e], 1)} · ${F(m, 2)} / ${F(M, 1)}${ig(bien, gT(bien))}`, v('m', gT(bien))]] };
   }
   const HIDR = ['MgSO4·7H2O', 'Na2CO3·10H2O', 'FeSO4·7H2O', 'Na2SO4·10H2O', 'ZnSO4·7H2O', 'CuSO4·5H2O', 'CaSO4·2H2O'];
   function aguaHidrato(rng) {
     const f = rng.elegir(HIDR), x = +f.match(/·(\d+)/)[1], s = f.split('·')[0], M = masaMolar(f), agua = 18 * x, p = 100 * agua / M;
     return { correcta: pT(p), _datos: { f },
-      enunciado: [`La sal hidratada ${bonita(f)}.`], pregunta: ['¿Qué ', v('pct', 'porcentaje'), ' de su masa es agua?'], datos: [masasDe(f), `En un hidrato, ·${x}H₂O son ${x} moléculas de agua por unidad`, '% de agua = 100 · masa del agua / M'],
-      errores: [err('QM-HIDRATO-ANHIDRA', pT(100 * agua / masaMolar(s)), `Bien la masa del agua, ${agua} g. Pero se divide entre todo el hidrato, ${F(M, 1)} g.`),
-        err('ES18', pT(100 * 18 / M), `Eso cuenta una sola agua. Hay ${x}.`), err('QM-PORCENTAJE', pT(100 - p), 'Ese es el porcentaje de la sal sin agua.'),
-        err('ES19', pT(100 * 3 * x / total(f)), 'Eso cuenta átomos, no masa.')],
-      solucion: [[`M = ${F(M, 1)} g/mol; el agua pesa ${x} · 18 = ${agua} g.`], [`% agua = 100 · ${agua} / ${F(M, 1)}${ig(p, pT(p))}`, v('pct', pT(p))]] };
+      enunciado: [`Se tiene la sal hidratada ${bonita(f)}.`], pregunta: ['¿Qué ', v('pct', 'porcentaje'), ' de su masa es agua?'], datos: [masasDe(f), `En un hidrato, ·${x}H₂O son ${x} moléculas de agua por unidad`, '% de agua = 100 · masa del agua / M'],
+      errores: [err('QM-HIDRATO-ANHIDRA', pT(100 * agua / masaMolar(s)), `La masa del agua, ${agua} g, está bien, pero se divide entre la masa molar de todo el hidrato, ${F(M, 1)} g/mol.`),
+        err('ES18', pT(100 * 18 / M), `Ese número cuenta una sola molécula de agua, y el hidrato trae ${x}.`), err('QM-PORCENTAJE', pT(100 - p), 'Ese es el porcentaje de la sal sin agua, y se pide el del agua.'),
+        err('ES19', pT(100 * 3 * x / total(f)), 'Ese número es el porcentaje de los átomos que son del agua, no el de su masa.')],
+      solucion: [[`La masa molar es ${F(M, 1)} g/mol, y el agua pesa ${x} · 18 = ${agua} g de ella.`], [`% agua = 100 · ${agua} / ${F(M, 1)}${ig(p, pT(p))}`, v('pct', pT(p))]] };
   }
 
   // ---- Idea 5: fórmula empírica y molecular ----
@@ -302,11 +303,11 @@
     const els = Object.keys(d), sb = e.sb, out = [], prim = els[0];
     const con = (sbx, id, texto) => { const f = escribir(sbx); if (f !== bien && Object.values(sbx).every(x => x >= 1 && Number.isInteger(x))) out.push(err(id, bonita(f), `${texto} Con ${bonita(f)}, ${prim} sería ${pT(pctDe(f, prim))}.`)); };
     const minM = Math.min(...els.map(x => d[x]));
-    con(simplificar(Object.fromEntries(els.map(x => [x, Math.max(1, Math.round(d[x] / minM))]))), 'ES16', 'Bien buscar enteros, pero compara masas, no moles.');
-    if (e.k > 1) con(Object.fromEntries(els.map(x => [x, Math.max(1, Math.round(e.n[x] / e.min))])), 'QM-REDONDEO', `Bien los moles; pero redondea en vez de multiplicar por ${e.k}.`);
-    if (els.length === 2) con({ [els[0]]: sb[els[1]], [els[1]]: sb[els[0]] }, 'QM-EMP-INVERTIDA', 'Bien la razón, pero al revés.');
-    con(Object.fromEntries(els.map(x => [x, 2 * sb[x]])), 'ES17', 'Bien la razón de átomos. Pero la empírica es la más simple.');
-    con(Object.fromEntries(els.map((x, i) => [x, i ? sb[x] + 1 : sb[x]])), 'QM-REDONDEO', 'Bien empezar por los moles. Pero la razón no es esa.');
+    con(simplificar(Object.fromEntries(els.map(x => [x, Math.max(1, Math.round(d[x] / minM))]))), 'ES16', 'Buscar enteros está bien, pero esa razón compara masas, no moles.');
+    if (e.k > 1) con(Object.fromEntries(els.map(x => [x, Math.max(1, Math.round(e.n[x] / e.min))])), 'QM-REDONDEO', `Los moles están bien, pero esa fórmula redondea en vez de multiplicar por ${e.k}.`);
+    if (els.length === 2) con({ [els[0]]: sb[els[1]], [els[1]]: sb[els[0]] }, 'QM-EMP-INVERTIDA', 'La razón está bien, pero con los subíndices al revés.');
+    con(Object.fromEntries(els.map(x => [x, 2 * sb[x]])), 'ES17', 'La razón de átomos está bien, pero la empírica es la más simple, y esa se puede dividir entre 2.');
+    con(Object.fromEntries(els.map((x, i) => [x, i ? sb[x] + 1 : sb[x]])), 'QM-REDONDEO', 'Empezar por los moles está bien, pero esa fórmula no tiene la razón que dan los moles.');
     return out;
   }
   function empiricaCaso(rng, lista) {
@@ -317,7 +318,7 @@
       return { correcta: bonita(bien), _datos: { pct: d },
         enunciado: [`Un compuesto tiene ${pctTxt(d)} en masa.`], pregunta: ['¿Cuál es su fórmula empírica?'], datos: [masasTxt(els), D.cien, D.emp1, D.emp2, D.emp3],
         errores: erroresEmp(d, e, bien),
-        solucion: [[`Moles en 100 g: ${els.map(x => `${x} ${F(e.n[x], 3)}`).join('; ')}.`], [`Entre el menor${e.k > 1 ? ` y por ${e.k}` : ''}: ${els.map(x => e.sb[x]).join(' : ')} → `, bonita(bien)]] };
+        solucion: [[`En 100 g, los moles son: ${els.map(x => `${x} ${F(e.n[x], 3)}`).join('; ')}.`], [`Al dividir entre el menor${e.k > 1 ? ` y multiplicar por ${e.k}` : ''}: ${els.map(x => e.sb[x]).join(' : ')} → `, bonita(bien)]] };
     }
     throw new Error('sin empírica');
   }
@@ -330,11 +331,11 @@
     const otro = (sb, id, texto) => { const f = escribir(sb); return f === bien ? null : err(id, bonita(f), `${texto} ${bonita(f)} pesaría ${F(masaMolar(f), 1)} g/mol.`); };
     return { correcta: bonita(bien), _datos: { emp, M },
       enunciado: [`Un compuesto tiene fórmula empírica ${bonita(emp)} y masa molar ${F(M, 1)} g/mol.`], pregunta: ['¿Cuál es su fórmula molecular?'], datos: [masasTxt(els), D.k],
-      errores: [err('ES17', bonita(emp), `Esa es la empírica, de ${F(Me, 1)} g/mol. La molecular pesa ${F(M, 1)}.`),
-        otro(Object.fromEntries(els.map((x, i) => [x, i ? at[x] : at[x] * k])), 'QM-FACTOR', `Bien el factor ${k}, pero multiplica todos los subíndices.`),
-        otro(Object.fromEntries(els.map(x => [x, at[x] * (k + 1)])), 'QM-FACTOR', `El factor es ${F(M, 1)} / ${F(Me, 1)} = ${k}.`),
-        otro(Object.fromEntries(els.map(x => [x, at[x] + k])), 'QM-FACTOR', `Bien el factor ${k}, pero se multiplica, no se suma.`)],
-      solucion: [[`M(${bonita(emp)}) = ${F(Me, 1)} g/mol: k = ${F(M, 1)} / ${F(Me, 1)} = ${k}.`], [`${bonita(emp)} × ${k} = `, bonita(bien)]] };
+      errores: [err('ES17', bonita(emp), `Esa es la empírica, que pesa ${F(Me, 1)} g/mol, y la molecular pesa ${F(M, 1)} g/mol.`),
+        otro(Object.fromEntries(els.map((x, i) => [x, i ? at[x] : at[x] * k])), 'QM-FACTOR', `El factor ${k} está bien, pero multiplica a todos los subíndices, no solo al primero.`),
+        otro(Object.fromEntries(els.map(x => [x, at[x] * (k + 1)])), 'QM-FACTOR', `El factor es ${F(M, 1)} / ${F(Me, 1)} = ${k}, no ${k + 1}.`),
+        otro(Object.fromEntries(els.map(x => [x, at[x] + k])), 'QM-FACTOR', `El factor ${k} está bien, pero multiplica los subíndices, no se les suma.`)],
+      solucion: [[`La empírica pesa M(${bonita(emp)}) = ${F(Me, 1)} g/mol, así que k = ${F(M, 1)} / ${F(Me, 1)} = ${k}.`], [`${bonita(emp)} × ${k} = `, bonita(bien)]] };
   }
 
   // ---- Idea 6: leyes ponderales (sin balance ni reactivo limitante: todo reacciona) ----
@@ -342,16 +343,16 @@
     const [que, r1, r2] = rng.elegir([['carbón', 3, 8], ['azufre', 1, 1], ['magnesio', 3, 2], ['hidrógeno', 1, 8], ['hierro', 7, 4]]), k = rng.entero(1, 8), a = r1 * k, b = r2 * k;
     return { correcta: gT(a + b), _datos: { a, b },
       enunciado: [`En un frasco cerrado, ${a} g de ${que} se combinan con ${b} g de ${que === 'hierro' ? 'azufre' : 'oxígeno'}, y todo reacciona.`], pregunta: ['¿Cuántos gramos de compuesto se forman?'], datos: [D.lav],
-      errores: [err('ES15', gT(b), `Esos son solo los ${b} g del segundo. El ${que} también queda en el compuesto.`), err('ES13', gT(Math.abs(b - a)), 'En un frasco cerrado no se pierde masa: se suma.'),
-        err('ES15', gT(a), `Esos son solo los ${a} g de ${que}.`), err('ES13', gT(2 * (a + b)), 'Bien sumar. Pero la masa no se duplica: es la misma.')],
-      solucion: [['Frasco cerrado y todo reacciona: masa antes = masa después.'], [`${a} + ${b} = `, v('m', gT(a + b))]] };
+      errores: [err('ES15', gT(b), `Esos son solo los ${b} g del segundo elemento, pero el ${que} también queda en el compuesto.`), err('ES13', gT(Math.abs(b - a)), 'En un frasco cerrado no se pierde masa, así que las masas se suman, no se restan.'),
+        err('ES15', gT(a), `Esos son solo los ${a} g de ${que}, y el compuesto lleva también el otro elemento.`), err('ES13', gT(2 * (a + b)), 'Sumar está bien, pero la masa no se duplica: lo que se forma pesa lo mismo que lo de antes.')],
+      solucion: [['El frasco está cerrado y todo reacciona, así que la masa de antes es igual a la de después.'], [`${a} + ${b} = `, v('m', gT(a + b))]] };
   }
   function abierto(rng) {
     const vin = rng.entero(4, 12) * 10, b = rng.entero(4, 10) / 2, gas = Math.round(b * 0.52 * 10) / 10, fin = vin + b - gas;
     return { correcta: `${F(gas, 1)} g`, _datos: { vin, b, fin },
       enunciado: [`En un vaso abierto se juntan ${vin} g de vinagre y ${F(b, 1)} g de bicarbonato. Sale gas y al final la balanza marca ${F(fin, 1)} g.`], pregunta: ['¿Cuántos gramos de gas escaparon?'], datos: [D.lav],
-      errores: [err('QM-ABIERTO', `${F(fin, 1)} g`, 'Eso es lo que quedó en el vaso.'), err('ES15', `${F(b, 1)} g`, 'Ese es el bicarbonato. El gas es lo que falta.'),
-        err('ES13', `${F(vin + b, 1)} g`, 'Eso es todo lo de antes. Se resta lo que quedó.'), err('QM-ABIERTO', '0 g', 'Sería cierto en un frasco cerrado. En un vaso abierto el gas sale.')],
+      errores: [err('QM-ABIERTO', `${F(fin, 1)} g`, 'Ese número es lo que quedó en el vaso, y el gas es lo que falta para llegar a la masa de antes.'), err('ES15', `${F(b, 1)} g`, 'Ese número es el bicarbonato, y el gas es lo que falta: lo de antes menos lo que marca al final.'),
+        err('ES13', `${F(vin + b, 1)} g`, 'Ese número es todo lo de antes, y falta restarle lo que quedó en el vaso.'), err('QM-ABIERTO', '0 g', 'Sería cierto en un frasco cerrado, pero en un vaso abierto el gas sale al aire.')],
       solucion: [['Lo que falta en la balanza es el gas que escapó.'], [`${vin} + ${F(b, 1)} − ${F(fin, 1)} = `, v('m', `${F(gas, 1)} g`)]] };
   }
   const PROUST = [['óxido de zinc', 16.2, 13, 'zinc'], ['óxido de aluminio', 51, 27, 'aluminio'], ['amoníaco', 34, 28, 'nitrógeno'], ['dióxido de azufre', 16, 8, 'azufre'],
@@ -360,10 +361,10 @@
     const [nom, m1, x1, el] = rng.elegir(PROUST), k = rng.elegir([2, 3, 0.5, 1.5, 2.5]), m = +(m1 * k).toFixed(2), bien = x1 * k;
     return { correcta: gT(bien), _datos: { m1, x1, m },
       enunciado: [`Una muestra de ${F(m1, 1)} g de ${nom} tiene ${F(x1, 1)} g de ${el}.`], pregunta: [`¿Cuánto ${el} hay en ${gT(m)} del mismo compuesto?`], datos: [D.proust],
-      errores: [err('QM-PROPORCION', gT(m * m1 / x1), `Bien usar la razón, pero al revés: el ${el} es ${F(x1, 1)} de cada ${F(m1, 1)} g.`),
-        err('QM-PROUST-SUMA', gT(x1 + (m - m1)), `Eso suma la diferencia de masas. La razón se multiplica, no se suma.`),
-        err('QM-PROPORCION', gT(x1), `Esos son los de la primera muestra; esta es ${m > m1 ? 'más grande' : 'más chica'}.`), err('QM-PROPORCION', gT(m - bien), `Eso es lo que pesa lo que no es ${el}.`)],
-      solucion: [[`La razón ${el} : compuesto no cambia (Proust).`], [`${F(x1, 1)} · ${gT(m).replace(' g', '')} / ${F(m1, 1)}${ig(bien, gT(bien))}`, v('m', gT(bien))]] };
+      errores: [err('QM-PROPORCION', gT(m * m1 / x1), `Usar la razón está bien, pero quedó al revés: el ${el} es ${F(x1, 1)} g de cada ${F(m1, 1)} g.`),
+        err('QM-PROUST-SUMA', gT(x1 + (m - m1)), `Ese número suma la diferencia de masas, pero la razón se mantiene multiplicando, no sumando.`),
+        err('QM-PROPORCION', gT(x1), `Esos gramos son los de la primera muestra, y esta es ${m > m1 ? 'más grande' : 'más pequeña'}.`), err('QM-PROPORCION', gT(m - bien), `Ese número es lo que pesa la parte del compuesto que no es ${el}.`)],
+      solucion: [[`La razón entre el ${el} y el compuesto no cambia (Proust), así que:`], [`${F(x1, 1)} · ${gT(m).replace(' g', '')} / ${F(m1, 1)}${ig(bien, gT(bien))}`, v('m', gT(bien))]] };
   }
   const DALTON = [['N₂O', 'NO', 28, 16, 32, 'nitrógeno'], ['NO', 'NO₂', 14, 16, 32, 'nitrógeno'], ['N₂O₃', 'N₂O₅', 28, 48, 80, 'nitrógeno'], ['Cu₂O', 'CuO', 127, 16, 32, 'cobre'],
     ['H₂O', 'H₂O₂', 2, 16, 32, 'hidrógeno'], ['PbO', 'PbO₂', 207, 16, 32, 'plomo'], ['SnO', 'SnO₂', 119, 16, 32, 'estaño'], ['SO₂', 'SO₃', 32, 32, 48, 'azufre'], ['FeO', 'Fe₂O₃', 56, 16, 24, 'hierro'], ['N₂O', 'NO₂', 28, 16, 64, 'nitrógeno']];
@@ -373,9 +374,9 @@
     return { correcta: bien, _datos: { a, b, o1, o2 },
       enunciado: [`Con ${base} g de ${el}, el ${a} lleva ${o1} g de oxígeno.`], pregunta: [`Con la misma masa de ${el}, ¿en qué razón están las masas de oxígeno del ${a} y del ${b}?`],
       datos: [masasTxt(['O']), D.dalton],
-      errores: [err('QM-PROPORCION', '1 : 1', 'Serían iguales si fuera el mismo compuesto.'), err('QM-PROPORCION', razon(o2, o1), 'Bien la razón, pero al revés.'),
-        err('QM-PROPORCION', razon(o1, o1 + o2), `Bien empezar con ${o1} g. Pero el ${b} lleva ${o2} g, no ${o1 + o2} g.`), err('QM-PROPORCION', razon(o1, 2 * o2), 'Bien comparar con la misma masa del otro elemento; pero esa razón duplica el oxígeno del segundo.')],
-      solucion: [[`Con ${base} g de ${el}, el ${b} lleva ${o2} g de O.`], [`${o1} : ${o2} = `, bien]] };
+      errores: [err('QM-PROPORCION', '1 : 1', 'Serían iguales si fuera el mismo compuesto, pero aquí la fórmula cambia.'), err('QM-PROPORCION', razon(o2, o1), 'La razón está bien, pero al revés: primero va el oxígeno del primer compuesto.'),
+        err('QM-PROPORCION', razon(o1, o1 + o2), `Empezar con ${o1} g está bien, pero el ${b} lleva ${o2} g de O, no ${o1 + o2} g.`), err('QM-PROPORCION', razon(o1, 2 * o2), 'Comparar con la misma masa del otro elemento está bien, pero esa razón duplica el oxígeno del segundo compuesto.')],
+      solucion: [[`Con ${base} g de ${el}, el ${b} lleva ${o2} g de O, y la razón se simplifica:`], [`${o1} : ${o2} = `, bien]] };
   }
 
   const CONSTRUIR = {

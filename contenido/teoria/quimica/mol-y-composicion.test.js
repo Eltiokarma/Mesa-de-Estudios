@@ -299,7 +299,7 @@ test('cierre: la regla dice lo que piden los ejercicios', () => {
   assert.equal(plano(e.juega.lectura({ x: 1, y: 3 })).split('=').length, 2, 'CH₃ ya está simplificada: un solo «=»');
   // Leyes: Dalton con su entero pequeño a la vista y el «Vale si» que dice cuándo vale Lavoisier.
   const l = idea('leyes-ponderales');
-  assert.match(plano(l.regla.texto), /enteros pequeños/); assert.match(plano(l.regla.ecuacion), /16 : 32 = 1 : 2/); assert.match(l.regla.condicion, /^Lavoisier pide un sistema cerrado/);
+  assert.match(plano(l.regla.texto), /enteros pequeños/); assert.match(plano(l.regla.ecuacion), /16 : 32 = 1 : 2/); assert.match(l.regla.condicion, /^el sistema está cerrado, como pide Lavoisier/);
   // Composición: «% = 100 · masa / M», con el 100 adelante (el «· 100» quedaba solo en otro renglón).
   const ec4 = idea('composicion-formula-empirica').regla.ecuacion; assert.equal(plano(ec4[ec4.length - 1].frac[0]).slice(0, 6), '100 · ');
   // Moles de átomos: el «Vale si» presenta el hidrato con un ejemplo.
@@ -322,4 +322,18 @@ test('cierre: tarjetas de ejemplos que el lector no pudo seguir', () => {
   const ag = ej('masa-atomica-promedio', 'La plata de una medalla'); assert.ok(!ag.datos.some(d => /48,16/.test(d)) && !/48,16/.test(ag.enunciado));
   // La magnetita: los moles con tres cifras, para que 1,725 / 1,293 dé 1,33 (con 1,73 / 1,29 salía 1,34).
   assert.match(todo(ej('formula-empirica-molecular', 'El óxido del imán')), /1,293.*1,725/);
+});
+
+// Verificación de la pasada de redacción (26 nov, rutinas/redaccion/quimica.mol-y-composicion.md): la B de la magnetita
+// dice el redondeo que le da Fe₂O₃ (2 : 2,67 → 2 : 3); el laboratorio aclara que la molécula de más H del juego no existe;
+// la tiza no se da por siempre carbonato; el papel viejo da el 22,4 L/mol que usa.
+test('redacción: magnetita, molécula del juego, tiza y el 22,4 L/mol del papel', () => {
+  const imán = def.ideas.flatMap(i => i.ejemplos).find(e => e.titulo === 'El óxido del imán');
+  assert.match(plano(imán.solucion.map(x => x.texto)), /2 : 2,67 a 2 : 3/);
+  const lab = JSON.stringify(def.laboratorio, (k, v) => (typeof v === 'function' ? undefined : v));
+  assert.match(lab, /no existe/);
+  const todo = JSON.stringify(def, (k, v) => (typeof v === 'function' ? undefined : v));
+  assert.ok(!/Una tiza es casi toda carbonato|Toda tiza pura/.test(todo));
+  const p10 = require('../../../plantillas/mol-composicion/papel.json').problemas.find(p => p.id === 'p10');
+  assert.match(p10.enunciado, /22,4 L por mol/);
 });

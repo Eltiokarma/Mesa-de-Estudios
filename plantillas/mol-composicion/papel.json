@@ -5,7 +5,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "¿Cuántos átomos de hidrógeno hay en 34 g de amoníaco (NH₃)? (N = 14, H = 1; Nₐ = 6,02 × 10²³)",
+      "enunciado": "¿Cuántos átomos de hidrógeno hay en 34 g de amoníaco (NH₃)? (masas atómicas: N 14; H 1. Nₐ = 6,02 × 10²³)",
       "respuesta": "3,612 × 10²⁴ átomos de H.",
       "pasos": [
         "Masa molar del NH₃: 14 + 3 · 1 = 17 g/mol.",
@@ -33,7 +33,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "¿Cuántos gramos pesan 1,204 × 10²⁴ moléculas de dióxido de carbono (CO₂)? (C = 12, O = 16)",
+      "enunciado": "¿Cuántos gramos pesan 1,204 × 10²⁴ moléculas de dióxido de carbono (CO₂)? (masas atómicas: C 12; O 16)",
       "respuesta": "88 g.",
       "pasos": [
         "Moles: 1,204 × 10²⁴ / 6,02 × 10²³ = 2 mol.",
@@ -151,7 +151,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "¿Qué porcentaje en masa de nitrógeno tiene el nitrato de amonio (NH₄NO₃)? (N = 14, H = 1, O = 16)",
+      "enunciado": "¿Qué porcentaje en masa de nitrógeno tiene el nitrato de amonio (NH₄NO₃)? (masas atómicas: N 14; H 1; O 16)",
       "respuesta": "35 %.",
       "pasos": [
         "Cuenta los átomos de toda la fórmula: 2 N, 4 H y 3 O.",
@@ -208,7 +208,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "¿Cuántos gramos de hierro se pueden obtener de 80 g de óxido férrico (Fe₂O₃)? (Fe = 56, O = 16)",
+      "enunciado": "¿Cuántos gramos de hierro se pueden obtener de 80 g de óxido férrico (Fe₂O₃)? (masas atómicas: Fe 56; O 16)",
       "respuesta": "56 g de Fe.",
       "pasos": [
         "Masa molar del Fe₂O₃: 2 · 56 + 3 · 16 = 112 + 48 = 160 g/mol.",
@@ -338,7 +338,7 @@
     {
       "id": "p7",
       "nivel": "básico",
-      "enunciado": "Al quemar 2,4 g de magnesio se obtiene un óxido que contiene 1,6 g de oxígeno. ¿Cuál es la fórmula empírica del óxido? (Mg = 24, O = 16)",
+      "enunciado": "Al quemar 2,4 g de magnesio se obtiene un óxido que contiene 1,6 g de oxígeno. ¿Cuál es la fórmula empírica del óxido? (masas atómicas: Mg 24; O 16)",
       "respuesta": "MgO.",
       "pasos": [
         "Moles de Mg: 2,4/24 = 0,1 mol. Moles de O: 1,6/16 = 0,1 mol.",
@@ -363,7 +363,7 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Un óxido de hierro tiene 72,4 % de hierro y 27,6 % de oxígeno en masa. Halla su fórmula empírica. (Fe = 56, O = 16)",
+      "enunciado": "Un óxido de hierro tiene 72,4 % de hierro y 27,6 % de oxígeno en masa. Halla su fórmula empírica. (masas atómicas: Fe 56; O 16)",
       "respuesta": "Fe₃O₄.",
       "pasos": [
         "En 100 g: 72,4/56 ≈ 1,293 mol de Fe y 27,6/16 = 1,725 mol de O.",
@@ -420,7 +420,7 @@
     {
       "id": "p9",
       "nivel": "avanzado",
-      "enunciado": "Se calientan 2,44 g de cloruro de bario hidratado (BaCl₂·xH₂O) hasta que pierde toda el agua. Quedan 2,08 g de BaCl₂ anhidro. Halla x. (Ba = 137, Cl = 35,5, H = 1, O = 16)",
+      "enunciado": "Se calientan 2,44 g de cloruro de bario hidratado (BaCl₂·xH₂O) hasta que pierde toda el agua. Quedan 2,08 g de BaCl₂ anhidro. Halla x. (masas atómicas: Ba 137; Cl 35,5; H 1; O 16)",
       "respuesta": "x = 2: la fórmula es BaCl₂·2H₂O.",
       "pasos": [
         "Agua perdida: 2,44 − 2,08 = 0,36 g.",
@@ -483,7 +483,7 @@
     {
       "id": "p10",
       "nivel": "básico",
-      "enunciado": "¿Qué volumen ocupan 8,8 g de dióxido de carbono (CO₂) en condiciones normales (1 atm y 0 °C)? ¿Y 3,6 g de agua líquida (densidad 1 g/mL)? (C = 12, O = 16, H = 1)",
+      "enunciado": "¿Qué volumen ocupan 8,8 g de dióxido de carbono (CO₂) en condiciones normales (1 atm y 0 °C)? ¿Y 3,6 g de agua líquida (densidad 1 g/mL)? (masas atómicas: C 12; O 16; H 1; un gas en condiciones normales ocupa 22,4 L por mol)",
       "respuesta": "El CO₂ ocupa 4,48 L; el agua, 3,6 mL.",
       "pasos": [
         "Moles de CO₂: 8,8/44 = 0,2 mol. Un gas en condiciones normales ocupa 22,4 L por mol: 0,2 · 22,4 = 4,48 L.",
