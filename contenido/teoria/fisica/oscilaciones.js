@@ -570,6 +570,299 @@
     };
   })();
 
+  const idea3 = (() => {
+    // Los resultados conservan fracciones, pi y raíces; el valor numérico solo compara y dibuja.
+    const mcd = (a, b) => b ? mcd(b, a % b) : Math.abs(a);
+    const ex = (n, d = 1, p = 0, r = 1) => {
+      if (!n) return { n: 0, d: 1, p: 0, r: 1 };
+      const g = mcd(n, d); return { n: n / g, d: d / g, p, r };
+    };
+    const num = z => z.n / z.d * Math.PI ** z.p * Math.sqrt(z.r);
+    const por = (z, n, d = 1, p = 0) => ex(z.n * n, z.d * d, z.p + p, z.r);
+    const cos = q => ({ 0: ex(1), 2: ex(1, 2, 0, 3), 3: ex(1, 2, 0, 2), 4: ex(1, 2), 6: ex(0), 8: ex(-1, 2), 9: ex(-1, 2, 0, 2), 10: ex(-1, 2, 0, 3), 12: ex(-1), 14: ex(-1, 2, 0, 3), 15: ex(-1, 2, 0, 2), 16: ex(-1, 2), 18: ex(0), 20: ex(1, 2), 21: ex(1, 2, 0, 2), 22: ex(1, 2, 0, 3) })[((q % 24) + 24) % 24];
+    const sen = q => cos(q - 6);
+    const exacto = z => {
+      if (!z.n) return '0';
+      const signo = z.n < 0 ? '−' : '', nn = Math.abs(z.n);
+      const simbolos = `${z.p ? z.p === 1 ? 'π' : 'π²' : ''}${z.r === 1 ? '' : `√${z.r}`}`;
+      return `${signo}${nn === 1 && simbolos ? '' : nn}${simbolos}${z.d === 1 ? '' : `/${z.d}`}`;
+    };
+    const nodo = (clave, z, unidad = '') => {
+      const n = Math.abs(z.n), tieneSimbolo = z.p || z.r !== 1;
+      const arriba = [z.n < 0 ? '−' : '', ...(n !== 1 || !tieneSimbolo ? [V(clave, n)] : []),
+        ...(z.p ? [z.p === 1 ? V(clave, 'π') : sup(V(clave, 'π'))] : []), ...(z.r !== 1 ? [raiz(V(clave, z.r))] : [])];
+      return [...(z.d === 1 ? arriba : [frac(arriba, V(clave, z.d))]), ...(unidad ? [` ${unidad}`] : [])];
+    };
+    const fase = q => nodo('phi', ex(q, 12, 1), 'rad');
+    const datosComunes = ['El movimiento es armónico simple y mantiene su amplitud.', 'El equilibrio es x = 0; la derecha es positiva.'];
+    const formulas = {
+      omega: [S.omega, ' = ', frac(['2π'], S.T)],
+      x: [S.x, ' = ', S.A, ' cos(', S.omega, S.t, ' + ', S.phi, ')'],
+      v: [S.v, ' = −', S.A, S.omega, ' sen(', S.omega, S.t, ' + ', S.phi, ')'],
+      a: [S.a, ' = −', sup(S.omega), S.x],
+    };
+    const grafica = (clave, A, T, phi = 0, marca) => ejes({
+      x: { min: 0, max: T, paso: T / 4, cada: 1, nombre: 't', unidad: 's', color: 'h', decimales: 1 },
+      y: { min: -A, max: A, paso: A / 2, cada: 1, nombre: clave, unidad: clave === 'x' ? 'cm' : clave === 'v' ? 'cm/s' : 'cm/s²', color: COLORES[clave], decimales: 1 },
+      curvas: [{ puntos: Array.from({ length: 121 }, (_, j) => { const t = T * j / 120; return [t, A * Math.cos(2 * Math.PI * t / T + phi)]; }), color: COLORES[clave] }],
+      puntos: marca === undefined ? [] : [{ x: marca, y: A * Math.cos(2 * Math.PI * marca / T + phi), color: COLORES[clave], guias: true }], ajustado: true,
+    });
+    const esquema = (p, xx = 10, sentido = 0) => {
+      const d = carrito(xx, { rotuloX: false, textos: [{ x: 160, y: 208, texto: 'Estado inicial; dibujo sin escala', ancla: 'middle' }],
+        alt: `El bloque empieza ${xx < 0 ? 'a la izquierda del equilibrio' : xx > 0 ? 'a la derecha del equilibrio' : 'en el equilibrio'}${sentido ? sentido > 0 ? ', hacia la derecha' : ', hacia la izquierda' : ', en reposo'}. El dibujo no está a escala.` });
+      if (sentido) d.flechas.push({ de: [178 + 4 * xx, 60], ang: sentido > 0 ? 0 : 180, largo: 30, color: 'o', texto: sentido > 0 ? 'v > 0' : 'v < 0', rumbo: [0, -1] });
+      else d.textos.push({ x: 160, y: 54, texto: 'v = 0', color: 'o', ancla: 'middle' });
+      return est(d);
+    };
+    function caso(tipo, p) {
+      let valor, clave, unidad, enunciado, regla, cuenta1, cuenta2, sentido, errores, dibujo, datos = datosComunes.slice();
+      const error = (z, causa, codigo) => ({ z, causa, codigo });
+      const magnitud = (k, z, u) => [...nodo(k, z, u)];
+      const conocido = (...partes) => partes;
+      switch (tipo) {
+        case 'omega-periodo':
+          valor = ex(2, p.T, 1); clave = 'omega'; unidad = 'rad/s';
+          enunciado = ['Un bloque completa cada ciclo en ', Q('T', p.T, 's'), '. ¿Cuál es su frecuencia angular?'];
+          regla = paso('Una vuelta de fase equivale a dos pi radianes.', formulas.omega);
+          cuenta1 = paso('Dividimos los radianes de un ciclo entre su duración.', [S.omega, ' = ', frac('2π rad', Q('T', p.T, 's')), ' = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'La frecuencia angular mide cuánto avanza la fase por segundo, no cuántos ciclos ocurren.';
+          errores = [error(ex(1, p.T), 'cuenta ciclos', 'FRECUENCIA'), error(ex(1, p.T, 1), 'usa media vuelta', 'MEDIA'), error(ex(2 * p.T, 1, 1), 'multiplica el período', 'MULTIPLICA')];
+          dibujo = esquema(p); break;
+        case 'x-fase':
+          valor = por(cos(p.q), p.A); clave = 'x'; unidad = 'cm';
+          enunciado = ['Un bloque tiene amplitud ', Q('A', p.A, 'cm'), ' y fase actual ', ...fase(p.q), '. ¿Cuál es su posición?'];
+          datos.push(['cos(', ...fase(p.q), ') = ', ...nodo('phi', cos(p.q))]);
+          regla = paso('La posición es la amplitud por el coseno de la fase.', formulas.x);
+          cuenta1 = paso('Usamos la fase que corresponde al instante consultado.', [S.x, ' = ', Q('A', p.A, 'cm'), ' × ', ...nodo('phi', cos(p.q)), ' = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'Una posición positiva está a la derecha del equilibrio; no tiene que coincidir con el extremo.';
+          errores = [error(por(valor, -1), 'invierte el signo', 'SIGNO'), error(ex(p.A), 'da la amplitud', 'AMPLITUD'), error(ex(0), 'supone el centro', 'CENTRO')];
+          dibujo = esquema(p, 6, -1); dibujo.datos.alt = 'En el instante indicado, el bloque está a la derecha del equilibrio y se mueve hacia la izquierda. El dibujo no está a escala.'; dibujo.datos.textos.find(x => x.texto === 'Estado inicial; dibujo sin escala').texto = 'Instante indicado; dibujo sin escala'; break;
+        case 'v-fase':
+          valor = por(sen(p.q), -p.A * p.w); clave = 'v'; unidad = 'cm/s';
+          enunciado = ['Un bloque tiene ', S.A, ' = ', Q('A', p.A, 'cm'), ', ', S.omega, ' = ', Q('omega', p.w, 'rad/s'), ' y fase actual ', ...fase(p.q), '. ¿Cuál es su velocidad?'];
+          datos.push(['sen(', ...fase(p.q), ') = ', ...nodo('phi', sen(p.q))]);
+          regla = paso('El signo menos relaciona la velocidad con el avance de la fase.', formulas.v);
+          cuenta1 = paso('Multiplicamos conservando el signo de la velocidad.', [S.v, ' = −', Q('A', p.A), ' × ', Q('omega', p.w), ' × ', ...nodo('phi', sen(p.q)), ' = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'La velocidad negativa indica movimiento hacia la izquierda, aunque la posición todavía pueda ser positiva.';
+          errores = [error(por(valor, -1), 'pierde el signo', 'SIGNO'), error(ex(-p.A * p.w), 'supone seno uno', 'MAXIMO'), error(ex(0), 'supone un extremo', 'EXTREMO')];
+          dibujo = esquema(p, 6, -1); dibujo.datos.alt = 'En el instante indicado, el bloque está a la derecha del equilibrio y se mueve hacia la izquierda. El dibujo no está a escala.'; dibujo.datos.textos.find(x => x.texto === 'Estado inicial; dibujo sin escala').texto = 'Instante indicado; dibujo sin escala'; break;
+        case 'a-posicion':
+          valor = ex(-(p.w ** 2) * p.x); clave = 'a'; unidad = 'cm/s²';
+          enunciado = ['Un bloque tiene ', S.omega, ' = ', Q('omega', p.w, 'rad/s'), ' y está en ', S.x, ' = ', Q('x', p.x, 'cm'), '. ¿Cuál es su aceleración?'];
+          regla = paso('La aceleración es proporcional a la posición y apunta en sentido contrario.', formulas.a);
+          cuenta1 = paso('Elevamos la frecuencia angular al cuadrado y conservamos ambos signos.', [S.a, ' = −', sup(Q('omega', p.w)), ' × (', Q('x', p.x), ') = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'A la izquierda del equilibrio, la aceleración apunta hacia la derecha.';
+          errores = [error(por(valor, -1), 'pierde el signo', 'SIGNO'), error(ex(-p.w * p.x), 'omite el cuadrado', 'CUADRADO'), error(ex(0), 'supone equilibrio', 'CERO')];
+          dibujo = est(carrito(p.x, { alt: `El bloque está en x igual a ${p.x} centímetros, a la izquierda del equilibrio.` })); break;
+        case 'a-grafica':
+          valor = ex(p.max); clave = 'a'; unidad = 'cm/s²';
+          enunciado = ['La gráfica muestra la aceleración del bloque. ¿Qué valor tiene cuando ', S.t, ' = ', Q('t', p.T / 2, 's'), '?'];
+          regla = paso('La coordenada vertical de la curva indica la aceleración.', [S.t, ' → ', S.a]);
+          cuenta1 = paso('Ubicamos el instante y leemos el punto de la curva.', [S.t, ' = ', Q('t', p.T / 2, 's'), '; ', S.a, ' = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'El signo positivo describe la aceleración; por sí solo no dice hacia dónde se mueve el bloque.';
+          errores = [error(ex(-p.max), 'lee el valle', 'VALLE'), error(ex(0), 'lee el eje', 'EJE'), error(ex(p.max, 2), 'lee media altura', 'MITAD')];
+          dibujo = grafica('a', p.max, p.T, Math.PI); break;
+        case 'x-tiempo': {
+          const q = p.q0 + 24 * p.t / p.T;
+          valor = por(cos(q), p.A); clave = 'x'; unidad = 'cm';
+          enunciado = ['Un bloque tiene ', S.A, ' = ', Q('A', p.A, 'cm'), ', ', S.T, ' = ', Q('T', p.T, 's'), ' y ', S.phi, ' = ', ...fase(p.q0), '. ¿Dónde está cuando ', S.t, ' = ', Q('t', p.t, 's'), '?'];
+          datos.push(['cos(', ...fase(q), ') = ', ...nodo('phi', cos(q))]);
+          regla = paso('Primero calculamos la frecuencia angular; después sumamos la fase inicial.', [...formulas.omega, '   ;   ', ...formulas.x]);
+          cuenta1 = paso('El tiempo transcurrido hace avanzar la fase.', [S.omega, ' = ', ...nodo('omega', ex(2, p.T, 1), 'rad/s'), '; ', S.omega, S.t, ' + ', S.phi, ' = ', ...fase(q)]);
+          cuenta2 = paso('El coseno de la fase determina la posición.', [S.x, ' = ', Q('A', p.A, 'cm'), ' × ', ...nodo('phi', cos(q)), ' = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'La fase inicial también cuenta: poner el reloj en cero no obliga a empezar en el extremo derecho.';
+          errores = [error(por(cos(q - p.q0), p.A), 'omite la fase inicial', 'SIN-FASE'), error(por(valor, -1), 'invierte el signo', 'SIGNO'), error(ex(p.A), 'da la amplitud', 'AMPLITUD')];
+          dibujo = esquema(p, 9, -1); break;
+        }
+        case 'v-tiempo': {
+          const q = p.q0 + 24 * p.t / p.T;
+          valor = por(sen(q), -2 * p.A, 100 * p.T, 1); clave = 'v'; unidad = 'm/s';
+          enunciado = ['Un bloque tiene ', S.A, ' = ', Q('A', p.A, 'cm'), ', ', S.T, ' = ', Q('T', p.T, 's'), ' y ', S.phi, ' = ', ...fase(p.q0), '. Halla su velocidad en ', S.t, ' = ', Q('t', p.t, 's'), '.'];
+          datos.push('1 m = 100 cm.', ['sen(', ...fase(q), ') = ', ...nodo('phi', sen(q))]);
+          regla = paso('Convertimos la amplitud y evaluamos el seno de la fase total.', [...formulas.omega, '   ;   ', ...formulas.v]);
+          cuenta1 = paso('Calculamos la frecuencia angular y la fase del instante pedido.', [S.omega, ' = ', ...nodo('omega', ex(2, p.T, 1), 'rad/s'), '; ', S.omega, S.t, ' + ', S.phi, ' = ', ...fase(q)]);
+          cuenta2 = paso('La amplitud entra en metros para obtener metros por segundo.', [S.v, ' = −', ...nodo('A', ex(p.A, 100)), ' × ', ...nodo('omega', ex(2, p.T, 1)), ' × ', ...nodo('phi', sen(q)), ' = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'El signo indica el sentido; la conversión de centímetros a metros cambia el valor numérico, no el movimiento.';
+          errores = [error(por(valor, -1), 'pierde el signo', 'SIGNO'), error(por(valor, 100), 'no convierte centímetros', 'UNIDAD'), error(ex(-2 * p.A, 100 * p.T, 1), 'supone seno uno', 'MAXIMO')];
+          dibujo = esquema(p, 9, -1); break;
+        }
+        case 'a-tiempo': {
+          const q = p.q0 + 24 * p.fraccion;
+          valor = por(cos(q), -p.A, 100); clave = 'a'; unidad = 'm/s²';
+          enunciado = ['Un bloque tiene ', S.A, ' = ', Q('A', p.A, 'cm'), ', ', S.T, ' = ', ...nodo('T', ex(2, 1, 1), 's'), ' y ', S.phi, ' = ', ...fase(p.q0), '. Halla su aceleración en ', S.t, ' = ', ...nodo('t', ex(2, 3, 1), 's'), '.'];
+          datos.push('1 m = 100 cm.', ['cos(', ...fase(q), ') = ', ...nodo('phi', cos(q))]);
+          regla = paso('Calculamos la posición y usamos la relación entre aceleración y posición.', [...formulas.omega, '   ;   ', ...formulas.a]);
+          cuenta1 = paso('En este movimiento la fase alcanza pi radianes.', [S.omega, ' = ', Q('omega', 1, 'rad/s'), '; ', S.omega, S.t, ' + ', S.phi, ' = ', ...fase(q), '; ', S.x, ' = ', ...nodo('x', por(cos(q), p.A, 100), 'm')]);
+          cuenta2 = paso('La aceleración apunta hacia el equilibrio.', [S.a, ' = −', sup(Q('omega', 1)), ' × (', ...nodo('x', por(cos(q), p.A, 100)), ') = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'El bloque está en el extremo izquierdo y acelera hacia la derecha, aunque su velocidad instantánea sea cero.';
+          errores = [error(por(valor, -1), 'pierde el signo', 'SIGNO'), error(por(valor, 100), 'no convierte centímetros', 'UNIDAD'), error(ex(0), 'confunde reposo y equilibrio', 'REPOSO')];
+          dibujo = esquema(p, 6, -1); break;
+        }
+        case 'periodo-ecuacion':
+          valor = ex(2, p.n); clave = 'T'; unidad = 's';
+          enunciado = ['La posición cumple ', S.x, '(', S.t, ') = ', Q('A', p.A), ' cos(', Q('omega', p.n), 'π', S.t, ' + ', ...nodo('phi', ex(1, 3, 1)), '). ¿Cuál es el período?'];
+          datos.push('La posición está en centímetros y el tiempo en segundos.', 'El argumento del coseno se expresa en radianes.');
+          regla = paso('Identificamos el coeficiente del tiempo como frecuencia angular.', formulas.omega);
+          cuenta1 = paso('La constante que acompaña al tiempo no es la fase inicial.', [S.omega, ' = ', ...nodo('omega', ex(p.n, 1, 1), 'rad/s')]);
+          cuenta2 = paso('Despejamos el período y cancelamos pi.', [S.T, ' = ', frac('2π', S.omega), ' = ', frac('2π', nodo('omega', ex(p.n, 1, 1))), ' = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'La fase inicial cambia dónde empieza el movimiento; no cambia cuánto tarda en completar cada ciclo.';
+          errores = [error(ex(1, p.n), 'omite dos', 'DOS'), error(ex(p.n, 2), 'invierte la fracción', 'INVERSO'), error(ex(6), 'usa la fase inicial', 'FASE')];
+          dibujo = esquema(p, 6, -1); break;
+        case 'fase-inicial':
+          valor = ex(2, 3, 1); clave = 'phi'; unidad = 'rad';
+          enunciado = ['Un bloque tiene amplitud ', Q('A', p.A, 'cm'), '. Al iniciar el reloj está en ', Q('x', -p.A / 2, 'cm'), ' y va hacia la izquierda. ¿Cuál es su fase inicial?'];
+          datos.push(['Usa ', Q('phi', 0), ' ≤ ', S.phi, ' < 2π rad.'], ['cos(2π/3) = cos(4π/3) = −1/2.']);
+          regla = paso('La posición fija el coseno; el sentido de la velocidad elige entre dos fases.', [...formulas.x, '   ;   ', ...formulas.v]);
+          cuenta1 = paso('El cociente entre posición inicial y amplitud es negativo.', ['cos ', S.phi, ' = ', frac(Q('x', -p.A / 2), Q('A', p.A)), ' = −1/2']);
+          cuenta2 = paso('Para velocidad negativa, el seno debe ser positivo.', [S.v, ' < 0 → sen ', S.phi, ' > 0 → ', S.phi, ' = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'Dos fases tienen la misma posición; el sentido inicial permite elegir una sola dentro del intervalo indicado.';
+          errores = [error(ex(4, 3, 1), 'invierte el sentido', 'SENTIDO'), error(ex(1, 3, 1), 'pierde el signo de x', 'POSICION'), error(ex(1, 1, 1), 'supone un extremo', 'EXTREMO')];
+          dibujo = esquema(p, -7, -1); break;
+        case 'primer-regreso':
+          valor = ex(5 * p.T, 6); clave = 't'; unidad = 's';
+          enunciado = ['Un bloque parte del extremo derecho en reposo, con ', S.T, ' = ', Q('T', p.T, 's'), '. ¿Cuándo pasa por primera vez por ', S.x, ' = ', frac(S.A, '2'), ' hacia la derecha?'];
+          datos.push('cos(π/3) = cos(5π/3) = 1/2.');
+          regla = paso('Elegimos la fase con posición positiva y velocidad positiva.', [...formulas.x, '   ;   ', ...formulas.v]);
+          cuenta1 = paso('El cruce de ida tiene velocidad negativa; buscamos el regreso.', [S.phi, ' = ', Q('phi', 0), '; cos(', S.omega, S.t, ') = 1/2; ', S.v, ' > 0 → ', S.omega, S.t, ' = ', ...fase(20)]);
+          cuenta2 = paso('Despejamos el tiempo usando la frecuencia angular del movimiento.', [S.t, ' = ', frac(fase(20), nodo('omega', ex(2, p.T, 1), 'rad/s')), ' = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'La primera vez en esa posición ocurre hacia la izquierda; la condición de sentido exige esperar el regreso.';
+          errores = [error(ex(p.T, 6), 'elige la ida', 'IDA'), error(ex(p.T, 3), 'elige posición negativa', 'POSICION'), error(ex(p.T, 2), 'elige el extremo', 'EXTREMO'), error(ex(p.T), 'completa el ciclo', 'CICLO')];
+          dibujo = esquema(p); break;
+        case 'v-fase-inicial':
+          valor = ex(2 * p.A, p.T, 1); clave = 'v'; unidad = 'cm/s';
+          enunciado = ['Un bloque tiene ', S.A, ' = ', Q('A', p.A, 'cm'), ' y ', S.T, ' = ', Q('T', p.T, 's'), '. Parte de ', S.x, ' = −', frac(S.A, '2'), ' hacia la derecha. Halla su velocidad después de ', Q('t', p.T / 12, 's'), '.'];
+          datos.push('cos(2π/3) = cos(4π/3) = −1/2.', 'sen(4π/3) = −√3/2; sen(3π/2) = −1.');
+          regla = paso('Elegimos la fase inicial por el sentido y luego hacemos avanzar el reloj.', [...formulas.omega, '   ;   ', ...formulas.v]);
+          cuenta1 = paso('El seno inicial es negativo porque la velocidad es positiva.', [S.phi, ' = ', ...fase(16), '; ', S.omega, S.t, ' + ', S.phi, ' = ', ...fase(18)]);
+          cuenta2 = paso('En ese instante el bloque cruza el centro hacia la derecha.', [S.v, ' = −', Q('A', p.A), ' × ', ...nodo('omega', ex(2, p.T, 1)), ' × (−1) = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'La fase total cambia con el tiempo; la fase inicial permanece fija.';
+          errores = [error(por(valor, -1), 'invierte el sentido', 'SIGNO'), error(por(valor, 1, 2), 'usa medio máximo', 'MITAD'), error(ex(p.A, p.T, 1, 3), 'conserva velocidad inicial', 'INICIAL'), error(ex(0), 'supone un extremo', 'CERO')];
+          dibujo = esquema(p, -7, 1); break;
+        case 'primer-izquierda':
+          valor = ex(5 * p.T, 8); clave = 't'; unidad = 's';
+          enunciado = ['Un bloque sale del centro hacia la derecha, con ', S.T, ' = ', Q('T', p.T, 's'), '. ¿Cuándo llega por primera vez a ', S.x, ' = −', frac([S.A, raiz('2')], '2'), ' mientras va hacia la izquierda?'];
+          datos.push('cos(3π/4) = −√2/2; sen(3π/4) > 0.');
+          regla = paso('Elegimos las fases por posición y sentido; después calculamos cuánto avanzó la fase.', [...formulas.omega, '   ;   ', ...formulas.x, '   ;   ', ...formulas.v]);
+          cuenta1 = paso('La fase final debe superar la inicial; sumamos dos pi a tres cuartos de pi.', [S.phi, ' = ', ...fase(18), '; ', S.omega, S.t, ' + ', S.phi, ' = ', ...fase(33), '; ', S.omega, S.t, ' = ', ...fase(15)]);
+          cuenta2 = paso('Convertimos el avance de fase en tiempo transcurrido.', [S.t, ' = ', frac(fase(15), nodo('omega', ex(2, p.T, 1), 'rad/s')), ' = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'Sumar una vuelta a la fase final evita obtener un tiempo negativo para un suceso posterior.';
+          errores = [error(ex(p.T, 8), 'elige posición positiva', 'POSITIVA'), error(ex(3 * p.T, 8), 'omite fase inicial', 'CRUCE'), error(ex(p.T, 4), 'elige el extremo', 'EXTREMO'), error(ex(7 * p.T, 8), 'invierte el sentido', 'SENTIDO')];
+          dibujo = esquema(p, 0, 1); break;
+        case 'reconstruir-omega':
+          valor = ex(1, 2 * p.w, 1); clave = 't'; unidad = 's';
+          enunciado = ['En cierto instante, un bloque tiene ', S.x, ' = ', Q('x', p.x, 'cm'), ' y ', S.a, ' = ', Q('a', -(p.w ** 2) * p.x, 'cm/s²'), '. Si parte del extremo derecho en reposo, ¿cuánto tarda en llegar al centro?'];
+          regla = paso('Reconstruimos la frecuencia angular; del extremo al centro transcurre un cuarto de período.', [...formulas.a, '   ;   ', ...formulas.omega]);
+          cuenta1 = paso('La raíz positiva corresponde a la frecuencia angular.', [sup(S.omega), ' = −', frac(S.a, S.x), ' = ', sup(Q('omega', p.w)), '; ', S.omega, ' = ', Q('omega', p.w, 'rad/s')]);
+          cuenta2 = paso('Despejamos el período y tomamos su cuarta parte.', [S.t, ' = ', frac(S.T, '4'), ' = ', frac('π', ['2', S.omega]), ' = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'La aceleración y la posición permiten encontrar el ritmo del movimiento sin conocer la amplitud.';
+          errores = [error(por(valor, 2), 'usa medio período', 'MEDIO'), error(por(valor, 4), 'usa el período', 'ENTERO'), error(ex(1, 4 * p.w), 'confunde radianes y ciclos', 'CICLOS'), error(ex(1, 2 * p.w ** 2, 1), 'omite la raíz', 'RAIZ')];
+          dibujo = esquema(p); break;
+        case 'reconstruir-amplitud':
+          valor = ex(p.u, 4); clave = 'x'; unidad = 'cm';
+          enunciado = ['Un bloque tiene ', S.T, ' = ', ...nodo('T', ex(1, 1, 1), 's'), ' y rapidez central ', Q('v', p.u, 'cm/s'), '. Parte de ', S.x, ' = −', frac(S.A, '2'), ' hacia la derecha. Halla su posición después de ', ...nodo('t', ex(1, 6, 1), 's'), '.'];
+          datos.push('cos(4π/3) = −1/2; sen(4π/3) < 0.', 'cos(5π/3) = 1/2.');
+          regla = paso('En el centro, la rapidez es amplitud por frecuencia angular.', [...formulas.omega, '   ;   ', ...formulas.v, '   ;   ', ...formulas.x]);
+          cuenta1 = paso('Reconstruimos la amplitud y la fase del instante pedido.', [S.omega, ' = ', Q('omega', 2, 'rad/s'), '; ', S.A, ' = ', frac(Q('v', p.u), Q('omega', 2)), ' = ', Q('A', p.u / 2, 'cm'), '; ', S.phi, ' = ', ...fase(16), '; ', S.omega, S.t, ' + ', S.phi, ' = ', ...fase(20)]);
+          cuenta2 = paso('La posición final es la mitad positiva de la amplitud.', [S.x, ' = ', Q('A', p.u / 2, 'cm'), ' × 1/2 = ', ...nodo(clave, valor, unidad)]);
+          sentido = 'La rapidez central fija la amplitud; el sentido inicial fija la fase. Ambos datos hacen falta.';
+          errores = [error(por(valor, -1), 'conserva posición inicial', 'INICIAL'), error(por(valor, 2), 'da la amplitud', 'AMPLITUD'), error(por(valor, 1, 2), 'divide nuevamente', 'MITAD'), error(por(valor, -2), 'elige extremo izquierdo', 'EXTREMO')];
+          dibujo = esquema(p, -7, 1); break;
+        default: throw new Error(`Tipo de gráficas desconocido: ${tipo}`);
+      }
+      const todas = [valor, ...errores.map(e => e.z)];
+      const formato = n => { const z = todas.find(z => Math.abs(num(z) - n) < 1e-10); if (!z) throw new Error('Falta expresión exacta'); return `${exacto(z)} ${unidad}`; };
+      const ops = opciones(num(valor), errores.map(e => ({ valor: num(e.z), error: `OS-GRAF-${tipo}-${e.codigo}`,
+        siFuera: `Identificaste la magnitud; ${e.causa}: obtendrías ${formato(num(e.z))}.` })), formato);
+      return { enunciado, datos, dibujo, pide: `Se pide ${({ x: 'la posición', v: 'la velocidad con signo', a: 'la aceleración con signo', T: 'el período', t: 'el primer tiempo que cumple las condiciones', phi: 'la fase inicial', omega: 'la frecuencia angular' })[clave]}.`,
+        tengo: 'Tomamos los valores indicados y las condiciones de posición, sentido y tiempo del enunciado.', regla, cuentas: [cuenta1, ...(cuenta2 ? [cuenta2] : [])], sentido,
+        respuesta: [S[clave], ' = ', ...nodo(clave, valor, unidad)], opciones: ops,
+        caso: { tipo, ...p, valor: num(valor), unidad, exacto: valor, errores: errores.map(e => ({ codigo: e.codigo, valor: num(e.z), exacto: e.z })) },
+        erroresEjemplo: errores.map(e => `${formato(num(e.z))}: ${e.causa}.`).join(' ') };
+    }
+    const lista = [
+      ['omega-periodo', { T: 6 }, 'El ritmo de la fase'],
+      ['x-fase', { A: 10, q: 4 }, 'Posición desde la fase'],
+      ['v-fase', { A: 4, w: 3, q: 2 }, 'El signo de la velocidad'],
+      ['a-posicion', { x: -2, w: 3 }, 'La aceleración desde la posición'],
+      ['a-grafica', { max: 4, T: 6 }, 'Leer una aceleración'],
+      ['x-tiempo', { A: 18, T: 12, t: 1, q0: 2 }, 'Sumar la fase inicial'],
+      ['v-tiempo', { A: 10, T: 8, t: 2, q0: 3 }, 'Velocidad en metros por segundo'],
+      ['a-tiempo', { A: 8, q0: 4, fraccion: 1 / 3 }, 'Acelerar en un extremo'],
+      ['periodo-ecuacion', { A: 9, n: 3 }, 'Leer el período en la ecuación'],
+      ['fase-inicial', { A: 12 }, 'Dos posiciones iguales, distintos sentidos'],
+      ['primer-regreso', { T: 18 }, 'La primera llegada de regreso'],
+      ['v-fase-inicial', { A: 12, T: 12 }, 'Reconstruir la fase y avanzar'],
+      ['primer-izquierda', { T: 16 }, 'Elegir el cruce posterior'],
+      ['reconstruir-omega', { x: -2, w: 5 }, 'Del ritmo al primer cruce'],
+      ['reconstruir-amplitud', { u: 30 }, 'Reconstruir amplitud y posición'],
+    ];
+    const ejemplos = lista.map(([tipo, p, titulo], j) => ejemplo(caso(tipo, p), 1 + Math.floor(j / 5), titulo, Math.max(0, j - 10)));
+    const reloj = val => Number(val.t.toFixed(1));
+    const estado = val => { const t = reloj(val), q = Math.PI * t / 2; return { t, x: 12 * Math.cos(q), v: -6 * Math.PI * Math.sin(q) }; };
+    const juego = val => {
+      const s = estado(val), d = carrito(s.x, { A: 12, textos: [{ x: 308, y: 208, texto: `t = ${f(s.t, 1)} s`, color: 'h', ancla: 'end' }, { x: 308, y: 184, texto: 'T = 4 s', color: 'h', ancla: 'end' }], alt: 'Un bloque oscila desde el extremo derecho con amplitud de 12 centímetros y período de 4 segundos.' });
+      if (Math.abs(s.v) < 1e-8) d.textos.push({ x: 160, y: 54, texto: 'v = 0', color: 'o', ancla: 'middle' });
+      else d.flechas.push({ de: [178 + 4 * s.x, 60], ang: s.v > 0 ? 0 : 180, largo: Math.abs(s.v) * 2, texto: s.v > 0 ? 'Hacia la derecha' : 'Hacia la izquierda', color: 'o', rumbo: [0, -1] });
+      return est(d);
+    };
+    const predT = 8, predt = 2, inicioPred = 2;
+    const cuartosPred = 4 * predt / predT, estadoPred = (inicioPred + cuartosPred) % 4;
+    const antes = esquema({}, -12), despues = esquema({}, 0, 1);
+    despues.datos.textos.find(x => x.texto === 'Estado inicial; dibujo sin escala').texto = 'A los 2 s; dibujo sin escala';
+    despues.datos.alt = 'A los dos segundos, el bloque cruza el equilibrio hacia la derecha. El dibujo no está a escala.';
+    const mapaX = grafica('x', 12, 8, Math.PI, 2);
+    const mapaV = grafica('v', 3 * Math.PI, 8, -Math.PI / 2);
+    mapaV.datos.y = { ...mapaV.datos.y, min: -12, max: 12, paso: 6, decimales: 0 };
+    glosario.push(
+      { termino: 'fase', formas: ['fase', 'fases'], simple: 'Una forma de ubicar el avance dentro del ciclo.', def: 'Ángulo que ubica el estado de una oscilación sinusoidal. Al aumentar una vuelta completa, se repiten posición y sentido.', ejemplos: ['Dos ciclos completos suman cuatro pi radianes de fase.', 'La fase sigue avanzando aunque el bloque cambie de sentido.', 'Una misma posición puede corresponder a dos fases con velocidades de signos opuestos.'] },
+      { termino: 'fase inicial', simbolo: 'φ', medida: 'rad', simple: 'La fase cuando comienza la medición del tiempo.', def: 'Valor de la fase cuando el reloj marca cero. Se elige usando la posición inicial y el sentido del movimiento.', ejemplos: ['Cambiar el origen del tiempo puede cambiar la fase inicial.', 'Dos bloques con igual amplitud pueden comenzar en estados diferentes.', 'La fase inicial no crece con el reloj: es una constante del movimiento descrito.'] },
+      { termino: 'frecuencia angular', simbolo: 'ω', medida: 'rad/s', simple: 'Cuánto avanza la fase por segundo.', def: 'Ritmo constante de avance de la fase en el movimiento armónico simple. Se mide en radianes por segundo.', ejemplos: ['Si la fase avanza un radián en cada segundo, la frecuencia angular es un radián por segundo.', 'Duplicar la frecuencia angular duplica el avance de fase en el mismo tiempo.', 'La frecuencia angular permanece constante aunque cambien la posición y la velocidad del bloque.'] },
+    );
+    return {
+      id: 'graficas-mas', titulo: 'Un reloj para el movimiento', pregunta: '¿Cómo describimos la posición, la velocidad y la aceleración en cualquier instante?',
+      temas: ['Ecuaciones y gráficas del MAS'], pieza: 'fis-estatica',
+      aprendizaje: 'Relaciono el estado inicial con la fase y uso las ecuaciones del MAS para interpretar posición, velocidad y aceleración.',
+      actividad: 'Mover el reloj y comparar la posición del bloque con su sentido de movimiento.',
+      lee: { tarjetas: [
+        { titulo: 'El reloj necesita un comienzo', texto: 'El bloque sigue unido al resorte. Para describirlo en otro instante necesitamos saber dónde estaba y hacia dónde se movía cuando el reloj comenzó.', dibujo: esquema({}) },
+        { titulo: 'Una posición, dos sentidos', texto: ['La posición ', S.x, ' lleva signo. La velocidad ', S.v, ' indica además hacia dónde se mueve: positiva hacia la derecha y negativa hacia la izquierda. Estar en el centro no determina el sentido.'] },
+        { titulo: 'Del bloque a sus gráficas', texto: ['Una gráfica coloca el tiempo en el eje horizontal y una magnitud en el vertical. Luego usaremos la fase, la fase inicial ', S.phi, ' y la frecuencia angular ', S.omega, ' para describir ese cambio.'] },
+      ] }, ejemplos,
+      juega: { pieza: 'fis-estatica', consigna: 'El bloque parte del extremo derecho. Mueve el reloj y observa su posición y hacia dónde continúa.',
+        voz: 'Mira el sentido además de la posición.',
+        mision: { texto: 'Encuentra el primer instante en que el bloque pasa por el centro hacia la izquierda.', logrado: v => reloj(v) === 1, bien: 'Encontraste el primer cruce: el bloque todavía continúa hacia el extremo izquierdo.' },
+        leyenda: [{ s: S.x, t: 'posición desde el equilibrio' }, { s: S.A, t: 'amplitud de 12 cm' }, { s: S.t, t: 'tiempo desde la salida del extremo derecho' }, { s: S.T, t: 'período de 4 s' }, { s: S.v, t: 'velocidad; su signo indica el sentido' }],
+        controles: [{ id: 't', etiqueta: 'Tiempo, t', min: 0, max: 4, paso: 1, decimales: 1, inicio: 0, unidad: 's', color: 'c-h', auto: { velocidad: 0.5 } }],
+        dibujo: juego, lectura: val => { const s = estado(val); return [S.x, Math.abs(s.x * 100 - Math.round(s.x * 100)) < 1e-7 ? ' = ' : ' ≈ ', Q('x', s.x, 'cm'), '; ', Math.abs(s.v) < 1e-8 ? 'reposo' : s.v > 0 ? 'hacia la derecha' : 'hacia la izquierda']; }, resumen: { t: 1 }, minimo: 3 },
+      predice: { pregunta: 'Otro bloque parte del extremo izquierdo en reposo y tiene un período de 8 s. ¿Dónde está y hacia dónde se mueve a los 2 s?',
+        datos: ['El bloque realiza un movimiento armónico simple.', 'El reloj empieza al soltar el bloque.', ['Amplitud: ', S.A, ' = ', Q('A', 12, 'cm'), '.']], dibujo: antes, revelar: despues,
+        opciones: opciones(estadoPred, [
+          { valor: cuartosPred % 4, error: 'OS-GRAF-COPIA-INICIO', siFuera: 'Reconociste un cuarto de ciclo; hacia la izquierda correspondería a empezar en el extremo derecho.' },
+          { valor: inicioPred, error: 'OS-GRAF-CONSERVA-INICIO', siFuera: 'Reconociste el punto inicial; quedarte en él omite los dos segundos de movimiento.' },
+          { valor: (inicioPred + 2 * cuartosPred) % 4, error: 'OS-GRAF-MEDIO-CICLO', siFuera: 'Reconociste el extremo opuesto; llegar allí requiere medio ciclo, que aquí dura cuatro segundos.' },
+        ], n => ['En el extremo derecho, en reposo.', 'En el centro, hacia la izquierda.', 'En el extremo izquierdo, en reposo.', 'En el centro, hacia la derecha.'][n]),
+        coincide: 'El cuarto de ciclo termina en el centro, pero el sentido depende del extremo desde el cual partió.' },
+      mira: { pieza: 'ejes', datos: mapaX.datos, pasos: [
+        paso('La curva asciende: el primer cruce del centro ocurre hacia la derecha.', [S.t, ' = 2 s; ', S.x, ' = 0; ', S.v, ' > 0', '   ;   ', 'Curva ascendente: ', S.v, ' > 0. Descendente: ', S.v, ' < 0.']),
+        paso('Un radián abarca un arco igual al radio; dos pi completan la vuelta.', ['1 vuelta = 2π rad = 360°']),
+        paso('La fase avanza a ritmo constante; su valor inicial fija dónde comienza.', [...formulas.omega, '   ;   ', 'fase total = ', S.omega, S.t, ' + ', S.phi, '   ;   ', ...formulas.x, '   ;   ', ...formulas.v]),
+        paso('La aceleración apunta al equilibrio y tiene signo contrario a la posición.', formulas.a),
+        paso('La posición elige el coseno; el sentido decide entre las dos fases posibles.', [S.v, ' > 0 → sen(', S.omega, S.t, ' + ', S.phi, ') < 0', '   ;   ', 'Desde el extremo izquierdo, en reposo: ', S.phi, ' = π rad.']),
+        paso('Cada vuelta adicional suma dos pi; buscamos siempre el primer instante pedido.', ['fase posterior = fase equivalente + 2π rad']),
+        paso('En el centro, la rapidez es máxima; en los extremos, vale cero.', ['rapidez central = ', S.A, S.omega, '; rapidez en extremos = 0']),
+      ] },
+      regla: { texto: 'Calcula la frecuencia angular, suma la fase inicial y evalúa posición y velocidad. La aceleración tiene signo contrario a la posición. El sentido distingue fases con igual posición.',
+        ecuacion: [...formulas.omega, '   ;   ', ...formulas.x, '   ;   ', ...formulas.v, '   ;   ', ...formulas.a],
+        condicion: 'MAS ideal; amplitud positiva; x, v y a son componentes sobre el mismo eje. Las fases se expresan en radianes.', dibujo: mapaV },
+      resuelve: { pieza: 'fis-estatica', generar(s) { const n = 2 + Math.floor(s / 4) % 7; return resuelto(s % 4 === 0 ? caso('omega-periodo', { T: 2 * n + 3 }) : s % 4 === 1 ? caso('x-fase', { A: 2 * n + 1, q: 4 }) : s % 4 === 2 ? caso('v-fase', { A: n + 2, w: n + 1, q: 2 }) : caso('a-posicion', { x: -n, w: n + 1 })); } },
+      ahoraTu: { pieza: 'fis-estatica', generar(s) { const n = 2 + Math.floor(s / 6) % 7; const tipos = [
+        ['x-tiempo', { A: n + 11, T: 12 * n, t: n, q0: 2 }], ['v-tiempo', { A: n + 7, T: 4 * n, t: n, q0: 3 }],
+        ['a-tiempo', { A: n + 9, q0: 4, fraccion: 1 / 3 }], ['fase-inicial', { A: 2 * n + 3 }],
+        ['primer-regreso', { T: 6 * n + 6 }], ['reconstruir-omega', { x: -n, w: n + 2 }],
+      ]; return pregunta(caso(...tipos[s % tipos.length])); } },
+    };
+  })();
+
   return {
     unidad: 'fisica.oscilaciones', version: '1.0.0', estado: 'borrador',
     colores: COLORES,
@@ -582,6 +875,6 @@
       pregunta: '¿Qué tendría que conservar un péndulo para que su reloj mida bien?',
       fuente: {titulo:'APS: Huygens y el primer reloj de péndulo',url:'https://www.aps.org/apsnews/2017/06/huygens-patents-first-pendulum-clock'},
     },
-    ideas: [idea1, idea2],
+    ideas: [idea1, idea2, idea3],
   };
 });
