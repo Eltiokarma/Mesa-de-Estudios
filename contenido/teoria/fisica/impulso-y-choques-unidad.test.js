@@ -10,8 +10,8 @@ const figura = require('../../../nucleo/kit/piezas/fis-estatica.js');
 const ejes = require('../../../nucleo/kit/piezas/ejes.js');
 const ids = ['cantidad-movimiento', 'impulso', 'conservacion', 'elastico-inelastico', 'restitucion', 'centro-masa'];
 
-test('Impulso y choques: seis ideas completas y noventa ejemplos, sin declarar calidad 2', () => {
-  assert.notEqual(def.calidad, 2, 'la marca pertenece a la sesión auditora');
+test('Impulso y choques: seis ideas completas y noventa ejemplos, con calidad 2', () => {
+  assert.equal(def.calidad, 2, 'la sesión la marcó al integrar (26 nov)');
   assert.deepEqual(def.ideas.map(i => i.id), ids);
   const glosario = Glosario.porIdea(def);
   for (const [n, idea] of def.ideas.entries()) {

@@ -1645,7 +1645,7 @@
         bien: j.mision.bien, testigo: j.mision.testigo }] };
   };
   return {
-    unidad: 'fisica.impulso-y-choques', version: '0.4.0', estado: 'completa',
+    unidad: 'fisica.impulso-y-choques', version: '0.4.0', calidad: 2, estado: 'completa',
     letras: {
   "m": "masa total del cuerpo o conjunto señalado",
   "m_c": "masa del carrito vacío",

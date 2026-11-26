@@ -2109,7 +2109,7 @@ function construirLaboratorioGr(Kit) {
 
   const bloques = [construirGr1, construirGr2, construirGr3, construirGr4, construirGr5, construirGr6].map(crear => crear(Kit));
   return {
-    unidad: 'fisica.gravitacion', version: '0.4.0', estado: 'completa',
+    unidad: 'fisica.gravitacion', version: '0.4.0', calidad: 2, estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-gravitacion.js', '/nucleo/kit/piezas/fis-espacio-3d.js'],
     letras: Object.assign({}, ...bloques.map(b => b.letras), {
       G: 'constante de gravitación universal', M: 'masa de la fuente gravitatoria', m: 'masa del cuerpo estudiado',
