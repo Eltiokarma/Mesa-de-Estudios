@@ -98,11 +98,24 @@ test('auditoría: regiones, cual-hierve, cual-polar y polar con explicaciones ve
     }
     if (d.tipo === 'cual-polar') {
       cualPolar++;
-      const orden = plano(p.enunciado).match(/Las moléculas (.+)\./)[1].split(', '), f = p.datos.find(l => l.startsWith('Formas:')).slice(8).split('; ').map(x => x.split(' ')[0]);
+      const orden = plano(p.enunciado).match(/las moléculas (.+)\./)[1].split(', '), f = p.datos.find(l => l.startsWith('Formas:')).slice(8).split('; ').map(x => x.split(' ')[0]);
       assert.deepEqual(f, orden, `${s}: las formas en el orden del enunciado`);
       if (f[0] === p.respuesta.valor) primera++;
     }
     if (d.tipo === 'polar') assert.ok(!p.alternativas.some(a => /en orden/.test(a.texto)), `${s}`);
   }
   assert.ok(primera < cualPolar / 2, `la respuesta va primera en ${primera} de ${cualPolar}`);
+});
+
+// Verificación de la pasada de redacción (26 nov, rutinas/redaccion/quimica.geometria-molecular.md): «si la molécula
+// fuera plana» no se le dice a una molécula plana (BF₃, SO₃, H₂O, ClF₃…), y el error «siempre sp³» dice el valor que da.
+test('redacción: el dibujo del papel no se confunde con «plana»; QM-HIB-SIEMPRE-SP3 nombra su valor (400 semillas)', () => {
+  for (const idea of Object.keys(gen.TIPOS_POR_IDEA)) for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea }), d = p._datos;
+    for (const a of p.alternativas) {
+      if (!a.error) continue;
+      if (d.tipo === 'angulo' || /^forma/.test(d.tipo)) assert.ok(!/fuera plana/.test(a.error.explicacion), `${s} ${d.k}: ${a.error.explicacion}`);
+      if (a.error.id === 'QM-HIB-SIEMPRE-SP3') assert.ok(a.error.explicacion.startsWith(`Sería ${a.texto} `), `${s} ${d.k}: ${a.texto}: ${a.error.explicacion}`);
+    }
+  }
 });

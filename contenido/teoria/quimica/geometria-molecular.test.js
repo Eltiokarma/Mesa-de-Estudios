@@ -285,3 +285,11 @@ test('explicaciones de las alternativas de nivel 3 que dan su valor (lector B)',
   assert.ok(!/dos arriba y abajo/.test(plano(c.solucion)) && !/La A y la E olvidan/.test(plano(c.solucion)));
   for (let s = 0; s < 400; s++) assert.ok(!I3.ahoraTu.generar(s).opciones.some(o => /en orden/.test(o.texto)), `${s}`);
 });
+
+// Verificación de la pasada de redacción (26 nov, rutinas/redaccion/quimica.geometria-molecular.md): ninguna explicación
+// de la idea 1 dice «si la molécula fuera plana» (el BF₃, el CH₂O, el H₂O o el ClF₃ lo son), y la condición de la idea 4
+// no deja fuera los ejemplos con puente de hidrógeno entre moléculas de tamaño distinto (NH₃ y PH₃, H₂O y H₂S).
+test('redacción: «plana» no se le dice a una molécula plana; la condición de las fuerzas cubre el puente', () => {
+  for (let s = 0; s < 400; s++) for (const o of I1.ahoraTu.generar(s).opciones) assert.ok(!/fuera plana/.test(o.siFuera || ''), `${s}: ${o.siFuera}`);
+  assert.match(I4.regla.condicion, /puentes? de hidrógeno/);
+});
