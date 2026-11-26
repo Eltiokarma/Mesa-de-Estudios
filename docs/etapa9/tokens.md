@@ -51,4 +51,4 @@ contra los límites semanales de los planes.
 | aritmetica.potenciacion-y-radicacion | lector en frío A (ideas 1–3) | 124 974 | 2 min 6 s | 33 herramientas |
 | aritmetica.potenciacion-y-radicacion | lector en frío B (ideas 4–6) | 125 429 | 2 min 11 s | 33 herramientas |
 | aritmetica.potenciacion-y-radicacion | auditoría y correcciones (cierre) | 308 700 | 20 min | 103 herramientas |
-| quimica.enlace-quimico | redactor, unidad ya cerrada | ver notificación | — | — |
+| quimica.enlace-quimico | redactor, unidad ya cerrada | 404 760 | 20 min | 74 herramientas |
