@@ -9,7 +9,7 @@
       "enunciado": "La balanza marca 42 g para un anillo de plata. Al meter el objeto en una probeta, el agua sube de 15 mL a 19 mL. ¿Cuál es su densidad? Datos: Densidad: ρ = m / V. 1 mL = 1 cm³. El volumen de un objeto es lo que sube el agua al meterlo. Alternativas: A) 168 g/cm³   B) 2,8 g/cm³   C) 2,21 g/cm³   D) 10,5 g/cm³",
       "respuesta": "D) 10,5 g/cm³",
       "pasos": [
-        "El volumen es lo que subió el agua: 19 − 15 = 4 cm³.",
+        "El volumen del objeto es lo que subió el agua en la probeta: 19 − 15 = 4 cm³.",
         "ρ = m / V = 42 g ÷ 4 cm³ = 10,5 g/cm³.",
         "Comprobación: 10,5 × 4 = 42 g, lo que marca la balanza."
       ]
@@ -20,9 +20,9 @@
       "enunciado": "Partes una barra de chocolate en dos pedazos iguales. ¿Qué propiedad de cada pedazo es la mitad de la del entero? Datos: Propiedad intensiva: no depende de cuánta muestra hay. Propiedad extensiva: depende de cuánta muestra hay. Alternativas: A) Temperatura de fusión   B) Volumen   C) Dureza   D) Densidad",
       "respuesta": "B) Volumen",
       "pasos": [
-        "Pregunta por cada una: si tienes el doble de muestra, ¿también es el doble? Si sí, es extensiva.",
-        "El volumen depende de cuánto hay: es extensiva, cada pedazo tiene la mitad.",
-        "Las otras: dureza, densidad y temperatura de fusión, intensivas: quedan igual."
+        "Pregunta por cada una: si tienes el doble de muestra, ¿también se duplica? Si se duplica, es extensiva; si queda igual, es intensiva.",
+        "El volumen depende de cuánto hay, así que es extensiva y cada pedazo tiene la mitad.",
+        "Las otras, dureza, densidad y temperatura de fusión, son intensivas y quedan igual."
       ]
     },
     {
@@ -42,9 +42,9 @@
       "enunciado": "Quieres sacar la sal del agua de mar; el agua no importa. ¿Qué método usas? Datos: La sal está disuelta en el agua: no se ve. Filtración: un papel retiene el sólido sin disolver y deja pasar el líquido. Decantación: se deja asentar y se vierte la capa de arriba, la menos densa. Evaporación: el líquido se va al aire y queda lo que estaba disuelto. Imantación: un imán atrae al hierro y deja lo demás. Alternativas: A) Decantación   B) Evaporación   C) Filtración   D) Imantación",
       "respuesta": "B) Evaporación",
       "pasos": [
-        "Se separa por una propiedad en que los componentes difieren: el tamaño del sólido, la densidad, la ebullición o el magnetismo.",
+        "Una mezcla se separa por una propiedad en que sus componentes difieren: el tamaño del sólido, la densidad, la temperatura de ebullición o el magnetismo.",
         "Basta con que el agua se vaya al aire: la sal disuelta queda en el fondo.",
-        "Es la evaporación."
+        "Por eso el método es la evaporación."
       ]
     },
     {
@@ -64,9 +64,9 @@
       "enunciado": "Mira esta lista de propiedades: volumen, temperatura, brillo, densidad y temperatura de fusión. ¿Cuántas son propiedades intensivas? Datos: Propiedad intensiva: no depende de cuánta muestra hay. Propiedad extensiva: depende de cuánta muestra hay. Alternativas: A) 3   B) 5   C) 2   D) 1   E) 4",
       "respuesta": "E) 4",
       "pasos": [
-        "Pregunta por cada una: si tengo el doble de muestra, ¿también es el doble? Si sí, es extensiva.",
-        "Extensivas: volumen. Intensivas: temperatura, brillo, densidad y temperatura de fusión.",
-        "Son 4 intensivas. Medirse con un número no la vuelve extensiva: la temperatura se mide y es intensiva."
+        "Pregunto por cada una: si tengo el doble de muestra, ¿también se duplica? Si se duplica, es extensiva; si queda igual, es intensiva.",
+        "Se duplica volumen, que es extensiva. Quedan igual temperatura, brillo, densidad y temperatura de fusión, que son intensivas.",
+        "Son 4 intensivas. Que una propiedad se mida con un número no la vuelve extensiva: la temperatura se mide y es intensiva."
       ]
     },
     {
@@ -86,8 +86,8 @@
       "enunciado": "Una barra de aluminio de 216 g ocupa 80 cm³. Se corta en 4 partes iguales. ¿Qué masa y qué densidad tiene cada parte? Datos: Densidad: ρ = m / V. Propiedad intensiva: no depende de cuánta muestra hay. Propiedad extensiva: depende de cuánta muestra hay. Alternativas: A) 54 g y 0,37 g/cm³   B) 54 g y 2,7 g/cm³   C) 216 g y 2,7 g/cm³   D) 216 g y 0,675 g/cm³   E) 54 g y 0,675 g/cm³",
       "respuesta": "B) 54 g y 2,7 g/cm³",
       "pasos": [
-        "La masa es extensiva: se reparte. 216 g ÷ 4 = 54 g.",
-        "La densidad es intensiva: la de la barra entera. 216 g ÷ 80 cm³ = 2,7 g/cm³.",
+        "La masa es extensiva, así que se reparte entre las partes: 216 g ÷ 4 = 54 g.",
+        "La densidad es intensiva, así que cada parte tiene la de la barra entera: 216 g ÷ 80 cm³ = 2,7 g/cm³.",
         "Comprobación con una parte: 54 g ÷ 20 cm³ = 2,7 g/cm³, lo mismo."
       ]
     }

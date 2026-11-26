@@ -103,8 +103,8 @@
       pregunta: ['¿Cuánto ', v('x', 'calor'), ' necesitan?'], datos: [DEF_SENS, x.dato, DEF_DT],
       alternativas: numericas(rng, q, errores, cal), respuesta: { valor: q, unidad: 'cal' },
       solucion: [
-        ['No cambia de estado: calor sensible. Lo que sube: ', v('dT', `ΔT = ${t1} − ${t0} = ${d} °C`), '.'],
-        ['Q = ', v('m', `${m}`), ' · ', v('ce', f(x.ce)), ' · ', v('dT', `${d}`), ' = ', v('x', cal(q)), '.'],
+        ['No cambia de estado, así que es calor sensible. La temperatura sube ', v('dT', `ΔT = ${t1} − ${t0} = ${d} °C`), '.'],
+        ['Con Q = m · cₑ · ΔT: Q = ', v('m', `${m}`), ' · ', v('ce', f(x.ce)), ' · ', v('dT', `${d}`), ' = ', v('x', cal(q)), '.'],
       ],
       _datos: { tipo: 'sensible', nivel: 1, sustancia: x.id, ce: x.ce, m, t0, t1 },
     };
@@ -146,7 +146,7 @@
       datos: [DEF_LAT, D_VAP],
       alternativas: numericas(rng, m, errores, x => `${f(x)} g`), respuesta: { valor: m, unidad: 'g' },
       solucion: [
-        ['Mientras hierve, todo el calor cambia el estado: Q = m · L, y se despeja m = Q / L.'],
+        ['Mientras hierve, todo el calor cambia el estado, así que de Q = m · L se despeja m = Q / L.'],
         ['m = ', v('Q', `${f(q)}`), ` ÷ ${LV} = `, v('x', `${f(m)} g`), '.'],
       ],
       _datos: { tipo: 'latente', sub, nivel: 2, q },
@@ -174,9 +174,9 @@
       pregunta: ['¿Cuánto ', v('x', 'varió su temperatura'), aF ? ', en °F?' : ', en kelvin?'], datos: [D_DK, D_DF],
       alternativas: numericas(rng, correcta, errores, x => `${f(x)} ${u}`), respuesta: { valor: correcta, unidad: u },
       solucion: [
-        [`Primero la variación en °C, final menos inicial: ${t1} − ${par(t0)} = ${d} °C.`],
-        [aF ? ['Δ°F = 1,8 · Δ°C = 1,8 · ', `${d} = `, v('x', `${f(correcta)} °F`), '. Sin el +32: eso es para leer un punto.']
-          : ['ΔK = Δ°C = ', v('x', `${d} K`), '. Sin sumar 273: eso es para leer un punto.']].flat(),
+        [`Primero se calcula la variación en °C, la final menos la inicial: ${t1} − ${par(t0)} = ${d} °C.`],
+        [aF ? ['Δ°F = 1,8 · Δ°C = 1,8 · ', `${d} = `, v('x', `${f(correcta)} °F`), '. No se suma 32, porque eso sirve para leer un punto.']
+          : ['ΔK = Δ°C = ', v('x', `${d} K`), '. No se suma 273, porque eso sirve para leer un punto.']].flat(),
       ],
       _datos: { tipo: 'variacion', nivel: 1, t0, t1, a: u },
     };
@@ -197,9 +197,9 @@
       pregunta: ['¿Cuánto ', v('x', 'calor'), ' hace falta?'], datos: [DEF_LAT, DEF_SENS, D_FUS, D_AGUA],
       alternativas: numericas(rng, q, errores, cal), respuesta: { valor: q, unidad: 'cal' },
       solucion: [
-        ['Primero se funde a 0 °C: Q = ', v('m', `${m}`), ' · 80 = ', cal(q1), '.'],
-        ['Después se calienta el agua: Q = ', v('m', `${m}`), ' · ', v('ce', '1'), ' · ', v('dT', `${t}`), ' = ', cal(q2), '.'],
-        ['Se suman los dos tramos: ', `${f(q1)} + ${f(q2)} = `, v('x', cal(q)), '.'],
+        ['Primero el hielo se funde a 0 °C: Q = ', v('m', `${m}`), ' · 80 = ', cal(q1), '.'],
+        ['Después se calienta el agua que quedó: Q = ', v('m', `${m}`), ' · ', v('ce', '1'), ' · ', v('dT', `${t}`), ' = ', cal(q2), '.'],
+        ['El calor total es la suma de los dos tramos: ', `${f(q1)} + ${f(q2)} = `, v('x', cal(q)), '.'],
       ],
       _datos: { tipo: 'tramos', nivel: 2, m, t },
     };
@@ -223,7 +223,7 @@
         datos: [DEF_SENS, D_AGUA, '1 L de agua = 1000 g', 'En Juliaca el agua hierve a unos 87 °C'],
         alternativas: numericas(rng, q, errores, cal), respuesta: { valor: q, unidad: 'cal' },
         solucion: [
-          ['La masa en gramos: ', v('m', `${L} L`), ` = ${f(g)} g. Lo que sube: `, v('dT', `87 − ${t0} = ${TEB - t0} °C`), '.'],
+          ['La masa en gramos es ', v('m', `${L} L`), ` = ${f(g)} g, y la temperatura sube `, v('dT', `87 − ${t0} = ${TEB - t0} °C`), '.'],
           ['Q = ', `${f(g)} · `, v('ce', '1'), ' · ', v('dT', `${TEB - t0}`), ' = ', v('x', cal(q)), '.'],
         ],
         _datos: { tipo: 'juliaca', sub, nivel: 2, litros: L, t0 },
@@ -245,9 +245,9 @@
       datos: [DEF_SENS, D_AGUA, '1 L de agua = 1000 g', 'Hierve a unos 87 °C en Juliaca y a unos 100 °C en Lima'],
       alternativas: numericas(rng, q, errores, cal), respuesta: { valor: q, unidad: 'cal' },
       solucion: [
-        ['En Lima sube ', `100 − ${t0} = ${100 - t0} °C; en Juliaca, 87 − ${t0} = ${TEB - t0} °C. La diferencia: `, v('dT', `${100 - TEB} °C`), '.'],
+        ['En Lima el agua sube ', `100 − ${t0} = ${100 - t0} °C, y en Juliaca, 87 − ${t0} = ${TEB - t0} °C. La diferencia es de `, v('dT', `${100 - TEB} °C`), '.'],
         ['Q = ', `${f(g)} · `, v('ce', '1'), ' · ', v('dT', `${100 - TEB}`), ' = ', v('x', cal(q)), '.'],
-        ['En la altura el agua hierve antes, pero a menos temperatura.'],
+        ['Comprobación: en la altura el agua hierve antes, pero a menos temperatura, y por eso pide menos calor.'],
       ],
       _datos: { tipo: 'juliaca', sub, nivel: 3, litros: L, t0 },
     };
@@ -270,9 +270,9 @@
       datos: [DEF_SENS, D_AGUA, '1 kg = 1000 g', '1 cal ≈ 4,18 J', '1 kJ = 1000 J'],
       alternativas: numericas(rng, kJ, errores, x => `${f(x)} kJ`), respuesta: { valor: kJ, unidad: 'kJ' },
       solucion: [
-        ['La masa en gramos, ', v('m', `${f(g)} g`), ', y lo que sube, ', v('dT', `${d} °C`), '.'],
+        ['La masa en gramos es ', v('m', `${f(g)} g`), ', y la temperatura sube ', v('dT', `${d} °C`), '.'],
         ['Q = ', v('m', f(g)), ' · ', v('ce', '1'), ' · ', v('dT', `${d}`), ` = ${f(c)} cal.`],
-        [`A joules y a kJ: ${f(c)} · 4,18 = ${f(c * 4.18)} J = `, v('x', `${f(kJ)} kJ`), '.'],
+        [`Cada caloría son unos 4,18 J, y 1000 J son 1 kJ: ${f(c)} · 4,18 = ${f(c * 4.18)} J = `, v('x', `${f(kJ)} kJ`), '.'],
       ],
       _datos: { tipo: 'joules', nivel: 2, kg, t0, t1 },
     };
@@ -294,9 +294,9 @@
       pregunta: ['¿Cuánto ', v('x', 'calor'), ' hace falta?'], datos: [DEF_LAT, DEF_SENS, D_HIELO, D_FUS, D_AGUA],
       alternativas: numericas(rng, q, errores, cal), respuesta: { valor: q, unidad: 'cal' },
       solucion: [
-        ['El hielo sube de −', `${T0} °C a 0 °C: Q = `, v('m', `${m}`), ' · ', v('ce', '0,5'), ' · ', v('dT', `${T0}`), ` = ${f(q1)} cal.`],
-        ['Se funde a 0 °C: Q = ', v('m', `${m}`), ` · 80 = ${f(q2)} cal. El agua sube hasta ${t} °C: Q = `, v('m', `${m}`), ' · ', v('ce', '1'), ' · ', v('dT', `${t}`), ` = ${f(q3)} cal.`],
-        ['Se suman los tres tramos: ', `${f(q1)} + ${f(q2)} + ${f(q3)} = `, v('x', cal(q)), '.'],
+        ['Primero el hielo sube de −', `${T0} °C a 0 °C, sin fundirse: Q = `, v('m', `${m}`), ' · ', v('ce', '0,5'), ' · ', v('dT', `${T0}`), ` = ${f(q1)} cal.`],
+        ['Después se funde a 0 °C: Q = ', v('m', `${m}`), ` · 80 = ${f(q2)} cal. Al final, el agua sube hasta ${t} °C: Q = `, v('m', `${m}`), ' · ', v('ce', '1'), ' · ', v('dT', `${t}`), ` = ${f(q3)} cal.`],
+        ['El calor total es la suma de los tres tramos: ', `${f(q1)} + ${f(q2)} + ${f(q3)} = `, v('x', cal(q)), '.'],
       ],
       _datos: { tipo: 'bajo-cero', nivel: 3, m, T0, t },
     };
@@ -317,7 +317,7 @@
       pregunta: ['¿A qué ', v('x', 'temperatura'), ' queda el agua?'], datos: [DEF_LAT, DEF_SENS, D_FUS, D_AGUA],
       alternativas: numericas(rng, t, errores, x => `${f(x)} °C`, { cero: true }), respuesta: { valor: t, unidad: '°C' },
       solucion: [
-        ['Fundir todo pide ', v('m', `${m}`), ` · 80 = ${f(m * LF)} cal. Alcanza, y sobran ${f(q)} − ${f(m * LF)} = ${f(m * t)} cal.`],
+        ['Fundir todo pide ', v('m', `${m}`), ` · 80 = ${f(m * LF)} cal. El calor alcanza, y sobran ${f(q)} − ${f(m * LF)} = ${f(m * t)} cal.`],
         ['Lo que sobra calienta el agua desde 0 °C: ΔT = ', `${f(m * t)} ÷ (`, v('m', `${m}`), ' · 1) = ', v('x', `${t} °C`), '.'],
       ],
       _datos: { tipo: 'final', nivel: 3, m, q },

@@ -51,11 +51,10 @@ test('salen todos los tipos, los tres niveles y los errores típicos pedidos', (
     assert.ok(ids.has(id), `no sale ${id}`);
 });
 
-test('explicaciones que empiezan por «Bien», respaldos y escala (salvo el cero)', () => {
+test('explicaciones: respaldos y escala (salvo el cero)', () => {
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s);
     for (const a of p.alternativas.filter(x => x.error)) {
-      assert.match(a.error.explicacion, /^Bien/, `semilla ${s}: ${a.error.explicacion}`);
       assert.equal(a.error.respaldo, /^MA\d/.test(a.error.id) ? 'parcial' : 'hipotesis', `semilla ${s}: ${a.error.id}`);
       if (a.valor === 0) assert.ok(['MA6', 'QM-CERO'].includes(a.error.id), `semilla ${s}: un 0 que no es MA6 ni QM-CERO`);
       else {

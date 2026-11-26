@@ -96,9 +96,9 @@
       pregunta: ['¿Cuánta ', v('x', 'energía'), ' sale?'], datos: [DEF_E, DEF_C, EQ[u], DEF_POT],
       alternativas: numericas(rng, E, [0, 2, 4, 3, 1].map(i => errores[i]), J), respuesta: { valor: E, unidad: 'J' },
       solucion: [
-        ['La masa en kg: ', v('dm', `${f(x)} ${u}`), ` = ${cien(kg)} kg.`],
-        ['c² = (3 × 10⁸)² = ', v('c2', '9 × 10¹⁶ m²/s²'), ': se eleva el 3 y también la potencia.'],
-        ['E = ', v('dm', cien(kg)), ' · ', v('c2', '9 × 10¹⁶'), ' = ', v('x', J(E)), '.'],
+        ['Se pasa la masa a kg: ', v('dm', `${f(x)} ${u}`), ` = ${cien(kg)} kg.`],
+        ['c² = (3 × 10⁸)² = ', v('c2', '9 × 10¹⁶ m²/s²'), '. Se eleva al cuadrado el 3 y también la potencia de 10.'],
+        ['Con E = Δm · c²: E = ', v('dm', cien(kg)), ' · ', v('c2', '9 × 10¹⁶'), ' = ', v('x', J(E)), '.'],
       ],
       _datos: { tipo: 'energia', nivel: 1, x, u },
     };
@@ -124,7 +124,7 @@
       solucion: [
         ['De E = Δm · c² se despeja la masa: Δm = E / c², con c² = (3 × 10⁸)² = 9 × 10¹⁶.'],
         ['Δm = ', v('E', cien(E)), ` ÷ 9 × 10¹⁶ = ${cien(kg)} kg.`],
-        ['A gramos: ', `${cien(kg)} · 1000 = `, v('x', G(g)), '.'],
+        ['Ese resultado está en kg, y se pasa a gramos: ', `${cien(kg)} · 1000 = `, v('x', G(g)), '.'],
       ],
       _datos: { tipo: 'masa', nivel: 2, E },
     };
@@ -153,9 +153,9 @@
       alternativas: P.armarTexto({ correcta: { clave: 'masa:falta', texto: T.falta }, errores, rng }),
       respuesta: { valor: 'masa:falta', texto: T.falta, unidad: '' },
       solucion: [
-        ['Δm es la masa que desaparece: antes menos después.'],
+        ['Δm es la masa que desaparece: la de antes menos la de después.'],
         [`Δm = ${d4(antes)} − ${d4(despues)} = ${d4(falta)} g.`],
-        [`Solo esos ${d4(falta)} g salen como energía; el resto sigue ahí, como ${caso === 'sol' ? 'helio' : 'lo que queda del combustible'}.`],
+        [`Solo esos ${d4(falta)} g salen como energía, y el resto sigue ahí, como ${caso === 'sol' ? 'helio' : 'lo que queda del combustible'}.`],
       ],
       _datos: { tipo: 'que-masa', nivel: 2, caso, antes, despues },
     };
@@ -177,7 +177,7 @@
       alternativas: numericas(rng, E, [0, 2, 4, 3, 1].map(i => errores[i]), J), respuesta: { valor: E, unidad: 'J' },
       solucion: [
         ['Solo la masa que falta se vuelve energía: ', v('dm', `Δm = ${f(antes, 4)} − ${f(despues, 4)} = ${f(dg, 4)} g = ${cien(kg)} kg`), '.'],
-        ['c² = (3 × 10⁸)² = ', v('c2', '9 × 10¹⁶'), '.'],
+        ['Se eleva c al cuadrado: c² = (3 × 10⁸)² = ', v('c2', '9 × 10¹⁶'), '.'],
         ['E = ', v('dm', cien(kg)), ' · ', v('c2', '9 × 10¹⁶'), ' = ', v('x', J(E)), '.'],
       ],
       _datos: { tipo: 'defecto', nivel: 3, antes, despues },
@@ -200,9 +200,9 @@
       datos: [DEF_E, DEF_C, EQ.mg, 'Un balón de gas de 10 kg da unos 4,6 × 10⁸ J al quemarse'],
       alternativas: numericas(rng, n, errores.filter(x => x.valor >= 1), B), respuesta: { valor: n, unidad: 'balones' },
       solucion: [
-        ['La masa en kg: ', v('dm', `${mg} mg`), ` = ${cien(kg)} kg; c² = 9 × 10¹⁶.`],
-        [`E = ${cien(kg)} · 9 × 10¹⁶ = ${J(E)}.`],
-        ['Entre la de un balón: ', `${cien(E)} ÷ `, v('b', '4,6 × 10⁸'), ` ≈ `, v('x', B(n)), '.'],
+        ['Se pasa la masa a kg, ', v('dm', `${mg} mg`), ` = ${cien(kg)} kg, y se usa c² = 9 × 10¹⁶.`],
+        [`La energía que sale es E = ${cien(kg)} · 9 × 10¹⁶ = ${J(E)}.`],
+        ['Se divide entre la energía de un balón: ', `${cien(E)} ÷ `, v('b', '4,6 × 10⁸'), ` ≈ `, v('x', B(n)), '.'],
       ],
       _datos: { tipo: 'balones', nivel: 3, mg },
     };

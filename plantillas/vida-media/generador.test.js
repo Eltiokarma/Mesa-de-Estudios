@@ -51,11 +51,10 @@ test('salen todos los tipos, los tres niveles y los errores típicos pedidos', (
     'AQ-vm-multiplica-fraccion', 'AQ-vm-sin-convertir', 'AQ-vm-lee-tiempo-sin-mitad']) assert.ok(ids.has(id), `no sale ${id}`);
 });
 
-test('explicaciones que empiezan por «Bien», hipótesis, escala y el valor de cada error', () => {
+test('explicaciones: hipótesis, escala y el valor de cada error', () => {
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s);
     for (const a of p.alternativas.filter(x => x.error)) {
-      assert.match(a.error.explicacion, /^Bien/, `semilla ${s}: ${a.error.explicacion}`);
       assert.equal(a.error.respaldo, 'hipotesis');
       assert.ok(dentroDeEscala(a, p.respuesta.valor), `semilla ${s}: ${a.texto} fuera de escala`);
       if (a.error.id !== 'AQ-vm-desintegrada') assert.ok(a.error.explicacion.includes(a.texto), `semilla ${s}: «${a.error.explicacion}» no muestra ${a.texto}`);

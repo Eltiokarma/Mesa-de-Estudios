@@ -124,9 +124,9 @@
       alternativas: P.armarTexto({ correcta: { clave: 'fen:' + bueno, texto: FEN[bueno].texto }, errores, rng }),
       respuesta: { valor: 'fen:' + bueno, texto: FEN[bueno].texto, unidad: '' },
       solucion: [
-        [`Para cada uno, pregunta si después hay las mismas partículas.`],
+        [`Para cada fenómeno, pregunta si después siguen las mismas partículas.`],
         [`${FEN[bueno].texto}: ${POR_QUE[FEN[bueno].clase].toLowerCase()}`],
-        [`Los otros: ${lista(otros.map(k => `«${FEN[k].texto.toLowerCase()}», ${tipoDe(FEN[k].clase) === 'quimico' ? 'químico' : tipoDe(FEN[k].clase) === 'nuclear' ? 'nuclear' : 'físico'}`))}.`],
+        [`De los otros, ${otros.map(k => `«${FEN[k].texto.toLowerCase()}» es ${tipoDe(FEN[k].clase) === 'quimico' ? 'químico' : tipoDe(FEN[k].clase) === 'nuclear' ? 'nuclear' : 'físico'}`).join('; ')}.`],
       ],
       _datos: { tipo: 'cual', nivel: 1, pide, ids: [bueno, ...otros] },
     };
@@ -155,9 +155,9 @@
       alternativas: P.armarTexto({ correcta: { clave: 'prop:' + bueno, texto: PROP[bueno].texto }, errores, rng }),
       respuesta: { valor: 'prop:' + bueno, texto: PROP[bueno].texto, unidad: '' },
       solucion: [
-        ['Pregunta por cada rasgo: después de observarlo, ¿queda la misma sustancia? Si sí, es una propiedad física.'],
+        ['Pregunta por cada rasgo: después de observarlo, ¿queda la misma sustancia? Si queda, es una propiedad física; si se transforma en otra, es química.'],
         [`«${PROP[bueno].texto}»: ${pide === 'quimica' ? 'para verlo, la sustancia se transforma en otra.' : 'se observa y la sustancia sigue siendo la misma.'}`],
-        [`Los otros tres ${pide === 'quimica' ? 'se observan sin transformar la sustancia: son físicos' : 'solo se ven al transformarla: son químicos'}.`],
+        [`Los otros tres ${pide === 'quimica' ? 'se observan sin transformar la sustancia, así que son propiedades físicas' : 'solo se ven al transformar la sustancia, así que son propiedades químicas'}.`],
       ],
       _datos: { tipo: 'propiedad', nivel: 1, pide, ids: [bueno, ...otros] },
     };
@@ -280,8 +280,8 @@
       alternativas: P.armarTexto({ correcta: { clave: 'cambio:' + real, texto: OPC[real] }, errores, rng }),
       respuesta: { valor: 'cambio:' + real, texto: OPC[real], unidad: '' },
       solucion: [
-        [`Antes: ${lista(c.antes.map(([s]) => fm(ESP[s].formula)))}. Después: ${lista(c.despues.map(([s]) => fm(ESP[s].formula)))}.`],
-        [real === 'fisico' ? `Las mismas partículas: solo pasan de ${ESTADO[c.est[0]]} a ${ESTADO[c.est[1]]}.`
+        [`Antes hay ${lista(c.antes.map(([s]) => fm(ESP[s].formula)))}, y después, ${lista(c.despues.map(([s]) => fm(ESP[s].formula)))}.`],
+        [real === 'fisico' ? `Son las mismas partículas, que solo pasan de ${ESTADO[c.est[0]]} a ${ESTADO[c.est[1]]}.`
           : real === 'quimico' ? 'Hay partículas nuevas, pero los elementos son los mismos: los átomos se unieron de otra forma.'
             : 'Aparecen átomos de nitrógeno, que antes no estaban: un átomo de carbono pasó a ser de otro elemento.'],
         [`Es un cambio ${real === 'fisico' ? 'físico' : real === 'quimico' ? 'químico' : 'nuclear'}.`],
@@ -330,8 +330,8 @@
       respuesta: { valor: correcta, unidad: '' },
       solucion: [
         [`Se cuenta un elemento que después solo esté en ${fm(x.pide)}: el ${x.el}.`],
-        [`Átomos de ${x.el} antes: ${x.antes.filter(([fo]) => cuenta(fo)[x.el]).map(([fo, n]) => `${n} × ${cuenta(fo)[x.el]}`).join(' + ')} = ${at[x.el]}.`],
-        [`Cada ${fm(x.pide)} lleva ${k}: ${at[x.el]} ÷ ${k} = ${correcta} moléculas.`],
+        [`Antes hay ${x.antes.filter(([fo]) => cuenta(fo)[x.el]).map(([fo, n]) => `${n} × ${cuenta(fo)[x.el]}`).join(' + ')} = ${at[x.el]} átomos de ${x.el}.`],
+        [`Cada ${fm(x.pide)} lleva ${k}, así que se forman ${at[x.el]} ÷ ${k} = ${correcta} moléculas.`],
       ],
       _datos: { tipo: 'atomos', nivel: 2, caso },
     };
@@ -356,9 +356,9 @@
       pregunta: ['¿Cuántos son cambios químicos?'], datos: [DEF_FIS, DEF_QUI, DEF_NUC],
       alternativas: P.armar({ correcta: n, errores, rng, texto: q => String(q) }), respuesta: { valor: n, unidad: '' },
       solucion: [
-        ['Químico solo si después hay una sustancia que antes no estaba; un cambio de estado, disolver o romper son físicos.'],
-        [ids.map((k, i) => `${NUM[i]}: ${tipoDe(FEN[k].clase) === 'quimico' ? 'químico' : tipoDe(FEN[k].clase) === 'nuclear' ? 'nuclear' : 'físico'}`).join('; ') + '.'],
-        [`Son ${n} químicos.`],
+        ['Un cambio es químico solo si después hay una sustancia que antes no estaba. Cambiar de estado, disolver o romper son cambios físicos.'],
+        ['Clasifico cada uno: ' + ids.map((k, i) => `${NUM[i]}, ${tipoDe(FEN[k].clase) === 'quimico' ? 'químico' : tipoDe(FEN[k].clase) === 'nuclear' ? 'nuclear' : 'físico'}`).join('; ') + '.'],
+        [n === 1 ? 'Solo uno es químico.' : `Son ${n} químicos.`],
       ],
       _datos: { tipo: 'contar', nivel: 3, ids },
     };
@@ -388,9 +388,9 @@
       alternativas: P.armar({ correcta, errores: errores.filter(q => q.valor > 0 && P.enEscala(q.valor, correcta, q.id)), rng, texto: q => `${f(q)} g` }),
       respuesta: { valor: correcta, unidad: 'g' },
       solucion: [
-        ['El oxígeno que toma la lana: ', v('l', `${f(lana)} g`), ` × 24 ÷ 56 = ${f(O)} g.`],
-        [cerrado ? 'El frasco está cerrado: ese oxígeno ya estaba adentro, y nada entra ni sale.' : 'El frasco está abierto: ese oxígeno entra del aire y se suma.'],
-        [cerrado ? ['La balanza marca lo mismo: ', v('x', `${f(correcta)} g`), '.'] : [v('m', `${f(frasco)} g`), ` + ${f(O)} g = `, v('x', `${f(correcta)} g`), '.']].flat(),
+        ['Cada 56 g de hierro toman 24 g de oxígeno, así que la lana toma ', v('l', `${f(lana)} g`), ` × 24 ÷ 56 = ${f(O)} g.`],
+        [cerrado ? 'El frasco está cerrado, así que ese oxígeno ya estaba adentro y nada entra ni sale.' : 'El frasco está abierto, así que ese oxígeno entra del aire y su masa se suma.'],
+        [cerrado ? ['Por eso la balanza marca lo mismo que antes: ', v('x', `${f(correcta)} g`), '.'] : [v('m', `${f(frasco)} g`), ` + ${f(O)} g = `, v('x', `${f(correcta)} g`), '.']].flat(),
       ],
       _datos: { tipo: 'balanza', nivel: 3, cerrado, frasco, lana },
     };

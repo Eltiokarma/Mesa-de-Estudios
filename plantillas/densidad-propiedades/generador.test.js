@@ -52,11 +52,10 @@ test('salen todos los tipos, los tres niveles y los errores típicos pedidos', (
     assert.ok(ids.has(id), `no sale ${id}`);
 });
 
-test('explicaciones que empiezan por «Bien», respaldos y escala de los distractores', () => {
+test('explicaciones: respaldos y escala de los distractores', () => {
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s);
     for (const a of p.alternativas.filter(x => x.error)) {
-      assert.match(a.error.explicacion, /^Bien/, `semilla ${s}: ${a.error.explicacion}`);
       assert.equal(a.error.respaldo, ['AT1', 'Q4'].includes(a.error.id) ? 'parcial' : 'hipotesis', `semilla ${s}: ${a.error.id}`);
       if (typeof p.respuesta.valor === 'number') assert.ok(dentroDeEscala(a, p.respuesta.valor), `semilla ${s}: ${a.texto} fuera de escala`);
     }

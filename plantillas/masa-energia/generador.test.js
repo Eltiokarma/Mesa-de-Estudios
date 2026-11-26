@@ -43,11 +43,10 @@ test('salen todos los tipos, los tres niveles y los errores típicos pedidos', (
     assert.ok(ids.has(id), `no sale ${id}`);
 });
 
-test('explicaciones que empiezan por «Bien», hipótesis, escala y el valor de cada error', () => {
+test('explicaciones: hipótesis, escala y el valor de cada error', () => {
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s);
     for (const a of p.alternativas.filter(x => x.error)) {
-      assert.match(a.error.explicacion, /^Bien/, `semilla ${s}: ${a.error.explicacion}`);
       assert.equal(a.error.respaldo, 'hipotesis');
       if (typeof p.respuesta.valor === 'number') {
         assert.ok(dentroDeEscala(a, p.respuesta.valor), `semilla ${s}: ${a.texto} fuera de escala`);

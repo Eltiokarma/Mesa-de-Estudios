@@ -158,11 +158,11 @@
       "enunciado": "Di si cada fenómeno es físico, químico o nuclear: (I) el hielo se derrite; (II) la sal se disuelve en agua; (III) un clavo se oxida; (IV) arde el gas de la cocina (propano); (V) el agua se descompone con corriente eléctrica en hidrógeno y oxígeno; (VI) un hueso antiguo pierde carbono-14 y gana nitrógeno-14. Datos: Cambio físico: las mismas partículas cambian de estado, de forma o de lugar. Cambio químico: aparecen sustancias nuevas, hechas con los mismos átomos. Cambio nuclear: un átomo pasa a ser de otro elemento.",
       "respuesta": "I físico, II físico, III químico, IV químico, V químico, VI nuclear.",
       "pasos": [
-        "I y II: las moléculas de H₂O y la sal siguen siendo las mismas sustancias; solo cambian de estado o se reparten. Físicos.",
-        "III: aparece óxido de hierro, una sustancia nueva con los mismos átomos de Fe y O. Químico.",
-        "IV: el propano y el oxígeno forman CO₂ y H₂O. Químico.",
-        "V: se puede volver a formar agua con H₂ y O₂, pero eso no lo hace físico: aparecen sustancias nuevas. Químico. «Reversible» no es lo mismo que «físico».",
-        "VI: aparecen átomos de nitrógeno que antes eran de carbono: cambió el elemento. Nuclear: en un cambio químico los elementos nunca cambian."
+        "I y II: las moléculas de H₂O y la sal siguen siendo las mismas sustancias; solo cambian de estado o se reparten, así que son cambios físicos.",
+        "III: aparece óxido de hierro, una sustancia nueva con los mismos átomos de Fe y O, así que es un cambio químico.",
+        "IV: el propano y el oxígeno forman CO₂ y H₂O, sustancias nuevas: es un cambio químico.",
+        "V: se puede volver a formar agua con H₂ y O₂, pero eso no lo hace físico: aparecen sustancias nuevas, así que es químico. «Reversible» no es lo mismo que «físico».",
+        "VI: aparecen átomos de nitrógeno que antes eran de carbono: cambió el elemento. Es nuclear, porque en un cambio químico los elementos nunca cambian."
       ],
       "verificar": [
         {
@@ -227,7 +227,7 @@
       "enunciado": "Un frasco vacío con su tapa pesa 150 g. Se le echan 20 g de alcohol y se tapa. Después de un día caluroso, una cuarta parte del alcohol se evaporó. (a) ¿Cuánto marca la balanza con el frasco tapado? (b) Si el frasco hubiera estado destapado, ¿cuánto marcaría? Datos: La balanza pesa todo lo que hay sobre ella. El vapor de alcohol también tiene masa.",
       "respuesta": "(a) 170 g. (b) 165 g.",
       "pasos": [
-        "Al principio: 150 + 20 = 170 g.",
+        "Al principio, la balanza marca 150 + 20 = 170 g.",
         "(a) Con la tapa, el vapor de alcohol se queda adentro. El gas pesa: sus moléculas son las mismas que las del líquido. La balanza sigue en 170 g.",
         "(b) Destapado, el vapor se va al aire: se evaporaron 20 ÷ 4 = 5 g, y la balanza marca 170 − 5 = 165 g. La masa no desapareció: está en el aire."
       ],
@@ -269,7 +269,7 @@
       "enunciado": "En un frasco tapado de 200 g se ponen 50 g de hielo. El frasco se deja afuera hasta que todo el hielo se derrite. ¿Cuánto marca la balanza al final? Datos: Fundir: el hielo pasa de sólido a líquido.",
       "respuesta": "250 g, lo mismo que al principio.",
       "pasos": [
-        "Antes: 200 + 50 = 250 g.",
+        "Antes de fundirse, la balanza marca 200 + 50 = 250 g.",
         "Fundir es un cambio físico: las mismas moléculas de H₂O pasan de estar fijas a moverse unas entre otras. No entra ni sale nada.",
         "Que el hielo flote dice que es menos denso (ocupa más volumen), no que tenga menos masa. La balanza sigue en 250 g."
       ],
@@ -307,7 +307,7 @@
       "enunciado": "Sobre una balanza, sin tapa, arden por completo 11,2 g de lana de acero (hierro) y se forma óxido de hierro. ¿Cuánto marca la balanza al final? ¿Por qué cambia? Datos: Al arder, el hierro se une al oxígeno del aire y forma óxido de hierro. Cada 56 g de hierro toman 24 g de oxígeno.",
       "respuesta": "16 g: sube 4,8 g, que es el oxígeno del aire que se unió al hierro.",
       "pasos": [
-        "Oxígeno que toma el hierro: 11,2 × 24 ÷ 56 = 4,8 g.",
+        "Cada 56 g de hierro toman 24 g de oxígeno, así que el hierro toma 11,2 × 24 ÷ 56 = 4,8 g.",
         "El óxido pesa 11,2 + 4,8 = 16 g, y eso marca la balanza.",
         "La balanza sube porque el oxígeno entra del aire y queda unido. En un frasco cerrado no cambiaría: ese oxígeno ya estaba adentro."
       ],
@@ -417,7 +417,7 @@
       "enunciado": "En un proceso nuclear, a lo que queda le faltan 2 g de masa. ¿Cuántos joules salen? Datos: E = Δm · c², con Δm en kg y E en joules (J). Δm: la masa antes menos la masa después. c = 3 × 10⁸ m/s. 1 kg = 1000 g.",
       "respuesta": "1,8 × 10¹⁴ J.",
       "pasos": [
-        "La masa que falta, en kg: Δm = 2 g = 0,002 kg.",
+        "Primero se pasa a kg la masa que falta: Δm = 2 g = 0,002 kg.",
         "E = Δm · c² = 0,002 × (3 × 10⁸)² = 0,002 × 9 × 10¹⁶ = 1,8 × 10¹⁴ J.",
         "Cuidado: c va al cuadrado y la masa en kg. Con 2 (los gramos) saldría mil veces más; sin elevar c, 6 × 10⁵ J."
       ],

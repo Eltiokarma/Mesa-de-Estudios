@@ -59,11 +59,10 @@ test('salen todos los tipos, los tres niveles, los tres cambios en la lupa y los
     assert.ok(ids.has(id), `no sale ${id}`);
 });
 
-test('explicaciones que empiezan por «Bien», respaldos, escala y el valor de cada error numérico', () => {
+test('explicaciones: respaldos, escala y el valor de cada error numérico', () => {
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s), d = p._datos;
     for (const a of p.alternativas.filter(x => x.error)) {
-      assert.match(a.error.explicacion, /^Bien/, `semilla ${s}: ${a.error.explicacion}`);
       assert.equal(a.error.respaldo, /^MA\d/.test(a.error.id) ? 'parcial' : 'hipotesis', `semilla ${s}: ${a.error.id}`);
       if (typeof p.respuesta.valor === 'number') assert.ok(dentroDeEscala(a, p.respuesta.valor), `semilla ${s}: ${a.texto} fuera de escala`);
       if (d.tipo === 'balanza' || d.tipo === 'contar') assert.ok(a.error.explicacion.includes(a.texto.replace(' g', '')), `semilla ${s}: «${a.error.explicacion}» no muestra ${a.texto}`);

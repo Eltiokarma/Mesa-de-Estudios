@@ -148,7 +148,7 @@
       e(2 ** n * s.vm, 'AQ-vm-multiplica-fraccion', `Bien usar la vida media. Pero ${2 ** n} es 2${SUP[n]}: hacen falta ${n} vidas medias, no ${2 ** n}. Así salen ${T(2 ** n * s.vm)}.`),
       e((n - 1) * s.vm, 'AQ-vm-una-vida-de-menos', `Bien multiplicar por la vida media. Pero para llegar a 1/${2 ** n} hacen falta ${n} mitades. Así salen ${T((n - 1) * s.vm)}.`),
       e((n + 1) * s.vm, 'AQ-vm-una-vida-de-mas', `Bien multiplicar por la vida media. Pero contaste una mitad de más: 1/${2 ** n} son ${n}. Así salen ${T((n + 1) * s.vm)}.`),
-      e(2 * (1 - q) * s.vm, 'AQ-vm-lineal', `Bien ver que se va perdiendo con el tiempo. Pero no al mismo ritmo: cada vida media se va la mitad de lo que queda. Así salen ${T(2 * (1 - q) * s.vm)}.`),
+      e(2 * (1 - q) * s.vm, 'AQ-vm-lineal', `Bien ver que se va perdiendo con el tiempo. Pero no al mismo ritmo: en cada vida media se va la mitad de lo que queda. Así salen ${T(2 * (1 - q) * s.vm)}.`),
       e(s.vm / 2 ** n, 'AQ-vm-divide-vida-media', `Bien usar la fracción. Pero mientras menos queda, más tiempo pasó: se multiplica la vida media. Así salen ${T(s.vm / 2 ** n)}.`),
     ];
     const enunciado = c14 ? ['Un hueso hallado en una cueva de los Andes conserva ', v('m', queda), ' del carbono-14 que tenía al morir el animal.']
@@ -158,8 +158,8 @@
       variables: usa('t', 'th', 'n', 'm'), enunciado, pregunta, datos: [DEF_F, DEF_N, vidaDe(s)],
       alternativas: numericas(rng, t, errores, T), respuesta: { valor: t, unidad: s.u },
       solucion: [
-        [v('m', queda), ' = ', `1/${2 ** n} = 1/2`, v('n', SUP[n]), ': ', v('n', String(n)), ' vidas medias.'],
-        ['t = ', v('n', String(n)), ' × ', v('th', f(s.vm)), ' = ', v('t', T(t)), '.'],
+        ['Lo que queda se escribe con una potencia de 2: ', v('m', queda.replace(/^el /, '')), ' = ', como === 'fraccion' || queda === fr(q) ? '' : `1/${2 ** n} = `, `1/2`, v('n', SUP[n]), ', así que pasaron ', v('n', String(n)), ' vidas medias.'],
+        ['El tiempo es n veces la vida media: t = ', v('n', String(n)), ' × ', v('th', f(s.vm)), ' = ', v('t', T(t)), '.'],
       ],
       _datos: { tipo: 'tiempo', nivel: 2, sustancia: s.id, n, como },
     };
@@ -182,7 +182,7 @@
       datos: [DEF_N, DEF_F, DEF_D, vidaDe(s)], alternativas: numericas(rng, val, errores, T), respuesta: { valor: val, unidad: pct ? '%' : '' },
       solucion: [
         ['n = ', v('t', String(t)), ' ÷ ', v('th', f(s.vm)), ' = ', v('n', String(n)), `: queda 1/2${SUP[n]} = ${pct ? pc(100 * q) : fr(q)}.`],
-        ['Se desintegra lo que falta: ', pct ? `100 % − ${pc(100 * q)} = ` : `1 − ${fr(q)} = `, v('m', T(val)), '.'],
+        ['Lo que se desintegra es lo que falta: ', pct ? `100 % − ${pc(100 * q)} = ` : `1 − ${fr(q)} = `, v('m', T(val)), '.'],
       ],
       _datos: { tipo: 'desintegrado', nivel: 2, sustancia: s.id, t, como },
     };
@@ -204,8 +204,8 @@
       pregunta: ['¿Cuál es su ', v('th', 'vida media'), '?'], datos: [DEF_VM, DEF_N],
       alternativas: numericas(rng, s.vm, errores, A), respuesta: { valor: s.vm, unidad: 'años' },
       solucion: [
-        [`${[...Array(n + 1).keys()].map(k => f(m0 / 2 ** k)).join(' → ')} g: `, v('n', String(n)), ' vidas medias.'],
-        ['vida media = ', v('t', f(t)), ' ÷ ', v('n', String(n)), ' = ', v('th', A(s.vm)), '.'],
+        [`De mitad en mitad, ${[...Array(n + 1).keys()].map(k => f(m0 / 2 ** k)).join(' → ')} g: pasaron `, v('n', String(n)), ' vidas medias.'],
+        ['Esas vidas medias caben en el tiempo dado, así que la vida media es ', v('t', f(t)), ' ÷ ', v('n', String(n)), ' = ', v('th', A(s.vm)), '.'],
       ],
       _datos: { tipo: 'vida', nivel: 2, fuente: s.id, m0, n, t },
     };
@@ -236,7 +236,7 @@
       pregunta: ['¿Qué ', v('m', 'fracción de la dosis'), ' queda ', v('t', x.cuando), '?'],
       datos: [DEF_N, DEF_F, vidaDe(s), x.eq], alternativas: numericas(rng, q, errores, fr), respuesta: { valor: q, unidad: '' },
       solucion: [
-        ['Todo en la misma unidad: ', v('t', `${f(x.t)} ${x.unidadT}`), ` = ${tc} ${s.u}.`],
+        ['Se pone el tiempo en la misma unidad que la vida media: ', v('t', `${f(x.t)} ${x.unidadT}`), ` = ${tc} ${s.u}.`],
         ['n = ', v('t', String(tc)), ' ÷ ', v('th', f(s.vm)), ' = ', v('n', String(n)), `; queda 1/2${SUP[n]} = `, v('m', fr(q)), '.'],
       ],
       _datos: { tipo: 'unidades', nivel: 3, sustancia: s.id, t: x.t, unidadT: x.unidadT },
@@ -260,7 +260,7 @@
       pregunta: ['¿Cuántos ', v('m', 'gramos quedarán'), ' a los ', v('t', `${f(t2)} años`), ' de empezar?'],
       datos: [DEF_VM, DEF_M, DEF_N], alternativas: numericas(rng, m, errores, G), respuesta: { valor: m, unidad: 'g' },
       solucion: [
-        [`De ${m0} g a ${m0 / 4} g hay 2 mitades: vida media = `, v('t', f(t1)), ' ÷ 2 = ', v('th', `${f(s.vm)} años`), '.'],
+        [`De ${m0} g a ${m0 / 4} g la masa se parte 2 veces en dos, así que la vida media es `, v('t', f(t1)), ' ÷ 2 = ', v('th', `${f(s.vm)} años`), '.'],
         ['n = ', v('t', f(t2)), ' ÷ ', v('th', f(s.vm)), ' = ', v('n', String(b)), '.'],
         ['m = ', v('m0', String(m0)), ' / 2', v('n', SUP[b]), ` = ${m0} / ${2 ** b} = `, v('m', G(m)), '.'],
       ],

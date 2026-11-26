@@ -106,7 +106,7 @@
       pregunta: ['¿Cuál es su ', v('r', 'densidad'), '?'], datos: [DEF_RHO, DEF_ML, DEF_SUBE],
       alternativas: numericas(rng, correcta, errores, x => `${fr(x)} g/cm³`), respuesta: { valor: correcta, unidad: 'g/cm³' },
       solucion: [
-        ['El volumen es lo que subió el agua: ', `${v1} − ${v0} = `, v('V', `${V} cm³`), '.'],
+        ['El volumen del objeto es lo que subió el agua en la probeta: ', `${v1} − ${v0} = `, v('V', `${V} cm³`), '.'],
         ['ρ = m / V = ', v('m', `${f(m)} g`), ' ÷ ', v('V', `${V} cm³`), ' = ', v('r', `${f(correcta)} g/cm³`), '.'],
         [`Comprobación: ${f(correcta)} × ${V} = ${f(m)} g, lo que marca la balanza.`],
       ],
@@ -133,10 +133,10 @@
       alternativas: P.armarTexto({ correcta: { clave: 'prop:' + buena, texto: May(buena) }, errores, rng }),
       respuesta: { valor: 'prop:' + buena, texto: May(buena), unidad: '' },
       solucion: [
-        ['Pregunta por cada una: si tienes el doble de muestra, ¿también es el doble? Si sí, es extensiva.'],
-        [pide === 'igual' ? `${May(articulo(buena))} no depende de cuánto hay: es intensiva, igual en cada pedazo.`
-          : `${May(articulo(buena))} depende de cuánto hay: es extensiva, cada pedazo tiene la mitad.`],
-        [`Las otras: ${lista(otras)}, ${pide === 'igual' ? 'extensivas: se parten' : 'intensivas: quedan igual'}.`],
+        ['Pregunta por cada una: si tienes el doble de muestra, ¿también se duplica? Si se duplica, es extensiva; si queda igual, es intensiva.'],
+        [pide === 'igual' ? `${May(articulo(buena))} no depende de cuánto hay, así que es intensiva y queda igual en cada pedazo.`
+          : `${May(articulo(buena))} depende de cuánto hay, así que es extensiva y cada pedazo tiene la mitad.`],
+        [`Las otras, ${lista(otras)}, ${pide === 'igual' ? 'son extensivas y se parten con el pedazo' : 'son intensivas y quedan igual'}.`],
       ],
       _datos: { tipo: 'intensiva', nivel: 1, material: mat, pide, lista: [buena, ...otras] },
     };
@@ -229,9 +229,9 @@
       alternativas: P.armarTexto({ correcta: { clave: 'metodo:' + q.pide, texto: METODOS[q.pide].nombre }, errores, rng }),
       respuesta: { valor: 'metodo:' + q.pide, texto: METODOS[q.pide].nombre, unidad: '' },
       solucion: [
-        ['Se separa por una propiedad en que los componentes difieren: el tamaño del sólido, la densidad, la ebullición o el magnetismo.'],
+        ['Una mezcla se separa por una propiedad en que sus componentes difieren: el tamaño del sólido, la densidad, la temperatura de ebullición o el magnetismo.'],
         [q.porque],
-        [`Es la ${METODOS[q.pide].nombre.toLowerCase()}.`],
+        [`Por eso el método es la ${METODOS[q.pide].nombre.toLowerCase()}.`],
       ],
       _datos: { tipo: 'separar', nivel: 2, caso: q.id },
     };
@@ -284,8 +284,8 @@
       alternativas: P.armarTexto({ correcta: { clave: cl(mp, rho), texto: tx(mp, rho) }, errores, rng }),
       respuesta: { valor: cl(mp, rho), texto: tx(mp, rho), unidad: '' },
       solucion: [
-        ['La masa es extensiva: se reparte. ', v('m', `${f(m)} g`), ` ÷ ${k} = `, v('mp', `${f(mp)} g`), '.'],
-        ['La densidad es intensiva: la de la barra entera. ', v('m', `${f(m)} g`), ' ÷ ', v('V', `${V} cm³`), ' = ', v('rp', `${f(rho)} g/cm³`), '.'],
+        ['La masa es extensiva, así que se reparte entre las partes: ', v('m', `${f(m)} g`), ` ÷ ${k} = `, v('mp', `${f(mp)} g`), '.'],
+        ['La densidad es intensiva, así que cada parte tiene la de la barra entera: ', v('m', `${f(m)} g`), ' ÷ ', v('V', `${V} cm³`), ' = ', v('rp', `${f(rho)} g/cm³`), '.'],
         [`Comprobación con una parte: ${f(mp)} g ÷ ${Vp} cm³ = ${f(rho)} g/cm³, lo mismo.`],
       ],
       _datos: { tipo: 'barra', nivel: 3, m, V, partes: k },
@@ -316,9 +316,10 @@
       datos: [DEF_INT, DEF_EXT],
       alternativas: P.armar({ correcta: n, errores, rng, texto: x => String(x) }), respuesta: { valor: n, unidad: '' },
       solucion: [
-        ['Pregunta por cada una: si tengo el doble de muestra, ¿también es el doble? Si sí, es extensiva.'],
-        [`Extensivas: ${lista(xs.filter(x => !PROPS[x].int))}. Intensivas: ${lista(xs.filter(x => PROPS[x].int))}.`],
-        [`Son ${n} intensivas. Medirse con un número no la vuelve extensiva: la temperatura se mide y es intensiva.`],
+        ['Pregunto por cada una: si tengo el doble de muestra, ¿también se duplica? Si se duplica, es extensiva; si queda igual, es intensiva.'],
+        [5 - n === 1 ? `Se duplica ${lista(xs.filter(x => !PROPS[x].int))}, que es extensiva. Quedan igual ${lista(xs.filter(x => PROPS[x].int))}, que son intensivas.`
+          : `Se duplican ${lista(xs.filter(x => !PROPS[x].int))}, que son extensivas. Quedan igual ${lista(xs.filter(x => PROPS[x].int))}, que son intensivas.`],
+        [`Son ${n} intensivas. Que una propiedad se mida con un número no la vuelve extensiva: la temperatura se mide y es intensiva.`],
       ],
       _datos: { tipo: 'contar', nivel: 3, lista: xs },
     };

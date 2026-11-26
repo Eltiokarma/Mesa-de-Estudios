@@ -9,9 +9,9 @@
       "enunciado": "Mira estos fenómenos. ¿Cuál es un cambio químico? Datos: Cambio físico: las mismas partículas cambian de estado, de forma o de lugar. Cambio químico: aparecen sustancias nuevas, hechas con los mismos átomos. Cambio nuclear: un átomo pasa a ser de otro elemento. Alternativas: A) El espejo del baño se empaña con la ducha   B) El gas de la cocina arde en la hornilla   C) El alcohol de un algodón se evapora   D) La sal se disuelve en la sopa",
       "respuesta": "B) El gas de la cocina arde en la hornilla",
       "pasos": [
-        "Para cada uno, pregunta si después hay las mismas partículas.",
+        "Para cada fenómeno, pregunta si después siguen las mismas partículas.",
         "El gas de la cocina arde en la hornilla: aparece una sustancia que antes no estaba, con los mismos átomos.",
-        "Los otros: «el espejo del baño se empaña con la ducha», físico, «el alcohol de un algodón se evapora», físico y «la sal se disuelve en la sopa», físico."
+        "De los otros, «el espejo del baño se empaña con la ducha» es físico; «el alcohol de un algodón se evapora» es físico; «la sal se disuelve en la sopa» es físico."
       ]
     },
     {
@@ -20,9 +20,9 @@
       "enunciado": "Mira estos rasgos de algunas sustancias. ¿Cuál es una propiedad física? Datos: Propiedad física: se mide sin transformar la sustancia en otra. Propiedad química: solo se ve cuando la sustancia se transforma en otra. Alternativas: A) El bicarbonato reacciona con el vinagre   B) El papel se enciende con facilidad   C) El hierro se oxida con el aire húmedo   D) El azúcar se disuelve en agua",
       "respuesta": "D) El azúcar se disuelve en agua",
       "pasos": [
-        "Pregunta por cada rasgo: después de observarlo, ¿queda la misma sustancia? Si sí, es una propiedad física.",
+        "Pregunta por cada rasgo: después de observarlo, ¿queda la misma sustancia? Si queda, es una propiedad física; si se transforma en otra, es química.",
         "«El azúcar se disuelve en agua»: se observa y la sustancia sigue siendo la misma.",
-        "Los otros tres solo se ven al transformarla: son químicos."
+        "Los otros tres solo se ven al transformar la sustancia, así que son propiedades químicas."
       ]
     },
     {
@@ -32,8 +32,8 @@
       "respuesta": "D) 6",
       "pasos": [
         "Se cuenta un elemento que después solo esté en H₂O: el H.",
-        "Átomos de H antes: 2 × 6 = 12.",
-        "Cada H₂O lleva 2: 12 ÷ 2 = 6 moléculas."
+        "Antes hay 2 × 6 = 12 átomos de H.",
+        "Cada H₂O lleva 2, así que se forman 12 ÷ 2 = 6 moléculas."
       ]
     },
     {
@@ -43,8 +43,8 @@
       "respuesta": "B) 4",
       "pasos": [
         "Se cuenta un elemento que después solo esté en NH₃: el N.",
-        "Átomos de N antes: 2 × 2 = 4.",
-        "Cada NH₃ lleva 1: 4 ÷ 1 = 4 moléculas."
+        "Antes hay 2 × 2 = 4 átomos de N.",
+        "Cada NH₃ lleva 1, así que se forman 4 ÷ 1 = 4 moléculas."
       ]
     },
     {
@@ -53,9 +53,9 @@
       "enunciado": "Mira estos fenómenos: I. Se forma escarcha sobre el pasto en una helada. II. La leña arde en el fogón. III. El espejo del baño se empaña con la ducha. IV. Un hueso antiguo pierde carbono-14 y gana nitrógeno-14. ¿Cuántos son cambios químicos? Datos: Cambio físico: las mismas partículas cambian de estado, de forma o de lugar. Cambio químico: aparecen sustancias nuevas, hechas con los mismos átomos. Cambio nuclear: un átomo pasa a ser de otro elemento. Alternativas: A) 4   B) 2   C) 1   D) 3",
       "respuesta": "C) 1",
       "pasos": [
-        "Químico solo si después hay una sustancia que antes no estaba; un cambio de estado, disolver o romper son físicos.",
-        "I: físico; II: químico; III: físico; IV: nuclear.",
-        "Son 1 químicos."
+        "Un cambio es químico solo si después hay una sustancia que antes no estaba. Cambiar de estado, disolver o romper son cambios físicos.",
+        "Clasifico cada uno: I, físico; II, químico; III, físico; IV, nuclear.",
+        "Solo uno es químico."
       ]
     },
     {
@@ -64,8 +64,8 @@
       "enunciado": "Sobre una balanza, un frasco abierto con 5,6 g de lana de acero (hierro) marca 250 g. La lana arde por completo con el oxígeno del aire. ¿Qué marca la balanza al final? Datos: Al arder, el hierro se une al oxígeno y forma óxido de hierro. Cada 56 g de hierro toman 24 g de oxígeno. Los átomos no se crean ni se destruyen. Alternativas: A) 244,4 g   B) 258 g   C) 250 g   D) 252,4 g",
       "respuesta": "D) 252,4 g",
       "pasos": [
-        "El oxígeno que toma la lana: 5,6 g × 24 ÷ 56 = 2,4 g.",
-        "El frasco está abierto: ese oxígeno entra del aire y se suma.",
+        "Cada 56 g de hierro toman 24 g de oxígeno, así que la lana toma 5,6 g × 24 ÷ 56 = 2,4 g.",
+        "El frasco está abierto, así que ese oxígeno entra del aire y su masa se suma.",
         "250 g + 2,4 g = 252,4 g."
       ]
     },
@@ -75,8 +75,8 @@
       "enunciado": "Sobre una balanza, un frasco abierto con 5,6 g de lana de acero (hierro) marca 150 g. La lana arde por completo con el oxígeno del aire. ¿Qué marca la balanza al final? Datos: Al arder, el hierro se une al oxígeno y forma óxido de hierro. Cada 56 g de hierro toman 24 g de oxígeno. Los átomos no se crean ni se destruyen. Alternativas: A) 152,4 g   B) 158 g   C) 144,4 g   D) 150 g   E) 8 g",
       "respuesta": "A) 152,4 g",
       "pasos": [
-        "El oxígeno que toma la lana: 5,6 g × 24 ÷ 56 = 2,4 g.",
-        "El frasco está abierto: ese oxígeno entra del aire y se suma.",
+        "Cada 56 g de hierro toman 24 g de oxígeno, así que la lana toma 5,6 g × 24 ÷ 56 = 2,4 g.",
+        "El frasco está abierto, así que ese oxígeno entra del aire y su masa se suma.",
         "150 g + 2,4 g = 152,4 g."
       ]
     },
@@ -86,9 +86,9 @@
       "enunciado": "Mira estos rasgos de algunas sustancias. ¿Cuál es una propiedad química? Datos: Propiedad física: se mide sin transformar la sustancia en otra. Propiedad química: solo se ve cuando la sustancia se transforma en otra. Alternativas: A) El cobre conduce la electricidad   B) El hierro se oxida con el aire húmedo   C) El alcohol hierve a unos 78 °C   D) El oro brilla",
       "respuesta": "B) El hierro se oxida con el aire húmedo",
       "pasos": [
-        "Pregunta por cada rasgo: después de observarlo, ¿queda la misma sustancia? Si sí, es una propiedad física.",
+        "Pregunta por cada rasgo: después de observarlo, ¿queda la misma sustancia? Si queda, es una propiedad física; si se transforma en otra, es química.",
         "«El hierro se oxida con el aire húmedo»: para verlo, la sustancia se transforma en otra.",
-        "Los otros tres se observan sin transformar la sustancia: son físicos."
+        "Los otros tres se observan sin transformar la sustancia, así que son propiedades físicas."
       ]
     }
   ]

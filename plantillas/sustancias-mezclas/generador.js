@@ -102,14 +102,14 @@
       ? ['MA9', 'Bien: hay una sola clase de partícula. Pero cada partícula une átomos de elementos distintos: es compuesto.']
       : ['MA9', 'Bien: hay una sola clase de partícula. Pero sus átomos son todos de una clase, aunque vayan pegados: es elemento.'];
     if (pura(elegida)) return real === 'homogenea'
-      ? ['MA10', 'Bien: se reparte parejo, en una sola fase. Pero hay dos clases de partícula: es mezcla, no sustancia pura.']
-      : ['MA9', 'Bien: miraste las partículas. Pero hay dos clases distintas, sueltas: es mezcla, no sustancia pura.'];
+      ? ['MA10', 'Bien: se reparte parejo, en una sola fase. Pero hay más de una clase de partícula, así que es mezcla, no sustancia pura.']
+      : ['MA9', 'Bien: miraste las partículas. Pero hay más de una clase de partícula, sueltas, así que es mezcla, no sustancia pura.'];
     if (pura(real)) return real === 'compuesto'
-      ? ['MA9', 'Bien: viste dos clases de átomo. Pero van unidos en partículas todas iguales: una sola clase de partícula.']
-      : ['MA9', 'Bien: viste partículas de varios átomos. Pero todas son iguales: una sola clase de partícula.'];
+      ? ['MA9', 'Bien: viste dos clases de átomo. Pero van unidos en partículas todas iguales, así que hay una sola clase de partícula.']
+      : ['MA9', 'Bien: viste partículas de varios átomos. Pero todas son iguales, así que hay una sola clase de partícula.'];
     return elegida === 'homogenea'
-      ? ['QM-HOMO', 'Bien: hay dos clases de partícula. Pero cada una queda en su zona, con un borde: son dos fases.']
-      : ['QM-HETERO', 'Bien: hay dos clases de partícula. Pero se reparten juntas en una sola zona, sin bordes: una fase.'];
+      ? ['QM-HOMO', 'Bien: hay más de una clase de partícula. Pero forman zonas distintas, con un borde entre ellas, así que hay dos fases.']
+      : ['QM-HETERO', 'Bien: hay más de una clase de partícula. Pero se reparten juntas en una sola zona, sin bordes, así que hay una fase.'];
   }
   function alternativasClase(real, rng) {
     const errores = Object.keys(NOMBRE).filter(k => k !== real).map(k => {
@@ -119,10 +119,10 @@
     return P.armarTexto({ correcta: { clave: 'clase:' + real, texto: NOMBRE[real] }, errores, rng });
   }
   const PORQUE = {
-    elemento: 'Una sola clase de partícula, y todos sus átomos son de la misma clase.',
-    compuesto: 'Una sola clase de partícula, y cada una une átomos de elementos distintos.',
-    homogenea: 'Dos clases de partícula repartidas en una sola fase, sin bordes.',
-    heterogenea: 'Dos clases de partícula, cada una en su zona: hay un borde, dos fases.',
+    elemento: 'Hay una sola clase de partícula, y todos sus átomos son del mismo elemento.',
+    compuesto: 'Hay una sola clase de partícula, y cada una une átomos de elementos distintos.',
+    homogenea: 'Hay más de una clase de partícula, y todas se reparten en una sola fase, sin bordes.',
+    heterogenea: 'Hay más de una clase de partícula, y forman zonas distintas, con bordes entre ellas: dos fases o más.',
   };
 
   // ---- Figura de la lupa: paneles con sus capas (de arriba abajo), en tinta ----
@@ -226,7 +226,7 @@
       solucion: [
         [`En la lupa hay ${clases.length === 1 ? 'una sola clase de partícula' : `${clases.length} sustancias`}: ${lista(clases.map(e => (e === 'NaCl' && ps.some(([x]) => x === 'Na+') ? 'la sal (sus iones Na⁺ y Cl⁻, sueltos)' : fm(ESP[e].formula))))}.`],
         [clases.length === 1 ? (pura(real) && real === 'elemento' ? 'Todos sus átomos son de la misma clase.' : 'Cada partícula une átomos de elementos distintos.')
-          : m.capas.length === 1 ? 'Están repartidas en una sola zona, sin bordes: una fase.' : 'Hay una línea punteada: dos zonas, dos fases.'],
+          : m.capas.length === 1 ? 'Están repartidas en una sola zona, sin bordes, así que hay una fase.' : 'Una línea punteada separa dos zonas, así que hay dos fases.'],
         [PORQUE[real], ' Es ', NOMBRE[real].toLowerCase(), '.'],
       ],
       _datos: { tipo: 'lupa', nivel: 1, capas: m.capas },
@@ -259,8 +259,8 @@
       datos: [m.dato, DEF_SM, DEF_EC, DEF_HH],
       alternativas: alternativasClase(real, rng), respuesta: { valor: 'clase:' + real, texto: NOMBRE[real], unidad: '' },
       solucion: [
-        [`El dato dice qué tiene: ${m.dato.split(': ')[1]}.`],
-        ['Primero, cuántas clases de partícula: una, sustancia pura; varias, mezcla. Después, sus átomos o sus fases.'],
+        [`El dato dice qué tiene ${m.nombre}: ${m.dato.split(': ')[1]}.`],
+        ['Primero se cuentan las clases de partícula: si hay una, es sustancia pura, y si hay varias, es mezcla. Después se miran los átomos de la sustancia o las fases de la mezcla.'],
         [PORQUE[real], ' Es ', NOMBRE[real].toLowerCase(), '.'],
       ],
       _datos: { tipo: 'material', nivel: 2, m: m.id },
@@ -291,8 +291,8 @@
     const m = rng.elegir(MEZCLAS), real = formadaDe(m.formulas);
     const els = m.formulas.filter(x => elementosDe(x).length === 1), cos = m.formulas.filter(x => elementosDe(x).length > 1);
     const partes = [];
-    if (els.length) partes.push(`${lista(els.map(fm))}: ${els.length === 1 ? 'un solo símbolo, elemento' : 'un solo símbolo cada uno, elementos'}`);
-    if (cos.length) partes.push(`${lista(cos.map(fm))}: ${cos.length === 1 ? 'dos símbolos o más, compuesto' : 'dos símbolos o más cada uno, compuestos'}`);
+    if (els.length) partes.push(`${lista(els.map(fm))} ${els.length === 1 ? 'tiene un solo símbolo, así que es un elemento' : 'tienen un solo símbolo cada uno, así que son elementos'}`);
+    if (cos.length) partes.push(`${lista(cos.map(fm))} ${cos.length === 1 ? 'tiene dos símbolos o más, así que es un compuesto' : 'tienen dos símbolos o más cada uno, así que son compuestos'}`);
     const errores = Object.keys(FORMADA).filter(k => k !== real).map(k => ({ clave: 'formada:' + k, texto: FORMADA[k], ...err(SI_FORMADA[k][0], SI_FORMADA[k][1]) }));
     return {
       variables: {}, enunciado: [`Piensa en ${m.nombre}.`], pregunta: ['¿De qué está formado?'],
@@ -300,9 +300,9 @@
       alternativas: P.armarTexto({ correcta: { clave: 'formada:' + real, texto: FORMADA[real] }, errores, rng }),
       respuesta: { valor: 'formada:' + real, texto: FORMADA[real], unidad: '' },
       solucion: [
-        [`Tiene ${m.formulas.length} clases de partícula: es una mezcla.`],
+        [`Tiene ${m.formulas.length} clases de partícula, así que es una mezcla.`],
         [`${partes.join('; ')}.`],
-        ['El subíndice no cuenta: O₂ tiene dos átomos y sigue siendo un elemento.'],
+        ['El subíndice no cambia la clase: el O₂, por ejemplo, tiene dos átomos y sigue siendo un elemento.'],
       ],
       _datos: { tipo: 'formada', nivel: 3, m: m.id, formulas: m.formulas },
     };
@@ -334,7 +334,7 @@
     if (hielo) cand.push([F, C + 1, 'MA9', `Bien las fases. Pero el hielo es agua: el mismo componente en otra fase. Así contaste ${C + 1} componentes.`]);
     cand.push([F, C - 1, 'QM-SIN-AGUA', `Bien las fases. Pero el agua también es una sustancia del sistema: un componente más. Así contaste ${C - 1}.`]);
     if (dis && hielo) cand.push([F + 1, C + 1, 'QM-FASE-DISUELTO', 'Bien la idea de contar zonas y sustancias. Pero lo disuelto no es otra fase y el hielo no es otro componente.']);
-    cand.push([C, F, 'QM-INVIERTE', 'Bien los dos números, pero al revés: fases son zonas con borde; componentes, sustancias.']);
+    cand.push([C, F, 'QM-INVIERTE', 'Bien los dos números, pero al revés: las fases son zonas con borde, y los componentes, sustancias.']);
     cand.push([F, F, 'QM-COMP-FASES', `Bien las fases. Pero los componentes son las sustancias, no las zonas: no son ${F}.`]);
     cand.push([C, C, 'QM-COMP-FASES', `Bien los componentes. Pero las fases son las zonas con borde, no las sustancias: no son ${C}.`]);
     const errores = cand.filter(([f, c]) => f !== F || c !== C).map(([f, c, id, ex]) => ({ clave: `fc:${f}|${c}`, texto: fc(f, c), ...err(id, ex) }));
@@ -348,10 +348,10 @@
       alternativas: P.armarTexto({ correcta: { clave: `fc:${F}|${C}`, texto: fc(F, C) }, errores, rng }),
       respuesta: { valor: `fc:${F}|${C}`, texto: fc(F, C), unidad: '' },
       solucion: [
-        [`Fases, las zonas con borde: ${lista(fases)}${dis ? ' (con lo disuelto adentro)' : ''}. Son ${F}.`],
-        [`Componentes, las sustancias: ${lista(comps)}. Son ${C}.`],
-        [dis && hielo ? 'Lo disuelto no forma otra fase, y el hielo es agua: otra fase, el mismo componente.'
-          : dis ? 'Lo disuelto no forma otra fase: queda repartido dentro del agua.' : 'El hielo es agua: otra fase, pero el mismo componente.'],
+        [`Las fases son las zonas con borde: ${lista(fases)}${dis ? ', con lo disuelto dentro del agua' : ''}. Son ${F}.`],
+        [`Los componentes son las sustancias: ${lista(comps)}. Son ${C}.`],
+        [dis && hielo ? 'Lo disuelto no forma otra fase, y el hielo es agua: forma otra fase, pero es el mismo componente.'
+          : dis ? 'Lo disuelto no forma otra fase, porque queda repartido dentro del agua.' : 'El hielo es agua, así que forma otra fase pero es el mismo componente.'],
       ],
       _datos: { tipo: 'fases', nivel: 3, partes: ps },
     };
@@ -411,9 +411,9 @@
       datos: [...xs.map(x => x.dato), ...defs], alternativas,
       respuesta: { valor: n, unidad: '' },
       solucion: [
-        [pide === 'mezclas' ? 'Mezcla: varias clases de partícula, se vea pareja o no.' : pide === 'compuestos' ? 'Compuesto: una sola clase de partícula, con átomos distintos unidos.' : 'Elemento: átomos de una sola clase, sueltos o en moléculas como O₂.'],
-        [`Cumplen: ${lista(cuales)}.`],
-        [`Son ${n}.`],
+        [pide === 'mezclas' ? 'Es mezcla lo que tiene varias clases de partícula, se vea parejo o no.' : pide === 'compuestos' ? 'Es compuesto lo que tiene una sola clase de partícula, con átomos distintos unidos.' : 'Es elemento lo que tiene átomos de una sola clase, sueltos o en moléculas como O₂.'],
+        [`Lo cumplen ${lista(cuales)}.`],
+        [`En total son ${n}.`],
       ],
       _datos: { tipo: 'contar', nivel: 3, pide, lista: ids },
     };

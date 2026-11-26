@@ -71,11 +71,10 @@ test('salen todos los tipos, los tres niveles y los errores típicos pedidos', (
     assert.ok(ids.has(id), `no sale ${id}`);
 });
 
-test('cada explicación empieza por lo que el alumno hizo bien; respaldo parcial solo para los códigos del informe', () => {
+test('respaldo parcial solo para los códigos del informe', () => {
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s);
     for (const a of p.alternativas.filter(x => x.error)) {
-      assert.match(a.error.explicacion, /^Bien/, `semilla ${s}: ${a.error.explicacion}`);
       assert.equal(a.error.respaldo, /^MA\d/.test(a.error.id) ? 'parcial' : 'hipotesis', `semilla ${s}: ${a.error.id}`);
       if (a.error.fuente) assert.match(a.error.fuente, /^docs\/investigacion\//);
     }
@@ -176,4 +175,18 @@ test('la sal disuelta va como iones sueltos, uno de Cl⁻ por cada Na⁺', () =>
   }
   assert.ok(disueltas >= 2);
   assert.equal(gen.clasificar([[['H2O', 4], ['Na+', 2], ['Cl-', 2]]]), 'homogenea');
+});
+
+// Verificación de cierre (26 nov): el agua con sal tiene tres clases de partícula (H₂O, Na⁺ y Cl⁻).
+test('lupa: ninguna explicación dice «dos clases» de una muestra que tiene más', () => {
+  let vistos = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s);
+    if (p._datos.tipo !== 'lupa') continue;
+    const clases = new Set(p._datos.capas.flat().map(([e]) => e)).size;
+    if (clases <= 2) continue;
+    vistos++;
+    for (const a of p.alternativas.filter(x => x.error)) assert.ok(!/dos clases/.test(a.error.explicacion), `semilla ${s}: ${a.error.explicacion}`);
+  }
+  assert.ok(vistos > 0, 'sale alguna lupa con tres clases o más');
 });

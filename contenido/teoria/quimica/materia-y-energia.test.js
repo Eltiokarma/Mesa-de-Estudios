@@ -488,3 +488,33 @@ test('idea 6: cada «Ahora tú» trae la vida media o la manera de hallarla, y l
     assert.ok(!ds.includes(cor), `semilla ${s}: los datos traen la respuesta ${cor}`);
   }
 });
+
+// Verificación de cierre (26 nov): tres textos que no cuadraban con el caso.
+test('idea 1: con sal disuelta, los datos y las explicaciones no hablan de «dos clases» (son agua, Na⁺ y Cl⁻)', () => {
+  const I = def.ideas[0];
+  let conSal = 0;
+  for (let s = 0; s < 400; s++) for (const g of [I.resuelve, I.ahoraTu]) {
+    const r = g.generar(s), txt = JSON.stringify(r);
+    if (!txt.includes('iones de la sal')) continue;
+    conSal++;
+    const d = (r.pasos || []).find(p => p.tipo === 'datos');
+    if (d) assert.ok(d.texto.includes('iones'), `semilla ${s}: «${d.texto}»`);
+    for (const o of r.opciones || []) if (o.siFuera) assert.ok(!/dos clases/.test(o.siFuera), `semilla ${s}: «${o.siFuera}»`);
+  }
+  assert.ok(conSal > 0, 'sale el agua con sal');
+});
+
+test('glosario: el defecto de masa no se limita a lo nuclear, porque uno de sus ejemplos es el balón de gas que arde', () => {
+  const g = def.glosario.find(t => t.termino === 'defecto de masa');
+  assert.ok(g.ejemplos.some(e => /balón de gas/.test(e)));
+  assert.ok(!/después de un proceso nuclear/.test(g.def), g.def);
+});
+
+test('idea 3, contar moléculas: el «te pasaste por una» dice de qué', () => {
+  const I = def.ideas[2];
+  let vistos = 0;
+  for (let s = 0; s < 200; s++) for (const o of I.ahoraTu.generar(s).opciones || []) if (o.siFuera && /te pasaste por una/.test(o.siFuera)) {
+    vistos++; assert.match(o.siFuera, /por una molécula/);
+  }
+  assert.ok(vistos > 0);
+});

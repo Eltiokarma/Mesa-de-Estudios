@@ -187,11 +187,11 @@
     if (pura(elegida) && pura(real)) return elegida === 'elemento'
       ? ['MA9', 'Hay una sola clase de partícula, bien. Sería elemento si sus átomos fueran todos de una clase.']
       : ['MA9', 'Hay una sola clase de partícula, bien. Sería compuesto si uniera átomos de elementos distintos.'];
-    if (pura(elegida)) return [real === 'homogenea' ? 'MA10' : 'MA9', 'Cada partícula está bien mirada. Sería sustancia pura si todas fueran de una sola clase.'];
-    if (pura(real)) return ['MA9', real === 'compuesto' ? 'Hay dos clases de átomo, bien visto. Sería mezcla si estuvieran sueltos; aquí van unidos.' : 'Viste partículas de varios átomos, bien. Pero todas son iguales: una sola clase.'];
+    if (pura(elegida)) return [real === 'homogenea' ? 'MA10' : 'MA9', 'Miraste bien cada partícula. Sería sustancia pura si todas fueran de una sola clase, y aquí hay varias.'];
+    if (pura(real)) return ['MA9', real === 'compuesto' ? 'Hay átomos de más de una clase, bien visto. Sería mezcla si estuvieran sueltos, pero aquí van unidos en cada partícula.' : 'Viste partículas de varios átomos, bien. Pero todas son iguales, así que hay una sola clase.'];
     return elegida === 'homogenea'
-      ? ['QM-HOMO', 'Son dos clases de partícula, bien. Sería homogénea si formaran una sola fase; hay un borde.']
-      : ['QM-HETERO', 'Son dos clases, bien contadas. Sería heterogénea si formaran capas; aquí se reparten en una fase.'];
+      ? ['QM-HOMO', 'Hay más de una clase de partícula, bien. Sería homogénea si formaran una sola fase, pero hay un borde.']
+      : ['QM-HETERO', 'Hay más de una clase de partícula, bien. Sería heterogénea si formaran capas, pero aquí se reparten en una fase.'];
   }
   const opcionesClase = real => Object.keys(NOMBRE_CLASE).map(k => (k === real ? { id: 'c', texto: NOMBRE_CLASE[k], correcta: true }
     : (([error, siFuera]) => ({ id: k, texto: NOMBRE_CLASE[k], error, siFuera }))(siFueraClase(k, real))));
@@ -211,14 +211,14 @@
   ];
   const muestraLupa = m => mesa1([{ tipo: m.tipo, titulo: 'Muestra', capa: m.capa, fondo: m.fondo, lupa: { foco: m.foco === undefined ? 0.4 : m.foco, capas: m.capas } }]);
   const PORQUE_CLASE = {
-    elemento: 'Una sola clase de partícula, y todos sus átomos son de la misma clase.',
-    compuesto: 'Una sola clase de partícula, y cada una une átomos de elementos distintos.',
-    homogenea: 'Dos clases de partícula repartidas en una sola fase, sin bordes.',
-    heterogenea: 'Dos clases de partícula, cada una en su zona: hay un borde, dos fases.',
+    elemento: 'Hay una sola clase de partícula, y todos sus átomos son del mismo elemento.',
+    compuesto: 'Hay una sola clase de partícula, y cada una une átomos de elementos distintos.',
+    homogenea: 'Hay más de una clase de partícula, y todas se reparten en una sola fase, sin bordes.',
+    heterogenea: 'Hay más de una clase de partícula, y forman zonas distintas, con bordes entre ellas: dos fases o más.',
   };
   // Con sal disuelta, la lupa tiene agua y dos clases de ion: el porqué lo dice (sigue siendo una mezcla de una fase).
   const porqueClase = (real, m) => (real === 'homogenea' && m.capas.some(c => (c.particulas || []).some(p => p.e === 'Na+'))
-    ? 'Agua e iones de la sal, Na⁺ y Cl⁻, repartidos en una sola fase, sin bordes.' : PORQUE_CLASE[real]);
+    ? 'Hay agua e iones de la sal, Na⁺ y Cl⁻, repartidos en una sola fase, sin bordes.' : PORQUE_CLASE[real]);
 
   // Tipo 1: un material de todos los días, con lo que tiene escrito en los datos. Lo clasifica Motor.material.
   const MATERIALES1 = [
@@ -265,7 +265,7 @@
     if (S.partes.some(p => p.disuelto)) ds.push({ id: 'disuelto', F: S.c.errores.disueltoEsFase, C, error: 'QM-FASE-DISUELTO', siFuera: 'Contaste bien los componentes. Lo disuelto no forma otra fase: queda repartido dentro del agua.' });
     if (S.partes.some(p => p.nombre === 'cubitos de hielo')) ds.push({ id: 'hielo', F, C: S.c.errores.hieloOtroComponente, error: 'MA9', siFuera: 'Las fases están bien contadas. El hielo es agua: el mismo componente, en otra fase.' });
     ds.push({ id: 'cada', F: S.c.errores.cadaCosaUnaFase, C, error: 'QM-CADA-COSA', siFuera: 'Los componentes están bien. Una fase no es cada cosa nombrada: es cada zona con borde.' });
-    ds.push({ id: 'reves', F: C, C: F, error: 'QM-INVIERTE', siFuera: 'Contaste los dos números, pero al revés: fases son zonas; componentes, sustancias.' });
+    ds.push({ id: 'reves', F: C, C: F, error: 'QM-INVIERTE', siFuera: 'Contaste los dos números, pero al revés: las fases son zonas, y los componentes, sustancias.' });
     const ops = [{ id: 'c', texto: fc(F, C), correcta: true }], vistos = new Set([fc(F, C)]);
     for (const d of ds) { const t = fc(d.F, d.C); if (vistos.has(t)) continue; vistos.add(t); ops.push({ id: d.id, texto: t, error: d.error, siFuera: d.siFuera }); }
     return ops.slice(0, 4);
@@ -294,10 +294,10 @@
   const FORMADA = { el: 'Una mezcla de elementos solamente', co: 'Una mezcla de compuestos solamente', am: 'Una mezcla de elementos y compuestos', uno: 'Un compuesto, porque tiene varios elementos' };
   const formadaDe = m => { const t = m.formulas.map(x => Motor.especie(x).tipo); return t.every(x => x === 'elemento') ? 'el' : t.every(x => x === 'compuesto') ? 'co' : 'am'; };
   const SI_FORMADA = {
-    el: ['AQ-solo-elementos', 'Viste elementos en la lista, bien. Faltan los que unen átomos distintos: esos son compuestos.'],
-    co: ['AQ-solo-compuestos', 'Viste compuestos en la lista, bien. Revisa las fórmulas de un solo símbolo: son elementos.'],
-    am: ['AQ-elementos-y-compuestos', 'Revisaste cada fórmula, bien. Sería así si hubiera elementos y compuestos a la vez.'],
-    uno: ['MA9', 'Tiene varios elementos, cierto. Pero están en sustancias distintas y sueltas: es una mezcla.'],
+    el: ['AQ-solo-elementos', 'Viste elementos en la lista, bien. Pero faltan las fórmulas que unen átomos distintos, y esas son compuestos.'],
+    co: ['AQ-solo-compuestos', 'Viste compuestos en la lista, bien. Pero las fórmulas de un solo símbolo son elementos.'],
+    am: ['AQ-elementos-y-compuestos', 'Revisaste cada fórmula, bien. Sería así si hubiera elementos y compuestos a la vez, y aquí hay de una sola clase.'],
+    uno: ['MA9', 'Tiene varios elementos, cierto. Pero están en sustancias distintas y sueltas, así que es una mezcla.'],
   };
   function porqueFormada(m) {
     const els = m.formulas.filter(x => Motor.especie(x).tipo === 'elemento'), cos = m.formulas.filter(x => Motor.especie(x).tipo !== 'elemento');
@@ -392,7 +392,7 @@
       figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([vasoLupa('Agua de mar', [{ particulas: [{ e: 'H2O', n: 6 }, ...disuelto('NaCl', 3)] }])])),
       solucion: [
         { texto: ['Primero, las partículas: agua y los iones de la sal, Na⁺ y Cl⁻. Hay más de una clase: es una ', dR('mezcla'), '.'] },
-        { texto: ['Después, las fases: todo está repartido en una sola zona, sin bordes. Una fase: ', dR('homogénea'), '.'] },
+        { texto: ['Después, las fases: todo está repartido en una sola zona, sin bordes, así que la mezcla es ', dR('homogénea'), '.'] },
       ],
       respuesta: [dR('Mezcla homogénea')] },
     { nivel: 2, titulo: 'El aire de un frasco',
@@ -410,7 +410,7 @@
       figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([{ tipo: 'trozo', titulo: 'Bronce', material: 'metal', lupa: { foco: 0.5, capas: [{ particulas: BRONCE, orden: 'filas' }] } }], { separacion: 17 })),
       solucion: [
         { texto: ['En la lupa hay átomos de dos clases, cobre y estaño, sueltos y no unidos: dos sustancias. Es una ', dR('mezcla'), '.'] },
-        { texto: ['Se reparten parejo en todo el trozo: una sola fase. Una mezcla así de metales se llama aleación.'] },
+        { texto: ['Los dos metales se reparten parejo en todo el trozo, en una sola fase. Una mezcla así de metales se llama aleación.'] },
       ],
       respuesta: [dR('Mezcla homogénea'), ' (una aleación)'] },
     { nivel: 2, titulo: 'Un cristal de sal',
@@ -418,7 +418,7 @@
       datos: [DEF_LUPA, DEF_SM, DEF_EC],
       figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([{ tipo: 'trozo', titulo: 'Sal de mesa', material: 'cristal', lupa: { foco: 0.5, capas: [{ particulas: [{ e: 'NaCl', n: 12 }], orden: 'filas' }] } }])),
       solucion: [
-        { texto: ['Todos los pares son iguales: un ion sodio (Na⁺) junto a un ion cloruro (Cl⁻). Una sola clase: sustancia pura.'] },
+        { texto: ['Todos los pares son iguales, un ion sodio (Na⁺) junto a un ion cloruro (Cl⁻), así que hay una sola clase: es una sustancia pura.'] },
         { texto: ['La sal une dos elementos distintos, sodio y cloro, siempre uno por uno: es un ', dR('compuesto'), '.'] },
       ],
       respuesta: [dR('Compuesto')] },
@@ -434,7 +434,7 @@
       enunciado: 'El aire húmedo tiene nitrógeno (N₂), oxígeno (O₂), argón (Ar), dióxido de carbono (CO₂) y vapor de agua (H₂O), repartidos parejo. ¿Cómo se clasifica y de qué sustancias está formado?',
       datos: [DEF_SM, DEF_EC, DEF_HH, DEF_FORM],
       solucion: [
-        { texto: ['Cinco clases de partícula en una sola fase: es una mezcla homogénea.'] },
+        { texto: ['Hay cinco clases de partícula en una sola fase, así que es una mezcla homogénea.'] },
         { texto: ['N₂, O₂ y Ar tienen una sola clase de átomo: son elementos. CO₂ y H₂O unen átomos distintos: son compuestos.'] },
         { texto: ['Error típico: decir «solo elementos» porque el aire tiene nitrógeno y oxígeno, y olvidar el CO₂ y el agua.'] },
       ],
@@ -443,9 +443,9 @@
       enunciado: 'Clasifica el aire, el agua destilada, el ozono (O₃), el bronce, la sal de mesa (NaCl) y el diamante. ¿Cuántos son elementos, cuántos compuestos y cuántas mezclas?',
       datos: ['Aire: N₂, O₂ y otros gases', 'Agua destilada: solo H₂O', 'Bronce: cobre y estaño fundidos juntos', 'Diamante: solo átomos de carbono', DEF_SM, DEF_EC],
       solucion: [
-        { texto: ['Mezclas, con varias clases de partícula: el aire y el bronce.'] },
-        { texto: ['Elementos, con una sola clase de átomo: el ozono (solo O, aunque tenga tres átomos) y el diamante (solo C).'] },
-        { texto: ['Compuestos, con átomos distintos unidos: el agua (H y O) y la sal (Na y Cl).'] },
+        { texto: ['El aire y el bronce son mezclas, porque tienen varias clases de partícula.'] },
+        { texto: ['El ozono y el diamante son elementos, porque tienen una sola clase de átomo: el ozono solo tiene O, aunque junte tres átomos, y el diamante solo tiene C.'] },
+        { texto: ['El agua y la sal son compuestos, porque unen átomos distintos: H y O en el agua, Na y Cl en la sal.'] },
       ],
       respuesta: [dR('2 elementos'), ', ', dR('2 compuestos'), ' y ', dR('2 mezclas')] },
     { nivel: 3, titulo: 'Un vaso con cuatro cosas',
@@ -453,9 +453,9 @@
       datos: [DEF_FASE, DEF_COMP],
       figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([{ tipo: 'vaso', titulo: 'El vaso', capa: { alto: 0.2 }, fondo: { tipo: 'arena' } }], { clave: false })),
       solucion: [
-        { texto: ['Fases, las zonas con borde: el aceite, el agua con la sal y la arena. Son ', dR('3'), '.'] },
+        { texto: ['Las fases son las zonas con borde: el aceite, el agua con la sal y la arena. Son ', dR('3'), '.'] },
         { texto: ['La sal disuelta no es otra fase: está repartida dentro del agua. Contarla aparte es el error típico.'] },
-        { texto: ['Componentes, las sustancias: agua, aceite, sal y arena. Son ', dR('4'), '.'] },
+        { texto: ['Los componentes son las sustancias: agua, aceite, sal y arena. Son ', dR('4'), '.'] },
       ],
       respuesta: [dR('3 fases y 4 componentes')] },
     // Nivel 3 de verdad (lector en frío, 17 nov: «la 03 es más fácil que la 02»): dos trampas a la vez, el subíndice y
@@ -476,8 +476,8 @@
       figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([{ tipo: 'vaso', titulo: 'El vaso', capa: { alto: 0.2 } }], { clave: false })),
       solucion: [
         { texto: ['El alcohol y la sal no forman capas: quedan dentro del agua, en una sola zona.'] },
-        { texto: ['Fases: el aceite y el agua con el alcohol y la sal. Son ', dR('2'), '.'] },
-        { texto: ['Componentes: agua, alcohol, sal y aceite. Son ', dR('4'), '.'] },
+        { texto: ['Las fases son las zonas con borde: el aceite y el agua con el alcohol y la sal. Son ', dR('2'), '.'] },
+        { texto: ['Los componentes son las sustancias: agua, alcohol, sal y aceite. Son ', dR('4'), '.'] },
       ],
       respuesta: [dR('2 fases y 4 componentes')] },
   ];
@@ -497,7 +497,7 @@
       tarjetas: [
         { titulo: '¿Qué estudia la química?', texto: 'La química estudia la materia: de qué está hecha, cómo cambia y cuánta energía gana o pierde al cambiar. Materia es todo lo que tiene masa y ocupa un lugar: el agua de estos vasos, el aire, tu chompa.',
           pieza: 'quim-vasos', dibujo: mesa1([destilada(false), conAzucar(false), conAceite(false)], { clave: false }) },
-        { titulo: 'Las ramas de la química', texto: 'La química general estudia lo común a toda la materia; la inorgánica, los minerales, las sales y los metales; la orgánica, los compuestos del carbono; la bioquímica, los seres vivos; la analítica averigua qué hay y cuánto; la fisicoquímica, la energía de los cambios.' },
+        { titulo: 'Las ramas de la química', texto: 'La química general estudia lo común a toda la materia. La inorgánica estudia minerales, sales y metales; la orgánica, los compuestos del carbono, y la bioquímica, los seres vivos. La analítica averigua qué hay y cuánto, y la fisicoquímica mide la energía de los cambios.' },
         { titulo: 'Una lupa imaginaria', texto: 'La materia está hecha de partículas diminutas, que no se ven. La lupa las dibuja como bolitas: es un modelo, no una foto. Cada bolita es un átomo, y su color y su relleno dicen de qué elemento es. Los átomos pegados forman una partícula.',
           pieza: 'quim-vasos', dibujo: mesa1([destilada()]) },
         { titulo: 'Qué mirar al jugar', texto: 'Una fase es una zona que se ve igual en todos sus puntos, con un borde que la separa de otra: el aceite forma una fase sobre el agua. Al jugar, mira el vaso por fuera y, en la lupa, cuántas clases de partícula hay.' },
@@ -553,17 +553,17 @@
       voz: 'Comparemos los tres vasos: primero por fuera, después con la lupa.',
       pasos: [
         { estado: { corte: 0 }, texto: 'Por fuera, el agua destilada y el agua con azúcar se ven iguales.' },
-        { estado: { corte: 1 }, texto: 'Agua destilada: todas sus partículas son H₂O. Una sola clase: sustancia pura.', ecuacion: ['sustancia pura: 1 clase de partícula'] },
-        { estado: { corte: 2 }, texto: 'Cada H₂O une átomos de dos elementos, oxígeno e hidrógeno: es un compuesto.', ecuacion: ['compuesto: átomos distintos unidos'] },
-        { estado: { corte: 3 }, texto: 'Agua con azúcar: dos clases de partícula, repartidas en una sola fase.', ecuacion: ['mezcla homogénea: 1 fase'] },
-        { estado: { corte: 4 }, texto: 'Agua con aceite: dos clases, cada una en su capa. Son dos fases.', ecuacion: ['mezcla heterogénea: 2 fases o más'] },
-        { estado: { corte: 4 }, texto: 'El azúcar disuelto no forma otra fase: queda dentro del agua.', ecuacion: ['agua con azúcar: 2 componentes, 1 fase'] },
+        { estado: { corte: 1 }, texto: 'En el agua destilada, todas las partículas son H₂O: hay una sola clase, así que es una sustancia pura.', ecuacion: ['sustancia pura: 1 clase de partícula'] },
+        { estado: { corte: 2 }, texto: 'Cada partícula H₂O une átomos de dos elementos, oxígeno e hidrógeno, así que el agua es un compuesto.', ecuacion: ['compuesto: átomos distintos unidos'] },
+        { estado: { corte: 3 }, texto: 'En el agua con azúcar hay dos clases de partícula, y las dos se reparten en una sola fase.', ecuacion: ['mezcla homogénea: 1 fase'] },
+        { estado: { corte: 4 }, texto: 'En el agua con aceite también hay dos clases, pero cada una queda en su capa, con un borde entre ellas.', ecuacion: ['mezcla heterogénea: 2 fases o más'] },
+        { estado: { corte: 4 }, texto: 'El azúcar disuelto no forma otra fase, porque queda repartido dentro del agua.', ecuacion: ['agua con azúcar: 2 componentes, 1 fase'] },
       ],
     },
     regla: {
-      texto: 'Una sustancia pura tiene una sola clase de partícula; una mezcla tiene varias. Si sus átomos son de una clase, es elemento; si son distintos, compuesto.',
+      texto: 'Una sustancia pura tiene una sola clase de partícula, y una mezcla tiene varias. Si todos los átomos de la sustancia pura son de un mismo elemento, es un elemento; si une átomos distintos, es un compuesto.',
       ecuacion: ['homogénea: 1 fase', '   ·   ', 'heterogénea: 2 fases o más', '   ·   ', 'componentes: cuántas sustancias hay'],
-      condicion: 'Se decide por las partículas, no por el aspecto. Lo disuelto no forma otra fase; el hielo es agua en otra fase.',
+      condicion: 'cuentas las partículas y no te guías por el aspecto: lo disuelto queda dentro de la fase del líquido, y el hielo es la misma agua en otra fase.',
       voz: 'Primero cuenta clases de partícula; después, fases.',
     },
     // Así se resuelve: el mismo tipo que «Ahora tú» con la misma semilla, pero otro caso (caso1(s, true)).
@@ -575,10 +575,10 @@
           enunciado: c.pregunta, datos: c.datos, dibujo: c.dibujo,
           pasos: [
             { tipo: 'pide', texto: 'Piden clasificar la muestra: elemento, compuesto, mezcla homogénea o mezcla heterogénea.' },
-            { tipo: 'datos', texto: `En la lupa hay ${c.real === 'elemento' || c.real === 'compuesto' ? 'una sola clase de partícula' : c.porque.startsWith('Agua e iones') ? 'agua y los iones de la sal' : 'dos clases de partícula'}${c.real === 'heterogenea' ? ', separadas por un borde' : ''}.` },
-            { tipo: 'regla', texto: 'Primero cuento clases de partícula: una es sustancia pura; varias, mezcla. Después miro los átomos de la sustancia, o las fases de la mezcla.' },
+            { tipo: 'datos', texto: `En la lupa hay ${c.real === 'elemento' || c.real === 'compuesto' ? 'una sola clase de partícula' : c.porque.includes('iones de la sal') ? 'agua y los iones de la sal' : 'dos clases de partícula'}${c.real === 'heterogenea' ? ', separadas por un borde' : ''}.` },
+            { tipo: 'regla', texto: 'Primero cuento las clases de partícula: si hay una, es sustancia pura, y si hay varias, es mezcla. Después miro los átomos de la sustancia pura o las fases de la mezcla.' },
             { tipo: 'aplica', texto: c.porque, ecuacion: [dR(NOMBRE_CLASE[c.real])] },
-            { tipo: 'sentido', texto: 'Comprobación: el aspecto no decidió nada; lo decidieron las partículas de la lupa.' },
+            { tipo: 'sentido', texto: 'Comprobación: la clase salió de las partículas de la lupa, no del aspecto de la muestra.' },
           ],
           respuesta: NOMBRE_CLASE[c.real],
         };
@@ -586,10 +586,10 @@
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: `Piden clasificar ${c.m.nombre}.` },
-            { tipo: 'datos', texto: `El dato dice qué tiene: ${c.m.dato.split(': ')[1]}.` },
-            { tipo: 'regla', texto: 'Una clase de partícula es sustancia pura (elemento o compuesto); varias, mezcla (homogénea con una fase, heterogénea con más).' },
+            { tipo: 'datos', texto: `El dato dice qué tiene ${c.m.nombre}: ${c.m.dato.split(': ')[1]}.` },
+            { tipo: 'regla', texto: 'Con una sola clase de partícula es sustancia pura, que puede ser elemento o compuesto. Con varias es mezcla: homogénea si forma una fase y heterogénea si forma más.' },
             { tipo: 'aplica', texto: `${c.porque} Por eso es ${CORTO_CLASE[c.real]}.`, ecuacion: [dR(NOMBRE_CLASE[c.real])] },
-            { tipo: 'sentido', texto: c.real === 'homogenea' ? 'Comprobación: se ve parejo y aun así es mezcla; lo parejo dice homogénea, no pura.' : 'Comprobación: la clase sale de lo que tiene adentro, no de cómo se ve.' },
+            { tipo: 'sentido', texto: c.real === 'homogenea' ? 'Comprobación: se ve parejo y aun así es mezcla. Que se vea parejo dice que es homogénea, no que sea pura.' : 'Comprobación: la clase sale de las partículas que tiene adentro, no de cómo se ve.' },
           ],
           respuesta: NOMBRE_CLASE[c.real],
         };
@@ -598,11 +598,11 @@
           return {
             enunciado: c.pregunta, datos: c.datos, dibujo: c.dibujo,
             pasos: [
-              { tipo: 'pide', texto: 'Piden dos números: las fases (zonas con borde) y los componentes (sustancias distintas).' },
+              { tipo: 'pide', texto: 'Piden dos números: cuántas fases hay, es decir, zonas con borde, y cuántos componentes, es decir, sustancias distintas.' },
               { tipo: 'datos', texto: `En el vaso hay ${c.S.texto}.` },
-              { tipo: 'regla', texto: 'Lo disuelto queda dentro del líquido, en su misma fase. El hielo es agua: otra fase, pero el mismo componente.' },
+              { tipo: 'regla', texto: 'Lo disuelto queda dentro del líquido, en su misma fase. El hielo es agua, así que forma otra fase pero es el mismo componente.' },
               { tipo: 'aplica', texto: `Fases: ${listaPalabras(c.S.c.fases.map(x => ({ líquido: 'el líquido', hielo: 'el hielo', aceite: 'el aceite', arena: 'la arena' })[x]))}. Componentes: ${listaPalabras(c.S.c.componentes.map(x => ({ H2O: 'agua', NaCl: 'sal', C12H22O11: 'azúcar', aceite: 'aceite', SiO2: 'arena' })[x]))}.`, ecuacion: [dR(fc(F, C))] },
-              { tipo: 'sentido', texto: 'Comprobación: cada fase es una zona que se ve con borde en la figura; lo disuelto no se ve.' },
+              { tipo: 'sentido', texto: 'Comprobación: cada fase es una zona con borde que se ve en la figura, y lo disuelto no forma ninguna zona aparte.' },
             ],
             respuesta: fc(F, C),
           };
@@ -611,10 +611,10 @@
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: `Piden el único material que es ${c.buscaMezcla ? 'mezcla' : 'sustancia pura'}.` },
-            { tipo: 'datos', texto: 'Cada dato dice qué partículas tiene cada material.' },
-            { tipo: 'regla', texto: 'Una sola clase de partícula es sustancia pura; varias clases, mezcla. Lo parejo a la vista no decide.' },
+            { tipo: 'datos', texto: 'Los datos dicen qué partículas tiene cada uno de los cuatro materiales.' },
+            { tipo: 'regla', texto: 'Si hay una sola clase de partícula, es sustancia pura; si hay varias, es mezcla. Que se vea parejo no decide nada.' },
             { tipo: 'aplica', texto: `${c.q.bueno.corto} tiene ${c.buscaMezcla ? 'varias clases de partícula' : 'una sola clase de partícula'}; los otros tres, ${c.buscaMezcla ? 'una sola' : 'varias'}.`, ecuacion: [dR(c.q.bueno.corto)] },
-            { tipo: 'sentido', texto: 'Comprobación: solo una opción cumple; si dos cumplieran, habría que revisar los datos.' },
+            { tipo: 'sentido', texto: 'Comprobación: solo una opción cumple. Si dos cumplieran, habría que volver a revisar los datos.' },
           ],
           respuesta: c.q.bueno.corto,
         };
@@ -622,10 +622,10 @@
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: 'Piden si las sustancias de la mezcla son elementos, compuestos o de las dos clases.' },
-            { tipo: 'datos', texto: `La mezcla tiene ${c.m.formulas.length} sustancias; sus fórmulas están en el dato.` },
+            { tipo: 'datos', texto: `La mezcla tiene ${c.m.formulas.length} sustancias, y el dato da la fórmula de cada una.` },
             { tipo: 'regla', texto: 'Una fórmula con un solo símbolo es un elemento; con dos símbolos o más, un compuesto.' },
             { tipo: 'aplica', texto: `${porqueFormada(c.m)}.`, ecuacion: [dR(FORMADA[c.real])] },
-            { tipo: 'sentido', texto: 'Comprobación: el subíndice no cuenta. O₂ tiene dos átomos y sigue siendo un elemento.' },
+            { tipo: 'sentido', texto: 'Comprobación: el subíndice no cambia la clase. O₂ tiene dos átomos y sigue siendo un elemento, porque los dos son de oxígeno.' },
           ],
           respuesta: FORMADA[c.real],
         };
@@ -638,7 +638,7 @@
         const c = caso1(s, false);
         let solucion;
         if (c.tipo === 0 || c.tipo === 1) solucion = { texto: c.porque, ecuacion: [dR(NOMBRE_CLASE[c.real])] };
-        else if (c.tipo === 2) solucion = { texto: 'Fases: zonas con borde; lo disuelto no cuenta aparte. Componentes: sustancias; el hielo es agua.', ecuacion: [dR(fc(c.S.c.nFases, c.S.c.nComponentes))] };
+        else if (c.tipo === 2) solucion = { texto: 'Las fases son las zonas con borde, y lo disuelto no cuenta aparte. Los componentes son las sustancias, y el hielo cuenta como agua.', ecuacion: [dR(fc(c.S.c.nFases, c.S.c.nComponentes))] };
         else if (c.tipo === 3) solucion = { texto: `${c.q.bueno.corto} es el único con ${c.buscaMezcla ? 'varias clases de partícula' : 'una sola clase de partícula'}.`, ecuacion: [dR(c.q.bueno.corto)] };
         else solucion = { texto: `${porqueFormada(c.m)}.`, ecuacion: [dR(FORMADA[c.real])] };
         return { pregunta: c.pregunta, datos: c.datos, dibujo: c.dibujo, opciones: c.opciones, solucion };
@@ -728,13 +728,13 @@
       si: { destilacion: 'Destilar separa por la ebullición, pero gasta mucho calor: la arena se retiene con un papel.', evaporacion: 'Evaporar te deja la arena, cierto, pero pierdes el agua. El papel la retiene y conserva ambas.', imantacion: 'Buscas una diferencia, bien. Pero la arena no la atrae un imán.' } },
     { mezcla: 'agua-aceite', texto: 'separar el aceite del agua de una olla', pide: 'decantacion',
       vaso: { tipo: 'vaso', titulo: 'Agua con aceite', capa: { alto: 0.22 } }, dato: 'El aceite no se mezcla con el agua y flota sobre ella',
-      si: { filtracion: 'Filtrar retiene granos sólidos. Dos líquidos pasan juntos por el papel.', evaporacion: 'Evaporar se lleva el agua al aire: no la recuperas.', imantacion: 'Buscas una diferencia, bien. Pero ni el agua ni el aceite los atrae un imán.' } },
+      si: { filtracion: 'Filtrar retiene granos sólidos, pero dos líquidos pasan juntos por el papel.', evaporacion: 'Evaporar se lleva el agua al aire, y así no la recuperas.', imantacion: 'Buscas una diferencia, bien. Pero ni el agua ni el aceite los atrae un imán.' } },
     { mezcla: 'agua-alcohol', texto: 'separar el alcohol del agua', pide: 'destilacion',
       vaso: { tipo: 'vaso', titulo: 'Agua con alcohol' }, dato: 'El alcohol se mezcla del todo con el agua; hierve a unos 78 °C y el agua a 100 °C',
-      si: { decantacion: 'Decantar sirve con dos capas. Agua y alcohol forman una sola fase.', filtracion: 'Filtrar retiene granos sólidos. Los dos líquidos pasan juntos por el papel.', evaporacion: 'Evaporar se lleva los dos al aire: no queda nada que recoger.' } },
+      si: { decantacion: 'Decantar sirve con dos capas, pero el agua y el alcohol forman una sola fase.', filtracion: 'Filtrar retiene granos sólidos, pero los dos líquidos pasan juntos por el papel.', evaporacion: 'Evaporar se lleva los dos líquidos al aire, y no queda nada que recoger.' } },
     { mezcla: 'hierro-azufre', texto: 'separar limaduras de hierro de azufre en polvo', pide: 'imantacion',
       vaso: { tipo: 'vaso', titulo: 'Hierro y azufre', nivel: 0, polvo: true }, dato: 'Hierro y azufre: dos polvos sólidos mezclados',
-      si: { filtracion: 'Filtrar necesita un líquido que pase. Aquí los dos son polvos sólidos.', decantacion: 'Decantar necesita un líquido. Aquí los dos son polvos sólidos.', destilacion: 'Destilar necesita un líquido que hierva. Aquí no hay líquido.' } },
+      si: { filtracion: 'Filtrar necesita un líquido que pase por el papel, y aquí los dos son polvos sólidos.', decantacion: 'Decantar necesita un líquido, y aquí los dos son polvos sólidos.', destilacion: 'Destilar necesita un líquido que hierva, y aquí no hay ningún líquido.' } },
     { mezcla: 'agua-sal', texto: 'sacar la sal del agua de mar; el agua no importa', pide: 'evaporacion', fuera: 'destilacion',
       vaso: { tipo: 'vaso', titulo: 'Agua de mar' }, dato: 'La sal está disuelta en el agua: no se ve',
       si: { filtracion: 'Filtrar retiene un sólido sin disolver. La sal disuelta pasa por el papel.', decantacion: 'Decantar necesita dos capas. La sal disuelta forma una sola fase.', imantacion: 'Buscas una diferencia, bien. Pero un imán no atrae a la sal.' } },
@@ -758,7 +758,7 @@
         opciones: opcionesNum(rh, [
           { id: 'inv', valor: o.V / o.m, error: 'QM-RHO-INVIERTE', siFuera: 'Usaste masa y volumen, bien. Pero va masa entre volumen, no al revés.' },
           { id: 'lect', valor: o.m / despues, error: 'QM-PROBETA', siFuera: 'Dividiste la masa, bien. El volumen es lo que subió el agua, no la lectura final.' },
-          { id: 'prod', valor: o.m * o.V, error: 'QM-RHO-PRODUCTO', siFuera: 'Usaste masa y volumen, bien. Se dividen: gramos en cada cm³.' },
+          { id: 'prod', valor: o.m * o.V, error: 'QM-RHO-PRODUCTO', siFuera: 'Usaste masa y volumen, bien. Pero se dividen, porque la densidad dice cuántos gramos hay en cada cm³.' },
         ], x => `${f(x)} g/cm³`) };
     }
     if (tipo === 1) {
@@ -770,14 +770,14 @@
         opciones: opcionesNum(masa, [
           { id: 'sinml', valor: l.rho * litros, error: 'QM-L-ML', siFuera: 'Multiplicaste densidad por volumen, bien. Faltó pasar los litros a mL.' },
           { id: 'div', valor: mL / l.rho, error: 'QM-RHO-INVIERTE', siFuera: 'Pasaste a mL, bien. La masa es densidad por volumen, no volumen entre densidad.' },
-          { id: 'agua', valor: mL, error: 'QM-COMO-AGUA', siFuera: 'Así sería con agua, de 1 g/mL. Cada líquido tiene su densidad.' },
+          { id: 'agua', valor: mL, error: 'QM-COMO-AGUA', siFuera: 'Así sería con agua, que tiene 1 g/mL. Pero cada líquido tiene su propia densidad.' },
         ], x => `${f(x)} g`) };
       return { tipo, l, litros, mL, masa, pideM, datos,
         pregunta: ['¿Qué volumen ocupan ', vO(`${f(masa)} g`), ` de ${l.nombre}? Responde en mL.`],
         opciones: opcionesNum(mL, [
           { id: 'mult', valor: masa * l.rho, error: 'QM-RHO-PRODUCTO', siFuera: 'Usaste la masa y la densidad, bien. Se divide la masa entre la densidad.' },
-          { id: 'agua', valor: masa, error: 'QM-COMO-AGUA', siFuera: 'Así sería con agua, de 1 g/mL. Cada líquido tiene su densidad.' },
-          { id: 'litros', valor: masa / l.rho / 1000, error: 'QM-L-ML', siFuera: 'La división está bien, pero eso son litros. Piden mililitros.' },
+          { id: 'agua', valor: masa, error: 'QM-COMO-AGUA', siFuera: 'Así sería con agua, que tiene 1 g/mL. Pero cada líquido tiene su propia densidad.' },
+          { id: 'litros', valor: masa / l.rho / 1000, error: 'QM-L-ML', siFuera: 'La división está bien, pero ese resultado está en litros, y piden mililitros.' },
         ], x => `${f(x)} mL`) };
     }
     if (tipo === 2) {
@@ -793,17 +793,17 @@
         opciones: lista.map(x => (x === buena ? { id: 'c', texto: may(x), correcta: true }
           : { id: x.replace(/\s+/g, '-'), texto: may(x), error: 'AT1',
             siFuera: Motor.propiedad(x).tipo === 'intensiva' ? `Buscaste algo que se mide, bien. Pero ${x === 'densidad' ? 'la densidad' : x === 'dureza' ? 'la dureza' : `el ${x}`} no depende de cuánto hay.`
-              : `Se mide, bien. Pero ${x === 'masa' ? 'la masa' : `el ${x}`} depende de cuánto hay: se parte con el trozo.` })) };
+              : `Se mide, bien. Pero ${x === 'masa' ? 'la masa' : `el ${x}`} depende de cuánto hay, así que se parte con el trozo.` })) };
     }
     if (tipo === 3) {
       const lista = LISTAS2[idx(s, LISTAS2.length, otro)], c = Motor.clasificarPropiedades(lista);
       return { tipo, lista, c, datos: [DEF_INT, DEF_EXT],
         pregunta: `De esta lista, ¿cuántas son propiedades intensivas? ${listaPalabras(lista)}.`,
         opciones: opcionesNum(c.nIntensivas, [
-          { id: 'medible', valor: lista.length - c.errores.medibleEsExtensiva, error: 'AT1', siFuera: 'Viste las que dependen de la cantidad. Medirse con un número no la vuelve extensiva.' },
-          { id: 'temp', valor: lista.length - c.errores.temperaturaExtensiva, error: 'Q4', siFuera: 'Casi todas bien. Las temperaturas no se suman al juntar dos muestras: son intensivas.' },
-          { id: 'mas', valor: c.nIntensivas + 1, error: 'AT1', siFuera: 'Contaste las intensivas, bien. Revisa cuál de ellas crece si hay más muestra.' },
-          { id: 'menos', valor: c.nIntensivas - 1, error: 'AT1', siFuera: 'Contaste las intensivas, bien. Revisa cuál de ellas no cambia si hay más muestra.' },
+          { id: 'medible', valor: lista.length - c.errores.medibleEsExtensiva, error: 'AT1', siFuera: 'Viste las que dependen de la cantidad, bien. Pero que una propiedad se mida con un número no la vuelve extensiva.' },
+          { id: 'temp', valor: lista.length - c.errores.temperaturaExtensiva, error: 'Q4', siFuera: 'Casi todas están bien. Pero las temperaturas no se suman al juntar dos muestras, así que son intensivas.' },
+          { id: 'mas', valor: c.nIntensivas + 1, error: 'AT1', siFuera: 'Contaste las intensivas, bien. Pero una de las que contaste crece si hay más muestra.' },
+          { id: 'menos', valor: c.nIntensivas - 1, error: 'AT1', siFuera: 'Contaste las intensivas, bien. Pero falta una que tampoco cambia si hay más muestra.' },
         ], x => String(x)) };
     }
     const q = SEPARAR2[idx(s, SEPARAR2.length, otro)], ad = Motor.metodoPara(q.mezcla).adecuados;
@@ -813,11 +813,11 @@
       opciones: [{ id: 'c', texto: METODOS2[q.pide].nombre, correcta: true }, ...malos.map(k => ({ id: k, texto: METODOS2[k].nombre, error: ERR_MET[k], siFuera: q.si[k] }))] };
   }
   const ARGUMENTO_SEP = {
-    filtracion: 'La arena es un sólido sin disolver: el papel la retiene y el agua pasa.',
-    decantacion: 'El aceite no se mezcla y es menos denso: queda arriba y se vierte aparte.',
-    destilacion: 'Lo que difiere es la temperatura de ebullición: el que hierve antes se va como vapor y se recoge.',
-    evaporacion: 'Basta con que el agua se vaya al aire: la sal disuelta queda en el fondo.',
-    imantacion: 'Solo el hierro es atraído por un imán: el azufre se queda.',
+    filtracion: 'La arena es un sólido sin disolver, así que el papel la retiene y deja pasar el agua.',
+    decantacion: 'El aceite no se mezcla con el agua y es menos denso, así que queda arriba y se vierte aparte.',
+    destilacion: 'Los componentes difieren en su temperatura de ebullición: el que hierve antes se va como vapor, y ese vapor se enfría y se recoge.',
+    evaporacion: 'Basta con que el agua se vaya al aire, porque la sal disuelta queda en el fondo.',
+    imantacion: 'Un imán atrae solo al hierro, y el azufre se queda donde estaba.',
   };
 
   // Ejemplos resueltos de la idea 2 (pestaña «Ejemplos»): 5 por nivel. N1, un paso (ρ = m/V, leer la probeta, intensiva o
@@ -970,9 +970,9 @@
       tarjetas: [
         { titulo: 'Pesar y medir', texto: 'La balanza mide la masa, m, en gramos. La probeta con agua mide el volumen, V: al meter un objeto, el agua sube justo lo que el objeto ocupa. Un mililitro (mL) es lo mismo que un centímetro cúbico (cm³).',
           pieza: 'quim-cocina', dibujo: coc(pesaYMide('Una piedra', 'piedra', 81, 30)) },
-        { titulo: 'Propiedades', texto: 'Una propiedad es algo que se observa o se mide en una muestra: su masa, su color, su dureza. Una propiedad física se mide sin convertir la sustancia en otra. Algunas cambian si tienes más muestra; otras, no.' },
+        { titulo: 'Propiedades', texto: 'Una propiedad es algo que se observa o se mide en una muestra, como su masa, su color o su dureza. Una propiedad física se mide sin convertir la sustancia en otra. Algunas cambian si tienes más muestra, y otras no.' },
         { titulo: 'Gramos en cada cm³', texto: 'Para comparar objetos de distinto tamaño, se divide la masa entre el volumen: cuántos gramos hay en cada cm³. Esa cuenta es la densidad. El oro tiene unos 19,3 g en cada cm³.' },
-        { titulo: 'Qué mirar', texto: 'En el juego, tres objetos dorados: solo uno es de oro. Pésalos, mídelos en la probeta y fíjate en qué cambia y qué no cuando pesas solo un trozo.' },
+        { titulo: 'Qué mirar', texto: 'En el juego hay tres objetos dorados, y solo uno es de oro. Pésalos, mídelos en la probeta y fíjate en qué cambia y qué no cuando pesas solo un trozo.' },
       ],
     },
     juega: {
@@ -1006,9 +1006,9 @@
       pieza: 'quim-cocina',
       opciones: [
         { id: 'c', texto: 'Lo mismo en las dos', correcta: true },
-        { id: 'mas3', texto: 'Más la de 3 L, porque tiene más agua', error: 'Q4', siFuera: 'La de 3 L pidió más calor, cierto. Pero hervir no la deja más caliente.' },
-        { id: 'mas1', texto: 'Más la de 1 L, porque se calienta más rápido', error: 'Q4', siFuera: 'La de 1 L llegó antes a hervir, cierto. Después, las dos quedan igual.' },
-        { id: 'tiempo', texto: 'Depende de cuánto tiempo lleva hirviendo', error: 'QM-TIEMPO-HIERVE', siFuera: 'El tiempo importa antes de hervir. Mientras hierve, la temperatura ya no sube.' },
+        { id: 'mas3', texto: 'Más la de 3 L, porque tiene más agua', error: 'Q4', siFuera: 'La de 3 L pidió más calor, cierto. Pero, una vez que hierve, ese calor extra no la deja más caliente.' },
+        { id: 'mas1', texto: 'Más la de 1 L, porque se calienta más rápido', error: 'Q4', siFuera: 'La de 1 L llegó antes a hervir, cierto. Pero, cuando las dos ya hierven, quedan a la misma temperatura.' },
+        { id: 'tiempo', texto: 'Depende de cuánto tiempo lleva hirviendo', error: 'QM-TIEMPO-HIERVE', siFuera: 'El tiempo importa antes de hervir, cierto. Pero, mientras el agua hierve, su temperatura ya no sube.' },
       ],
       dibujo: coc([
         { tipo: 'olla', titulo: '1 L de agua', tam: 0.75, nivel: 0.55, fuego: true, hierve: true, vapor: 1, termometro: '?' },
@@ -1018,7 +1018,7 @@
         { tipo: 'olla', titulo: '1 L de agua', tam: 0.75, nivel: 0.55, fuego: true, hierve: true, vapor: 1, termometro: '87 °C', colorT: 'd' },
         { tipo: 'olla', titulo: '3 L de agua', tam: 1.1, nivel: 0.75, fuego: true, hierve: true, vapor: 1, termometro: '87 °C', colorT: 'd' },
       ]),
-      coincide: 'Coincide: las dos marcan unos 87 °C. Hervir no depende de cuánta agua hay.',
+      coincide: 'Coincide: las dos marcan unos 87 °C, porque la temperatura de ebullición no depende de cuánta agua hay.',
       noCoincide: 'Las dos marcan unos 87 °C: la temperatura de ebullición no depende de cuánta agua hay.',
     },
     mira: {
@@ -1031,20 +1031,20 @@
       ]).datos,
       voz: 'Comparemos qué cambia entre las dos ollas y qué no.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Las dos marcan unos 87 °C: no depende de cuánta agua hierve.', ecuacion: ['temperatura de ebullición: ', { llave: ['intensiva'], nota: 'no depende de cuánto hay' }] },
+        { estado: { corte: 1 }, texto: 'Las dos ollas marcan unos 87 °C: la temperatura a la que el agua hierve no depende de cuánta agua hay.', ecuacion: ['temperatura de ebullición: ', { llave: ['intensiva'], nota: 'no depende de cuánto hay' }] },
         // Por qué 87 °C y no 100 °C (lector en frío, 17 nov). Juliaca, a unos 3800 m de altura.
-        { estado: { corte: 1 }, texto: 'Juliaca está a unos 3800 m: con menos aire encima, el agua hierve antes.', ecuacion: ['en Juliaca: unos ', vD('87 °C'), ';  al nivel del mar: ', vD('100 °C')] },
-        { estado: { corte: 2 }, texto: 'La masa sí cambia: la olla grande tiene el triple.', ecuacion: [mR, ': 1000 g y 3000 g → extensiva'] },
-        { estado: { corte: 3 }, texto: 'Gramos en cada cm³: en las dos ollas, lo mismo.', ecuacion: [rho, ' = ', { frac: [mR, Vr] }, ' = ', { frac: ['3000 g', '3000 cm³'] }, ' = 1 g/cm³'] },
-        { estado: { corte: 3 }, texto: 'Las intensivas dicen qué sustancia es: 19,3 g/cm³ es oro.', ecuacion: ['oro: unos 19,3 g/cm³;  agua: 1 g/cm³'] },
-        { estado: { corte: 3 }, texto: 'En una mezcla, cada componente conserva sus intensivas: por ellas se separa.', ecuacion: ['agua con alcohol: hierve primero el alcohol → destilación'] },
-        { estado: { corte: 3 }, texto: 'Arena sin disolver: se filtra. Aceite: se decanta. Sal disuelta: se evapora el agua.' },
+        { estado: { corte: 1 }, texto: 'Juliaca está a unos 3800 m de altura. Con menos aire encima, el agua hierve antes de llegar a 100 °C.', ecuacion: ['en Juliaca: unos ', vD('87 °C'), ';  al nivel del mar: ', vD('100 °C')] },
+        { estado: { corte: 2 }, texto: 'La masa sí cambia, porque la olla grande tiene el triple de agua.', ecuacion: [mR, ': 1000 g y 3000 g → extensiva'] },
+        { estado: { corte: 3 }, texto: 'En cambio, los gramos que hay en cada cm³ son los mismos en las dos ollas.', ecuacion: [rho, ' = ', { frac: [mR, Vr] }, ' = ', { frac: ['3000 g', '3000 cm³'] }, ' = 1 g/cm³'] },
+        { estado: { corte: 3 }, texto: 'Las propiedades intensivas dicen qué sustancia es: un objeto con 19,3 g en cada cm³ es de oro.', ecuacion: ['oro: unos 19,3 g/cm³;  agua: 1 g/cm³'] },
+        { estado: { corte: 3 }, texto: 'En una mezcla, cada componente conserva sus propiedades intensivas, y por ellas se separa.', ecuacion: ['agua con alcohol: hierve primero el alcohol → destilación'] },
+        { estado: { corte: 3 }, texto: 'La arena sin disolver se filtra, el aceite se decanta, y para sacar la sal disuelta se evapora el agua.' },
       ],
     },
     regla: {
-      texto: 'Las propiedades intensivas, como la densidad y la temperatura de ebullición, no dependen de cuánto hay; las extensivas, como la masa y el volumen, sí.',
+      texto: 'Las propiedades intensivas, como la densidad y la temperatura de ebullición, no dependen de cuánto hay; las extensivas, como la masa y el volumen, sí. Por las intensivas se reconoce una sustancia y se separa una mezcla.',
       ecuacion: [{ llave: [rho], nota: 'densidad', color: 'c-f' }, ' = ', { frac: [{ llave: [mR], nota: 'masa', color: 'c-o' }, { llave: [Vr], nota: 'volumen', color: 'c-i' }] }],
-      condicion: 'Las intensivas reconocen una sustancia y separan mezclas: filtrar (sólido sin disolver), decantar (densidad), destilar (ebullición), imantar (hierro).',
+      condicion: 'separas con la propiedad en que difieren los componentes: el filtro retiene el sólido sin disolver, la decantación usa la densidad, la destilación usa la ebullición y el imán atrae al hierro.',
       voz: 'Antes de calcular, pregunta si la propiedad depende de cuánto hay.',
     },
     // Así se resuelve: el mismo tipo que «Ahora tú» con la misma semilla, pero otro caso (caso2(s, true)).
@@ -1056,10 +1056,10 @@
           enunciado: c.pregunta, datos: c.datos, dibujo: c.dibujo,
           pasos: [
             { tipo: 'pide', texto: ['Piden la densidad ', rho, ': cuántos gramos hay en cada cm³ del objeto.'] },
-            { tipo: 'datos', texto: ['La masa, ', vO(`${f(c.o.m)} g`), '. El volumen es lo que subió el agua: ', `${f(c.despues)} − ${AGUA0} = `, vI(`${f(c.o.V)} cm³`), '.'] },
+            { tipo: 'datos', texto: ['La masa, ', vO(`${f(c.o.m)} g`), '. El volumen es lo que subió el agua en la probeta: ', `${f(c.despues)} − ${AGUA0} = `, vI(`${f(c.o.V)} cm³`), '.'] },
             { tipo: 'regla', texto: 'La densidad es la masa entre el volumen.', ecuacion: [rho, ' = ', { frac: [mR, Vr] }] },
-            { tipo: 'cuentas', texto: 'Reemplazo los dos datos.', ecuacion: [rho, ' = ', { frac: [vO(`${f(c.o.m)} g`), vI(`${f(c.o.V)} cm³`)] }, ' = ', dR(`${f(c.rh)} g/cm³`)] },
-            { tipo: 'sentido', texto: `Unidades: g entre cm³ da g/cm³. Y de vuelta: ${f(c.rh)} · ${f(c.o.V)} = ${f(c.o.m)} g, la masa de la balanza.` },
+            { tipo: 'cuentas', texto: 'Reemplazo la masa y el volumen en la fórmula.', ecuacion: [rho, ' = ', { frac: [vO(`${f(c.o.m)} g`), vI(`${f(c.o.V)} cm³`)] }, ' = ', dR(`${f(c.rh)} g/cm³`)] },
+            { tipo: 'sentido', texto: `Unidades: g entre cm³ da g/cm³. Y de vuelta, ${f(c.rh)} · ${f(c.o.V)} = ${f(c.o.m)} g, que es la masa que marcó la balanza.` },
           ],
           respuesta: [dR(`${f(c.rh)} g/cm³`)],
         };
@@ -1067,45 +1067,45 @@
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: c.pideM ? ['Piden la masa ', mR, ` de ${f(c.litros)} L de ${c.l.nombre}.`] : ['Piden el volumen ', Vr, `, en mL, de ${f(c.masa)} g de ${c.l.nombre}.`] },
-            { tipo: 'datos', texto: c.pideM ? [`La densidad, ${f(c.l.rho)} g/mL, está en mL: paso los litros a mL.`] : [`La densidad, ${f(c.l.rho)} g/mL, y la masa, ${f(c.masa)} g.`],
+            { tipo: 'datos', texto: c.pideM ? [`La densidad, ${f(c.l.rho)} g/mL, va por mililitro, así que paso los litros a mL.`] : [`Tengo la densidad, ${f(c.l.rho)} g/mL, y la masa, ${f(c.masa)} g.`],
               ecuacion: c.pideM ? [vI(`${f(c.litros)} L`), ' = ', vI(`${f(c.mL)} mL`)] : undefined },
-            { tipo: 'regla', texto: c.pideM ? 'De ρ = m/V despejo la masa: densidad por volumen.' : 'De ρ = m/V despejo el volumen: masa entre densidad.',
+            { tipo: 'regla', texto: c.pideM ? 'De ρ = m/V despejo la masa, que es la densidad por el volumen.' : 'De ρ = m/V despejo el volumen, que es la masa entre la densidad.',
               ecuacion: c.pideM ? [mR, ' = ', rho, ' · ', Vr] : [Vr, ' = ', { frac: [mR, rho] }] },
-            { tipo: 'cuentas', texto: 'Reemplazo.', ecuacion: c.pideM ? [mR, ' = ', dR(`${f(c.l.rho)} g/mL`), ' · ', vI(`${f(c.mL)} mL`), ' = ', vO(`${f(c.masa)} g`)]
+            { tipo: 'cuentas', texto: 'Reemplazo los datos en la fórmula despejada.', ecuacion: c.pideM ? [mR, ' = ', dR(`${f(c.l.rho)} g/mL`), ' · ', vI(`${f(c.mL)} mL`), ' = ', vO(`${f(c.masa)} g`)]
               : [Vr, ' = ', { frac: [vO(`${f(c.masa)} g`), dR(`${f(c.l.rho)} g/mL`)] }, ' = ', vI(`${f(c.mL)} mL`)] },
-            { tipo: 'sentido', texto: c.l.rho < 1 ? 'Es más liviano que el agua: la masa en g es menor que el volumen en mL.' : 'Es más denso que el agua: la masa en g es mayor que el volumen en mL.' },
+            { tipo: 'sentido', texto: c.l.rho < 1 ? 'Comprobación: es menos denso que el agua, y por eso su masa en g es menor que su volumen en mL.' : 'Comprobación: es más denso que el agua, y por eso su masa en g es mayor que su volumen en mL.' },
           ],
           respuesta: c.pideM ? [vO(`${f(c.masa)} g`)] : [vI(`${f(c.mL)} mL`)],
         };
         if (c.tipo === 2) return {
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
-            { tipo: 'pide', texto: c.pideExt ? 'Piden la propiedad que se parte con el trozo.' : 'Piden la propiedad que no cambia al partir.' },
-            { tipo: 'regla', texto: 'Las extensivas dependen de cuánta muestra hay y se parten; las intensivas, no.' },
+            { tipo: 'pide', texto: c.pideExt ? 'Piden la propiedad que se parte junto con el trozo.' : 'Piden la propiedad que no cambia al partir la muestra.' },
+            { tipo: 'regla', texto: 'Las propiedades extensivas dependen de cuánta muestra hay y se parten con ella; las intensivas no.' },
             { tipo: 'aplica', texto: c.pideExt ? `${c.buena[0].toUpperCase() + c.buena.slice(1)} depende de cuánto hay: cada pedazo tiene la mitad. Las otras no cambian.` : `${c.buena[0].toUpperCase() + c.buena.slice(1)} no depende de cuánto hay: es igual en cada pedazo.`,
               ecuacion: [dR(c.buena[0].toUpperCase() + c.buena.slice(1))] },
-            { tipo: 'sentido', texto: 'Comprobación: piensa en juntar dos pedazos. Lo extensivo se suma; lo intensivo queda igual.' },
+            { tipo: 'sentido', texto: 'Comprobación: piensa en juntar dos pedazos. Lo extensivo se suma, y lo intensivo queda igual.' },
           ],
           respuesta: [dR(c.buena[0].toUpperCase() + c.buena.slice(1))],
         };
         if (c.tipo === 3) return {
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
-            { tipo: 'pide', texto: 'Piden cuántas de la lista no dependen de cuánta muestra hay.' },
-            { tipo: 'regla', texto: 'Pregunto por cada una: si tengo el doble de muestra, ¿también es el doble? Si sí, es extensiva.' },
-            { tipo: 'aplica', texto: `Extensivas: ${listaPalabras(c.c.extensivas)}. Intensivas: ${listaPalabras(c.c.intensivas)}.`, ecuacion: [dR(`${c.c.nIntensivas} intensivas`)] },
-            { tipo: 'sentido', texto: 'Comprobación: medir con un número no la vuelve extensiva; la temperatura se mide y es intensiva.' },
+            { tipo: 'pide', texto: 'Piden cuántas propiedades de la lista no dependen de cuánta muestra hay.' },
+            { tipo: 'regla', texto: 'Pregunto por cada una: si tengo el doble de muestra, ¿también se duplica? Si se duplica, es extensiva; si queda igual, es intensiva.' },
+            { tipo: 'aplica', texto: `Se duplican ${listaPalabras(c.c.extensivas)}, que son extensivas. Quedan igual ${listaPalabras(c.c.intensivas)}, que son intensivas.`, ecuacion: [dR(`${c.c.nIntensivas} intensivas`)] },
+            { tipo: 'sentido', texto: 'Comprobación: que una propiedad se mida con un número no la vuelve extensiva. La temperatura se mide y es intensiva.' },
           ],
           respuesta: [dR(`${c.c.nIntensivas}`), ' intensivas'],
         };
         return {
           enunciado: c.pregunta, datos: c.datos, dibujo: c.dibujo,
           pasos: [
-            { tipo: 'pide', texto: 'Piden el método que separa esta mezcla.' },
+            { tipo: 'pide', texto: 'Piden el método que separa los componentes de esta mezcla.' },
             { tipo: 'datos', texto: c.q.dato + '.' },
-            { tipo: 'regla', texto: 'Se separa por una propiedad en que los componentes difieren: tamaño del sólido, densidad, ebullición o magnetismo.' },
+            { tipo: 'regla', texto: 'Una mezcla se separa por una propiedad en que sus componentes difieren: el tamaño del sólido, la densidad, la temperatura de ebullición o el magnetismo.' },
             { tipo: 'aplica', texto: ARGUMENTO_SEP[c.q.pide], ecuacion: [dR(METODOS2[c.q.pide].nombre)] },
-            { tipo: 'sentido', texto: 'Comprobación: los otros métodos dejan juntos los componentes o pierden uno de ellos.' },
+            { tipo: 'sentido', texto: 'Comprobación: los otros métodos dejan juntos los componentes o hacen perder uno de ellos.' },
           ],
           respuesta: [dR(METODOS2[c.q.pide].nombre)],
         };
@@ -1117,11 +1117,11 @@
       generar(s) {
         const c = caso2(s, false);
         let solucion;
-        if (c.tipo === 0) solucion = { texto: 'El volumen es lo que subió el agua; se divide la masa entre ese volumen.', ecuacion: [rho, ' = ', { frac: [vO(`${f(c.o.m)} g`), vI(`${f(c.o.V)} cm³`)] }, ' = ', dR(`${f(c.rh)} g/cm³`)] };
-        else if (c.tipo === 1) solucion = c.pideM ? { texto: 'Los litros a mL; después, densidad por volumen.', ecuacion: [mR, ` = ${f(c.l.rho)} · ${f(c.mL)} = `, vO(`${f(c.masa)} g`)] }
-          : { texto: 'Masa entre densidad.', ecuacion: [Vr, ` = ${f(c.masa)} ÷ ${f(c.l.rho)} = `, vI(`${f(c.mL)} mL`)] };
-        else if (c.tipo === 2) solucion = { texto: c.pideExt ? 'Lo extensivo se parte con el trozo; lo intensivo queda igual.' : 'Lo intensivo no depende de cuánto hay: queda igual.', ecuacion: [dR(c.buena[0].toUpperCase() + c.buena.slice(1))] };
-        else if (c.tipo === 3) solucion = { texto: `Intensivas: ${listaPalabras(c.c.intensivas)}.`, ecuacion: [dR(`${c.c.nIntensivas}`)] };
+        if (c.tipo === 0) solucion = { texto: 'El volumen es lo que subió el agua en la probeta, y la masa se divide entre ese volumen.', ecuacion: [rho, ' = ', { frac: [vO(`${f(c.o.m)} g`), vI(`${f(c.o.V)} cm³`)] }, ' = ', dR(`${f(c.rh)} g/cm³`)] };
+        else if (c.tipo === 1) solucion = c.pideM ? { texto: 'Primero se pasan los litros a mL, y después se multiplica la densidad por el volumen.', ecuacion: [mR, ` = ${f(c.l.rho)} · ${f(c.mL)} = `, vO(`${f(c.masa)} g`)] }
+          : { texto: 'El volumen es la masa dividida entre la densidad.', ecuacion: [Vr, ` = ${f(c.masa)} ÷ ${f(c.l.rho)} = `, vI(`${f(c.mL)} mL`)] };
+        else if (c.tipo === 2) solucion = { texto: c.pideExt ? 'Lo extensivo se parte junto con el trozo, y lo intensivo queda igual.' : 'Lo intensivo no depende de cuánto hay, así que queda igual en cada pedazo.', ecuacion: [dR(c.buena[0].toUpperCase() + c.buena.slice(1))] };
+        else if (c.tipo === 3) solucion = { texto: `Son intensivas ${listaPalabras(c.c.intensivas)}, porque no cambian si hay más muestra.`, ecuacion: [dR(`${c.c.nIntensivas}`)] };
         else solucion = { texto: ARGUMENTO_SEP[c.q.pide], ecuacion: [dR(METODOS2[c.q.pide].nombre)] };
         // El vaso del tipo 4 es de quim-vasos: la pieza va en el dibujo.
         return { pregunta: c.pregunta, datos: c.datos, dibujo: c.dibujo, opciones: c.opciones, solucion };
@@ -1209,13 +1209,13 @@
   PROC3[k].sep ? { separacion: PROC3[k].sep } : {});
   const ESTADO = { s: 'sólido', l: 'líquido', g: 'gas' };
   const lectura3 = (k, t = 100) => {
-    if (t < YA) return ['Todavía no pasa nada: a los dos lados, las mismas partículas.'];
+    if (t < YA) return ['Todavía no pasa nada: a los dos lados hay las mismas partículas.'];
     const c = cambio3(k);
-    if (c.tipo === 'nuclear') return ['Después hay átomos de nitrógeno: otro elemento.'];
+    if (c.tipo === 'nuclear') return ['Después hay átomos de nitrógeno, que es otro elemento.'];
     if (c.tipo === 'químico') return [c.nuevas.length > 1 ? `Después aparecen ${listaPalabras(c.nuevas.map(fm))}, que antes no estaban.` : `Después aparece ${fm(c.nuevas[0])}, que antes no estaba.`];
     const e0 = PROC3[k].antes.lupa.capas[0].est, e1 = PROC3[k].despues.lupa.capas[0].est;
     // En el gas, las mismas moléculas quedan más separadas: en la lupa caben menos (lector en frío: «¿se perdieron?»).
-    return [`Antes y después, ${fm(c.sustanciasAntes[0])}: de ${ESTADO[e0]} a ${ESTADO[e1]}${e1 === 'g' ? ', más separadas' : ''}.`];
+    return [e1 === 'g' ? `El ${fm(c.sustanciasAntes[0])} sigue igual: pasa a gas y sus moléculas se separan.` : `El ${fm(c.sustanciasAntes[0])} sigue igual: pasa de ${ESTADO[e0]} a ${ESTADO[e1]}.`];
   };
 
   // Datos (contrato, punto 13): las definiciones entre las que se elige.
@@ -1228,7 +1228,7 @@
   const SI_T = {
     'físico': ['MA2', 'Viste que algo cambió, bien. Sería físico si las partículas de después fueran las mismas.'],
     'químico': ['MA1', 'Algo cambió a la vista, cierto. Sería químico si aparecieran sustancias nuevas.'],
-    nuclear: ['QM-NUCLEAR', 'Cambió algo, bien visto. Sería nuclear si un átomo pasara a ser de otro elemento.'],
+    nuclear: ['QM-NUCLEAR', 'Algo cambió, bien visto. Sería nuclear si un átomo pasara a ser de otro elemento.'],
   };
   const opcionesTipo = real => Object.keys(NOM_T).map(k => (k === real ? { id: 'c', texto: NOM_T[k], correcta: true }
     : { id: k === 'físico' ? 'fisico' : k === 'químico' ? 'quimico' : k, texto: NOM_T[k], error: SI_T[k][0], siFuera: SI_T[k][1] }));
@@ -1236,12 +1236,12 @@
   const FEN3 = [
     { texto: 'En una helada de Puno, se forma escarcha sobre el pasto', corto: 'Se forma escarcha en el pasto', a: [['H2O', 2, 'g']], d: [['H2O', 2, 's']], porque: 'El vapor de agua del aire pasa a sólido: siguen siendo moléculas de H₂O.' },
     { texto: 'Un clavo de hierro se oxida en el patio', corto: 'Un clavo se oxida', fen: 'oxidar-hierro', porque: 'El hierro y el oxígeno forman óxido de hierro, una sustancia que antes no estaba.' },
-    { texto: 'La leña arde en el fogón', corto: 'La leña arde', a: [['C6H10O5', 1, 's'], ['O2', 6, 'g']], d: [['CO2', 6, 'g'], ['H2O', 5, 'g']], porque: 'La madera y el oxígeno forman dióxido de carbono y agua: sustancias nuevas.' },
-    { texto: 'El azúcar se disuelve en el té', corto: 'El azúcar se disuelve en el té', fen: 'disolver-azucar', porque: 'Las moléculas de azúcar siguen enteras; solo se reparten entre las del agua.' },
+    { texto: 'La leña arde en el fogón', corto: 'La leña arde', a: [['C6H10O5', 1, 's'], ['O2', 6, 'g']], d: [['CO2', 6, 'g'], ['H2O', 5, 'g']], porque: 'La madera y el oxígeno forman dióxido de carbono y agua, que son sustancias nuevas.' },
+    { texto: 'El azúcar se disuelve en el té', corto: 'El azúcar se disuelve en el té', fen: 'disolver-azucar', porque: 'Las moléculas de azúcar siguen enteras: solo se reparten entre las del agua.' },
     { texto: 'El alcohol de un algodón se evapora', corto: 'El alcohol se evapora', a: [['C2H5OH', 2, 'l']], d: [['C2H5OH', 2, 'g']], porque: 'Las moléculas de alcohol pasan de líquido a gas sin romperse.' },
     // (17 nov, auditoría B10) Sin «pasa a»: el enunciado no repite el dato del cambio nuclear.
-    { texto: 'Un hueso antiguo pierde carbono-14 y gana nitrógeno-14', corto: 'El hueso pierde carbono-14 y gana nitrógeno-14', a: [['C', 3]], d: [['C', 2], ['N', 1]], porque: 'Un átomo de carbono pasa a ser de nitrógeno: cambia el elemento.' },
-    { texto: 'El vinagre con bicarbonato hace burbujas', corto: 'El vinagre con bicarbonato burbujea', a: [['CH3COOH', 1, 'l'], ['NaHCO3', 1, 's']], d: [['CH3COONa', 1, 'disuelto'], ['H2O', 1, 'l'], ['CO2', 1, 'g']], porque: 'Se forma CO₂, un gas que antes no estaba: sustancias nuevas.' },
+    { texto: 'Un hueso antiguo pierde carbono-14 y gana nitrógeno-14', corto: 'El hueso pierde carbono-14 y gana nitrógeno-14', a: [['C', 3]], d: [['C', 2], ['N', 1]], porque: 'Un átomo de carbono pasa a ser de nitrógeno, así que cambia el elemento.' },
+    { texto: 'El vinagre con bicarbonato hace burbujas', corto: 'El vinagre con bicarbonato burbujea', a: [['CH3COOH', 1, 'l'], ['NaHCO3', 1, 's']], d: [['CH3COONa', 1, 'disuelto'], ['H2O', 1, 'l'], ['CO2', 1, 'g']], porque: 'Se forma CO₂, un gas que antes no estaba, junto con otras sustancias nuevas.' },
     { texto: 'Un vidrio se rompe en pedazos', corto: 'Un vidrio se rompe', a: [['SiO2', 4, 's']], d: [['SiO2', 4, 's']], porque: 'Los pedazos son del mismo vidrio: cambia la forma, no las partículas.' },
     { texto: 'El espejo del baño se empaña con la ducha', corto: 'El espejo se empaña', fen: 'condensar-vapor', porque: 'El vapor de agua se enfría en el espejo y pasa a líquido: sigue siendo H₂O.' },
     // (17 nov) Antes iba «el gas natural arde», que repetía el caso de Mira con otro nombre (lector en frío).
@@ -1312,7 +1312,7 @@
       const ds = [
         { id: 'otro', valor: Number.isInteger(malo) ? malo : c.n * 2, error: 'QM-CUENTA-O', siFuera: `Contaste átomos, bien. Pero ${fm(otroEl)} también está en otras moléculas: cuenta un elemento que solo esté en ${fm(FORM3[x.pide])}.` },
         { id: 'igual', valor: x.antes.reduce((a, [, n]) => a + n, 0), error: 'QM-MOLECULAS-IGUALES', siFuera: 'Lo que se conserva son los átomos de cada elemento, no el número de moléculas.' },
-        { id: 'mas', valor: c.n + 1, error: 'QM-CUENTA-O', siFuera: 'Casi: revisa cuántos átomos lleva cada molécula de lo que se forma.' },
+        { id: 'mas', valor: c.n + 1, error: 'QM-CUENTA-O', siFuera: 'Contaste los átomos, bien. Pero te pasaste por una molécula: revisa cuántos átomos lleva cada molécula que se forma.' },
       ];
       return { tipo, x, c, dibujo: dibLupas({ antes: [{ particulas: x.antes.map(([e, n]) => ({ e, n })) }] }, true),
         datos: ['En un cambio químico, los átomos de cada elemento son los mismos antes y después', `${fm(FORM3[x.pide])}: ${listaPalabras(Object.entries(ATOMOS_EN[x.pide]).map(([e, k]) => `${k} de ${e}`))}`],
@@ -1326,9 +1326,9 @@
       return { tipo, xs, n, datos: [DEF_FIS, DEF_QUI, DEF_NUC],
         pregunta: `¿Cuántos de estos son cambios químicos? ${xs.map((x, i) => `${NUM[i]}. ${x.corto}.`).join(' ')}`,
         opciones: opciones(n, [
-          { id: 'estado', valor: n + estado, error: 'MA1', siFuera: 'Contaste los químicos, bien. Un cambio de estado no forma sustancias nuevas: es físico.' },
-          { id: 'menos', valor: n - 1, error: 'MA2', siFuera: 'Casi. Revisa cuál forma una sustancia que antes no estaba.' },
-          { id: 'mas', valor: n + 1, error: 'MA1', siFuera: 'Casi. Revisa cuál deja las mismas partículas, aunque cambie de aspecto.' },
+          { id: 'estado', valor: n + estado, error: 'MA1', siFuera: 'Contaste los químicos, bien. Pero un cambio de estado no forma sustancias nuevas, así que es físico.' },
+          { id: 'menos', valor: n - 1, error: 'MA2', siFuera: 'Casi. Te faltó uno que sí forma una sustancia que antes no estaba.' },
+          { id: 'mas', valor: n + 1, error: 'MA1', siFuera: 'Casi. Contaste uno que deja las mismas partículas, aunque cambie de aspecto.' },
           { id: 'todos', valor: 4, error: 'MA1', siFuera: 'En todos cambia algo, cierto. Pero solo en algunos aparecen sustancias nuevas.' },
         ].filter(d => d.valor >= 0 && d.valor <= 4), v => String(v)) };
     }
@@ -1336,10 +1336,10 @@
     return { tipo, cerrado, lana, frasco, q, datos: ['Al arder, el hierro se une al oxígeno y forma óxido de hierro', 'Cada 56 g de hierro toman 24 g de oxígeno'],
       pregunta: `Sobre una balanza, un frasco ${cerrado ? 'cerrado' : 'abierto'} con ${f(lana)} g de lana de acero (hierro) marca ${f(frasco)} g. La lana arde${cerrado ? ' con el oxígeno de adentro' : ' con el oxígeno del aire'}. ¿Qué marca al final?`,
       opciones: opciones(q.despues, [
-        { id: 'baja', valor: frasco - lana / 2, error: 'QM-MASA-SE-VA', siFuera: 'Cambió la sustancia, bien. Pero arder no destruye los átomos: no se pierde masa.' },
+        { id: 'baja', valor: frasco - lana / 2, error: 'QM-MASA-SE-VA', siFuera: 'Cambió la sustancia, bien. Pero arder no destruye los átomos, así que no se pierde masa.' },
         cerrado ? { id: 'sube', valor: frasco + q.oxigeno, error: 'MA5', siFuera: 'El hierro sí toma oxígeno. Pero ese oxígeno ya estaba dentro del frasco cerrado.' }
           : { id: 'igual', valor: frasco, error: 'MA4', siFuera: 'Los átomos se conservan, bien. Pero aquí entra oxígeno del aire y se suma.' },
-        { id: 'oxido', valor: q.masaOxido, error: 'QM-SOLO-SOLIDO', siFuera: 'Esa es la masa del óxido. La balanza pesa también el frasco.' },
+        { id: 'oxido', valor: q.masaOxido, error: 'QM-SOLO-SOLIDO', siFuera: 'Esa es la masa del óxido, bien calculada. Pero la balanza pesa también el frasco.' },
       ], v => `${f(v)} g`) };
   }
 
@@ -1368,7 +1368,7 @@
       enunciado: 'Un museo guarda un hueso muy antiguo. La figura muestra la lupa de sus átomos de carbono-14 al principio y miles de años después. ¿Qué tipo de cambio es?',
       datos: [DEF_FIS, DEF_QUI, DEF_NUC],
       figura: fig3([Object.assign({ tipo: 'hueso' }, PROC3.hueso.antes), Object.assign({ tipo: 'hueso' }, PROC3.hueso.despues)]),
-      solucion: [{ texto: ['En la lupa de después hay átomos de N que antes no estaban: un átomo de carbono pasó a ser de nitrógeno. Cambió el elemento: ', dR('cambio nuclear'), '.'] }],
+      solucion: [{ texto: ['En la lupa de después hay átomos de N que antes no estaban: un átomo de carbono pasó a ser de nitrógeno. Como cambió el elemento, es un ', dR('cambio nuclear'), '.'] }],
       respuesta: [dR('Nuclear')] },
     { nivel: 1, titulo: 'El gas que arde',
       enunciado: '«El gas del balón arde con facilidad». ¿Es una propiedad física o química del gas?',
@@ -1387,7 +1387,7 @@
       datos: [DEF_LUPA, DEF_QUI],
       figura: fig3([{ tipo: 'frasco', titulo: 'Antes', lupa: L3(0.45, LUPAS3[0].antes) }, { tipo: 'frasco', titulo: 'Después', lupa: L3(0.45, LUPAS3[0].despues) }]),
       solucion: [
-        { texto: ['Antes, H₂ y O₂; después, H₂O, una sustancia nueva: ', dR('cambio químico'), '.'] },
+        { texto: ['Antes hay H₂ y O₂, y después, H₂O, una sustancia nueva: es un ', dR('cambio químico'), '.'] },
         { texto: ['Átomos de H: antes, 4 moléculas de H₂ con 2 cada una; después, 4 de H₂O con 2 cada una.'], ecuacion: ['H: 4 · 2 = 8;  después: 4 · 2 = ', dR('8')] },
       ],
       respuesta: [dR('Químico'), '; los 8 átomos de H se conservan'] },
@@ -1396,7 +1396,7 @@
       datos: [DEF_FIS, DEF_QUI],
       solucion: [
         { texto: ['El vapor es H₂O y la escarcha también: no aparece ninguna sustancia nueva. Es un cambio físico.'] },
-        { texto: ['Pasa de gas a sólido sin ser líquido en el medio.'] },
+        { texto: ['Pasa de gas a sólido sin pasar antes por líquido.'] },
       ],
       respuesta: [dR('Físico'), ', de gas a sólido'] },
     { nivel: 2, titulo: 'El óxido del clavo',
@@ -1404,8 +1404,8 @@
       datos: ['En una fórmula, el subíndice dice cuántos átomos de ese elemento hay', DEF_QUI, 'En la lupa, la línea punteada separa dos fases: el aire y el hierro'],
       figura: fig3([Object.assign({ tipo: 'clavo' }, PROC3.clavo.antes), Object.assign({ tipo: 'clavo' }, PROC3.clavo.despues)], { separacion: 24 }),
       solucion: [
-        { texto: ['Antes: 3 moléculas de O₂ con 2 átomos cada una.'], ecuacion: ['O: 3 · 2 = 6'] },
-        { texto: ['Después: 2 de Fe₂O₃ con 3 átomos de O cada una.'], ecuacion: ['O: 2 · 3 = ', dR('6')] },
+        { texto: ['Antes hay 3 moléculas de O₂, con 2 átomos de oxígeno cada una.'], ecuacion: ['O: 3 · 2 = 6'] },
+        { texto: ['Después hay 2 de Fe₂O₃, con 3 átomos de O cada una: el oxígeno se conserva.'], ecuacion: ['O: 2 · 3 = ', dR('6')] },
       ],
       respuesta: [dR('Sí'), ': 6 antes y 6 después'] },
     { nivel: 2, titulo: 'Un huevo frito',
@@ -1420,7 +1420,7 @@
       enunciado: 'El cobre es rojizo y, con los años, al aire húmedo se cubre de una capa verde. ¿Cuál de esos rasgos es una propiedad física y cuál química?',
       datos: [DEF_PF, DEF_PQ],
       solucion: [
-        { texto: ['El color rojizo se ve sin transformar el cobre: propiedad física.'] },
+        { texto: ['El color rojizo se ve sin transformar el cobre, así que es una propiedad física.'] },
         { texto: ['La capa verde es una sustancia nueva que forma el cobre con el aire: poder hacerla es una propiedad química.'] },
       ],
       respuesta: [dR('Color: física'), '; ', dR('capa verde: química')] },
@@ -1428,8 +1428,8 @@
       enunciado: '¿Cuántos son cambios químicos? I. El espejo se empaña. II. La leña arde. III. El azúcar se disuelve en el té. IV. El vinagre con bicarbonato hace burbujas.',
       datos: [DEF_FIS, DEF_QUI],
       solucion: [
-        { texto: ['I y III: las mismas partículas, agua que pasa a líquido y azúcar que se reparte. Físicos.'] },
-        { texto: ['II y IV: aparecen sustancias nuevas, CO₂ y agua al arder; CO₂ en las burbujas. Químicos.'] },
+        { texto: ['I y III son físicos, porque quedan las mismas partículas: el vapor de agua pasa a líquido y el azúcar se reparte en el té.'] },
+        { texto: ['II y IV son químicos, porque aparecen sustancias nuevas: CO₂ y agua cuando arde la leña, y CO₂ en las burbujas.'] },
         { texto: ['Error típico: contar el espejo como químico porque «aparece agua». Esa agua ya estaba en el aire, como vapor.'] },
       ],
       respuesta: [dR('2'), ': II y IV'] },
@@ -1440,7 +1440,7 @@
       datos: ['Al arder, el hierro se une al oxígeno y forma óxido de hierro', 'Cada 56 g de hierro toman 24 g de oxígeno'],
       solucion: [
         { texto: ['La lana toma la misma masa de oxígeno en los dos frascos.'], ecuacion: [{ frac: ['5,6 · 24', '56'] }, ' = ', vO('2,4 g'), ' de oxígeno'] },
-        { texto: ['Abierto: ese oxígeno entra del aire y se suma. Cerrado: ya estaba adentro y ya se pesaba.'], ecuacion: ['abierto: 200 + 2,4 = 202,4 g;  cerrado: 200 g'] },
+        { texto: ['En el abierto, ese oxígeno entra del aire y se suma; en el cerrado, ya estaba adentro y ya se pesaba.'], ecuacion: ['abierto: 200 + 2,4 = 202,4 g;  cerrado: 200 g'] },
         { texto: ['Error típico: decir que baja porque «se quema». Arder no destruye átomos.'] },
       ],
       respuesta: ['El abierto, por ', vO('2,4 g')] },
@@ -1450,7 +1450,7 @@
       figura: fig3([{ tipo: 'frasco', titulo: 'Antes', lupa: L3(0.45, [{ particulas: [{ e: 'C3H8', n: 1 }, { e: 'O2', n: 5 }] }]) }, { tipo: 'frasco', titulo: 'Después', lupa: { vacia: true, foco: 0.45 } }]),
       solucion: [
         { texto: ['El carbono solo va en el CO₂: 3 átomos de C dan 3 CO₂.'], ecuacion: ['C: 3 → ', dR('3 CO₂')] },
-        { texto: ['El hidrógeno solo va en el H₂O: 8 átomos de H, de 2 en 2.'], ecuacion: ['H: 8 ÷ 2 → ', dR('4 H₂O')] },
+        { texto: ['El hidrógeno solo va en el H₂O, y cada molécula se lleva 2 de los 8 átomos de H.'], ecuacion: ['H: 8 ÷ 2 → ', dR('4 H₂O')] },
         { texto: ['Comprobación con el oxígeno: antes 5 · 2 = 10; después 3 · 2 + 4 · 1 = 10.'] },
       ],
       respuesta: [dR('3 CO₂'), ' y ', dR('4 H₂O')] },
@@ -1474,7 +1474,7 @@
       datos: ['En un cambio químico, los átomos de cada elemento son los mismos antes y después', 'Alcohol: C₂H₅OH, con 2 C, 6 H y 1 O', 'En una fórmula, el subíndice dice cuántos átomos hay; sin subíndice, hay 1'],
       figura: fig3([Object.assign({ tipo: 'jarra' }, PROC3.chicha.antes, { titulo: 'Antes' }), { tipo: 'jarra', titulo: 'Después', espuma: true, lupa: { vacia: true, foco: 0.4 } }], { separacion: 28 }),
       solucion: [
-        { texto: ['El carbono va en el alcohol y en el CO₂. Antes hay 6 C; los 2 alcoholes se llevan 2 · 2 = 4.'], ecuacion: ['C para el CO₂: 6 − 4 = 2 → ', dR('2 CO₂')] },
+        { texto: ['El carbono va en el alcohol y en el CO₂. Antes hay 6 C, y los 2 alcoholes se llevan 2 · 2 = 4.'], ecuacion: ['C para el CO₂: 6 − 4 = 2 → ', dR('2 CO₂')] },
         { texto: ['Comprobación con el oxígeno: antes 6; después 2 · 1 + 2 · 2 = 6. Y el hidrógeno: 12 = 2 · 6.'] },
         { texto: ['Error típico: contar los 6 C como si todos fueran al CO₂ y decir 6.'] },
       ],
@@ -1494,7 +1494,7 @@
     // cambio ni que los átomos se conservan (eso se ve en Mira), ni nombra la botella fría (la predicción).
     lee: {
       tarjetas: [
-        { titulo: 'Por fuera no basta', texto: 'En una cocina todo cambia: el agua hierve, la ropa se seca, el clavo se oxida. Unas cosas solo cambian de forma o de estado; en otras aparece algo nuevo. Para saber cuál pasó, hay que mirar las partículas.',
+        { titulo: 'Por fuera no basta', texto: 'En una cocina todo cambia: el agua hierve, la ropa se seca, el clavo se oxida. Unas cosas solo cambian de forma o de estado, y en otras aparece algo nuevo. Para saber cuál de los dos pasó, hay que mirar las partículas.',
           pieza: 'quim-vasos', dibujo: mesa3([{ tipo: 'olla', titulo: 'La olla', fuego: true }, { tipo: 'jarra', titulo: 'La chicha' }, { tipo: 'clavo', titulo: 'El clavo' }], { clave: false, flechas: false }) },
         { titulo: 'Estados de agregación', texto: 'Sólido, líquido y gas son los estados de agregación. En un sólido, las partículas quedan en su sitio, ordenadas; en un líquido, se deslizan unas junto a otras; en un gas, vuelan separadas.' },
         { titulo: 'Propiedades químicas', texto: 'Una propiedad química solo se ve cuando la sustancia se transforma en otra: que el gas del balón arda, que el hierro se oxide. La densidad, en cambio, se mide sin transformarla.' },
@@ -1534,9 +1534,9 @@
       pieza: 'quim-vasos',
       opciones: [
         { id: 'c', texto: 'Del vapor de agua del aire, que se enfría y se vuelve líquido', correcta: true },
-        { id: 'hyo', texto: 'Del oxígeno y el hidrógeno del aire, que se juntaron', error: 'MA1', siFuera: 'Pensaste en partículas, bien. Pero el aire casi no tiene hidrógeno: el agua ya estaba, como vapor.' },
+        { id: 'hyo', texto: 'Del oxígeno y el hidrógeno del aire, que se juntaron', error: 'MA1', siFuera: 'Pensaste en partículas, bien. Pero el aire casi no tiene hidrógeno, y el agua ya estaba en el aire como vapor.' },
         { id: 'atraviesa', texto: 'Del agua de adentro, que atraviesa el vidrio', error: 'QM-ATRAVIESA', siFuera: 'El agua de adentro está fría, cierto. Pero el vidrio no la deja pasar: la botella está cerrada.' },
-        { id: 'frio', texto: 'El frío del vidrio se convierte en agua', error: 'QM-FRIO-AGUA', siFuera: 'El frío importa, bien. Pero el frío no es una sustancia: enfría algo que ya estaba.' },
+        { id: 'frio', texto: 'El frío del vidrio se convierte en agua', error: 'QM-FRIO-AGUA', siFuera: 'El frío importa, bien. Pero el frío no es una sustancia: solo enfría algo que ya estaba en el aire.' },
       ],
       dibujo: mesa3([{ tipo: 'botella', titulo: 'Recién sacada' }, { tipo: 'botella', titulo: 'Unos minutos después', gotas: true, lupa: { vacia: true, foco: 0.5 } }], { separacion: 24 }),
       revelar: mesa3([{ tipo: 'botella', titulo: 'Recién sacada' }, { tipo: 'botella', titulo: 'Unos minutos después', gotas: true,
@@ -1555,18 +1555,18 @@
       // una celda de adentro: con sus 11 átomos, en una celda del borde tocaba la caja.
       voz: 'Contemos los átomos del gas que arde, antes y después.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Antes: gas de la hornilla (C₃H₈) y oxígeno. Cuenta los átomos de cada elemento.', ecuacion: ['C: 3;  O: 10;  H: 8'] },
-        { estado: { corte: 2 }, texto: 'Después: dióxido de carbono y agua, sustancias que antes no estaban.', ecuacion: ['sustancias nuevas → cambio químico'] },
-        { estado: { corte: 3 }, texto: 'Los átomos de cada elemento son los mismos: solo se reordenaron.', ecuacion: ['C: 3 = 3;  O: 10 = 10;  H: 8 = 8'] },
+        { estado: { corte: 1 }, texto: 'Antes hay gas de la hornilla, C₃H₈, y oxígeno. Cuenta los átomos de cada elemento.', ecuacion: ['C: 3;  O: 10;  H: 8'] },
+        { estado: { corte: 2 }, texto: 'Después hay dióxido de carbono y agua, dos sustancias que antes no estaban.', ecuacion: ['sustancias nuevas → cambio químico'] },
+        { estado: { corte: 3 }, texto: 'Los átomos de cada elemento son los mismos que antes: solo se reordenaron.', ecuacion: ['C: 3 = 3;  O: 10 = 10;  H: 8 = 8'] },
         { estado: { corte: 3 }, texto: 'Por eso, en un frasco cerrado, la balanza marca lo mismo antes y después.', ecuacion: ['masa antes = masa después'] },
-        { estado: { corte: 3 }, texto: 'En la olla que hierve, las moléculas siguen siendo H₂O: cambio físico.' },
-        { estado: { corte: 3 }, texto: 'En el hueso, un átomo de carbono-14 pasa a nitrógeno-14: cambio nuclear.', ecuacion: ['otro elemento → cambio nuclear'] },
+        { estado: { corte: 3 }, texto: 'En la olla que hierve, en cambio, las moléculas siguen siendo H₂O: es un cambio físico.' },
+        { estado: { corte: 3 }, texto: 'En el hueso, un átomo de carbono-14 pasa a ser nitrógeno-14, otro elemento.', ecuacion: ['otro elemento → cambio nuclear'] },
       ],
     },
     regla: {
-      texto: 'Cambio físico: las mismas partículas cambian de estado, forma o lugar. Químico: aparecen sustancias nuevas con los mismos átomos. Nuclear: un átomo pasa a ser de otro elemento.',
+      texto: 'En un cambio físico, las mismas partículas cambian de estado, de forma o de lugar. En uno químico aparecen sustancias nuevas, hechas con los mismos átomos. En uno nuclear, un átomo pasa a ser de otro elemento.',
       ecuacion: ['en un cambio químico: átomos de cada elemento antes = después'],
-      condicion: 'Propiedad física: se mide sin transformar la sustancia, como la densidad. Propiedad química: solo se ve al transformarla, como arder.',
+      condicion: 'comparas las partículas de antes y de después. Del mismo modo, una propiedad es física si se mide sin transformar la sustancia, como la densidad, y química si solo se ve al transformarla, como arder.',
       voz: 'Primero el inventario de partículas; el aspecto puede engañar.',
     },
     // Así se resuelve: el mismo tipo que «Ahora tú» con la misma semilla, pero otro caso (caso3(s, true)).
@@ -1577,25 +1577,25 @@
         const pasosTipo = (datos, aplica, real) => [
           { tipo: 'pide', texto: 'Piden decidir si el cambio es físico, químico o nuclear.' },
           { tipo: 'datos', texto: datos },
-          { tipo: 'regla', texto: 'Miro las partículas de después: las mismas, físico; sustancias nuevas con los mismos átomos, químico; otro elemento, nuclear.' },
+          { tipo: 'regla', texto: 'Miro las partículas de después. Si son las mismas, es físico; si hay sustancias nuevas con los mismos átomos, es químico, y si hay otro elemento, es nuclear.' },
           { tipo: 'aplica', texto: aplica, ecuacion: [dR(`Cambio ${real}`)] },
-          { tipo: 'sentido', texto: { 'físico': 'Comprobación: no apareció ninguna sustancia nueva, aunque cambiara el aspecto.', 'químico': 'Comprobación: los elementos son los mismos antes y después; por eso no es nuclear.', nuclear: 'Comprobación: después hay un elemento que antes no estaba; en un cambio químico eso nunca pasa.' }[real] },
+          { tipo: 'sentido', texto: { 'físico': 'Comprobación: no apareció ninguna sustancia nueva, aunque cambiara el aspecto.', 'químico': 'Comprobación: los elementos son los mismos antes y después, y por eso no es nuclear.', nuclear: 'Comprobación: después hay un elemento que antes no estaba, y en un cambio químico eso nunca pasa.' }[real] },
         ];
         if (c.tipo === 0) return { enunciado: c.pregunta, datos: c.datos, pasos: pasosTipo(`${c.x.texto}.`, c.porque, c.real), respuesta: [dR(NOM_T[c.real])] };
         if (c.tipo === 1) {
           const t = tipoLupa(c.x), ma = Motor.cambio(lupaMotor(c.x.antes, c.x.est[0]), lupaMotor(c.x.despues, c.x.est[1]));
           const aplica = t === 'nuclear' ? 'Antes solo hay átomos de carbono; después aparecen átomos de nitrógeno.'
-            : t === 'químico' ? `Antes: ${listaPalabras(ma.sustanciasAntes.map(fm))}. Después: ${listaPalabras(ma.sustanciasDespues.map(fm))}, que antes no estaba.`
-            : `Antes y después, ${fm(ma.sustanciasAntes[0])}: de ${ESTADO[c.x.est[0]]} a ${ESTADO[c.x.est[1]]}.`;
-          return { enunciado: c.pregunta, datos: c.datos, dibujo: c.dibujo, pasos: pasosTipo('La lupa de antes y la de después, en un frasco cerrado.', aplica, t), respuesta: [dR(NOM_T[t])] };
+            : t === 'químico' ? `Antes hay ${listaPalabras(ma.sustanciasAntes.map(fm))}, y después, ${listaPalabras(ma.sustanciasDespues.map(fm))}, ${ma.sustanciasDespues.length > 1 ? 'que antes no estaban' : 'que antes no estaba'}.`
+            : `Antes y después hay ${fm(ma.sustanciasAntes[0])}, que solo pasa de ${ESTADO[c.x.est[0]]} a ${ESTADO[c.x.est[1]]}.`;
+          return { enunciado: c.pregunta, datos: c.datos, dibujo: c.dibujo, pasos: pasosTipo('La figura da la lupa de antes y la de después, en un frasco cerrado.', aplica, t), respuesta: [dR(NOM_T[t])] };
         }
         if (c.tipo === 2) return {
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: 'Piden si ese rasgo se ve sin transformar la sustancia o solo al transformarla.' },
-            { tipo: 'regla', texto: 'Física: se mide sin que la sustancia se vuelva otra. Química: solo se ve cuando se vuelve otra.' },
-            { tipo: 'aplica', texto: c.clase === 'química' ? 'Para ver ese rasgo, la sustancia tiene que transformarse en otra.' : 'Ese rasgo se mide u observa y la sustancia sigue siendo la misma.', ecuacion: [dR(`Propiedad ${c.clase}`)] },
-            { tipo: 'sentido', texto: 'Comprobación: después de observarlo, ¿queda la misma sustancia? Si sí, es física.' },
+            { tipo: 'regla', texto: 'Una propiedad física se mide sin que la sustancia se vuelva otra; una química solo se ve cuando la sustancia se vuelve otra.' },
+            { tipo: 'aplica', texto: c.clase === 'química' ? 'Para ver ese rasgo, la sustancia tiene que transformarse en otra.' : 'Ese rasgo se mide o se observa, y la sustancia sigue siendo la misma.', ecuacion: [dR(`Propiedad ${c.clase}`)] },
+            { tipo: 'sentido', texto: 'Comprobación: después de observar el rasgo, ¿queda la misma sustancia? Si queda, la propiedad es física.' },
           ],
           respuesta: [dR(`Propiedad ${c.clase}`)],
         };
@@ -1605,8 +1605,8 @@
             enunciado: c.pregunta, datos: c.datos, dibujo: c.dibujo,
             pasos: [
               { tipo: 'pide', texto: `Piden cuántas moléculas de ${p} hay después.` },
-              { tipo: 'regla', texto: 'En un cambio químico, los átomos de cada elemento se conservan. Cuento un elemento que solo esté en lo que piden.' },
-              { tipo: 'cuentas', texto: `Átomos de ${c.x.el} antes: ${c.c.at[c.x.el]}.${c.x.fijo ? ` Ya van ${(ATOMOS_EN[c.x.fijo[0]][c.x.el] || 0) * c.x.fijo[1]} en ${fm(FORM3[c.x.fijo[0]])}.` : ''} Cada ${p} lleva ${k}.`, ecuacion: [`${c.x.el}: ${c.c.at[c.x.el] - (c.x.fijo ? (ATOMOS_EN[c.x.fijo[0]][c.x.el] || 0) * c.x.fijo[1] : 0)} ÷ ${k} = `, dR(`${c.c.n}`)] },
+              { tipo: 'regla', texto: 'En un cambio químico, los átomos de cada elemento se conservan. Por eso cuento un elemento que, después, solo esté en la molécula que piden.' },
+              { tipo: 'cuentas', texto: `Antes hay ${c.c.at[c.x.el]} átomos de ${c.x.el}.${c.x.fijo && (ATOMOS_EN[c.x.fijo[0]][c.x.el] || 0) ? ` De ellos, ${(ATOMOS_EN[c.x.fijo[0]][c.x.el] || 0) * c.x.fijo[1]} quedan en ${fm(FORM3[c.x.fijo[0]])}.` : ''} Cada ${p} lleva ${k}, así que divido.`, ecuacion: [`${c.x.el}: ${c.c.at[c.x.el] - (c.x.fijo ? (ATOMOS_EN[c.x.fijo[0]][c.x.el] || 0) * c.x.fijo[1] : 0)} ÷ ${k} = `, dR(`${c.c.n}`)] },
               { tipo: 'sentido', texto: 'Comprobación: con ese número, los átomos de los otros elementos también dan lo mismo antes y después.' },
             ],
             respuesta: [dR(`${c.c.n} ${p}`)],
@@ -1616,9 +1616,9 @@
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: 'Piden contar los cambios en que aparecen sustancias nuevas.' },
-            { tipo: 'regla', texto: 'Químico solo si después hay sustancias que antes no estaban; un cambio de estado o una mezcla son físicos.' },
-            { tipo: 'aplica', texto: c.xs.map((x, i) => `${NUM[i]}: ${tipoFen(x)}`).join('; ') + '.', ecuacion: [dR(`${c.n} químicos`)] },
-            { tipo: 'sentido', texto: 'Comprobación: en los químicos se puede nombrar la sustancia nueva; en los físicos, no.' },
+            { tipo: 'regla', texto: 'Un cambio es químico solo si después hay sustancias que antes no estaban. Un cambio de estado o una mezcla son físicos.' },
+            { tipo: 'aplica', texto: 'Clasifico cada uno: ' + c.xs.map((x, i) => `${NUM[i]}, ${tipoFen(x)}`).join('; ') + '.', ecuacion: [dR(`${c.n} químicos`)] },
+            { tipo: 'sentido', texto: 'Comprobación: en cada cambio químico se puede nombrar la sustancia nueva, y en los físicos no hay ninguna.' },
           ],
           respuesta: [dR(String(c.n))],
         };
@@ -1626,10 +1626,10 @@
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: 'Piden lo que marca la balanza después de que la lana arde.' },
-            { tipo: 'regla', texto: 'Los átomos se conservan. La balanza solo cambia si algo entra o sale del frasco.' },
-            { tipo: 'cuentas', texto: c.cerrado ? 'El frasco está cerrado: el oxígeno que se une ya estaba adentro.' : `El frasco está abierto: entra oxígeno del aire, ${f(c.lana)} · 24 ÷ 56 = ${f(c.q.oxigeno)} g.`,
+            { tipo: 'regla', texto: 'Al arder, los átomos se conservan, así que la balanza solo cambia si algo entra al frasco o sale de él.' },
+            { tipo: 'cuentas', texto: c.cerrado ? 'El frasco está cerrado, así que el oxígeno que se une al hierro ya estaba adentro y ya se pesaba.' : `El frasco está abierto y entra oxígeno del aire: 24 g por cada 56 g de hierro, o sea ${f(c.lana)} · 24 ÷ 56 = ${f(c.q.oxigeno)} g.`,
               ecuacion: c.cerrado ? ['masa antes = masa después = ', vO(`${f(c.q.despues)} g`)] : [`${f(c.frasco)} + ${f(c.q.oxigeno)} = `, vO(`${f(c.q.despues)} g`)] },
-            { tipo: 'sentido', texto: 'Comprobación: arder no destruye átomos; si la masa cambia, es porque algo entró o salió.' },
+            { tipo: 'sentido', texto: 'Comprobación: arder no destruye átomos. Si la masa cambia, es porque algo entró al frasco o salió de él.' },
           ],
           respuesta: [vO(`${f(c.q.despues)} g`)],
         };
@@ -1642,11 +1642,11 @@
         const c = caso3(s, false);
         let solucion;
         if (c.tipo === 0) solucion = { texto: c.porque, ecuacion: [dR(`Cambio ${c.real}`)] };
-        else if (c.tipo === 1) solucion = { texto: { 'físico': 'Las mismas partículas, en otro estado.', 'químico': 'Después hay una sustancia nueva, con los mismos átomos.', nuclear: 'Después hay átomos de otro elemento.' }[c.real], ecuacion: [dR(`Cambio ${c.real}`)] };
-        else if (c.tipo === 2) solucion = { texto: c.clase === 'química' ? 'Solo se ve al transformar la sustancia en otra.' : 'Se observa sin transformar la sustancia.', ecuacion: [dR(`Propiedad ${c.clase}`)] };
-        else if (c.tipo === 3) solucion = { texto: `Se cuenta un elemento que solo esté en ${fm(FORM3[c.x.pide])}.`, ecuacion: [dR(`${c.c.n} ${fm(FORM3[c.x.pide])}`)] };
-        else if (c.xs) solucion = { texto: c.xs.map((x, i) => `${NUM[i]}: ${tipoFen(x)}`).join('; ') + '.', ecuacion: [dR(String(c.n))] };
-        else solucion = { texto: c.cerrado ? 'Cerrado: nada entra ni sale, la masa no cambia.' : 'Abierto: se suma el oxígeno que entra del aire.', ecuacion: [vO(`${f(c.q.despues)} g`)] };
+        else if (c.tipo === 1) solucion = { texto: { 'físico': 'Después están las mismas partículas, solo que en otro estado.', 'químico': 'Después hay una sustancia nueva, hecha con los mismos átomos.', nuclear: 'Después hay átomos de un elemento que antes no estaba.' }[c.real], ecuacion: [dR(`Cambio ${c.real}`)] };
+        else if (c.tipo === 2) solucion = { texto: c.clase === 'química' ? 'Ese rasgo solo se ve al transformar la sustancia en otra.' : 'Ese rasgo se observa sin transformar la sustancia.', ecuacion: [dR(`Propiedad ${c.clase}`)] };
+        else if (c.tipo === 3) solucion = { texto: `Se cuentan los átomos de un elemento que, después, solo esté en ${fm(FORM3[c.x.pide])}, y se dividen entre los que lleva cada molécula.`, ecuacion: [dR(`${c.c.n} ${fm(FORM3[c.x.pide])}`)] };
+        else if (c.xs) solucion = { texto: 'Cada cambio es: ' + c.xs.map((x, i) => `${NUM[i]}, ${tipoFen(x)}`).join('; ') + '.', ecuacion: [dR(String(c.n))] };
+        else solucion = { texto: c.cerrado ? 'En el frasco cerrado no entra ni sale nada, así que la masa no cambia.' : 'En el frasco abierto se suma la masa del oxígeno que entra del aire.', ecuacion: [vO(`${f(c.q.despues)} g`)] };
         return { pregunta: c.pregunta, datos: c.datos, dibujo: c.dibujo, opciones: c.opciones, solucion };
       },
     },
@@ -1689,8 +1689,8 @@
   const juego4 = v => coc([ollaJuego(v.q), curvaOlla(v.q)]);
   const lectura4 = v => {
     const e = olla4(v.q);
-    if (e.frac >= 1) return [dR(`${f(v.q, 0)} kcal`), ': ya hirvió toda el agua.'];
-    if (e.frac > 0) return ['Hierve a ', vD(`${TEB_JUL} °C`), `: ya se fue el ${f(100 * e.frac, 0)} % del agua.`];
+    if (e.frac >= 1) return [dR(`${f(v.q, 0)} kcal`), ': ya hirvió toda el agua de la olla.'];
+    if (e.frac > 0) return ['Hierve a ', vD(`${TEB_JUL} °C`), ` y ya se fue el ${f(100 * e.frac, 0)} % del agua.`];
     return [dR(`${f(v.q, 0)} kcal`), ': el agua subió de 10 °C a ', vD(`${f(e.T, 0)} °C`), '.'];
   };
   const DEF_SENS = ['Calor sensible: ', Qf, ' = ', mR, ' · ', ceD, ' · ', dTi];
@@ -1713,10 +1713,10 @@
       return { tipo, x, m, t0, t1, q, datos: [DEF_SENS, x.dato, DEF_DT],
         pregunta: ['¿Cuánto calor necesitan ', vO(`${m} g`), ` de ${x.nombre} para pasar de ${t0} °C a ${t1} °C?`],
         opciones: opciones(q, [
-          { id: 'tfin', valor: m * x.ce * t1, error: 'QM-T-FINAL', siFuera: 'Usaste masa y cₑ, bien. Pero ΔT es lo que sube: final menos inicial.' },
-          { id: 'sinm', valor: x.ce * (t1 - t0), error: 'QM-SIN-M', siFuera: 'Eso alcanza para 1 g. Hay que multiplicar por la masa.' },
-          x.ce === 1 ? { id: 'lat', valor: m * LV4, error: 'MA6', siFuera: 'Eso sería hervir esa masa. Aquí solo se calienta, sin cambio de estado.' }
-            : { id: 'since', valor: m * (t1 - t0), error: 'QM-SIN-CE', siFuera: `Usaste masa y ΔT, bien. Falta el calor específico del ${x.nombre}.` },
+          { id: 'tfin', valor: m * x.ce * t1, error: 'QM-T-FINAL', siFuera: 'Usaste masa y cₑ, bien. Pero ΔT es lo que sube la temperatura: la final menos la inicial.' },
+          { id: 'sinm', valor: x.ce * (t1 - t0), error: 'QM-SIN-M', siFuera: 'Eso alcanza para 1 g, bien calculado. Pero hay que multiplicar por la masa.' },
+          x.ce === 1 ? { id: 'lat', valor: m * LV4, error: 'MA6', siFuera: 'Eso sería hervir esa masa. Pero aquí solo se calienta, sin cambio de estado.' }
+            : { id: 'since', valor: m * (t1 - t0), error: 'QM-SIN-CE', siFuera: `Usaste masa y ΔT, bien. Pero falta multiplicar por el calor específico del ${x.nombre}.` },
         ], v => `${f(v)} cal`) };
     }
     if (tipo === 1) {
@@ -1725,9 +1725,9 @@
         pregunta: funde ? ['¿Cuánto calor necesitan ', vO(`${m} g`), ' de hielo a 0 °C para fundirse por completo?']
           : ['¿Cuánto calor necesitan ', vO(`${m} g`), ' de agua que ya hierve para volverse vapor por completo?'],
         opciones: opciones(q, [
-          { id: 'cero', valor: 0, error: 'QM-CERO', siFuera: 'La temperatura no cambia, cierto. Pero el calor sí entra: se usa en el cambio de estado.' },
+          { id: 'cero', valor: 0, error: 'QM-CERO', siFuera: 'La temperatura no cambia, cierto. Pero el calor sí entra, y se usa en el cambio de estado.' },
           { id: 'otroL', valor: m * (funde ? LV4 : LF4), error: 'QM-OTRO-L', siFuera: `Usaste Q = m · L, bien. Pero ese L es el de ${funde ? 'hervir' : 'fundir'}.` },
-          { id: 'sinm', valor: L, error: 'QM-SIN-M', siFuera: 'Eso alcanza para 1 g. Hay que multiplicar por la masa.' },
+          { id: 'sinm', valor: L, error: 'QM-SIN-M', siFuera: 'Eso alcanza para 1 g, bien calculado. Pero hay que multiplicar por la masa.' },
         ], v => `${f(v)} cal`) };
     }
     if (tipo === 2) {
@@ -1735,9 +1735,9 @@
       return { tipo, m, t, q1, q2, q, datos: [DEF_LAT_T, DEF_SENS, D_FUS, D_AGUA],
         pregunta: ['¿Cuánto calor hace falta para llevar ', vO(`${m} g`), ` de hielo a 0 °C hasta agua líquida a ${t} °C?`],
         opciones: opciones(q, [
-          { id: 'solofus', valor: q1, error: 'QM-SOLO-LATENTE', siFuera: 'Fundir está bien calculado. Falta calentar el agua desde 0 °C.' },
+          { id: 'solofus', valor: q1, error: 'QM-SOLO-LATENTE', siFuera: 'Fundir está bien calculado. Pero falta calentar el agua desde 0 °C.' },
           { id: 'solosens', valor: q2, error: 'MA6', siFuera: 'Calentar está bien. Pero antes hay que fundir el hielo, sin que suba la temperatura.' },
-          { id: 'hervir', valor: m * LV4 + q2, error: 'QM-OTRO-L', siFuera: 'Sumaste dos tramos, bien. Pero fundir pide 80 cal/g; 540 es hervir.' },
+          { id: 'hervir', valor: m * LV4 + q2, error: 'QM-OTRO-L', siFuera: 'Sumaste dos tramos, bien. Pero fundir pide 80 cal/g; los 540 cal/g son para hervir.' },
         ], v => `${f(v)} cal`) };
     }
     if (tipo === 3) {
@@ -1745,13 +1745,13 @@
       return { tipo, t0, t1, d, aF, datos: DEF_ESCALAS,
         pregunta: [`Un líquido pasa de ${t0} °C a ${t1} °C. ¿Cuánto varió su temperatura en `, aF ? '°F?' : 'kelvin?'],
         opciones: aF ? opciones(1.8 * d, [
-          { id: 'mas32', valor: 1.8 * d + 32, error: 'QM-LECTURA-PUNTO', siFuera: 'Multiplicaste por 1,8, bien. El +32 es para leer un punto, no para una variación.' },
-          { id: 'sin', valor: d, error: 'QM-ESCALA-SIN-FACTOR', siFuera: 'Esa es la variación en °C. Un grado Celsius equivale a 1,8 °F.' },
-          { id: 'div', valor: d / 1.8, error: 'QM-ESCALA-SIN-FACTOR', siFuera: 'El factor es 1,8, bien, pero va multiplicando: el °F es más chico.' },
+          { id: 'mas32', valor: 1.8 * d + 32, error: 'QM-LECTURA-PUNTO', siFuera: 'Multiplicaste por 1,8, bien. Pero el + 32 sirve para leer un punto, no para una variación.' },
+          { id: 'sin', valor: d, error: 'QM-ESCALA-SIN-FACTOR', siFuera: 'Esa es la variación en °C, bien calculada. Pero una variación de 1 °C equivale a 1,8 °F.' },
+          { id: 'div', valor: d / 1.8, error: 'QM-ESCALA-SIN-FACTOR', siFuera: 'El factor es 1,8, bien. Pero va multiplicando, porque el °F es más chico que el °C.' },
         ], v => `${f(v)} °F`) : opciones(d, [
-          { id: 'mas273', valor: d + 273, error: 'QM-LECTURA-PUNTO', siFuera: 'Sumar 273 sirve para leer un punto. En una variación, ΔK = Δ°C.' },
-          { id: 'por18', valor: 1.8 * d, error: 'QM-ESCALA-SIN-FACTOR', siFuera: 'El 1,8 es de los °F. Un kelvin mide lo mismo que un °C.' },
-          { id: 'final', valor: t1 + 273, error: 'QM-LECTURA-PUNTO', siFuera: 'Eso es la temperatura final en kelvin, no cuánto varió.' },
+          { id: 'mas273', valor: d + 273, error: 'QM-LECTURA-PUNTO', siFuera: 'Sumar 273 sirve para leer un punto. En una variación, el número en kelvin es el mismo que en °C.' },
+          { id: 'por18', valor: 1.8 * d, error: 'QM-ESCALA-SIN-FACTOR', siFuera: 'El 1,8 es para pasar a °F. Un kelvin mide lo mismo que un °C.' },
+          { id: 'final', valor: t1 + 273, error: 'QM-LECTURA-PUNTO', siFuera: 'Esa es la temperatura final en kelvin, bien leída, pero no dice cuánto varió.' },
         ], v => `${f(v)} K`) };
     }
     const m = r.de([50, 100, 200]), t = r.de([10, 20, 30, 40, 50]), q = m * LF4 + m * CE_AGUA * t;
@@ -1759,7 +1759,7 @@
       pregunta: [vO(`${m} g`), ' de hielo a 0 °C reciben ', dR(`${f(q)} cal`), '. ¿A qué temperatura queda el agua?'],
       opciones: opciones(t, [
         { id: 'todo', valor: q / m, error: 'QM-SIN-LATENTE', siFuera: 'Usaste Q = m · cₑ · ΔT, bien. Pero primero el hielo se funde y gasta 80 cal por gramo.' },
-        { id: 'cero', valor: 0, error: 'MA6', siFuera: 'Mientras se funde, sí está a 0 °C. Pero el calor alcanza para fundirlo y sobra.' },
+        { id: 'cero', valor: 0, error: 'MA6', siFuera: 'Mientras se funde, sí está a 0 °C. Pero el calor alcanza para fundirlo todo, y lo que sobra calienta el agua.' },
         // (17 nov, auditoría B1) Antes, «t + 80»: valía lo mismo que «todo» (q/m = 80 + t) y nunca salía.
         { id: 'l80', valor: 80, error: 'QM-SUMA-L', siFuera: 'Leíste bien el 80 de los datos. Pero son calorías por gramo para fundir, no una temperatura.' },
       ], v => `${f(v)} °C`) };
@@ -1778,18 +1778,18 @@
     { nivel: 1, titulo: 'Agua tibia para el mate',
       enunciado: ['¿Cuánto calor necesitan ', vO('500 g'), ' de agua para pasar de 20 °C a 30 °C?'],
       datos: [DEF_SENS, D_AGUA, DEF_DT],
-      solucion: [{ texto: ['Sin cambio de estado: calor sensible, con ', dTi, ' = 30 − 20 = ', vD('10 °C'), '.'], ecuacion: [Qf, ' = ', vO('500'), ' · ', vI('1'), ' · ', vD('10'), ' = ', dR('5000 cal')] }],
+      solucion: [{ texto: ['Es calor sensible, sin cambio de estado: ', dTi, ' = 30 − 20 = ', vD('10 °C'), '.'], ecuacion: [Qf, ' = ', vO('500'), ' · ', vI('1'), ' · ', vD('10'), ' = ', dR('5000 cal')] }],
       respuesta: [dR('5000 cal')] },
     { nivel: 1, titulo: 'Hielo que se funde',
       enunciado: ['¿Cuánto calor necesitan ', vO('200 g'), ' de hielo a 0 °C para fundirse por completo?'],
       datos: [DEF_LAT, D_FUS],
       figura: fig2([{ tipo: 'vaso', titulo: '200 g de hielo', nivel: 0.15, cubitos: 3, rotulos: [{ texto: 'Q = ?' }] }]),
-      solucion: [{ texto: ['Ya está a 0 °C: todo el calor va a fundirlo, sin subir la temperatura.'], ecuacion: [Qf, ' = ', vO('200'), ' · ', vI('80'), ' = ', dR('16 000 cal')] }],
+      solucion: [{ texto: ['El hielo ya está a 0 °C, así que todo el calor va a fundirlo, sin subir la temperatura.'], ecuacion: [Qf, ' = ', vO('200'), ' · ', vI('80'), ' = ', dR('16 000 cal')] }],
       respuesta: [dR('16 000 cal')] },
     { nivel: 1, titulo: 'Agua que se va en vapor',
       enunciado: ['Una olla hierve. ¿Cuánto calor hace falta para que ', vO('100 g'), ' de esa agua se vuelvan vapor?'],
       datos: [DEF_LAT, D_VAP],
-      solucion: [{ texto: ['El agua ya hierve: el calor solo cambia el estado.'], ecuacion: [Qf, ' = ', vO('100 g'), ' · ', vI('540 cal/g'), ' = ', dR('54 000 cal')] }],
+      solucion: [{ texto: ['El agua ya hierve, así que el calor solo le cambia el estado.'], ecuacion: [Qf, ' = ', vO('100 g'), ' · ', vI('540 cal/g'), ' = ', dR('54 000 cal')] }],
       respuesta: [dR('54 000 cal')] },
     { nivel: 1, titulo: 'Una variación en kelvin',
       enunciado: ['El agua de una tetera sube ', vD('25 °C'), '. ¿Cuántos kelvin subió?'],
@@ -1806,23 +1806,23 @@
       datos: [DEF_SENS, D_AGUA, '1 L de agua = 1000 g', 'En Juliaca el agua hierve a unos 87 °C'],
       figura: fig2([{ tipo: 'olla', titulo: '1 L de agua', fuego: true, termometro: '10 °C', rotulos: [{ texto: 'Q = ?' }] }]),
       solucion: [
-        { texto: ['La masa en gramos y lo que sube: de 10 °C a 87 °C.'], ecuacion: [mR, ' = ', vO('1000 g'), ';  ', dTi, ' = 87 − 10 = ', vD('77 °C')] },
-        { texto: ['Calor sensible.'], ecuacion: [Qf, ' = ', vO('1000'), ' · ', vI('1'), ' · ', vD('77'), ' = ', dR('77 000 cal')] },
+        { texto: ['Un litro de agua tiene 1000 g, y en Juliaca sube de 10 °C a 87 °C, donde hierve.'], ecuacion: [mR, ' = ', vO('1000 g'), ';  ', dTi, ' = 87 − 10 = ', vD('77 °C')] },
+        { texto: ['Hasta que empieza a hervir no cambia de estado, así que es calor sensible.'], ecuacion: [Qf, ' = ', vO('1000'), ' · ', vI('1'), ' · ', vD('77'), ' = ', dR('77 000 cal')] },
       ],
       respuesta: [dR('77 000 cal'), ' = 77 kcal'] },
     { nivel: 2, titulo: 'El calor específico de un metal',
       enunciado: [vO('200 g'), ' de un metal suben ', vD('10 °C'), ' con ', dR('440 cal'), '. ¿Cuál es su calor específico?'],
       datos: [['Calor sensible: Q = ', mR, ' · ', ceD, ' · ', dTi]],
       solucion: [
-        { texto: ['De la fórmula, se despeja cₑ: el calor entre la masa y lo que sube.'], ecuacion: [ceD, ' = ', { frac: [Qf, [mR, ' · ', dTi]] }] },
-        { texto: ['Reemplazo.'], ecuacion: [ceD, ' = ', { frac: [dR('440 cal'), [vO('200 g'), ' · ', vD('10 °C')]] }, ' = ', vI('0,22 cal/(g·°C)')] },
+        { texto: ['De la fórmula del calor sensible se despeja cₑ: el calor entre la masa y lo que sube la temperatura.'], ecuacion: [ceD, ' = ', { frac: [Qf, [mR, ' · ', dTi]] }] },
+        { texto: ['Reemplazo los datos.'], ecuacion: [ceD, ' = ', { frac: [dR('440 cal'), [vO('200 g'), ' · ', vD('10 °C')]] }, ' = ', vI('0,22 cal/(g·°C)')] },
       ],
       respuesta: [vI('0,22 cal/(g·°C)')] },
     { nivel: 2, titulo: 'Una variación en °F',
       enunciado: ['Una sopa pasa de ', vD('15 °C'), ' a ', vD('35 °C'), '. ¿Cuánto varió su temperatura en °F?'],
       datos: DEF_ESCALAS,
       solucion: [
-        { texto: ['Primero la variación en °C.'], ecuacion: ['Δ°C = 35 − 15 = ', vD('20 °C')] },
+        { texto: ['Primero calculo la variación en °C.'], ecuacion: ['Δ°C = 35 − 15 = ', vD('20 °C')] },
         { texto: ['Es una variación: Δ°F = 1,8 · Δ°C, sin el + 32 de los datos, que es para leer un punto.'], ecuacion: ['Δ°F = ', vI('1,8'), ' · ', vD('20'), ' = ', vD('36 °F')] },
       ],
       respuesta: [vD('36 °F')] },
@@ -1831,16 +1831,16 @@
       datos: [DEF_LAT_T, DEF_SENS, 'Hielo: cₑ = 0,5 cal/(g·°C)', D_FUS],
       solucion: [
         { texto: ['Primero el hielo sube de −10 °C a 0 °C, sin fundirse.'], ecuacion: [Qf, ' = ', vO('100'), ' · ', vI('0,5'), ' · ', vD('10'), ' = 500 cal'] },
-        { texto: ['Después se funde a 0 °C.'], ecuacion: [Qf, ' = ', vO('100'), ' · 80 = 8000 cal'] },
-        { texto: ['Se suman los dos tramos.'], ecuacion: ['500 + 8000 = ', dR('8500 cal')] },
+        { texto: ['Después se funde a 0 °C, sin que suba la temperatura.'], ecuacion: [Qf, ' = ', vO('100'), ' · 80 = 8000 cal'] },
+        { texto: ['El calor total es la suma de los dos tramos.'], ecuacion: ['500 + 8000 = ', dR('8500 cal')] },
       ],
       respuesta: [dR('8500 cal')] },
     { nivel: 2, titulo: '¿Cuánta agua se fue?',
       enunciado: ['Una olla que ya hierve recibe ', dR('27 000 cal'), ' más. ¿Cuántos gramos de agua se vuelven vapor?'],
       datos: [DEF_LAT, D_VAP],
       solucion: [
-        { texto: ['Mientras hierve, todo el calor va a cambiar el estado: se despeja la masa.'], ecuacion: [mR, ' = ', { frac: [Qf, Li] }] },
-        { texto: ['Reemplazo.'], ecuacion: [mR, ' = ', { frac: [dR('27 000'), vI('540')] }, ' = ', vO('50 g')] },
+        { texto: ['Mientras hierve, todo el calor va a cambiar el estado, así que de Q = m · L se despeja la masa.'], ecuacion: [mR, ' = ', { frac: [Qf, Li] }] },
+        { texto: ['Reemplazo el calor y el calor latente de ebullición.'], ecuacion: [mR, ' = ', { frac: [dR('27 000'), vI('540')] }, ' = ', vO('50 g')] },
       ],
       respuesta: [vO('50 g')] },
     { nivel: 3, titulo: 'Del hielo al vapor',
@@ -1848,16 +1848,16 @@
       datos: [DEF_LAT_T, DEF_SENS, D_FUS, D_AGUA, D_VAP, 'Al nivel del mar, el agua hierve a 100 °C'],
       figura: fig2([{ tipo: 'curva', titulo: '10 g de agua', puntos: [[0, 0], [0.8, 0], [1.8, 100], [7.2, 100]], xmax: 8, ymin: 0, ymax: 110, xMarcas: [], yMarcas: [0, 100], x: 'Q', y: 'T (°C)', completa: false, colorX: 'tinta', colorY: 'tinta' }]),
       solucion: [
-        { texto: ['Fundir a 0 °C y calentar el agua de 0 °C a 100 °C.'], ecuacion: ['10 · 80 = 800 cal;  10 · 1 · 100 = 1000 cal'] },
-        { texto: ['Hervir a 100 °C, el tramo plano y más largo.'], ecuacion: ['10 · 540 = 5400 cal'] },
-        { texto: ['Se suman los tres tramos.'], ecuacion: ['800 + 1000 + 5400 = ', dR('7200 cal')] },
+        { texto: ['Primero se funde el hielo a 0 °C, y después se calienta el agua de 0 °C a 100 °C.'], ecuacion: ['10 · 80 = 800 cal;  10 · 1 · 100 = 1000 cal'] },
+        { texto: ['Al final, el agua hierve a 100 °C: es el tramo plano más largo.'], ecuacion: ['10 · 540 = 5400 cal'] },
+        { texto: ['El calor total es la suma de los tres tramos.'], ecuacion: ['800 + 1000 + 5400 = ', dR('7200 cal')] },
       ],
       respuesta: [dR('7200 cal')] },
     { nivel: 3, titulo: '¿Alcanza el calor?',
       enunciado: ['A ', vO('100 g'), ' de hielo a 0 °C se le dan ', dR('10 000 cal'), '. ¿A qué temperatura queda el agua?'],
       datos: [DEF_LAT_T, DEF_SENS, D_FUS, D_AGUA],
       solucion: [
-        { texto: ['Fundir todo pide 100 · 80 = 8000 cal. Alcanza, y sobran 2000 cal.'], ecuacion: ['10 000 − 8000 = 2000 cal'] },
+        { texto: ['Fundir todo el hielo pide 100 · 80 = 8000 cal. El calor alcanza, y sobran 2000 cal.'], ecuacion: ['10 000 − 8000 = 2000 cal'] },
         { texto: ['Lo que sobra calienta el agua desde 0 °C.'], ecuacion: [dTi, ' = ', { frac: ['2000', [vO('100'), ' · ', vI('1')]] }, ' = ', vD('20 °C')] },
         { texto: ['Error típico: hacer 10 000 ÷ 100 = 100 °C, sin gastar primero el calor de fundir.'] },
       ],
@@ -1867,8 +1867,8 @@
       datos: [DEF_SENS, D_AGUA, '1 L de agua = 1000 g', 'Hierve a unos 87 °C en Juliaca y a unos 100 °C en Lima'],
       figura: fig2([{ tipo: 'olla', titulo: 'En Juliaca', tam: 0.9, fuego: true, termometro: '17 °C' }, { tipo: 'olla', titulo: 'En Lima', tam: 0.9, fuego: true, termometro: '17 °C', rotulos: [{ texto: 'Q más = ?' }] }]),
       solucion: [
-        { texto: ['Juliaca: sube 70 °C. Lima: sube 83 °C.'], ecuacion: ['1000 · 1 · 70 = 70 000 cal;  1000 · 1 · 83 = 83 000 cal'] },
-        { texto: ['La diferencia.'], ecuacion: ['83 000 − 70 000 = ', dR('13 000 cal')] },
+        { texto: ['En Juliaca el agua sube 70 °C hasta hervir, y en Lima sube 83 °C.'], ecuacion: ['1000 · 1 · 70 = 70 000 cal;  1000 · 1 · 83 = 83 000 cal'] },
+        { texto: ['Lo que hace falta de más en Lima es la diferencia.'], ecuacion: ['83 000 − 70 000 = ', dR('13 000 cal')] },
         { texto: ['Por eso, en la altura, el agua hierve antes, pero a menos temperatura.'] },
       ],
       respuesta: [dR('13 000 cal'), ' más en Lima'] },
@@ -1880,7 +1880,7 @@
       figura: fig2([{ tipo: 'curva', titulo: 'Una sustancia que se calienta', puntos: [[0, -10], [2, 0], [5, 0], [8, 70]], xmax: 9, ymin: -20, ymax: 80, xMarcas: [], yMarcas: [-10, 70], x: 't', y: 'T (°C)', completa: false, colorX: 'tinta', colorY: 'tinta' }]),
       solucion: [
         { texto: ['En la curva, empieza a −10 °C y termina a 70 °C; la meseta del medio no cambia el inicio ni el final.'], ecuacion: ['Δ°C = 70 − (−10) = ', vD('80 °C')] },
-        { texto: ['Es una variación: en kelvin, el mismo número; en °F, por 1,8.'], ecuacion: ['ΔK = ', vD('80 K'), ';  Δ°F = ', vI('1,8'), ' · 80 = ', vD('144 °F')] },
+        { texto: ['Es una variación: en kelvin queda el mismo número, y en °F se multiplica por 1,8.'], ecuacion: ['ΔK = ', vD('80 K'), ';  Δ°F = ', vI('1,8'), ' · 80 = ', vD('144 °F')] },
         { texto: ['Error típico: sumar 273 o 32, que en los datos sirven para leer un punto, no una variación.'] },
       ],
       respuesta: [vD('80 K'), ' y ', vD('144 °F')] },
@@ -1888,9 +1888,9 @@
       enunciado: ['Una terma calienta ', vO('2 kg'), ' de agua de 20 °C a 70 °C. ¿Cuánto calor recibe el agua, en kJ?'],
       datos: [DEF_SENS, D_AGUA, '1 kg = 1000 g', DEF_CAL, '1 kJ = 1000 J'],
       solucion: [
-        { texto: ['La masa en gramos y lo que sube.'], ecuacion: [mR, ' = ', vO('2000 g'), ';  ', dTi, ' = ', vD('50 °C')] },
-        { texto: ['Calor sensible, en calorías.'], ecuacion: [Qf, ' = ', vO('2000'), ' · ', vI('1'), ' · ', vD('50'), ' = 100 000 cal'] },
-        { texto: ['A joules y a kJ.'], ecuacion: ['100 000 · 4,18 = 418 000 J = ', dR('418 kJ')] },
+        { texto: ['Paso la masa a gramos y calculo cuánto sube la temperatura.'], ecuacion: [mR, ' = ', vO('2000 g'), ';  ', dTi, ' = ', vD('50 °C')] },
+        { texto: ['No hay cambio de estado, así que es calor sensible, en calorías.'], ecuacion: [Qf, ' = ', vO('2000'), ' · ', vI('1'), ' · ', vD('50'), ' = 100 000 cal'] },
+        { texto: ['Cada caloría son unos 4,18 J, y 1000 J son 1 kJ.'], ecuacion: ['100 000 · 4,18 = 418 000 J = ', dR('418 kJ')] },
       ],
       respuesta: [dR('418 kJ')] },
   ];
@@ -1908,10 +1908,10 @@
     // durante un cambio de estado (es lo que se juega y se predice).
     lee: {
       tarjetas: [
-        { titulo: 'Calor y temperatura', texto: 'El calor es energía que pasa de algo caliente a algo más frío; aquí se mide en calorías (cal) y kilocalorías (1 kcal = 1000 cal). La temperatura dice qué tan caliente está algo, en grados Celsius. No son lo mismo.',
+        { titulo: 'Calor y temperatura', texto: 'El calor es energía que pasa de algo caliente a algo más frío; aquí se mide en calorías (cal) y kilocalorías (1 kcal = 1000 cal). La temperatura, en cambio, dice qué tan caliente está algo, en grados Celsius.',
           pieza: 'quim-cocina', dibujo: coc([{ tipo: 'olla', titulo: '1 L de agua', fuego: true, termometro: '10 °C', colorT: 'd' }]) },
         { titulo: 'Cada sustancia pide lo suyo', texto: 'Para subir 1 °C, cada gramo de agua pide 1 caloría: es su calor específico, cₑ. El aceite pide la mitad y se calienta más rápido. Por eso el lago Titicaca tarda en calentarse y en enfriarse.' },
-        { titulo: 'Cambios de estado', texto: 'Fundir es pasar de sólido a líquido; hervir, de líquido a gas. En las heladas de Puno, el agua de los charcos se congela de noche y se funde con el sol de la mañana.' },
+        { titulo: 'Cambios de estado', texto: 'Fundir es pasar de sólido a líquido, y hervir es pasar de líquido a gas. En las heladas de Puno, el agua de los charcos se congela de noche y se funde con el sol de la mañana.' },
         { titulo: 'Qué mirar', texto: 'En el juego, el punto de la curva avanza a la derecha cuando entra calor y sube cuando sube la temperatura. Fíjate qué hace el termómetro en cada momento.' },
       ],
     },
@@ -1949,7 +1949,7 @@
         { id: 'c', texto: '0 °C todo el tiempo', correcta: true },
         { id: 'sube', texto: 'Va subiendo poco a poco mientras se derrite', error: 'MA6', siFuera: 'Entra calor de la cocina, cierto. Pero mientras queda hielo, ese calor se usa en fundir.' },
         { id: 'bajo', texto: 'Menos de 0 °C, porque el hielo está bajo cero', error: 'QM-BAJO-CERO', siFuera: 'El hielo puede estar bajo cero, sí. Pero mientras se funde con agua, está justo a 0 °C.' },
-        { id: 'cocina', texto: 'La temperatura de la cocina, unos 18 °C', error: 'QM-T-COCINA', siFuera: 'El vaso irá hacia 18 °C, cierto. Pero solo cuando ya no quede hielo.' },
+        { id: 'cocina', texto: 'La temperatura de la cocina, unos 18 °C', error: 'QM-T-COCINA', siFuera: 'El vaso irá hacia 18 °C, cierto. Pero solo empieza a subir cuando ya no queda hielo.' },
       ],
       dibujo: coc([{ tipo: 'vaso', titulo: 'Agua con hielo', cubitos: 3, termometro: '?' }]),
       revelar: coc([{ tipo: 'vaso', titulo: 'Agua con hielo', cubitos: 3, termometro: '0 °C', colorT: 'd' }]),
@@ -1965,20 +1965,20 @@
       voz: 'Separemos el calor tramo por tramo.',
       pasos: [
         // L y su 80 cal/g se dicen en la llave (lector en frío: «no dicen qué es L, ni que el 80 son cal por gramo»).
-        { estado: { corte: 1 }, texto: 'Mientras queda hielo, el termómetro marca 0 °C: el calor funde, no calienta.',
+        { estado: { corte: 1 }, texto: 'Mientras queda hielo, el termómetro marca 0 °C, porque el calor funde el hielo en vez de calentar.',
           ecuacion: [Qf, ' = ', mR, ' · ', { llave: [Li], nota: 'calor latente: lo que pide cada gramo para fundirse', color: 'c-i' }, ' = ', vO('200 g'), ' · ', vI('80 cal/g'), ' = ', dR('16 000 cal'), ' = ', dR('16 kcal')] },
-        { estado: { corte: 1 }, texto: 'Ya sin hielo, el agua sube de 0 °C a 18 °C.', ecuacion: [Qf, ' = ', mR, ' · ', ceD, ' · ', dTi, ' = ', vO('200 g'), ' · ', vI('1 cal/(g·°C)'), ' · ', vD('18 °C'), ' = ', dR('3600 cal')] },
-        { estado: { corte: 1 }, texto: 'Fundir pidió más de cuatro veces lo que pidió calentar.', ecuacion: [dR('16 000 cal'), ' contra ', dR('3600 cal')] },
-        { estado: { corte: 1 }, texto: 'Hervir pide aún más: 540 cal por gramo, casi siete veces fundirlo.', ecuacion: ['ebullición: ', Li, ' = ', vI('540 cal/g'), ';  fusión: ', Li, ' = ', vI('80 cal/g')] },
-        { estado: { corte: 1 }, texto: 'En kelvin (K) la variación es la misma; en grados Fahrenheit (°F), 1,8 veces.', ecuacion: ['ΔK = Δ°C = ', vD('18 K'), ';  Δ°F = 1,8 · 18 = ', vD('32,4 °F')] },
+        { estado: { corte: 1 }, texto: 'Cuando ya no queda hielo, el agua sube de 0 °C a 18 °C.', ecuacion: [Qf, ' = ', mR, ' · ', ceD, ' · ', dTi, ' = ', vO('200 g'), ' · ', vI('1 cal/(g·°C)'), ' · ', vD('18 °C'), ' = ', dR('3600 cal')] },
+        { estado: { corte: 1 }, texto: 'Fundir el hielo pidió más de cuatro veces lo que pidió calentar el agua.', ecuacion: [dR('16 000 cal'), ' contra ', dR('3600 cal')] },
+        { estado: { corte: 1 }, texto: 'Hervir pide aún más: 540 cal por gramo, casi siete veces lo que pide fundirlo.', ecuacion: ['ebullición: ', Li, ' = ', vI('540 cal/g'), ';  fusión: ', Li, ' = ', vI('80 cal/g')] },
+        { estado: { corte: 1 }, texto: 'Una variación en kelvin (K) es el mismo número que en °C; en grados Fahrenheit (°F) es 1,8 veces mayor.', ecuacion: ['ΔK = Δ°C = ', vD('18 K'), ';  Δ°F = 1,8 · 18 = ', vD('32,4 °F')] },
       ],
     },
     regla: {
-      texto: 'Sin cambio de estado, el calor sube la temperatura: calor sensible. Durante un cambio de estado, la temperatura no cambia y el calor va al cambio: calor latente.',
+      texto: 'Sin cambio de estado, el calor sube la temperatura, y se llama calor sensible. Durante un cambio de estado, la temperatura no cambia y el calor se gasta en el cambio: es el calor latente.',
       // Cada fórmula en su línea (el separador '   ·   ' las parte; lector en frío: «Q = m·cₑ· ·ΔT Q =» y «m·L» abajo).
       ecuacion: [Qf, ' = ', mR, ' · ', { llave: [ceD], nota: 'calor específico', color: 'c-i' }, ' · ', dTi, '   ·   ', Qf, ' = ', mR, ' · ', { llave: [Li], nota: 'calor latente', color: 'c-i' }],
       // Sin repetir «Vale» (el lector pone «Vale si» delante; lector en frío: «Vale si Vale para…»).
-      condicion: 'la sustancia es pura y la presión, fija. Un punto: K = °C + 273 y °F = 1,8 · °C + 32; una variación, sin sumar.',
+      condicion: 'la sustancia es pura y la presión no cambia. Para leer un punto, K = °C + 273 y °F = 1,8 · °C + 32; para una variación no se suma nada.',
       voz: 'Antes de usar una fórmula, pregunta en qué tramo estás.',
     },
     // Así se resuelve: el mismo tipo que «Ahora tú» con la misma semilla, pero otro caso (caso4(s, true)).
@@ -1991,9 +1991,9 @@
           pasos: [
             { tipo: 'pide', texto: ['Piden el calor ', Qf, ` que calienta el ${c.x.nombre}, sin cambio de estado.`] },
             { tipo: 'datos', texto: [mR, ` = ${c.m} g, `, ceD, ` = ${f(c.x.ce)} cal/(g·°C) y `, dTi, ` = ${c.t1} − ${c.t0} = ${c.t1 - c.t0} °C.`] },
-            { tipo: 'regla', texto: 'Sin cambio de estado: calor sensible.', ecuacion: [Qf, ' = ', mR, ' · ', ceD, ' · ', dTi] },
-            { tipo: 'cuentas', texto: 'Reemplazo.', ecuacion: [Qf, ' = ', vO(`${c.m}`), ' · ', vI(f(c.x.ce)), ' · ', vD(`${c.t1 - c.t0}`), ' = ', dR(`${f(c.q)} cal`)] },
-            { tipo: 'sentido', texto: 'Unidades: g · cal/(g·°C) · °C deja calorías. Con el doble de masa, el doble de calor.' },
+            { tipo: 'regla', texto: 'Como no hay cambio de estado, es calor sensible.', ecuacion: [Qf, ' = ', mR, ' · ', ceD, ' · ', dTi] },
+            { tipo: 'cuentas', texto: 'Reemplazo los tres datos en la fórmula.', ecuacion: [Qf, ' = ', vO(`${c.m}`), ' · ', vI(f(c.x.ce)), ' · ', vD(`${c.t1 - c.t0}`), ' = ', dR(`${f(c.q)} cal`)] },
+            { tipo: 'sentido', texto: 'Unidades: g · cal/(g·°C) · °C deja calorías. Y con el doble de masa haría falta el doble de calor.' },
           ],
           respuesta: [dR(`${f(c.q)} cal`)],
         };
@@ -2001,10 +2001,10 @@
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: ['Piden el calor ', Qf, c.funde ? ' que funde todo el hielo.' : ' que vuelve vapor toda esa agua.'] },
-            { tipo: 'datos', texto: c.funde ? 'Ya está a 0 °C: no hay que calentarlo, solo fundirlo. L de fusión: 80 cal/g.' : 'Ya hierve: no hay que calentarla, solo cambiarle el estado. L de ebullición: 540 cal/g.' },
+            { tipo: 'datos', texto: c.funde ? 'El hielo ya está a 0 °C, así que no hay que calentarlo, solo fundirlo. Su calor latente de fusión es 80 cal/g.' : 'El agua ya hierve, así que no hay que calentarla, solo cambiarle el estado. Su calor latente de ebullición es 540 cal/g.' },
             { tipo: 'regla', texto: 'Durante un cambio de estado, la temperatura no cambia y cada gramo pide su calor latente.', ecuacion: [Qf, ' = ', mR, ' · ', Li] },
-            { tipo: 'cuentas', texto: 'Reemplazo.', ecuacion: [Qf, ' = ', vO(`${c.m}`), ' · ', vI(`${c.L}`), ' = ', dR(`${f(c.q)} cal`)] },
-            { tipo: 'sentido', texto: 'Comprobación: aunque el termómetro no se mueva, el calor no es cero: se gasta en el cambio de estado.' },
+            { tipo: 'cuentas', texto: 'Reemplazo la masa y el calor latente.', ecuacion: [Qf, ' = ', vO(`${c.m}`), ' · ', vI(`${c.L}`), ' = ', dR(`${f(c.q)} cal`)] },
+            { tipo: 'sentido', texto: 'Comprobación: aunque el termómetro no se mueva, el calor no es cero, porque se gasta en el cambio de estado.' },
           ],
           respuesta: [dR(`${f(c.q)} cal`)],
         };
@@ -2012,20 +2012,20 @@
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: 'Piden el calor de dos tramos: fundir el hielo y calentar el agua que queda.' },
-            { tipo: 'regla', texto: 'Cada tramo con su fórmula: el que cambia de estado con Q = m · L; el que sube de temperatura con Q = m · cₑ · ΔT.' },
-            { tipo: 'cuentas', texto: 'Fundir a 0 °C, y después subir el agua.', ecuacion: [`${c.m} · 80 = ${f(c.q1)} cal;  `, vO(`${c.m}`), ' · ', vI('1'), ' · ', vD(`${c.t}`), ` = ${f(c.q2)} cal`] },
-            { tipo: 'cuentas', texto: 'Sumo los dos tramos.', ecuacion: [`${f(c.q1)} + ${f(c.q2)} = `, dR(`${f(c.q)} cal`)] },
-            { tipo: 'sentido', texto: 'Comprobación: fundir pide más que calentar unos grados; el tramo plano es el más largo.' },
+            { tipo: 'regla', texto: 'Cada tramo lleva su fórmula: el que cambia de estado usa Q = m · L, y el que sube de temperatura usa Q = m · cₑ · ΔT.' },
+            { tipo: 'cuentas', texto: 'Primero se funde el hielo a 0 °C, y después se sube la temperatura del agua.', ecuacion: [`${c.m} · 80 = ${f(c.q1)} cal;  `, vO(`${c.m}`), ' · ', vI('1'), ' · ', vD(`${c.t}`), ` = ${f(c.q2)} cal`] },
+            { tipo: 'cuentas', texto: 'El calor total es la suma de los dos tramos.', ecuacion: [`${f(c.q1)} + ${f(c.q2)} = `, dR(`${f(c.q)} cal`)] },
+            { tipo: 'sentido', texto: 'Comprobación: fundir pide más calor que calentar unos grados, y por eso el tramo plano de la curva es el más largo.' },
           ],
           respuesta: [dR(`${f(c.q)} cal`)],
         };
         if (c.tipo === 3) return {
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
-            { tipo: 'pide', texto: `Piden cuánto varió la temperatura, en ${c.aF ? '°F' : 'kelvin'}: una variación, no una lectura.` },
+            { tipo: 'pide', texto: `Piden cuánto varió la temperatura, en ${c.aF ? '°F' : 'kelvin'}. Es una variación, no la lectura de un punto.` },
             { tipo: 'regla', texto: c.aF ? 'En una variación, Δ°F = 1,8 · Δ°C, sin sumar 32.' : 'En una variación, ΔK = Δ°C, sin sumar 273.' },
-            { tipo: 'cuentas', texto: 'Primero la variación en °C; después, la otra escala.', ecuacion: [`Δ°C = ${c.t1} − (${c.t0}) = `, vD(`${c.d}`), ';  ', c.aF ? `Δ°F = 1,8 · ${c.d} = ` : 'ΔK = ', vD(c.aF ? `${f(1.8 * c.d)} °F` : `${c.d} K`)] },
-            { tipo: 'sentido', texto: c.aF ? 'Un °F es más chico que un °C: el número en °F tiene que salir mayor.' : 'Un kelvin y un °C miden lo mismo: el número no cambia.' },
+            { tipo: 'cuentas', texto: 'Primero calculo la variación en °C, y después la paso a la otra escala.', ecuacion: [`Δ°C = ${c.t1} − (${c.t0}) = `, vD(`${c.d}`), ';  ', c.aF ? `Δ°F = 1,8 · ${c.d} = ` : 'ΔK = ', vD(c.aF ? `${f(1.8 * c.d)} °F` : `${c.d} K`)] },
+            { tipo: 'sentido', texto: c.aF ? 'Comprobación: un °F es más chico que un °C, así que el número en °F tiene que salir mayor.' : 'Comprobación: un kelvin y un °C miden lo mismo, así que el número no cambia.' },
           ],
           respuesta: [vD(c.aF ? `${f(1.8 * c.d)} °F` : `${c.d} K`)],
         };
@@ -2033,8 +2033,8 @@
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: 'Piden la temperatura final del agua.' },
-            { tipo: 'regla', texto: 'Primero se funde todo el hielo, sin que suba la temperatura; el calor que sobra calienta el agua.' },
-            { tipo: 'cuentas', texto: `Fundir pide ${c.m} · 80 = ${f(c.m * LF4)} cal. Sobran ${f(c.q - c.m * LF4)} cal.`, ecuacion: [dTi, ' = ', { frac: [`${f(c.q - c.m * LF4)}`, [vO(`${c.m}`), ' · ', vI('1')]] }, ' = ', vD(`${c.t} °C`)] },
+            { tipo: 'regla', texto: 'Primero se funde todo el hielo, sin que suba la temperatura, y el calor que sobra calienta el agua.' },
+            { tipo: 'cuentas', texto: `Fundir pide ${c.m} · 80 = ${f(c.m * LF4)} cal, así que sobran ${f(c.q - c.m * LF4)} cal para calentar el agua.`, ecuacion: [dTi, ' = ', { frac: [`${f(c.q - c.m * LF4)}`, [vO(`${c.m}`), ' · ', vI('1')]] }, ' = ', vD(`${c.t} °C`)] },
             { tipo: 'sentido', texto: 'Comprobación: si el calor no alcanzara para fundir todo, quedaría hielo y el agua estaría a 0 °C.' },
           ],
           respuesta: [vD(`${c.t} °C`)],
@@ -2047,11 +2047,11 @@
       generar(s) {
         const c = caso4(s, false);
         let solucion;
-        if (c.tipo === 0) solucion = { texto: 'Sin cambio de estado: calor sensible.', ecuacion: [Qf, ` = ${c.m} · ${f(c.x.ce)} · ${c.t1 - c.t0} = `, dR(`${f(c.q)} cal`)] };
-        else if (c.tipo === 1) solucion = { texto: 'Cambio de estado: calor latente.', ecuacion: [Qf, ` = ${c.m} · ${c.L} = `, dR(`${f(c.q)} cal`)] };
-        else if (c.tipo === 2) solucion = { texto: 'Fundir y después calentar: dos tramos que se suman.', ecuacion: [`${f(c.q1)} + ${f(c.q2)} = `, dR(`${f(c.q)} cal`)] };
-        else if (c.tipo === 3) solucion = { texto: c.aF ? 'Variación: por 1,8, sin sumar 32.' : 'Variación: ΔK = Δ°C.', ecuacion: [vD(c.aF ? `${f(1.8 * c.d)} °F` : `${c.d} K`)] };
-        else solucion = { texto: 'Primero se funde todo; lo que sobra calienta el agua.', ecuacion: [vD(`${c.t} °C`)] };
+        if (c.tipo === 0) solucion = { texto: 'No hay cambio de estado, así que es calor sensible.', ecuacion: [Qf, ` = ${c.m} · ${f(c.x.ce)} · ${c.t1 - c.t0} = `, dR(`${f(c.q)} cal`)] };
+        else if (c.tipo === 1) solucion = { texto: 'Hay un cambio de estado a temperatura fija, así que es calor latente.', ecuacion: [Qf, ` = ${c.m} · ${c.L} = `, dR(`${f(c.q)} cal`)] };
+        else if (c.tipo === 2) solucion = { texto: 'Primero se funde y después se calienta: son dos tramos, y sus calores se suman.', ecuacion: [`${f(c.q1)} + ${f(c.q2)} = `, dR(`${f(c.q)} cal`)] };
+        else if (c.tipo === 3) solucion = { texto: c.aF ? 'Es una variación: se multiplica por 1,8, sin sumar 32.' : 'Es una variación, y en kelvin vale lo mismo que en °C.', ecuacion: [vD(c.aF ? `${f(1.8 * c.d)} °F` : `${c.d} K`)] };
+        else solucion = { texto: 'Primero se funde todo el hielo, y el calor que sobra calienta el agua.', ecuacion: [vD(`${c.t} °C`)] };
         return { pregunta: c.pregunta, datos: c.datos, opciones: c.opciones, solucion };
       },
     },
@@ -2110,7 +2110,7 @@
         opciones: opciones(e.E, [
           { id: 'sinkg', valor: x * C2, error: 'QM-G-KG', siFuera: `Multiplicaste por c², bien. Pero la masa va en kg: ${f(x)} ${u} no son ${f(x)} kg.` },
           { id: 'sinc2', valor: e.errores.sinCuadrado, error: 'QM-MC', siFuera: 'Pasaste a kg, bien. Pero c va al cuadrado: por 9 × 10¹⁶, no por 3 × 10⁸.' },
-          { id: 'mil', valor: e.E * 1000, error: 'QM-G-KG', siFuera: 'Multiplicaste por c², bien. Revisa el paso a kg: te sobra un factor 1000.' },
+          { id: 'mil', valor: e.E * 1000, error: 'QM-G-KG', siFuera: 'Multiplicaste por c², bien. Pero en el paso a kg te sobra un factor 1000.' },
         ], v => `${cien(v)} J`) };
     }
     if (tipo === 1) {
@@ -2129,8 +2129,8 @@
         pregunta: [`En ${x.texto}, la masa pasa de ${f(x.antes, 4)} g a ${f(x.despues, 4)} g. ¿Cuánta energía se liberó?`],
         opciones: opciones(E, [
           { id: 'total', valor: x.antes / 1000 * C2, error: 'QM-TODA-MASA', siFuera: 'Usaste c², bien. Pero solo la masa que falta se vuelve energía, no toda.' },
-          { id: 'sinkg', valor: dmg * C2, error: 'QM-G-KG', siFuera: 'Restaste bien las masas. Falta pasar los gramos a kg.' },
-          { id: 'sinc2', valor: kg * Motor.C, error: 'QM-MC', siFuera: 'La masa que falta está bien. Pero c va al cuadrado.' },
+          { id: 'sinkg', valor: dmg * C2, error: 'QM-G-KG', siFuera: 'Restaste bien las masas. Pero falta pasar los gramos a kg.' },
+          { id: 'sinc2', valor: kg * Motor.C, error: 'QM-MC', siFuera: 'La masa que falta está bien. Pero c va al cuadrado: se multiplica por 9 × 10¹⁶.' },
         ], v => `${cien(v)} J`) };
     }
     if (tipo === 3) {
@@ -2138,8 +2138,8 @@
       return { tipo, mg, e, n, datos: [DEF_E, DEF_C, '1 kg = 1 000 000 mg', DEF_BALON],
         pregunta: ['Si desaparecen ', vO(`${mg} mg`), ' en un proceso nuclear, ¿a cuántos balones de gas equivale la energía que sale?'],
         opciones: opciones(redondo(n), [
-          { id: 'g', valor: redondo(n * 1000), error: 'QM-G-KG', siFuera: 'La idea está bien. Revisa el paso de mg a kg: sobra un factor 1000.' },
-          { id: 'uno', valor: redondo(n / 1000), error: 'QM-G-KG', siFuera: 'La idea está bien. Revisa el paso de mg a kg: falta un factor 1000.' },
+          { id: 'g', valor: redondo(n * 1000), error: 'QM-G-KG', siFuera: 'La idea está bien. Pero en el paso de mg a kg sobra un factor 1000.' },
+          { id: 'uno', valor: redondo(n / 1000), error: 'QM-G-KG', siFuera: 'La idea está bien. Pero en el paso de mg a kg falta un factor 1000.' },
         ], v => `Unos ${f(v, v < 1 ? 3 : 0)}`) };
     }
     if ((Math.floor(s / 5) + (otro ? 1 : 0)) % 2 === 0) {
@@ -2148,8 +2148,8 @@
         pregunta: ['Desaparecen ', vO(`${mg} mg`), ' de masa en un proceso nuclear. ¿Cuántos joules salen?'],
         opciones: opciones(e.E, [
           { id: 'km', valor: e.errores.cEnKmPorS, error: 'QM-C-KM', siFuera: 'Pasaste la masa a kg, bien. Pero c tiene que estar en m/s: 3 × 10⁸ m/s.' },
-          { id: 'sinkg', valor: mg * C2, error: 'QM-G-KG', siFuera: 'c está bien en m/s. Falta pasar los mg a kg.' },
-          { id: 'sinc2', valor: e.errores.sinCuadrado, error: 'QM-MC', siFuera: 'Las unidades están bien. Pero c va al cuadrado.' },
+          { id: 'sinkg', valor: mg * C2, error: 'QM-G-KG', siFuera: 'Pusiste bien c en m/s. Pero falta pasar los mg a kg.' },
+          { id: 'sinc2', valor: e.errores.sinCuadrado, error: 'QM-MC', siFuera: 'Las unidades están bien. Pero c va al cuadrado: se multiplica por 9 × 10¹⁶.' },
         ], v => `${cien(v)} J`) };
     }
     const kgU = r.de([1, 2, 5]), dmg = 0.9 * kgU, E = dmg / 1000 * C2;
@@ -2157,8 +2157,8 @@
       pregunta: [`En un reactor nuclear se ${kgU === 1 ? 'usa' : 'usan'} ${kgU} kg de combustible y, al final, a lo que queda le faltan `, vO(`${f(dmg)} g`), '. ¿Cuánta energía salió?'],
       opciones: opciones(E, [
         { id: 'total', valor: kgU * C2, error: 'QM-TODA-MASA', siFuera: 'Usaste c², bien. Pero solo la masa que falta se vuelve energía, no todo el combustible.' },
-        { id: 'sinkg', valor: dmg * C2, error: 'QM-G-KG', siFuera: 'Tomaste la masa que falta, bien. Falta pasarla a kg.' },
-        { id: 'resta', valor: (kgU - dmg / 1000) * C2, error: 'QM-TODA-MASA', siFuera: 'Esa es la masa que queda. Se usa la que falta.' },
+        { id: 'sinkg', valor: dmg * C2, error: 'QM-G-KG', siFuera: 'Tomaste la masa que falta, bien. Pero hay que pasarla a kg.' },
+        { id: 'resta', valor: (kgU - dmg / 1000) * C2, error: 'QM-TODA-MASA', siFuera: 'Usaste c², bien. Pero esa es la masa que queda, y se usa la que falta.' },
       ], v => `${cien(v)} J`) };
   }
 
@@ -2181,12 +2181,12 @@
     { nivel: 1, titulo: 'Un kilogramo entero',
       enunciado: ['Si desapareciera ', vO('1 kg'), ' de masa entero, ¿cuánta energía saldría?'],
       datos: [DEF_E, 'c² = 9 × 10¹⁶ m²/s²'],
-      solucion: [{ texto: ['La masa ya está en kg.'], ecuacion: [Ef, ' = ', vO('1'), ' · ', vI('9 × 10¹⁶'), ' = ', dR('9 × 10¹⁶ J')] }],
+      solucion: [{ texto: ['La masa ya está en kg, así que se multiplica directamente por c².'], ecuacion: [Ef, ' = ', vO('1'), ' · ', vI('9 × 10¹⁶'), ' = ', dR('9 × 10¹⁶ J')] }],
       respuesta: [dR('9 × 10¹⁶ J')] },
     { nivel: 1, titulo: 'De la energía a la masa',
       enunciado: ['Un proceso nuclear libera ', dR('9 × 10¹⁰ J'), '. ¿Cuántos kg de masa desaparecieron?'],
       datos: [DEF_E, 'c² = 9 × 10¹⁶ m²/s²'],
-      solucion: [{ texto: ['Se despeja la masa: la energía entre c².'], ecuacion: [dmO, ' = ', { frac: [dR('9 × 10¹⁰'), vI('9 × 10¹⁶')] }, ' = ', vO('10⁻⁶ kg'), ', un miligramo'] }],
+      solucion: [{ texto: ['Se despeja la masa, que es la energía dividida entre c².'], ecuacion: [dmO, ' = ', { frac: [dR('9 × 10¹⁰'), vI('9 × 10¹⁶')] }, ' = ', vO('10⁻⁶ kg'), ', un miligramo'] }],
       respuesta: [vO('10⁻⁶ kg'), ' = 1 mg'] },
     { nivel: 1, titulo: 'La luz al cuadrado',
       enunciado: 'La rapidez de la luz es c = 3 × 10⁸ m/s. ¿Cuánto vale c²?',
@@ -2196,23 +2196,23 @@
     { nivel: 1, titulo: 'Miligramos a kilogramos',
       enunciado: ['¿Cuántos kilogramos son ', vO('5 mg'), '?'],
       datos: ['1 kg = 1 000 000 mg = 10⁶ mg'],
-      solucion: [{ texto: ['Un millón de miligramos hacen un kilogramo: se divide entre 10⁶.'], ecuacion: [vO('5 mg'), ' ÷ 10⁶ = ', vO('5 × 10⁻⁶ kg')] }],
+      solucion: [{ texto: ['Un millón de miligramos hacen un kilogramo, así que se divide entre 10⁶.'], ecuacion: [vO('5 mg'), ' ÷ 10⁶ = ', vO('5 × 10⁻⁶ kg')] }],
       respuesta: [vO('5 × 10⁻⁶ kg')] },
     { nivel: 2, titulo: 'Veinte miligramos',
       enunciado: ['En un proceso nuclear desaparecen ', vO('20 mg'), '. ¿Cuánta energía sale?'],
       datos: [DEF_E, DEF_C, '1 kg = 10⁶ mg', DEF_POT],
       figura: fig2([{ tipo: 'balanza', titulo: 'Masa que desaparece', carga: 'pizca', pantalla: '20 mg', color: 'o', rotulos: [{ texto: 'E = ?' }] }]),
       solucion: [
-        { texto: ['Primero a kg.'], ecuacion: [dmO, ' = 20 ÷ 10⁶ = ', vO('2 × 10⁻⁵ kg')] },
-        { texto: ['Por c², con c² = (3 × 10⁸)² = 9 × 10¹⁶.'], ecuacion: [Ef, ' = ', vO('2 × 10⁻⁵'), ' · ', vI('9 × 10¹⁶'), ' = ', dR('1,8 × 10¹² J')] },
+        { texto: ['Primero paso la masa a kg.'], ecuacion: [dmO, ' = 20 ÷ 10⁶ = ', vO('2 × 10⁻⁵ kg')] },
+        { texto: ['Multiplico por c², que es (3 × 10⁸)², o sea 9 × 10¹⁶.'], ecuacion: [Ef, ' = ', vO('2 × 10⁻⁵'), ' · ', vI('9 × 10¹⁶'), ' = ', dR('1,8 × 10¹² J')] },
       ],
       respuesta: [dR('1,8 × 10¹² J')] },
     { nivel: 2, titulo: 'La masa que falta',
       enunciado: 'En una reacción nuclear, la masa pasa de 2000 g a 1998 g. ¿Cuánta energía se liberó?',
       datos: [['E = ', dmO, ' · ', c2i, ', con ', dmO, ': masa antes menos masa después'], DEF_C, '1 kg = 1000 g'],
       solucion: [
-        { texto: ['La masa que falta, en kg.'], ecuacion: [dmO, ' = 2000 − 1998 = 2 g = ', vO('0,002 kg')] },
-        { texto: ['Por c², con c² = (3 × 10⁸)² = 9 × 10¹⁶.'], ecuacion: [Ef, ' = ', vO('0,002'), ' · ', vI('9 × 10¹⁶'), ' = ', dR('1,8 × 10¹⁴ J')] },
+        { texto: ['Calculo la masa que falta y la paso a kg.'], ecuacion: [dmO, ' = 2000 − 1998 = 2 g = ', vO('0,002 kg')] },
+        { texto: ['Multiplico por c², que es (3 × 10⁸)², o sea 9 × 10¹⁶.'], ecuacion: [Ef, ' = ', vO('0,002'), ' · ', vI('9 × 10¹⁶'), ' = ', dR('1,8 × 10¹⁴ J')] },
       ],
       respuesta: [dR('1,8 × 10¹⁴ J')] },
     { nivel: 2, titulo: 'Cuánta masa, en gramos',
@@ -2220,8 +2220,8 @@
       datos: [DEF_E, DEF_C, '1 kg = 1000 g', DEF_POT],
       solucion: [
         { texto: ['Primero c²: se eleva al cuadrado el 3 y también la potencia de 10.'], ecuacion: [c2i, ' = (3 × 10⁸)² = 3² × 10⁸ · 10⁸ = ', vI('9 × 10¹⁶')] },
-        { texto: ['Se despeja la masa; sale en kg.'], ecuacion: [dmO, ' = ', { frac: [dR('4,5 × 10¹³'), vI('9 × 10¹⁶')] }, ' = ', vO('5 × 10⁻⁴ kg')] },
-        { texto: ['A gramos.'], ecuacion: ['5 × 10⁻⁴ · 1000 = ', vO('0,5 g')] },
+        { texto: ['Después se despeja la masa, que sale en kg.'], ecuacion: [dmO, ' = ', { frac: [dR('4,5 × 10¹³'), vI('9 × 10¹⁶')] }, ' = ', vO('5 × 10⁻⁴ kg')] },
+        { texto: ['Al final paso los kg a gramos.'], ecuacion: ['5 × 10⁻⁴ · 1000 = ', vO('0,5 g')] },
       ],
       respuesta: [vO('0,5 g')] },
     { nivel: 2, titulo: 'Un miligramo en balones',
@@ -2230,15 +2230,15 @@
       figura: fig2([{ tipo: 'balanza', titulo: 'Masa que desaparece', carga: 'pizca', pantalla: '1 mg', color: 'o' }, { tipo: 'balon', titulo: 'Un balón de gas', rotulos: [{ texto: 'unos 4,6 × 10⁸ J', color: 'd' }] }]),
       solucion: [
         { texto: ['Se divide la energía entre la de un balón.'], ecuacion: [{ frac: [dR('9 × 10¹⁰ J'), vD('4,6 × 10⁸ J')] }, ' ≈ ', vH('196')] },
-        { texto: ['Unos 196 balones: lo que una familia gasta en muchos años.'] },
+        { texto: ['Son unos 196 balones, lo que una familia gasta en muchos años.'] },
       ],
       respuesta: [vH('Unos 196 balones')] },
     { nivel: 2, titulo: 'La luz en km/s',
       enunciado: ['Desaparecen ', vO('2 mg'), ' de masa. Si c = 300 000 km/s, ¿cuántos joules salen?'],
       datos: ['E = Δm · c²', '1 km = 1000 m', '1 kg = 10⁶ mg'],
       solucion: [
-        { texto: ['Todo en kg y m/s.'], ecuacion: [vO('2 × 10⁻⁶ kg'), ';  ', vI('c'), ' = 300 000 · 1000 = 3 × 10⁸ m/s'] },
-        { texto: ['Por c², con c² = (3 × 10⁸)² = 9 × 10¹⁶.'], ecuacion: [Ef, ' = ', vO('2 × 10⁻⁶'), ' · ', vI('9 × 10¹⁶'), ' = ', dR('1,8 × 10¹¹ J')] },
+        { texto: ['Paso la masa a kg y c a m/s, para que la energía salga en joules.'], ecuacion: [vO('2 × 10⁻⁶ kg'), ';  ', vI('c'), ' = 300 000 · 1000 = 3 × 10⁸ m/s'] },
+        { texto: ['Multiplico por c², que es (3 × 10⁸)², o sea 9 × 10¹⁶.'], ecuacion: [Ef, ' = ', vO('2 × 10⁻⁶'), ' · ', vI('9 × 10¹⁶'), ' = ', dR('1,8 × 10¹¹ J')] },
       ],
       respuesta: [dR('1,8 × 10¹¹ J')] },
     { nivel: 3, titulo: 'Lo que pierde el Sol',
@@ -2246,17 +2246,17 @@
       datos: [['E = ', dmO, ' · ', c2i, ', con ', dmO, ': masa antes menos masa después'], DEF_C, '1 kg = 1000 g'],
       figura: fig2([{ tipo: 'balanza2', titulo: 'En el Sol', izq: { nucleos: ['H', 'H', 'H', 'H'] }, der: { nucleos: ['He'] }, inclina: 'izq', rotulos: [{ texto: 'E = ?' }] }]),
       solucion: [
-        { texto: ['La masa que falta, en kg.'], ecuacion: [dmO, ' = 4,0312 − 4,0026 = 0,0286 g = ', vO('2,86 × 10⁻⁵ kg')] },
-        { texto: ['Por c², con c² = (3 × 10⁸)² = 9 × 10¹⁶.'], ecuacion: [Ef, ' = ', vO('2,86 × 10⁻⁵'), ' · ', vI('9 × 10¹⁶'), ' ≈ ', dR('2,6 × 10¹² J')] },
-        { texto: ['Error típico: usar los 4,0312 g enteros. Solo la masa que falta se vuelve energía.'] },
+        { texto: ['Calculo la masa que falta y la paso a kg.'], ecuacion: [dmO, ' = 4,0312 − 4,0026 = 0,0286 g = ', vO('2,86 × 10⁻⁵ kg')] },
+        { texto: ['Multiplico por c², que es (3 × 10⁸)², o sea 9 × 10¹⁶.'], ecuacion: [Ef, ' = ', vO('2,86 × 10⁻⁵'), ' · ', vI('9 × 10¹⁶'), ' ≈ ', dR('2,6 × 10¹² J')] },
+        { texto: ['Error típico: usar los 4,0312 g enteros, cuando solo la masa que falta se vuelve energía.'] },
       ],
       respuesta: [dR('Unos 2,6 × 10¹² J')] },
     { nivel: 3, titulo: 'El balón que casi no pierde',
       enunciado: ['Al quemarse, un balón de gas de 10 kg da unos ', vD('4,6 × 10⁸ J'), '. ¿Cuánta masa pierde el sistema? ¿Se nota en una balanza?'],
       datos: ['E = Δm · c²', DEF_C],
       solucion: [
-        { texto: ['Se despeja la masa que falta, con c² = (3 × 10⁸)² = 9 × 10¹⁶; la energía es la del balón.'], ecuacion: [dmO, ' = ', { frac: [vD('4,6 × 10⁸'), vI('9 × 10¹⁶')] }, ' ≈ ', vO('5 × 10⁻⁹ kg')] },
-        { texto: ['Son unas cinco millonésimas de gramo, en 10 kg de gas: ninguna balanza la nota.'] },
+        { texto: ['Se despeja la masa que falta con la energía del balón y c², que es (3 × 10⁸)², o sea 9 × 10¹⁶.'], ecuacion: [dmO, ' = ', { frac: [vD('4,6 × 10⁸'), vI('9 × 10¹⁶')] }, ' ≈ ', vO('5 × 10⁻⁹ kg')] },
+        { texto: ['Son unas cinco millonésimas de gramo en 10 kg de gas, y ninguna balanza la nota.'] },
         { texto: ['Por eso, en un cambio químico, se dice que la masa se conserva.'] },
       ],
       respuesta: [vO('Unos 5 × 10⁻⁹ kg'), '; no se nota'] },
@@ -2265,7 +2265,7 @@
       datos: ['E = Δm · c²', DEF_C, '1 kg = 1000 g'],
       solucion: [
         { texto: ['Solo la masa que falta se vuelve energía: 0,9 g = 9 × 10⁻⁴ kg.'] },
-        { texto: ['Por c², con c² = (3 × 10⁸)² = 9 × 10¹⁶.'], ecuacion: [Ef, ' = ', vO('9 × 10⁻⁴'), ' · ', vI('9 × 10¹⁶'), ' = ', dR('8,1 × 10¹³ J')] },
+        { texto: ['Multiplico por c², que es (3 × 10⁸)², o sea 9 × 10¹⁶.'], ecuacion: [Ef, ' = ', vO('9 × 10⁻⁴'), ' · ', vI('9 × 10¹⁶'), ' = ', dR('8,1 × 10¹³ J')] },
         { texto: ['Error típico: usar 1 kg entero y obtener 9 × 10¹⁶ J, mil veces más.'] },
       ],
       respuesta: [dR('8,1 × 10¹³ J')] },
@@ -2274,19 +2274,19 @@
       datos: [DEF_E, DEF_C, '1 kg = 1000 g', DEF_POT, DEF_BALON],
       figura: fig2([{ tipo: 'balanza', titulo: 'Masa que desaparece', carga: 'pizca', pantalla: '1 g', color: 'o' }, { tipo: 'balon', titulo: 'Un balón de gas', rotulos: [{ texto: 'unos 4,6 × 10⁸ J', color: 'd' }] }]),
       solucion: [
-        { texto: ['La masa en kg y c al cuadrado.'], ecuacion: [dmO, ' = 1 ÷ 1000 = ', vO('0,001 kg'), ';  ', c2i, ' = (3 × 10⁸)² = ', vI('9 × 10¹⁶')] },
-        { texto: ['La energía del gramo.'], ecuacion: [Ef, ' = ', vO('0,001'), ' · ', vI('9 × 10¹⁶'), ' = ', dR('9 × 10¹³ J')] },
-        { texto: ['Entre la de un balón.'], ecuacion: [{ frac: [dR('9 × 10¹³'), vD('4,6 × 10⁸')] }, ' ≈ ', vH('195 652')] },
-        { texto: ['Unos 200 000 balones: un solo gramo.'] },
+        { texto: ['Paso la masa a kg y elevo c al cuadrado.'], ecuacion: [dmO, ' = 1 ÷ 1000 = ', vO('0,001 kg'), ';  ', c2i, ' = (3 × 10⁸)² = ', vI('9 × 10¹⁶')] },
+        { texto: ['Calculo la energía que da ese gramo.'], ecuacion: [Ef, ' = ', vO('0,001'), ' · ', vI('9 × 10¹⁶'), ' = ', dR('9 × 10¹³ J')] },
+        { texto: ['La divido entre la energía de un balón.'], ecuacion: [{ frac: [dR('9 × 10¹³'), vD('4,6 × 10⁸')] }, ' ≈ ', vH('195 652')] },
+        { texto: ['Un solo gramo vale unos 200 000 balones de gas.'] },
       ],
       respuesta: [vH('Unos 200 000 balones')] },
     { nivel: 3, titulo: 'Un kilogramo de hidrógeno',
       enunciado: 'En el Sol, al formar helio, a cada kilogramo de hidrógeno le faltan unos 7,1 g. ¿Cuánta energía sale por cada kilogramo?',
       datos: ['E = Δm · c²', DEF_C, '1 kg = 1000 g'],
       solucion: [
-        { texto: ['La masa que falta, en kg.'], ecuacion: [dmO, ' = 7,1 g = ', vO('0,0071 kg')] },
-        { texto: ['Por c², con c² = (3 × 10⁸)² = 9 × 10¹⁶.'], ecuacion: [Ef, ' = ', vO('0,0071'), ' · ', vI('9 × 10¹⁶'), ' ≈ ', dR('6,4 × 10¹⁴ J')] },
-        { texto: ['Es lo que darían más de un millón de balones de gas.'] },
+        { texto: ['Calculo la masa que falta y la paso a kg.'], ecuacion: [dmO, ' = 7,1 g = ', vO('0,0071 kg')] },
+        { texto: ['Multiplico por c², que es (3 × 10⁸)², o sea 9 × 10¹⁶.'], ecuacion: [Ef, ' = ', vO('0,0071'), ' · ', vI('9 × 10¹⁶'), ' ≈ ', dR('6,4 × 10¹⁴ J')] },
+        { texto: ['Es la energía que darían más de un millón de balones de gas.'] },
       ],
       respuesta: [dR('Unos 6,4 × 10¹⁴ J')] },
   ];
@@ -2344,7 +2344,7 @@
         { titulo: 'Masa y energía', texto: 'En 1905, Einstein propuso que la masa y la energía están ligadas, y que en esa relación entra la rapidez de la luz, c: unos 300 000 km por segundo, 3 × 10⁸ m/s. La energía se mide en joules (J).' },
         { titulo: 'Químico y nuclear', texto: 'Al quemar el gas de un balón, los átomos se reordenan: es un cambio químico. En el Sol, núcleos de hidrógeno (el núcleo es el centro del átomo) se unen y forman helio: es la fusión nuclear. Los dos sueltan energía, pero no la misma.',
           pieza: 'quim-cocina', dibujo: coc([{ tipo: 'balon', titulo: 'Un balón de gas', rotulos: [{ texto: 'unos 4,6 × 10⁸ J', color: 'd' }] }]) },
-        { titulo: 'Números muy grandes y muy chicos', texto: 'Un miligramo (mg) es la milésima parte de un gramo, y un kilogramo tiene un millón de miligramos. 10⁸ es un 1 seguido de ocho ceros.' },
+        { titulo: 'Números muy grandes y muy chicos', texto: 'Un miligramo (mg) es la milésima parte de un gramo, y un kilogramo tiene un millón de miligramos. Para escribir números muy grandes se usan potencias de 10: 10⁸ es un 1 seguido de ocho ceros.' },
         { titulo: 'Qué mirar', texto: 'En el juego, una masa diminuta desaparece en un proceso nuclear. Cada balón dibujado vale por cien balones de gas: mira cuántos hacen falta para igualar esa energía.' },
       ],
     },
@@ -2378,8 +2378,8 @@
       pieza: 'quim-cocina',
       opciones: [
         { id: 'c', texto: 'Un poquito menos', correcta: true },
-        { id: 'igual', texto: 'Exactamente lo mismo: la masa siempre se conserva', error: 'QM-MASA-IGUAL', siFuera: 'En lo químico, eso es casi exacto. En lo nuclear, la energía que sale se lleva masa.' },
-        { id: 'nada', texto: 'Nada: toda la masa se volvió luz', error: 'QM-TODA-MASA', siFuera: 'Sale masa como luz, bien. Pero solo un poquito: casi todo queda como helio.' },
+        { id: 'igual', texto: 'Exactamente lo mismo: la masa siempre se conserva', error: 'QM-MASA-IGUAL', siFuera: 'En un cambio químico, eso es casi exacto. Pero en uno nuclear, la energía que sale se lleva una parte de la masa.' },
+        { id: 'nada', texto: 'Nada: toda la masa se volvió luz', error: 'QM-TODA-MASA', siFuera: 'Sale masa como luz, bien. Pero es solo un poquito, porque casi toda queda en el helio.' },
         { id: 'mas', texto: 'Más, porque el helio es un núcleo más grande', error: 'QM-MAS-PESADO', siFuera: 'El helio es más grande que cada hidrógeno, cierto. Pero pesa menos que los cuatro juntos.' },
       ],
       dibujo: coc([{ tipo: 'balanza2', titulo: 'En el Sol', izq: { nucleos: ['H', 'H', 'H', 'H'] }, der: { nucleos: ['He'] }, inclina: 'duda' }]),
@@ -2394,18 +2394,18 @@
         rotulos: [{ texto: 'unos 4,0312 u contra 4,0026 u', desde: 1 }, { texto: 'Δm = 0,0286 u', color: 'o', desde: 2 }] }]).datos,
       voz: 'Sigamos la masa que falta.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Los cuatro hidrógenos tienen unos 4,0312 u; el helio, unos 4,0026 u.', ecuacion: ['u: unidad de masa para átomos, unos 1,66 × 10⁻²⁷ kg'] },
-        { estado: { corte: 2 }, texto: 'Falta un poco de masa: 0,0286 u, cerca del 0,7 %.', ecuacion: [dmO, ' = 4,0312 − 4,0026 = 0,0286 u'] },
-        { estado: { corte: 2 }, texto: 'Esa masa que falta salió como luz y calor.', ecuacion: [Ef, ' = ', dmO, ' · ', c2i] },
-        { estado: { corte: 2 }, texto: 'En 1 kg de hidrógeno faltan unos 7 g: salen unos 6,4 × 10¹⁴ J.', ecuacion: [Ef, ' = 0,0071 · 9 × 10¹⁶ ≈ 6,4 × 10¹⁴ J'] },
-        { estado: { corte: 2 }, texto: 'Un balón que arde da unos 4,6 × 10⁸ J: pierde muy poca masa.', ecuacion: [dmO, ' = ', { frac: [Ef, c2i] }, ' ≈ 5 × 10⁻⁹ kg'] },
-        { estado: { corte: 2 }, texto: 'En lo químico, ninguna balanza nota esa masa; en lo nuclear, sí se mide.' },
+        { estado: { corte: 1 }, texto: 'Los cuatro núcleos de hidrógeno tienen unos 4,0312 u, y el de helio, unos 4,0026 u.', ecuacion: ['u: unidad de masa para átomos, unos 1,66 × 10⁻²⁷ kg'] },
+        { estado: { corte: 2 }, texto: 'Después falta un poco de masa: 0,0286 u, cerca del 0,7 % de lo que había.', ecuacion: [dmO, ' = 4,0312 − 4,0026 = 0,0286 u'] },
+        { estado: { corte: 2 }, texto: 'Esa masa que falta salió del Sol como luz y calor.', ecuacion: [Ef, ' = ', dmO, ' · ', c2i] },
+        { estado: { corte: 2 }, texto: 'Si se usa 1 kg de hidrógeno, faltan unos 7 g, y salen unos 6,4 × 10¹⁴ J.', ecuacion: [Ef, ' = 0,0071 · 9 × 10¹⁶ ≈ 6,4 × 10¹⁴ J'] },
+        { estado: { corte: 2 }, texto: 'Un balón de gas que arde da unos 4,6 × 10⁸ J, así que pierde muy poca masa.', ecuacion: [dmO, ' = ', { frac: [Ef, c2i] }, ' ≈ 5 × 10⁻⁹ kg'] },
+        { estado: { corte: 2 }, texto: 'En un cambio químico, ninguna balanza nota esa masa; en uno nuclear, sí se puede medir.' },
       ],
     },
     regla: {
-      texto: 'Cuando un sistema suelta energía, su masa baja un poco. Esa masa que falta, por la rapidez de la luz al cuadrado, da la energía.',
+      texto: 'Cuando un sistema suelta energía, su masa baja un poco. La energía que sale es esa masa que falta multiplicada por la rapidez de la luz al cuadrado.',
       ecuacion: [Ef, ' = ', { llave: [dmO], nota: 'masa que falta', color: 'c-o' }, ' · ', { llave: [c2i], nota: 'c = 3 × 10⁸ m/s', color: 'c-i' }],
-      condicion: 'Δm es la masa antes menos la masa después, en kg; no la masa total. E sale en joules.',
+      condicion: 'Δm es la masa de antes menos la de después, en kilogramos, y no la masa total. Así, la energía E sale en joules.',
       voz: 'La masa no se vuelve energía entera: solo la diferencia.',
     },
     // Así se resuelve: el mismo tipo que «Ahora tú» con la misma semilla, pero otro caso (caso5(s, true)).
@@ -2413,14 +2413,14 @@
       pieza: 'quim-cocina',
       generar(s) {
         const c = caso5(s, true);
-        const sentido = 'Unidades: kg · m²/s² es un joule. Y un número enorme: c² es enorme.';
+        const sentido = 'Unidades: kg · m²/s² es un joule. Y sale un número enorme porque c² es enorme.';
         if (c.tipo === 0) return {
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: ['Piden la energía ', Ef, ' que sale cuando desaparece esa masa.'] },
-            { tipo: 'datos', texto: [`La masa, ${f(c.x)} ${c.u}, va en kg.`], ecuacion: [dmO, ` = ${f(c.x)} ${c.u} = `, vO(`${cien(c.kg)} kg`)] },
+            { tipo: 'datos', texto: [`La masa, ${f(c.x)} ${c.u}, se pasa a kilogramos.`], ecuacion: [dmO, ` = ${f(c.x)} ${c.u} = `, vO(`${cien(c.kg)} kg`)] },
             { tipo: 'regla', texto: 'La energía es la masa que falta por c².', ecuacion: [Ef, ' = ', dmO, ' · ', c2i, ', con c² = (3 × 10⁸)² = 9 × 10¹⁶ m²/s²'] },
-            { tipo: 'cuentas', texto: 'Multiplico.', ecuacion: [Ef, ' = ', vO(cien(c.kg)), ' · ', vI('9 × 10¹⁶'), ' = ', dR(`${cien(c.e.E)} J`)] },
+            { tipo: 'cuentas', texto: 'Multiplico la masa en kg por c².', ecuacion: [Ef, ' = ', vO(cien(c.kg)), ' · ', vI('9 × 10¹⁶'), ' = ', dR(`${cien(c.e.E)} J`)] },
             { tipo: 'sentido', texto: sentido },
           ],
           respuesta: [dR(`${cien(c.e.E)} J`)],
@@ -2430,8 +2430,8 @@
           pasos: [
             { tipo: 'pide', texto: 'Piden la masa que desapareció, en gramos.' },
             { tipo: 'regla', texto: 'De E = Δm · c² se despeja la masa: la energía entre c², con c² = (3 × 10⁸)² = 9 × 10¹⁶.', ecuacion: [dmO, ' = ', { frac: [Ef, c2i] }] },
-            { tipo: 'cuentas', texto: 'Divido, y paso los kg a gramos.', ecuacion: [dmO, ' = ', { frac: [dR(cien(c.E)), vI('9 × 10¹⁶')] }, ` = ${cien(c.m.kg)} kg = `, vO(`${cien(c.m.g)} g`)] },
-            { tipo: 'sentido', texto: 'Comprobación: de vuelta, la masa en kg por 9 × 10¹⁶ da la energía del dato.' },
+            { tipo: 'cuentas', texto: 'Divido la energía entre c², y después paso los kg a gramos.', ecuacion: [dmO, ' = ', { frac: [dR(cien(c.E)), vI('9 × 10¹⁶')] }, ` = ${cien(c.m.kg)} kg = `, vO(`${cien(c.m.g)} g`)] },
+            { tipo: 'sentido', texto: 'Comprobación: de vuelta, la masa en kg por 9 × 10¹⁶ da la energía que dice el enunciado.' },
           ],
           respuesta: [vO(`${cien(c.m.g)} g`)],
         };
@@ -2439,10 +2439,10 @@
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: ['Piden la energía ', Ef, ' que salió.'] },
-            { tipo: 'datos', texto: 'Solo la masa que falta se vuelve energía: antes menos después.', ecuacion: [dmO, ` = ${f(c.x.antes, 4)} − ${f(c.x.despues, 4)} = ${f(c.dmg, 4)} g = `, vO(`${cien(c.kg)} kg`)] },
+            { tipo: 'datos', texto: 'Solo la masa que falta se vuelve energía, y es la de antes menos la de después.', ecuacion: [dmO, ` = ${f(c.x.antes, 4)} − ${f(c.x.despues, 4)} = ${f(c.dmg, 4)} g = `, vO(`${cien(c.kg)} kg`)] },
             { tipo: 'regla', texto: 'La energía es la masa que falta por c².', ecuacion: [Ef, ' = ', dmO, ' · ', c2i] },
-            { tipo: 'cuentas', texto: 'Multiplico.', ecuacion: [Ef, ' = ', vO(cien(c.kg)), ' · ', vI('9 × 10¹⁶'), ' = ', dR(`${cien(c.E)} J`)] },
-            { tipo: 'sentido', texto: 'Comprobación: con la masa total saldría muchísimo más; casi toda la masa sigue ahí.' },
+            { tipo: 'cuentas', texto: 'Multiplico la masa que falta, en kg, por c².', ecuacion: [Ef, ' = ', vO(cien(c.kg)), ' · ', vI('9 × 10¹⁶'), ' = ', dR(`${cien(c.E)} J`)] },
+            { tipo: 'sentido', texto: 'Comprobación: con la masa total saldría muchísimo más, y casi toda la masa sigue ahí después.' },
           ],
           respuesta: [dR(`${cien(c.E)} J`)],
         };
@@ -2450,9 +2450,9 @@
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: 'Piden cuántos balones de gas dan la misma energía.' },
-            { tipo: 'regla', texto: 'Primero la energía, E = Δm · c², con la masa en kg; después, cuántas veces cabe la energía de un balón.' },
-            { tipo: 'cuentas', texto: `${c.mg} mg = ${cien(c.mg * 1e-6)} kg.`, ecuacion: [Ef, ` = ${cien(c.mg * 1e-6)} · 9 × 10¹⁶ = `, dR(`${cien(c.e)} J`), ';  ', { frac: [dR(cien(c.e)), vD('4,6 × 10⁸')] }, ' ≈ ', vH(f(redondo(c.n), 0))] },
-            { tipo: 'sentido', texto: 'Comprobación: unos miligramos valen cientos o miles de balones, como en el juego.' },
+            { tipo: 'regla', texto: 'Primero calculo la energía con E = Δm · c² y la masa en kg. Después veo cuántas veces cabe ahí la energía de un balón.' },
+            { tipo: 'cuentas', texto: `Paso ${c.mg} mg a kg, que dan ${cien(c.mg * 1e-6)} kg, y divido la energía entre la de un balón.`, ecuacion: [Ef, ` = ${cien(c.mg * 1e-6)} · 9 × 10¹⁶ = `, dR(`${cien(c.e)} J`), ';  ', { frac: [dR(cien(c.e)), vD('4,6 × 10⁸')] }, ' ≈ ', vH(f(redondo(c.n), 0))] },
+            { tipo: 'sentido', texto: 'Comprobación: unos pocos miligramos valen cientos o miles de balones, como se vio en el juego.' },
           ],
           respuesta: [vH(`Unos ${f(redondo(c.n), 0)} balones`)],
         };
@@ -2460,9 +2460,9 @@
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: ['Piden la energía ', Ef, ' en joules.'] },
-            { tipo: 'datos', texto: 'Para que salgan joules, la masa en kg y c en m/s.', ecuacion: [vO(`${cien(c.kg)} kg`), ';  ', vI('c'), ' = 300 000 · 1000 = 3 × 10⁸ m/s'] },
+            { tipo: 'datos', texto: 'Para que la energía salga en joules, la masa va en kg y c va en m/s.', ecuacion: [vO(`${cien(c.kg)} kg`), ';  ', vI('c'), ' = 300 000 · 1000 = 3 × 10⁸ m/s'] },
             { tipo: 'regla', texto: 'La energía es la masa que falta por c².', ecuacion: [Ef, ' = ', dmO, ' · ', c2i] },
-            { tipo: 'cuentas', texto: 'Multiplico.', ecuacion: [Ef, ' = ', vO(cien(c.kg)), ' · ', vI('9 × 10¹⁶'), ' = ', dR(`${cien(c.e.E)} J`)] },
+            { tipo: 'cuentas', texto: 'Multiplico la masa en kg por c².', ecuacion: [Ef, ' = ', vO(cien(c.kg)), ' · ', vI('9 × 10¹⁶'), ' = ', dR(`${cien(c.e.E)} J`)] },
             { tipo: 'sentido', texto: 'Comprobación: con c en km/s el resultado sale un millón de veces menor.' },
           ],
           respuesta: [dR(`${cien(c.e.E)} J`)],
@@ -2473,8 +2473,8 @@
             { tipo: 'pide', texto: ['Piden la energía ', Ef, ' que salió del reactor.'] },
             { tipo: 'datos', texto: `Solo cuenta la masa que falta, ${f(c.dmg)} g, no los ${c.kgU} kg de combustible.`, ecuacion: [dmO, ` = ${f(c.dmg)} g = `, vO(`${cien(c.dmg / 1000)} kg`)] },
             { tipo: 'regla', texto: 'La energía es la masa que falta por c².', ecuacion: [Ef, ' = ', dmO, ' · ', c2i] },
-            { tipo: 'cuentas', texto: 'Multiplico.', ecuacion: [Ef, ' = ', vO(cien(c.dmg / 1000)), ' · ', vI('9 × 10¹⁶'), ' = ', dR(`${cien(c.E)} J`)] },
-            { tipo: 'sentido', texto: 'Comprobación: con el combustible entero saldría unas mil veces más.' },
+            { tipo: 'cuentas', texto: 'Multiplico la masa que falta, en kg, por c².', ecuacion: [Ef, ' = ', vO(cien(c.dmg / 1000)), ' · ', vI('9 × 10¹⁶'), ' = ', dR(`${cien(c.E)} J`)] },
+            { tipo: 'sentido', texto: 'Comprobación: con el combustible entero saldría unas mil veces más energía.' },
           ],
           respuesta: [dR(`${cien(c.E)} J`)],
         };
@@ -2486,12 +2486,12 @@
       generar(s) {
         const c = caso5(s, false);
         let solucion;
-        if (c.tipo === 0) solucion = { texto: `${f(c.x)} ${c.u} = ${cien(c.kg)} kg; por c².`, ecuacion: [Ef, ` = ${cien(c.kg)} · 9 × 10¹⁶ = `, dR(`${cien(c.e.E)} J`)] };
-        else if (c.tipo === 1) solucion = { texto: 'Energía entre c², y de kg a gramos.', ecuacion: [vO(`${cien(c.m.g)} g`)] };
-        else if (c.tipo === 2) solucion = { texto: 'Solo la masa que falta, en kg, por c².', ecuacion: [Ef, ` = ${cien(c.kg)} · 9 × 10¹⁶ = `, dR(`${cien(c.E)} J`)] };
-        else if (c.tipo === 3) solucion = { texto: 'Energía con E = Δm · c², y después entre la de un balón.', ecuacion: [vH(`Unos ${f(redondo(c.n), 0)}`)] };
-        else if (c.km) solucion = { texto: 'Masa en kg y c en m/s: 3 × 10⁸.', ecuacion: [Ef, ` = ${cien(c.kg)} · 9 × 10¹⁶ = `, dR(`${cien(c.e.E)} J`)] };
-        else solucion = { texto: 'Solo la masa que falta, en kg, por c².', ecuacion: [dR(`${cien(c.E)} J`)] };
+        if (c.tipo === 0) solucion = { texto: `La masa, ${f(c.x)} ${c.u}, son ${cien(c.kg)} kg, y se multiplica por c².`, ecuacion: [Ef, ` = ${cien(c.kg)} · 9 × 10¹⁶ = `, dR(`${cien(c.e.E)} J`)] };
+        else if (c.tipo === 1) solucion = { texto: 'Se divide la energía entre c², y el resultado se pasa de kg a gramos.', ecuacion: [vO(`${cien(c.m.g)} g`)] };
+        else if (c.tipo === 2) solucion = { texto: 'Solo cuenta la masa que falta: se pasa a kg y se multiplica por c².', ecuacion: [Ef, ` = ${cien(c.kg)} · 9 × 10¹⁶ = `, dR(`${cien(c.E)} J`)] };
+        else if (c.tipo === 3) solucion = { texto: 'Se calcula la energía con E = Δm · c², y después se divide entre la de un balón.', ecuacion: [vH(`Unos ${f(redondo(c.n), 0)}`)] };
+        else if (c.km) solucion = { texto: 'La masa va en kg y c en m/s, o sea 3 × 10⁸ m/s.', ecuacion: [Ef, ` = ${cien(c.kg)} · 9 × 10¹⁶ = `, dR(`${cien(c.e.E)} J`)] };
+        else solucion = { texto: 'Solo cuenta la masa que falta: se pasa a kg y se multiplica por c².', ecuacion: [dR(`${cien(c.E)} J`)] };
         return { pregunta: c.pregunta, datos: c.datos, opciones: c.opciones, solucion };
       },
     },
@@ -2582,7 +2582,7 @@
           { id: 'n2', valor: d.errores.entre2n, error: 'AQ-vm-divide-entre-2n', siFuera: `Contaste ${n} vidas medias, bien. Pero cada una divide entre 2 lo que queda: entre 2${SUP[n]}, no entre 2 × ${n}.` },
           { id: 'des', valor: d.desintegrado, error: 'AQ-vm-desintegrada', siFuera: 'Hiciste bien las mitades. Pero ese número es lo que se desintegró; piden lo que queda.' },
           { id: 'una', valor: d.errores.unaSola, error: 'AQ-vm-tiempo-como-una-vida', siFuera: `Dividiste entre 2, bien. Pero en ${anos6(t)} caben ${n} vidas medias, no una.` },
-          { id: 'lin', valor: d.errores.lineal, error: 'AQ-vm-lineal', siFuera: 'Se va perdiendo, bien. Pero cada vida media se va la mitad de lo que queda: nunca se acaba.' },
+          { id: 'lin', valor: d.errores.lineal, error: 'AQ-vm-lineal', siFuera: 'Se va perdiendo, bien. Pero en cada vida media se va la mitad de lo que queda, así que nunca se acaba.' },
           { id: 'menos', valor: m0 / 2 ** (n - 1), error: 'AQ-vm-una-vida-de-menos', siFuera: `Dividiste entre 2 cada vida media, bien. Pero en ${anos6(t)} caben ${n}, no ${n - 1}.` },
           { id: 'mas', valor: m0 / 2 ** (n + 1), error: 'AQ-vm-una-vida-de-mas', siFuera: `Dividiste entre 2 cada vida media, bien. Pero en ${anos6(t)} caben ${n}, no ${n + 1}.` },
         ], g6) };
@@ -2613,7 +2613,7 @@
         pregunta: [`El ${x.nombre} ${x.uso}. ¿Qué porcentaje de una dosis se desintegra en `, v6t(`${t} ${x.u}`), '?'],
         opciones: opciones(d.desintegrado, [
           { id: 'queda', valor: d.queda, error: 'AQ-vm-desintegrada', siFuera: `Hiciste bien las ${n} mitades. Pero ese es el porcentaje que queda; piden el que se desintegra.` },
-          ...(n === 2 ? [{ id: 'lin', valor: 100, error: 'AQ-vm-lineal', siFuera: 'Se desintegra más con el tiempo, bien. Pero cada vida media se va la mitad de lo que queda.' }] : []),
+          ...(n === 2 ? [{ id: 'lin', valor: 100, error: 'AQ-vm-lineal', siFuera: 'Se desintegra más con el tiempo, bien. Pero en cada vida media se va la mitad de lo que queda.' }] : []),
           { id: 'una', valor: 50, error: 'AQ-vm-tiempo-como-una-vida', siFuera: `La mitad en una vida media, bien. Pero en ${t} ${x.u} caben ${n} vidas medias.` },
           { id: 'menos', valor: 100 * (1 - 2 ** -(n - 1)), error: 'AQ-vm-una-vida-de-menos', siFuera: `Calculaste lo desintegrado, bien. Pero en ${t} ${x.u} caben ${n} vidas medias, no ${n - 1}.` },
         ], v => pc6(v / 100)) };
@@ -2633,8 +2633,8 @@
         pregunta: [`Una fuente de ${x.nombre} pasa de `, v6m(`${m0} g`), ' a ', v6m(`${m0 / 4} g`), ' en ', v6t(anos6(t)), '. ¿Cuál es su vida media?'],
         opciones: opciones(x.vm, [
           { id: 'todo', valor: t, error: 'AQ-vm-tiempo-como-una-vida', siFuera: `Usaste el tiempo, bien. Pero en ${anos6(t)} no queda la mitad sino la cuarta parte: son 2 vidas medias.` },
-          { id: 'cuatro', valor: t / 4, error: 'AQ-vm-divide-entre-2n', siFuera: 'Viste que queda la cuarta parte, bien. Pero 1/4 son 2 mitades: el tiempo se divide entre 2.' },
-          { id: 'doble', valor: 2 * t, error: 'AQ-vm-multiplica-fraccion', siFuera: 'Contaste 2 mitades, bien. Pero esas 2 vidas medias caben en el tiempo dado: se divide, no se multiplica.' },
+          { id: 'cuatro', valor: t / 4, error: 'AQ-vm-divide-entre-2n', siFuera: 'Viste que queda la cuarta parte, bien. Pero 1/4 son 2 mitades, así que el tiempo se divide entre 2.' },
+          { id: 'doble', valor: 2 * t, error: 'AQ-vm-multiplica-fraccion', siFuera: 'Contaste 2 mitades, bien. Pero esas 2 vidas medias caben en el tiempo dado, así que se divide, no se multiplica.' },
         ], vm6) };
     }
     if (alterna) {   // examen: unidades mezcladas (horas y días, días y semanas)
@@ -2684,7 +2684,7 @@
     { nivel: 1, titulo: 'Contar vidas medias',
       enunciado: ['El yodo-131 se usa para tratar la tiroides. ¿Cuántas vidas medias pasan en ', v6t('24 días'), '?'],
       datos: [DEF_N6, vida6('yodo-131', 'unos 8 días')],
-      solucion: [{ texto: ['Se ve cuántas veces cabe la vida media en el tiempo.'], ecuacion: [nS, ' = ', { frac: [v6t('24'), v6v('8')] }, ' = ', v6n('3')] }],
+      solucion: [{ texto: ['Se ve cuántas veces cabe la vida media, de 8 días, en el tiempo que pasa.'], ecuacion: [nS, ' = ', { frac: [v6t('24'), v6v('8')] }, ' = ', v6n('3')] }],
       respuesta: [v6n('3 vidas medias')] },
     { nivel: 1, titulo: 'La fracción que queda',
       enunciado: '¿Qué fracción del carbono-14 que tenía al morir conserva un hueso después de 3 vidas medias?',
@@ -2694,27 +2694,27 @@
     { nivel: 1, titulo: 'Lo que se desintegró',
       enunciado: ['Una fuente tenía ', v6m('16 g'), ' de cesio-137 y hoy le quedan ', v6m('4 g'), '. ¿Cuántos gramos se desintegraron?'],
       datos: [DEF_D6],
-      solucion: [{ texto: ['Lo desintegrado es lo que falta.'], ecuacion: [v6m('16'), ' − ', v6m('4'), ' = ', v6m('12 g')] }],
+      solucion: [{ texto: ['Lo desintegrado es lo que falta: la masa inicial menos la que queda.'], ecuacion: [v6m('16'), ' − ', v6m('4'), ' = ', v6m('12 g')] }],
       respuesta: [v6m('12 g')] },
     { nivel: 1, titulo: 'El hueso del museo',
       enunciado: 'La lupa muestra los átomos de carbono-14 de un hueso al morir el animal y hoy. ¿Cuántas vidas medias pasaron?',
       datos: [DEF_VM6],
       figura: Object.assign({ pieza: 'quim-vasos' }, huesos6([hueso6('Al morir', 16), hueso6('Hoy', 4)])),
-      solucion: [{ texto: ['Al morir había 16 bolitas grises; hoy hay 4. Cada vida media deja la mitad.'], ecuacion: [v6m('16'), ' → ', v6m('8'), ' → ', v6m('4'), ': ', v6n('2'), ' mitades'] }],
+      solucion: [{ texto: ['Al morir había 16 bolitas grises, y hoy hay 4. Como cada vida media deja la mitad, se cuentan las mitades.'], ecuacion: [v6m('16'), ' → ', v6m('8'), ' → ', v6m('4'), ': ', v6n('2'), ' mitades'] }],
       respuesta: [v6n('2 vidas medias')] },
     { nivel: 2, titulo: 'El cobalto que irradia',
       enunciado: ['Una planta que irradia alimentos tiene ', v6m('40 g'), ' de cobalto-60. ¿Cuántos gramos quedarán dentro de ', v6t('15,9 años'), '?'],
       datos: [DEF_M6, DEF_N6, vida6('cobalto-60', 'unos 5,3 años')],
       solucion: [
-        { texto: ['Primero, cuántas vidas medias caben.'], ecuacion: [nS, ' = ', { frac: [v6t('15,9'), v6v('5,3')] }, ' = ', v6n('3')] },
-        { texto: ['Después, se divide entre 2 tres veces.'], ecuacion: [mS, ' = ', { frac: [v6m('40'), pot2(v6n('3'))] }, ' = ', { frac: [v6m('40'), '8'] }, ' = ', v6m('5 g')] },
+        { texto: ['Primero se cuenta cuántas vidas medias caben en el tiempo.'], ecuacion: [nS, ' = ', { frac: [v6t('15,9'), v6v('5,3')] }, ' = ', v6n('3')] },
+        { texto: ['Después se divide la masa entre 2 tres veces, una por cada vida media.'], ecuacion: [mS, ' = ', { frac: [v6m('40'), pot2(v6n('3'))] }, ' = ', { frac: [v6m('40'), '8'] }, ' = ', v6m('5 g')] },
       ],
       respuesta: [v6m('5 g')] },
     { nivel: 2, titulo: 'La edad de un hueso',
       enunciado: ['Un hueso hallado en una cueva de los Andes conserva ', v6m('la cuarta parte'), ' del carbono-14 que tenía al morir el animal. ¿Hace cuántos años murió?'],
       datos: [DEF_F6, DEF_N6, vida6('carbono-14', 'unos 5730 años')],
       solucion: [
-        { texto: ['La cuarta parte es la mitad de la mitad.'], ecuacion: [v6m('1/4'), ' = 1/', pot2(v6n('2')), ': ', v6n('2'), ' vidas medias'] },
+        { texto: ['La cuarta parte es la mitad de la mitad, así que pasaron dos vidas medias.'], ecuacion: [v6m('1/4'), ' = 1/', pot2(v6n('2')), ': ', v6n('2'), ' vidas medias'] },
         { texto: ['El tiempo es n veces la vida media.'], ecuacion: [tS, ' = ', v6n('2'), ' · ', v6v('5730'), ' = ', v6t('11 460 años')] },
       ],
       respuesta: [v6t('Unos 11 460 años')] },
@@ -2723,15 +2723,15 @@
       datos: [DEF_N6, DEF_F6, DEF_D6, vida6('tecnecio-99m', 'unas 6 horas')],
       solucion: [
         { texto: ['Caben 3 vidas medias, así que queda 1/8.'], ecuacion: [nS, ' = ', { frac: [v6t('18'), v6v('6')] }, ' = ', v6n('3'), ';  1/', pot2(v6n('3')), ' = ', v6m('1/8'), ' = ', v6m('12,5 %')] },
-        { texto: ['Lo que se desintegra es lo que falta.'], ecuacion: ['100 % − ', v6m('12,5 %'), ' = ', v6m('87,5 %')] },
+        { texto: ['Lo que se desintegra es lo que falta para el 100 %.'], ecuacion: ['100 % − ', v6m('12,5 %'), ' = ', v6m('87,5 %')] },
       ],
       respuesta: [v6m('87,5 %')] },
     { nivel: 2, titulo: 'Hallar la vida media',
       enunciado: ['Una fuente de cobalto-60 pasa de ', v6m('48 g'), ' a ', v6m('12 g'), ' en ', v6t('10,6 años'), '. ¿Cuál es su vida media?'],
       datos: [DEF_VM6, DEF_N6],
       solucion: [
-        { texto: ['Se cuentan las mitades.'], ecuacion: [v6m('48'), ' → ', v6m('24'), ' → ', v6m('12'), ': ', v6n('2'), ' vidas medias'] },
-        { texto: ['Esas dos vidas medias caben en el tiempo dado.'], ecuacion: [thS, ' = ', { frac: [v6t('10,6'), v6n('2')] }, ' = ', v6v('5,3 años')] },
+        { texto: ['Se cuentan las veces que la masa se parte en dos.'], ecuacion: [v6m('48'), ' → ', v6m('24'), ' → ', v6m('12'), ': ', v6n('2'), ' vidas medias'] },
+        { texto: ['Esas dos vidas medias caben en el tiempo dado, así que se divide el tiempo entre 2.'], ecuacion: [thS, ' = ', { frac: [v6t('10,6'), v6n('2')] }, ' = ', v6v('5,3 años')] },
       ],
       respuesta: [v6v('5,3 años')] },
     { nivel: 2, titulo: 'Leer la curva',
@@ -2739,8 +2739,8 @@
       datos: [DEF_VM6],
       figura: Object.assign({ pieza: 'quim-cocina' }, curva6(GRANDES6[1], 16)),
       solucion: [
-        { texto: ['Al inicio hay 16 g; la mitad son 8 g.'], ecuacion: [v6m('16 g'), ' ÷ 2 = ', v6m('8 g')] },
-        { texto: ['La curva pasa por 8 g en la marca de 30 años: esa es la vida media. Comprobación: a los 60 años quedan 4 g.'] },
+        { texto: ['Al inicio hay 16 g, y la mitad son 8 g.'], ecuacion: [v6m('16 g'), ' ÷ 2 = ', v6m('8 g')] },
+        { texto: ['La curva pasa por 8 g en la marca de 30 años, y esa es la vida media. Comprobación: a los 60 años quedan 4 g.'] },
       ],
       respuesta: [v6v('30 años')] },
     { nivel: 3, titulo: 'Un perezoso gigante',
@@ -2748,17 +2748,17 @@
       datos: [DEF_F6, DEF_N6, vida6('carbono-14', 'unos 5730 años')],
       figura: Object.assign({ pieza: 'quim-vasos' }, huesos6([hueso6('Al morir', 16), hueso6('Hoy', 1)])),
       solucion: [
-        { texto: ['El porcentaje como fracción de potencia de 2.'], ecuacion: [v6m('6,25 %'), ' = ', v6m('1/16'), ' = 1/', pot2(v6n('4')), ': ', v6n('4'), ' vidas medias'] },
-        { texto: ['El tiempo.'], ecuacion: [tS, ' = ', v6n('4'), ' · ', v6v('5730'), ' = ', v6t('22 920 años')] },
-        { texto: ['Error típico: 100 ÷ 6,25 = 16 y tomar 16 vidas medias. Son 4, porque 16 = 2⁴.'] },
+        { texto: ['Escribo el porcentaje como una fracción con una potencia de 2.'], ecuacion: [v6m('6,25 %'), ' = ', v6m('1/16'), ' = 1/', pot2(v6n('4')), ': ', v6n('4'), ' vidas medias'] },
+        { texto: ['El tiempo es el número de vidas medias por lo que dura cada una.'], ecuacion: [tS, ' = ', v6n('4'), ' · ', v6v('5730'), ' = ', v6t('22 920 años')] },
+        { texto: ['Error típico: hacer 100 ÷ 6,25 = 16 y tomar 16 vidas medias. Son 4, porque 16 = 2⁴.'] },
       ],
       respuesta: [v6t('Unos 22 920 años')] },
     { nivel: 3, titulo: 'La dosis de yodo',
       enunciado: ['El yodo-131 se usa para tratar la tiroides. ¿Qué fracción de una dosis se desintegra en ', v6t('32 días'), '?'],
       datos: [DEF_N6, DEF_F6, DEF_D6, vida6('yodo-131', 'unos 8 días')],
       solucion: [
-        { texto: ['Cuántas vidas medias caben y qué fracción queda.'], ecuacion: [nS, ' = ', { frac: [v6t('32'), v6v('8')] }, ' = ', v6n('4'), ';  queda 1/', pot2(v6n('4')), ' = ', v6m('1/16')] },
-        { texto: ['Lo desintegrado es lo que falta.'], ecuacion: ['1 − ', v6m('1/16'), ' = ', v6m('15/16')] },
+        { texto: ['Se cuenta cuántas vidas medias caben y qué fracción queda.'], ecuacion: [nS, ' = ', { frac: [v6t('32'), v6v('8')] }, ' = ', v6n('4'), ';  queda 1/', pot2(v6n('4')), ' = ', v6m('1/16')] },
+        { texto: ['Lo desintegrado es lo que falta para completar la dosis.'], ecuacion: ['1 − ', v6m('1/16'), ' = ', v6m('15/16')] },
         { texto: ['Error típico: responder 1/16, que es lo que queda, no lo que se desintegró.'] },
       ],
       respuesta: [v6m('15/16')] },
@@ -2766,8 +2766,8 @@
       enunciado: ['A un paciente le aplican tecnecio-99m a las 8 de la mañana. ¿Qué porcentaje de la dosis queda ', v6t('a las 8 del día siguiente'), '?'],
       datos: [DEF_N6, DEF_F6, vida6('tecnecio-99m', 'unas 6 horas'), '1 día = 24 h'],
       solucion: [
-        { texto: ['El tiempo y la vida media, los dos en horas.'], ecuacion: [tS, ' = ', v6t('24 h'), ';  ', nS, ' = ', { frac: [v6t('24'), v6v('6')] }, ' = ', v6n('4')] },
-        { texto: ['Lo que queda.'], ecuacion: ['1/', pot2(v6n('4')), ' = ', v6m('1/16'), ' = ', v6m('6,25 %')] },
+        { texto: ['Se pone el tiempo en horas, la misma unidad de la vida media.'], ecuacion: [tS, ' = ', v6t('24 h'), ';  ', nS, ' = ', { frac: [v6t('24'), v6v('6')] }, ' = ', v6n('4')] },
+        { texto: ['Con 4 vidas medias, la dosis se divide entre 2⁴.'], ecuacion: ['1/', pot2(v6n('4')), ' = ', v6m('1/16'), ' = ', v6m('6,25 %')] },
         { texto: ['Error típico: tomar el día como una vida media y responder 50 %.'] },
       ],
       respuesta: [v6m('6,25 %')] },
@@ -2775,9 +2775,9 @@
       enunciado: ['Una fuente de cesio-137 pasa de ', v6m('64 g'), ' a ', v6m('16 g'), ' en ', v6t('60 años'), '. ¿Cuántos gramos quedarán a los ', v6t('150 años'), ' de empezar?'],
       datos: [DEF_VM6, DEF_M6, DEF_N6],
       solucion: [
-        { texto: ['De 64 g a 16 g hay 2 mitades: caben 2 vidas medias en 60 años.'], ecuacion: [thS, ' = ', { frac: [v6t('60'), v6n('2')] }, ' = ', v6v('30 años')] },
-        { texto: ['En 150 años caben 5.'], ecuacion: [nS, ' = ', { frac: [v6t('150'), v6v('30')] }, ' = ', v6n('5'), ';  ', mS, ' = ', { frac: [v6m('64'), pot2(v6n('5'))] }, ' = ', v6m('2 g')] },
-        { texto: ['Error típico: 150 ÷ 60 = 2,5 tramos, como si en 60 años se fuera la mitad.'] },
+        { texto: ['De 64 g a 16 g, la masa se parte 2 veces en dos: caben 2 vidas medias en 60 años.'], ecuacion: [thS, ' = ', { frac: [v6t('60'), v6n('2')] }, ' = ', v6v('30 años')] },
+        { texto: ['En 150 años caben 5 vidas medias, y la masa se divide entre 2⁵.'], ecuacion: [nS, ' = ', { frac: [v6t('150'), v6v('30')] }, ' = ', v6n('5'), ';  ', mS, ' = ', { frac: [v6m('64'), pot2(v6n('5'))] }, ' = ', v6m('2 g')] },
+        { texto: ['Error típico: hacer 150 ÷ 60 = 2,5 tramos, como si en 60 años se fuera la mitad.'] },
       ],
       respuesta: [v6m('2 g')] },
     { nivel: 3, titulo: 'Cuánto falta todavía',
@@ -2785,8 +2785,8 @@
       datos: [DEF_F6, DEF_N6, vida6('carbono-14', 'unos 5730 años')],
       solucion: [
         { texto: ['Cada vida media divide entre 2 lo que queda.'], ecuacion: [v6m('1/4'), ' → ', v6m('1/8'), ' → ', v6m('1/16'), ': ', v6n('2'), ' vidas medias más'] },
-        { texto: ['El tiempo que falta.'], ecuacion: [tS, ' = ', v6n('2'), ' · ', v6v('5730'), ' = ', v6t('11 460 años')] },
-        { texto: ['Error típico: 16 ÷ 4 = 4 y tomar 4 vidas medias. De 1/4 a 1/16 solo hay 2 mitades.'] },
+        { texto: ['El tiempo que falta es esas 2 vidas medias.'], ecuacion: [tS, ' = ', v6n('2'), ' · ', v6v('5730'), ' = ', v6t('11 460 años')] },
+        { texto: ['Error típico: hacer 16 ÷ 4 = 4 y tomar 4 vidas medias, cuando de 1/4 a 1/16 solo hay 2 mitades.'] },
       ],
       respuesta: [v6t('11 460 años'), ' más'] },
   ];
@@ -2840,9 +2840,9 @@
       pieza: 'quim-vasos',
       opciones: [
         { id: 'c', texto: '4: se va la mitad de los 8', correcta: true },
-        { id: 'acaba', texto: '0: se van los otros 8', error: 'AQ-vm-lineal', siFuera: 'Sigue bajando, bien. Pero cada 5730 años se va la mitad de lo que queda, no lo mismo que antes.' },
-        { id: 'dos', texto: '2: los 8 se dividen entre 4', error: 'QM-VM-CUENTA-DOBLE', siFuera: 'Dividir otra vez es la idea, bien. Pero en 5730 años pasa una sola vida media: 8 ÷ 2.' },
-        { id: 'ocho', texto: '8: lo que queda ya no cambia', error: 'QM-VM-SE-DETIENE', siFuera: 'Lo que queda es carbono-14, cierto. Pero se sigue desintegrando al mismo ritmo: otra mitad se va.' },
+        { id: 'acaba', texto: '0: se van los otros 8', error: 'AQ-vm-lineal', siFuera: 'Sigue bajando, bien. Pero cada 5730 años se va la mitad de lo que queda, no la misma cantidad que antes.' },
+        { id: 'dos', texto: '2: los 8 se dividen entre 4', error: 'QM-VM-CUENTA-DOBLE', siFuera: 'Dividir otra vez es la idea, bien. Pero en 5730 años pasa una sola vida media, así que los 8 se dividen entre 2.' },
+        { id: 'ocho', texto: '8: lo que queda ya no cambia', error: 'QM-VM-SE-DETIENE', siFuera: 'Lo que queda es carbono-14, cierto. Pero se sigue desintegrando al mismo ritmo, y otra mitad se va.' },
       ],
       dibujo: huesos6([hueso6('Al morir', N_HUESO), hueso6('5730 años después', 8), { tipo: 'hueso', titulo: '11 460 años después', lupa: { vacia: true, foco: 0.1 } }]),
       revelar: huesos6([hueso6('Al morir', N_HUESO), hueso6('5730 años después', 8), hueso6('11 460 años después', quedan6(2 * VM_C14))]),
@@ -2856,16 +2856,16 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Tras una vida media, unos 5730 años, quedan 8 de los 16 átomos.', ecuacion: [v6m('16'), ' ÷ 2 = ', v6m('8')] },
         { estado: { corte: 2 }, texto: 'Tras otra vida media se va la mitad de los 8: quedan 4.', ecuacion: [v6m('8'), ' ÷ 2 = ', v6m('4'), ', la cuarta parte de 16'] },
-        { estado: { corte: 3 }, texto: 'Tras la tercera quedan 2: un octavo. Cada vida media divide entre 2.', ecuacion: [v6m('16'), ' ÷ 2 ÷ 2 ÷ 2 = ', { frac: [v6m('16'), pot2(v6n('3'))] }, ' = ', v6m('2')] },
-        { estado: { corte: 3 }, texto: 'La masa de carbono-14 baja igual: entre 2 en cada vida media.', ecuacion: [mS, ' = ', { frac: [m0S, pot2(nS)] }] },
-        { estado: { corte: 3 }, texto: 'n son las vidas medias que caben en el tiempo t.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ' = ', { frac: [v6t('17 190'), v6v('5730')] }, ' = ', v6n('3')] },
-        { estado: { corte: 3 }, texto: 'Lo desintegrado es lo que falta: 14 de los 16 ya son nitrógeno-14.', ecuacion: [v6m('16'), ' − ', v6m('2'), ' = ', v6m('14'), ', o sea ', v6m('7/8')] },
+        { estado: { corte: 3 }, texto: 'Tras la tercera vida media quedan 2, un octavo de los 16: cada vida media divide entre 2.', ecuacion: [v6m('16'), ' ÷ 2 ÷ 2 ÷ 2 = ', { frac: [v6m('16'), pot2(v6n('3'))] }, ' = ', v6m('2')] },
+        { estado: { corte: 3 }, texto: 'La masa de carbono-14 baja del mismo modo: se divide entre 2 en cada vida media.', ecuacion: [mS, ' = ', { frac: [m0S, pot2(nS)] }] },
+        { estado: { corte: 3 }, texto: 'La letra n es el número de vidas medias que caben en el tiempo t.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ' = ', { frac: [v6t('17 190'), v6v('5730')] }, ' = ', v6n('3')] },
+        { estado: { corte: 3 }, texto: 'Lo desintegrado es lo que falta: 14 de los 16 átomos ya son nitrógeno-14.', ecuacion: [v6m('16'), ' − ', v6m('2'), ' = ', v6m('14'), ', o sea ', v6m('7/8')] },
       ],
     },
     regla: {
-      texto: 'En cada vida media se desintegra la mitad de lo que queda. Tras n vidas medias queda lo inicial dividido entre 2ⁿ, y nunca se acaba de golpe.',
+      texto: 'En cada vida media se desintegra la mitad de lo que queda. Tras n vidas medias, lo inicial queda dividido entre 2ⁿ, así que nunca se acaba de golpe.',
       ecuacion: [{ llave: [mS], nota: 'lo que queda', color: 'c-o' }, ' = ', { frac: [m0S, pot2(nS)] }, '   ·   ', { llave: [nS], nota: 'vidas medias', color: 'c-h' }, ' = ', { frac: [tS, thS] }],
-      condicion: 't y la vida media, en la misma unidad. Lo desintegrado es m₀ − m; la fracción que queda, 1/2ⁿ.',
+      condicion: 'el tiempo t y la vida media están en la misma unidad. Lo desintegrado es m₀ − m, y la fracción que queda es 1/2ⁿ.',
       voz: 'Cada vida media parte en dos lo que queda.',
     },
     // Así se resuelve: el mismo tipo que «Ahora tú» con la misma semilla, pero otro caso (caso6(s, true)).
@@ -2876,8 +2876,8 @@
         if (c.tipo === 0) return Object.assign(base, {
           pasos: [
             { tipo: 'pide', texto: ['Piden la masa ', mS, ' que queda dentro de ', v6t(anos6(c.t)), '.'] },
-            { tipo: 'regla', texto: 'Primero cuántas vidas medias caben; después, dividir entre 2 una vez por cada una.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ';  ', mS, ' = ', { frac: [m0S, pot2(nS)] }] },
-            { tipo: 'cuentas', texto: 'Cuento y divido.', ecuacion: [nS, ' = ', { frac: [v6t(ent6(c.t)), v6v(ent6(c.x.vm))] }, ' = ', v6n(String(c.n)), ';  ', mS, ' = ', { frac: [v6m(String(c.m0)), pot2(v6n(String(c.n)))] }, ' = ', v6m(g6(c.d.queda))] },
+            { tipo: 'regla', texto: 'Primero cuento cuántas vidas medias caben en el tiempo, y después divido entre 2 una vez por cada una.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ';  ', mS, ' = ', { frac: [m0S, pot2(nS)] }] },
+            { tipo: 'cuentas', texto: 'Cuento las vidas medias y divido la masa inicial.', ecuacion: [nS, ' = ', { frac: [v6t(ent6(c.t)), v6v(ent6(c.x.vm))] }, ' = ', v6n(String(c.n)), ';  ', mS, ' = ', { frac: [v6m(String(c.m0)), pot2(v6n(String(c.n)))] }, ' = ', v6m(g6(c.d.queda))] },
             { tipo: 'sentido', texto: `Comprobación: de mitad en mitad, ${[...Array(c.n + 1).keys()].map(k => ent6(c.m0 / 2 ** k)).join(' → ')} g.` },
           ],
           respuesta: [v6m(g6(c.d.queda))] });
@@ -2886,51 +2886,51 @@
           return Object.assign(base, {
             pasos: [
               { tipo: 'pide', texto: ['Piden el tiempo ', tS, ' que pasó.'] },
-              { tipo: 'datos', texto: 'Lo que queda, como fracción con una potencia de 2.', ecuacion: [v6m(`1/${2 ** c.n}`), ' = 1/', pot2(v6n(String(c.n))), ': ', v6n(String(c.n)), ' vidas medias'] },
-              { tipo: 'regla', texto: 'El tiempo es n veces la vida media.', ecuacion: [tS, ' = ', nS, ' · ', thS] },
-              { tipo: 'cuentas', texto: 'Multiplico.', ecuacion: [tS, ' = ', v6n(String(c.n)), ' · ', v6v(ent6(vm)), ' = ', v6t(`${ent6(c.t)} ${u}`)] },
-              { tipo: 'sentido', texto: 'Comprobación: menos queda, más tiempo pasó; con 1/2 sería una sola vida media.' },
+              { tipo: 'datos', texto: 'Escribo lo que queda como una fracción con una potencia de 2.', ecuacion: [v6m(`1/${2 ** c.n}`), ' = 1/', pot2(v6n(String(c.n))), ': ', v6n(String(c.n)), ' vidas medias'] },
+              { tipo: 'regla', texto: 'El tiempo que pasó es n veces la vida media.', ecuacion: [tS, ' = ', nS, ' · ', thS] },
+              { tipo: 'cuentas', texto: 'Multiplico las vidas medias por lo que dura cada una.', ecuacion: [tS, ' = ', v6n(String(c.n)), ' · ', v6v(ent6(vm)), ' = ', v6t(`${ent6(c.t)} ${u}`)] },
+              { tipo: 'sentido', texto: 'Comprobación: mientras menos queda, más tiempo pasó, y con 1/2 habría pasado una sola vida media.' },
             ],
             respuesta: [v6t(`${c.c14 ? 'Unos ' : ''}${ent6(c.t)} ${u}`)] });
         }
         if (c.tipo === 2) return Object.assign(base, {
           pasos: [
             { tipo: 'pide', texto: 'Piden el porcentaje que se desintegra, no el que queda.' },
-            { tipo: 'regla', texto: 'Cuántas vidas medias caben, qué fracción queda y lo que falta para el 100 %.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ';  queda 1/', pot2(nS)] },
-            { tipo: 'cuentas', texto: 'Cuento, calculo lo que queda y resto.', ecuacion: [nS, ' = ', { frac: [v6t(String(c.t)), v6v(String(c.x.vm))] }, ' = ', v6n(String(c.n)), ';  queda ', v6m(pc6(c.d.fraccionQueda)), ';  100 % − ', v6m(pc6(c.d.fraccionQueda)), ' = ', v6m(pc6(c.d.fraccionDesintegrada))] },
+            { tipo: 'regla', texto: 'Veo cuántas vidas medias caben y qué fracción queda; lo desintegrado es lo que falta para el 100 %.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ';  queda 1/', pot2(nS)] },
+            { tipo: 'cuentas', texto: 'Cuento las vidas medias, calculo lo que queda y lo resto del 100 %.', ecuacion: [nS, ' = ', { frac: [v6t(String(c.t)), v6v(String(c.x.vm))] }, ' = ', v6n(String(c.n)), ';  queda ', v6m(pc6(c.d.fraccionQueda)), ';  100 % − ', v6m(pc6(c.d.fraccionQueda)), ' = ', v6m(pc6(c.d.fraccionDesintegrada))] },
             { tipo: 'sentido', texto: 'Comprobación: lo que queda más lo desintegrado da 100 %.' },
           ],
           respuesta: [v6m(pc6(c.d.fraccionDesintegrada))] });
         if (c.tipo === 3) return Object.assign(base, c.curva ? { dibujo: c.dibujo } : {}, {
           pasos: c.curva ? [
-            { tipo: 'pide', texto: ['Piden la vida media ', thS, ': cuándo queda la mitad.'] },
+            { tipo: 'pide', texto: ['Piden la vida media ', thS, ', el tiempo en que queda la mitad.'] },
             { tipo: 'regla', texto: 'La vida media es el tiempo en que la masa baja a la mitad de la inicial.' },
             { tipo: 'cuentas', texto: `Al inicio hay ${c.m0} g; la mitad son ${c.m0 / 2} g, y la curva pasa por ahí en la primera marca del tiempo.`, ecuacion: [v6m(`${c.m0} g`), ' ÷ 2 = ', v6m(`${c.m0 / 2} g`), ' → ', thS, ' = ', v6v(anos6(c.x.vm))] },
             { tipo: 'sentido', texto: `Comprobación: en la marca siguiente quedan ${c.m0 / 4} g, la mitad de la mitad.` },
           ] : [
             { tipo: 'pide', texto: ['Piden la vida media ', thS, '.'] },
-            { tipo: 'datos', texto: 'Se cuentan las mitades entre las dos masas.', ecuacion: [v6m(String(c.m0)), ' → ', v6m(String(c.m0 / 2)), ' → ', v6m(String(c.m0 / 4)), ': ', v6n('2'), ' vidas medias'] },
-            { tipo: 'regla', texto: 'Esas vidas medias caben en el tiempo dado.', ecuacion: [thS, ' = ', { frac: [tS, nS] }] },
-            { tipo: 'cuentas', texto: 'Divido.', ecuacion: [thS, ' = ', { frac: [v6t(ent6(c.t)), v6n('2')] }, ' = ', v6v(anos6(c.x.vm))] },
-            { tipo: 'sentido', texto: 'Comprobación: dos vidas medias de ese largo dejan la cuarta parte.' },
+            { tipo: 'datos', texto: 'Cuento cuántas veces se parte en dos la masa para pasar de la primera a la segunda.', ecuacion: [v6m(String(c.m0)), ' → ', v6m(String(c.m0 / 2)), ' → ', v6m(String(c.m0 / 4)), ': ', v6n('2'), ' vidas medias'] },
+            { tipo: 'regla', texto: 'Esas vidas medias caben en el tiempo dado, así que la vida media es el tiempo entre n.', ecuacion: [thS, ' = ', { frac: [tS, nS] }] },
+            { tipo: 'cuentas', texto: 'Divido el tiempo entre las 2 vidas medias.', ecuacion: [thS, ' = ', { frac: [v6t(ent6(c.t)), v6n('2')] }, ' = ', v6v(anos6(c.x.vm))] },
+            { tipo: 'sentido', texto: 'Comprobación: dos vidas medias de ese largo dejan la cuarta parte, como dice el enunciado.' },
           ],
           respuesta: [v6v(anos6(c.x.vm))] });
         if (c.mezcla) return Object.assign(base, {
           pasos: [
             { tipo: 'pide', texto: 'Piden la fracción de la dosis que queda.' },
-            { tipo: 'datos', texto: `El tiempo, en la misma unidad que la vida media: ${c.eq}.`, ecuacion: [tS, ' = ', v6t(`${c.n * c.x.vm} ${c.x.u}`)] },
-            { tipo: 'regla', texto: 'Cuántas vidas medias caben y qué fracción queda.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ';  queda 1/', pot2(nS)] },
-            { tipo: 'cuentas', texto: 'Cuento y escribo la fracción.', ecuacion: [nS, ' = ', { frac: [v6t(String(c.n * c.x.vm)), v6v(String(c.x.vm))] }, ' = ', v6n(String(c.n)), ';  1/', pot2(v6n(String(c.n))), ' = ', v6m(fr6(c.q))] },
+            { tipo: 'datos', texto: `Paso el tiempo a la misma unidad que la vida media: ${c.eq}.`, ecuacion: [tS, ' = ', v6t(`${c.n * c.x.vm} ${c.x.u}`)] },
+            { tipo: 'regla', texto: 'Veo cuántas vidas medias caben en ese tiempo y qué fracción queda.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ';  queda 1/', pot2(nS)] },
+            { tipo: 'cuentas', texto: 'Cuento las vidas medias y escribo la fracción que queda.', ecuacion: [nS, ' = ', { frac: [v6t(String(c.n * c.x.vm)), v6v(String(c.x.vm))] }, ' = ', v6n(String(c.n)), ';  1/', pot2(v6n(String(c.n))), ' = ', v6m(fr6(c.q))] },
             { tipo: 'sentido', texto: `Comprobación: ${c.n} vidas medias de ${c.x.vm} ${c.x.u} suman ${c.n * c.x.vm} ${c.x.u}, el tiempo dado.` },
           ],
           respuesta: [v6m(fr6(c.q))] });
         return Object.assign(base, {
           pasos: [
             { tipo: 'pide', texto: ['Piden la masa ', mS, ` que queda a los ${anos6(c.t2)}.`] },
-            { tipo: 'datos', texto: 'De la primera masa a la segunda hay 2 mitades: 2 vidas medias.', ecuacion: [thS, ' = ', { frac: [v6t(ent6(c.t1)), v6n('2')] }, ' = ', v6v(anos6(c.x.vm))] },
-            { tipo: 'regla', texto: 'Con la vida media, n y la masa que queda.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ';  ', mS, ' = ', { frac: [m0S, pot2(nS)] }] },
-            { tipo: 'cuentas', texto: 'Cuento y divido.', ecuacion: [nS, ' = ', { frac: [v6t(ent6(c.t2)), v6v(ent6(c.x.vm))] }, ' = ', v6n('5'), ';  ', mS, ' = ', { frac: [v6m(String(c.m0)), pot2(v6n('5'))] }, ' = ', v6m(g6(c.d.queda))] },
-            { tipo: 'sentido', texto: 'Comprobación: en el tiempo dado no se fue la mitad, sino tres cuartos; por eso no se divide por tramos.' },
+            { tipo: 'datos', texto: 'De la primera masa a la segunda, la masa se parte 2 veces en dos: pasaron 2 vidas medias.', ecuacion: [thS, ' = ', { frac: [v6t(ent6(c.t1)), v6n('2')] }, ' = ', v6v(anos6(c.x.vm))] },
+            { tipo: 'regla', texto: 'Con la vida media cuento las que caben en el nuevo tiempo, n, y con n calculo la masa que queda.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ';  ', mS, ' = ', { frac: [m0S, pot2(nS)] }] },
+            { tipo: 'cuentas', texto: 'Cuento las vidas medias y divido la masa inicial.', ecuacion: [nS, ' = ', { frac: [v6t(ent6(c.t2)), v6v(ent6(c.x.vm))] }, ' = ', v6n('5'), ';  ', mS, ' = ', { frac: [v6m(String(c.m0)), pot2(v6n('5'))] }, ' = ', v6m(g6(c.d.queda))] },
+            { tipo: 'sentido', texto: 'Comprobación: en el primer tiempo no se fue la mitad sino tres cuartos, y por eso ese tiempo no es la vida media.' },
           ],
           respuesta: [v6m(g6(c.d.queda))] });
       },
@@ -2941,13 +2941,13 @@
       generar(s) {
         const c = caso6(s, false);
         let solucion;
-        if (c.tipo === 0) solucion = { texto: `Caben ${c.n} vidas medias: se divide ${c.n} veces entre 2.`, ecuacion: [mS, ' = ', { frac: [v6m(String(c.m0)), pot2(v6n(String(c.n)))] }, ' = ', v6m(g6(c.d.queda))] };
-        else if (c.tipo === 1) solucion = { texto: `1/${2 ** c.n} son ${c.n} mitades: ${c.n} vidas medias.`, ecuacion: [tS, ' = ', v6n(String(c.n)), ' · ', v6v(ent6(c.c14 ? VM_C14 : c.x.vm)), ' = ', v6t(`${ent6(c.t)} ${c.c14 ? 'años' : c.x.u}`)] };
-        else if (c.tipo === 2) solucion = { texto: `Caben ${c.n} vidas medias: queda ${pc6(c.d.fraccionQueda)}, y se desintegra lo demás.`, ecuacion: [v6m(pc6(c.d.fraccionDesintegrada))] };
-        else if (c.tipo === 3) solucion = c.curva ? { texto: `La mitad de ${c.m0} g son ${c.m0 / 2} g: la curva pasa por ahí en esa marca.`, ecuacion: [thS, ' = ', v6v(anos6(c.x.vm))] }
-          : { texto: 'Hay 2 mitades entre las masas: el tiempo entre 2.', ecuacion: [thS, ' = ', { frac: [v6t(ent6(c.t)), v6n('2')] }, ' = ', v6v(anos6(c.x.vm))] };
-        else if (c.mezcla) solucion = { texto: `Todo en ${c.x.u}: caben ${c.n} vidas medias.`, ecuacion: ['1/', pot2(v6n(String(c.n))), ' = ', v6m(fr6(c.q))] };
-        else solucion = { texto: 'La vida media sale de las 2 mitades; después caben 5.', ecuacion: [mS, ' = ', { frac: [v6m(String(c.m0)), pot2(v6n('5'))] }, ' = ', v6m(g6(c.d.queda))] };
+        if (c.tipo === 0) solucion = { texto: `En ese tiempo caben ${c.n} vidas medias, así que la masa se divide ${c.n} veces entre 2.`, ecuacion: [mS, ' = ', { frac: [v6m(String(c.m0)), pot2(v6n(String(c.n)))] }, ' = ', v6m(g6(c.d.queda))] };
+        else if (c.tipo === 1) solucion = { texto: `Quedar 1/${2 ** c.n} es partir ${c.n} veces en dos, así que pasaron ${c.n} vidas medias.`, ecuacion: [tS, ' = ', v6n(String(c.n)), ' · ', v6v(ent6(c.c14 ? VM_C14 : c.x.vm)), ' = ', v6t(`${ent6(c.t)} ${c.c14 ? 'años' : c.x.u}`)] };
+        else if (c.tipo === 2) solucion = { texto: `Caben ${c.n} vidas medias, así que queda ${pc6(c.d.fraccionQueda)} y se desintegra lo demás.`, ecuacion: [v6m(pc6(c.d.fraccionDesintegrada))] };
+        else if (c.tipo === 3) solucion = c.curva ? { texto: `La mitad de ${c.m0} g son ${c.m0 / 2} g, y la curva pasa por ese valor en esta marca del tiempo.`, ecuacion: [thS, ' = ', v6v(anos6(c.x.vm))] }
+          : { texto: 'Entre las dos masas la muestra se parte 2 veces en dos, así que el tiempo se divide entre 2.', ecuacion: [thS, ' = ', { frac: [v6t(ent6(c.t)), v6n('2')] }, ' = ', v6v(anos6(c.x.vm))] };
+        else if (c.mezcla) solucion = { texto: `Con el tiempo pasado a ${c.x.u}, caben ${c.n} vidas medias.`, ecuacion: ['1/', pot2(v6n(String(c.n))), ' = ', v6m(fr6(c.q))] };
+        else solucion = { texto: 'La vida media sale de las 2 mitades del primer tramo, y en el tiempo pedido caben 5.', ecuacion: [mS, ' = ', { frac: [v6m(String(c.m0)), pot2(v6n('5'))] }, ' = ', v6m(g6(c.d.queda))] };
         return { pregunta: c.pregunta, datos: c.datos, dibujo: c.dibujo, opciones: c.opciones, solucion };
       },
     },
@@ -2992,7 +2992,7 @@
     // antes que la unidad, y quim-particulas antes que quim-vasos (que dibuja sus especies).
     requiere: ['/nucleo/elementos.js', '/plantillas/materia-energia/motor.js', '/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/quim-vasos.js', '/nucleo/kit/piezas/quim-cocina.js'],
     historia: {
-      texto: 'En el siglo XVIII, para entender una combustión había que decidir qué pesar: solo el sólido o también el aire. Las mediciones de Lavoisier y de otros mostraron que una muestra puede ganar masa al tomar un gas. Por eso importa dónde termina el sistema que se estudia. La relación entre masa y energía llegó mucho después, con la física del siglo XX.',
+      texto: 'En el siglo XVIII, para entender una combustión había que decidir qué pesar: solo el sólido o también el aire. Las mediciones de Lavoisier y de otros mostraron que una muestra puede ganar masa al tomar un gas, y por eso importa dónde termina el sistema que se estudia. La relación entre masa y energía llegó mucho después, con la física del siglo XX.',
       pregunta: '¿Qué pesarías para saber si algo pierde masa al quemarse?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §1.2', url: 'https://openstax.org/books/chemistry-2e/pages/1-2-phases-and-classification-of-matter' },
     },
@@ -3087,8 +3087,8 @@
       // Idea 5 (17 nov): la masa que falta y la fusión del Sol, con su `simple` (ninguno dice que el helio pesa menos:
       // es la predicción).
       { termino: 'defecto de masa', formas: ['defecto de masa', 'masa que falta', 'masa que desaparece'], simbolo: 'Δm', medida: 'kg',
-        def: 'Diferencia entre la masa de un sistema antes y después de un proceso nuclear; sale como energía.',
-        simple: 'Lo poquito que se pierde de peso cuando algo suelta muchísima energía.',
+        def: 'Diferencia entre la masa de un sistema antes y después de soltar energía; solo se nota en un proceso nuclear.',
+        simple: 'Lo poquito de masa que se pierde cuando algo suelta muchísima energía.',
         ejemplos: ['A cada kilogramo de hidrógeno que forma helio en el Sol le faltan unos 7 g.', 'Al combustible de un reactor nuclear, por cada kilogramo, le faltan unos 0,9 g.',
           'Al quemar un balón de gas faltan unos 5 × 10⁻⁹ kg: no se mide.'], ver: ['fusión nuclear', 'cambio nuclear'] },
       { termino: 'fusión nuclear', formas: ['fusión nuclear'],
@@ -3101,7 +3101,7 @@
       // la predicción).
       { termino: 'vida media', formas: ['vida media', 'vidas medias'], simbolo: 't₁/₂', medida: 'años, días u h', local: true,
         def: 'Tiempo en que se desintegra la mitad de los átomos radiactivos que tiene una muestra.',
-        simple: 'El tiempo que tarda una muestra en quedarse con la mitad.',
+        simple: 'Lo que tarda una muestra en quedarse con la mitad de sus átomos radiactivos.',
         ejemplos: ['Carbono-14: unos 5730 años.', 'Yodo-131, que se usa en hospitales: unos 8 días.', 'Cobalto-60, que se usa para irradiar alimentos: unos 5,3 años.'],
         ver: ['desintegración'] },
       { termino: 'desintegración', formas: ['desintegración', 'desintegraciones', 'se desintegra', 'se desintegran', 'desintegrarse', 'desintegrado', 'desintegrada', 'desintegra', 'desintegran'],
@@ -3143,7 +3143,7 @@
     laboratorio: [
       {
         id: 'hielo-a-vapor', titulo: 'Del hielo al vapor', pieza: 'quim-cocina',
-        consigna: 'El calor entra solo y el punto recorre la curva. Compara el largo de las dos mesetas; elige dónde empieza el hielo.',
+        consigna: 'El calor entra solo y el punto recorre la curva. Compara el largo de las dos mesetas y elige a qué temperatura empieza el hielo.',
         controles: [
           { id: 't0', etiqueta: 'T inicial del hielo', min: -40, max: 0, paso: 5, inicio: -20, unidad: '°C', decimales: 0 },
           { id: 'q', etiqueta: 'Calor entregado, Q', color: 'c-f', min: 0, max: QMAX, paso: 0.1, inicio: 0.5, unidad: 'kcal', decimales: 1, auto: { velocidad: 0.6 } },
@@ -3164,7 +3164,7 @@
             bien: 'Más calor y el mismo termómetro: ese calor cambió el estado, no la temperatura.' },
           { texto: 'Deja la mitad del agua hervida y la otra mitad líquida, a 100 °C.',
             logrado: val => { const k = tramos(val.t0), x = (val.q - k.c) / (k.d - k.c); return x >= 0.45 && x <= 0.55; },
-            bien: 'Media meseta larga. Hervir pide mucho más calor que fundir.' },
+            bien: 'Vas por la mitad de la meseta larga: hervir pide mucho más calor que fundir.' },
           { texto: 'Calienta el vapor por encima de 120 °C.',
             logrado: val => estadoLab(val.t0, val.q).lee === 'vapor' && estadoLab(val.t0, val.q).T > 120,
             bien: 'Sin cambio de estado, el calor específico manda otra vez: la curva vuelve a subir.' },
@@ -3183,7 +3183,7 @@
             bien: 'Medio gramo basta. ¿Cuántos balones valdría un gramo entero?' },
           { texto: 'Guarda dos casos: uno que libere el triple de energía que el otro.',
             logrado: (val, guardados) => guardados.some(a => guardados.some(b => Math.abs(balones5(a.mg) - 3 * balones5(b.mg)) < 1e-6 * balones5(a.mg))),
-            bien: 'Triple de masa perdida, triple de energía.' },
+            bien: 'Con el triple de masa perdida sale el triple de energía.' },
           { texto: 'Haz que desaparezca un gramo entero de masa.',
             logrado: val => val.mg === 1000,
             bien: 'Un solo gramo vale unos 200 000 balones de gas: c² es enorme.' },
