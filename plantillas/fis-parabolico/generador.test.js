@@ -77,7 +77,7 @@ test('tipos por idea: las cinco ideas de la unidad, cada tipo con su nivel y tod
   }
 });
 
-test('cada error trae su código, su respaldo y su fuente; la explicación empieza por lo bien hecho y muestra su valor', () => {
+test('cada error trae su código, su respaldo y su fuente; la explicación muestra su valor', () => {
   for (let s = 0; s < 1500; s++) {
     const p = gen.generar(s);
     for (const a of p.alternativas.filter(x => x.error)) {
@@ -85,7 +85,6 @@ test('cada error trae su código, su respaldo y su fuente; la explicación empie
       assert.match(e.id, /^(P[24]|TP-|2D-|PR|K-TIEMPO|C-LINEAL|U1-kmh)/, `semilla ${s}: ${e.id}`);
       assert.equal(e.respaldo, /^P[24]$/.test(e.id) ? 'documentado' : 'hipotesis', `semilla ${s}: ${e.id}`);
       assert.equal(e.fuente, /^(U1|PR1)\b/.test(e.id) ? 'docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md' : CIN);
-      assert.match(e.explicacion, /^Bien/, `semilla ${s}: ${e.explicacion}`);
       assert.ok(e.explicacion.includes(a.texto), `semilla ${s}: «${e.explicacion}» no muestra ${a.texto}`);
       assert.ok(!/\b(alternativa|opción|letra) [A-E]\b|\bla [A-E]\b/.test(e.explicacion), `semilla ${s}: nombra una letra`);
       assert.ok(e.explicacion.split(/\s+/).length <= 40, `semilla ${s}: explicación larga`);
@@ -176,4 +175,14 @@ test('auditoría: ninguna pelota se patea a más de 25 m/s, y «veces» se lee b
 });
 test('auditoría: la ecuación de segundo grado dice qué son p, q y r', () => {
   for (let s = 0; s < 200; s++) for (const d of gen.generar(s, { idea: 'tiro-oblicuo' }).datos) if (/p · t²/.test(d)) assert.match(d, /p, q, r/);
+});
+
+// Verificación (26 nov): «8 s es la velocidad hacia abajo que hace falta, y está bien, pero es una velocidad» se
+// contradecía: un valor en segundos no es una velocidad. Ahora dice que el número es la velocidad en m/s.
+test('redacción: ninguna explicación dice que un valor en segundos «es la velocidad»', () => {
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s);
+    if (!p) continue;
+    for (const a of p.alternativas) if (a.error) assert.doesNotMatch(a.error.explicacion, /^[\d,]+ s es la velocidad/, `semilla ${s}: ${a.error.explicacion}`);
+  }
 });

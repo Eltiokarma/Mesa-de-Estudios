@@ -759,3 +759,38 @@ test('igualdad-falsa: en «Altura máxima y alcance», cada producto escrito da 
   const falsas = Teoria.pendientes(def, { semillas: 200 }).concat(Teoria.problemas(def, { semillas: 200 })).filter(x => /\[igualdad-falsa\]/.test(x));
   assert.deepEqual(falsas, []);
 });
+
+// Verificación de la pasada de redacción (26 nov 2026). En «Ahora tú» del ángulo complementario, la explicación de
+// «mitad» decía «a la mitad cae más cerca» (falso con 75°: a 37,5° cae más lejos) y la de «doble», «sube más y avanza
+// menos» (falso con 15° y 30°). Lo que vale en todas las semillas es que no completan 90° con el ángulo dado.
+test('redacción: «mitad» y «doble» del ángulo complementario dicen algo cierto en todas las semillas', () => {
+  const plano = x => (x == null ? '' : typeof x === 'string' ? x : Array.isArray(x) ? x.map(plano).join('') : typeof x === 'object' ? plano(x.t ?? x.texto ?? '') : String(x));
+  const alcance = g => Math.sin(2 * g * Math.PI / 180);
+  let vistos = 0;
+  for (const i of def.ideas) for (let s = 0; s < 400; s++) {
+    const a = i.ahoraTu.generar(s), q = plano(a.pregunta), m = q.match(/con (\d+(?:,\d+)?)° y cae a .*otro ángulo/);
+    if (!m) continue;
+    const b = Number(m[1].replace(',', '.'));
+    for (const o of a.opciones || []) {
+      if (!['mitad', 'doble'].includes(o.id)) continue;
+      vistos++;
+      const g = Number(plano(o.texto).replace('°', '').replace(',', '.'));
+      assert.notEqual(g + b, 90, `semilla ${s}: ${g}° sí completa 90° con ${b}°`);
+      assert.doesNotMatch(o.siFuera, /más cerca|más lejos|avanza menos/, `semilla ${s}: ${o.siFuera}`);
+      // y es cierto que cae en otro sitio
+      assert.ok(Math.abs(alcance(g) - alcance(b)) > 1e-6, `semilla ${s}: ${g}° y ${b}° caen en el mismo sitio`);
+    }
+  }
+  assert.ok(vistos > 10, `solo ${vistos}`);
+});
+
+// Verificación (26 nov): la regla 2 decía que la rapidez es tangente a la trayectoria; tangente es la velocidad (la
+// rapidez es solo un número). Y en A3, «subida» (la mitad del vuelo) decía «Bien el camino», y ese valor no sale del
+// camino de la pregunta.
+test('redacción: la tangente es de la velocidad y «subida» no elogia un camino que no da su valor', () => {
+  const r2 = def.ideas[1].regla.texto;
+  assert.doesNotMatch(r2, /rapidez[^.]*es tangente/);
+  assert.match(r2, /velocidad, tangente a la trayectoria/);
+  for (const i of def.ideas) for (let s = 0; s < 200; s++)
+    for (const o of i.ahoraTu.generar(s).opciones || []) if (o.siFuera) assert.doesNotMatch(o.siFuera, /^Bien el camino/, `${i.id} ${s}`);
+});

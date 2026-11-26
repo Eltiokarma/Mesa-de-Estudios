@@ -19,7 +19,7 @@
       "enunciado": "Una piedra sale de lado a 4 m/s desde una peña alta. ¿Con qué velocidad hacia abajo va 1,5 s después? Datos: Hacia abajo, desde el reposo: v_y = g · t. g = 10 m/s² (convención del examen); sin resistencia del aire. Alternativas: A) 19 m/s   B) 15 m/s   C) 11,25 m/s   D) 4 m/s   E) 10 m/s",
       "respuesta": "B) 15 m/s",
       "pasos": [
-        "Hacia abajo parte de cero y gana 10 m/s cada segundo: v_y = 10 · 1,5 = 15 m/s."
+        "Hacia abajo parte de cero y gana 10 m/s cada segundo; la rapidez de lado no influye: v_y = 10 · 1,5 = 15 m/s."
       ]
     },
     {
@@ -67,7 +67,7 @@
       "enunciado": "Una pelota pateada a 10 m/s con 37° cae a 9,6 m de donde salió. ¿Cuánto tiempo estuvo en el aire? Datos: Componentes de la salida: v_0x = v_0 · cos θ y v_0y = v_0 · sen θ. sen 37° = cos 53° = 3/5 y cos 37° = sen 53° = 4/5 (convención del examen). De lado: x = v_0x · t. Alternativas: A) 0,96 s   B) 2 s   C) 1,6 s   D) 0,6 s   E) 1,2 s",
       "respuesta": "E) 1,2 s",
       "pasos": [
-        "De lado avanza parejo con v_0x = 8 m/s todo el vuelo.",
+        "De lado avanza parejo con v_0x = 8 m/s durante todo el vuelo, así que el tiempo es lo que avanzó entre esa velocidad:",
         "t = 9,6 ÷ 8 = 1,2 s."
       ]
     },
