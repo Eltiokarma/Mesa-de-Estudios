@@ -238,5 +238,5 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | trig-objeto · techo | se reconoce | techo de calamina sobre la casa | [ver](capturas/trig-objeto--techo.webp) |  |
 | trig-objeto · triangulo | se reconoce | triángulo de examen (diagrama propio) | [ver](capturas/trig-objeto--triangulo.webp) |  |
 | trig-pos · (sin objeto) | se reconoce | plano del pueblo con plaza y casa | [ver](capturas/trig-pos--sin-objeto.webp) |  |
-| trig-vista · (sin objeto) | a medias | cometa y observador: la cometa se adivina; quien mira es un cuadradito | [ver](capturas/trig-vista--sin-objeto.webp) |  |
+| trig-vista · (sin objeto) | a medias | cometa amarrada a una estaca: la cometa mide 16 px y se adivina; la estaca es un cuadradito | [ver](capturas/trig-vista--sin-objeto.webp) | redibujado: cometa más grande con varillas, papel en dos paños y cola con lazos; estaca de madera con la pita enrollada ([antes y después](antes-despues/trig-vista--sin-objeto.webp)) |
 

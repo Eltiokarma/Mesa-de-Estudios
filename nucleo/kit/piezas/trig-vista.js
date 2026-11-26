@@ -77,7 +77,7 @@
 
   // Lo que ocupa cada ícono en pantalla alrededor de su punto: [izquierda, derecha, arriba, abajo], en px.
   const ICONO = {
-    cometa: [12, 26, 16, 34], estaca: [5, 5, 10, 0], persona: [9, 9, 9, 0], globo: [17, 17, 44, 2], combi: [20, 20, 18, 0],
+    cometa: [14, 32, 28, 34], estaca: [7, 7, 16, 0], persona: [9, 9, 9, 0], globo: [17, 17, 44, 2], combi: [20, 20, 18, 0],
     auto: [16, 16, 14, 0], barco: [18, 18, 12, 2], lancha: [14, 14, 10, 2], dron: [15, 15, 7, 5], camara: [9, 9, 6, 6], ojo: [8, 8, 6, 6],
   };
   const TIPOS = ['cometa', 'estaca', 'antena', 'persona', 'globo', 'edificio', 'faro', 'acantilado', 'cerro', 'poste', 'letrero', 'arbol',
@@ -188,14 +188,20 @@
     switch (o.tipo) {
       case 'cometa': {
         // El rombo de la cometa, con su cola; (X0, Y0) es donde se amarra la pita (la punta de abajo del rombo).
-        const top = [X0 + 6, Y0 - 16], izq = [X0 - 6, Y0 - 7], der = [X0 + 15, Y0 - 5];
-        let s = poli([[X0, Y0], izq, top, der], `fill="currentColor" fill-opacity="0.12" ${tinta(2)}`);
-        s += linea(top, [X0, Y0], tinta(1.2, 0.6)) + linea(izq, der, tinta(1.2, 0.6));
-        s += poli([[X0 + 2, Y0 + 2], [X0 + 8, Y0 + 10], [X0 + 4, Y0 + 18], [X0 + 12, Y0 + 26], [X0 + 9, Y0 + 32]], tinta(1.5, 0.7), false);
-        for (const [a, b] of [[[X0 + 6, Y0 + 8], [X0 + 10, Y0 + 12]], [[X0 + 6, Y0 + 22], [X0 + 10, Y0 + 26]]]) s += linea(a, b, tinta(2.5, 0.7));
+        // 26 nov (dibujos reconocibles): más grande, con las dos varillas, el papel en dos paños y lazos en la cola; a
+        // 16 px de alto no se leía como cometa.
+        const top = [X0 + 10, Y0 - 27], izq = [X0 - 10, Y0 - 12], der = [X0 + 25, Y0 - 8], cruce = [X0 + 5, Y0 - 10.5];
+        let s = poli([[X0, Y0], izq, top, cruce], `fill="currentColor" fill-opacity="0.22" stroke="none"`);
+        s += poli([[X0, Y0], cruce, top, der], `fill="currentColor" fill-opacity="0.08" stroke="none"`);
+        s += poli([[X0, Y0], izq, top, der], `fill="none" ${tinta(2)}`);
+        s += linea(top, [X0, Y0], tinta(1.4, 0.7)) + linea(izq, der, tinta(1.4, 0.7));
+        s += `<path d="M${n(X0 + 1)} ${n(Y0 + 1)}C${n(X0 + 14)} ${n(Y0 + 4)} ${n(X0 + 8)} ${n(Y0 + 16)} ${n(X0 + 18)} ${n(Y0 + 21)}S${n(X0 + 20)} ${n(Y0 + 30)} ${n(X0 + 26)} ${n(Y0 + 32)}" ${tinta(1.5, 0.7)}/>`;
+        for (const [cx, cy] of [[X0 + 10, Y0 + 7], [X0 + 15, Y0 + 19], [X0 + 23, Y0 + 30]]) s += poli([[cx - 4, cy - 2.5], [cx + 4, cy + 2.5], [cx + 4, cy - 2.5], [cx - 4, cy + 2.5]], `fill="currentColor" fill-opacity="0.5" ${tinta(1.2, 0.7)}`);
         return g(s);
       }
-      case 'estaca': return g(poli([[X0 - 2.5, Y0 + 1], [X0 - 2.5, Y0 - 8], [X0 + 2.5, Y0 - 8], [X0 + 2.5, Y0 + 1]], `fill="currentColor" fill-opacity="0.35" ${tinta(1.5)}`) + rect(X0 - 4.5, Y0 - 10, 9, 3, `fill="currentColor" stroke="none" rx="1"`));
+      // La estaca de madera clavada en el suelo, con la pita enrollada y su nudo.
+      case 'estaca': return g(poli([[X0 - 3, Y0 + 1], [X0 - 3, Y0 - 13], [X0, Y0 - 16], [X0 + 3, Y0 - 13], [X0 + 3, Y0 + 1]], `fill="var(--card)" ${tinta(1.6)}`) +
+        linea([X0 - 3.5, Y0 - 9], [X0 + 3.5, Y0 - 7], tinta(1.4)) + linea([X0 - 3.5, Y0 - 6.5], [X0 + 3.5, Y0 - 4.5], tinta(1.4)) + circulo([X0 + 4, Y0 - 8], 1.8, `fill="currentColor" stroke="none"`));
       case 'antena': {
         const [, Yt] = P([x, h]), Yb = Y0;
         let s = linea([X0 - 3, Yb], [X0 - 1.5, Yt], tinta(1.8)) + linea([X0 + 3, Yb], [X0 + 1.5, Yt], tinta(1.8));
@@ -321,7 +327,7 @@
       if (!visible(o, e) || !TIPOS.includes(o.tipo)) continue;
       s += objeto(o, E, e, d);
       // Los íconos son obstáculos para los rótulos (un rótulo encima de la combi no se lee).
-      const ic = (o.tipo === 'cometa' ? [10, 16, 16, 6] : ICONO[o.tipo]), q0 = P([num(enPaso(o.x, e), 0), num(enPaso(o.y, e), 0)]), q = [q0[0] + (ic ? num(o.dx, 0) : 0), q0[1]];
+      const ic = (o.tipo === 'cometa' ? [12, 26, 28, 6] : ICONO[o.tipo]), q0 = P([num(enPaso(o.x, e), 0), num(enPaso(o.y, e), 0)]), q = [q0[0] + (ic ? num(o.dx, 0) : 0), q0[1]];
       if (ic) obst.push({ x: q[0] + (ic[1] - ic[0]) / 2, y: q[1] + (ic[3] - ic[2]) / 2, w: ic[0] + ic[1], h: ic[2] + ic[3] });
       if (o.tipo === 'persona') { const [, Yo] = P([q[0] === q[0] ? num(enPaso(o.x, e), 0) : 0, num(enPaso(o.y, e), 0) + Math.max(0.5, num(d.ojo, 1.5))]); obst.push({ x: q[0], y: (q[1] + Yo) / 2 - 3, w: 18, h: q[1] - Yo + 10 }); }
     }
