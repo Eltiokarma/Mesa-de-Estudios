@@ -6,6 +6,7 @@
     "fisica.gravitacion"
   ],
   "estado": "borrador",
+  "rehacer": true,
   "version": "0.1.0",
   "escena": "index.html",
   "motor": "motor.js",

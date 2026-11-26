@@ -122,6 +122,13 @@
     if (conservaEstudio(est, { de: 'fisica.impulso-y-choques', a: 'fisica.impulso-y-choques',
       estudiada: { marca: 'estudiadaIC9', fecha: '2026-11-22',
         ideas: ['impulso', 'conservacion', 'elastico-inelastico', 'restitucion', 'centro-masa'] } })) cambio = true;
+    // 22 nov (etapa 10, Gravitación): cambian las cuatro predicciones antiguas y se añaden energía y escape.
+    // Se conserva el estudio de quien terminó las cuatro ideas anteriores; las dos nuevas quedan pendientes.
+    if (sinHuella(est, 'fisica.gravitacion', { marca: 'prediccionGV',
+      ideas: ['cuadrado-inverso', 'campo-gravitatorio', 'orbita-circular', 'leyes-de-kepler'] })) cambio = true;
+    if (conservaEstudio(est, { de: 'fisica.gravitacion', a: 'fisica.gravitacion',
+      estudiada: { marca: 'estudiadaGV', fecha: '2026-11-22',
+        ideas: ['cuadrado-inverso', 'campo-gravitatorio', 'orbita-circular', 'leyes-de-kepler'] } })) cambio = true;
     return cambio;
   }
   const REHECHAS_E6 = [

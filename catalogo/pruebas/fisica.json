@@ -442,6 +442,30 @@
     "IC9-velocidades-sin-signo": {
       "respaldo": "hipotesis",
       "describe": "Suma las rapideces como si ambos carritos avanzaran en el mismo sentido."
+    },
+    "GV-K-LINEAL": {
+      "respaldo": "hipotesis",
+      "describe": "Hipótesis: multiplica el período por la razón de semiejes, sin usar los cuadrados y cubos de Kepler."
+    },
+    "GV-K-RAIZ": {
+      "respaldo": "hipotesis",
+      "describe": "Hipótesis: toma solo la raíz de la razón de semiejes y omite elevarla al cubo."
+    },
+    "GV-K-CUADRADO": {
+      "respaldo": "hipotesis",
+      "describe": "Hipótesis: multiplica el período por el cuadrado de la razón de semiejes."
+    },
+    "GV-E-RESTA": {
+      "respaldo": "hipotesis",
+      "describe": "Hipótesis: resta las rapideces inicial y de escape como si la energía dependiera linealmente de la rapidez."
+    },
+    "GV-E-SIN-GRAVEDAD": {
+      "respaldo": "hipotesis",
+      "describe": "Hipótesis: conserva la rapidez inicial e ignora el aumento de energía potencial durante el alejamiento."
+    },
+    "GV-E-UMBRAL": {
+      "respaldo": "hipotesis",
+      "describe": "Hipótesis: responde con la rapidez mínima de escape en el lanzamiento cuando se pide la rapidez final."
     }
   },
   "pares": [
@@ -1593,7 +1617,7 @@
           "modelo": {
             "ancho": 2,
             "anchoTubo": 0.2,
-            "altoTubo": 1.0,
+            "altoTubo": 1,
             "x": 0.9
           }
         },
@@ -2801,6 +2825,152 @@
             "texto": "4,15 m",
             "valor": 4.15,
             "error": "IC9-posicion-promedio-simple"
+          }
+        ]
+      }
+    },
+    {
+      "par": "grav-01",
+      "plantilla": "fis-gravitacion",
+      "unidad": "fisica.gravitacion",
+      "nombreUnidad": "Gravitación universal",
+      "mide": "Relacionar períodos y semiejes mayores de dos órbitas alrededor del mismo planeta mediante la tercera ley de Kepler",
+      "A": {
+        "enunciado": "Dos satélites de masa despreciable describen órbitas elípticas exteriores alrededor del mismo planeta esférico fijo, sin aire ni propulsión. El satélite A tarda 20 días y su semieje mayor es 4 millones de kilómetros; el de B es 9 millones de kilómetros. ¿Cuánto dura una vuelta de B? Datos: T²/a³ es constante para el mismo planeta.",
+        "datos": {
+          "TA": 20,
+          "aA": 4,
+          "aB": 9
+        },
+        "opciones": [
+          {
+            "texto": "45 días",
+            "valor": 45,
+            "error": "GV-K-LINEAL"
+          },
+          {
+            "texto": "67,5 días",
+            "valor": 67.5,
+            "correcta": true
+          },
+          {
+            "texto": "30 días",
+            "valor": 30,
+            "error": "GV-K-RAIZ"
+          },
+          {
+            "texto": "101,25 días",
+            "valor": 101.25,
+            "error": "GV-K-CUADRADO"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Dos satélites de masa despreciable describen órbitas elípticas exteriores alrededor del mismo planeta esférico fijo, sin aire ni propulsión. El satélite A tarda 81 días y su semieje mayor es 9 millones de kilómetros; el de B es 4 millones de kilómetros. ¿Cuánto dura una vuelta de B? Datos: T²/a³ es constante para el mismo planeta.",
+        "datos": {
+          "TA": 81,
+          "aA": 9,
+          "aB": 4
+        },
+        "opciones": [
+          {
+            "texto": "16 días",
+            "valor": 16,
+            "error": "GV-K-CUADRADO"
+          },
+          {
+            "texto": "54 días",
+            "valor": 54,
+            "error": "GV-K-RAIZ"
+          },
+          {
+            "texto": "36 días",
+            "valor": 36,
+            "error": "GV-K-LINEAL"
+          },
+          {
+            "texto": "24 días",
+            "valor": 24,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "grav-02",
+      "plantilla": "fis-gravitacion",
+      "unidad": "fisica.gravitacion",
+      "nombreUnidad": "Gravitación universal",
+      "mide": "Distinguir la rapidez final lejos del planeta de la rapidez mínima de escape mediante la conservación de la energía",
+      "A": {
+        "enunciado": "Se lanza un vehículo de masa despreciable en dirección radial hacia el exterior de un planeta esférico fijo. En ese instante está a r₀ = 8000 km del centro y tiene v₀ = 10 km/s. El radio planetario es R = 4000 km y GM = 2,56 × 10¹⁴ m³/s². Se mueve sin aire ni empuje posterior; ¿a qué rapidez tiende al alejarse indefinidamente? Datos: E_M/m = v²/2 − GM/r se conserva; la energía potencial es cero en el infinito; 1 km = 1000 m.",
+        "datos": {
+          "GM": 2.56,
+          "r0": 8000,
+          "R": 4000,
+          "v0": 10,
+          "modelo": {
+            "escalaGM": 100000000000000,
+            "escalaRadio": 1000,
+            "escalaRapidez": 1000
+          }
+        },
+        "opciones": [
+          {
+            "texto": "6 km/s",
+            "valor": 6,
+            "correcta": true
+          },
+          {
+            "texto": "2 km/s",
+            "valor": 2,
+            "error": "GV-E-RESTA"
+          },
+          {
+            "texto": "10 km/s",
+            "valor": 10,
+            "error": "GV-E-SIN-GRAVEDAD"
+          },
+          {
+            "texto": "8 km/s",
+            "valor": 8,
+            "error": "GV-E-UMBRAL"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Se lanza un vehículo de masa despreciable en dirección radial hacia el exterior de un planeta esférico fijo. En ese instante está a r₀ = 8000 km del centro y tiene v₀ = 17 km/s. El radio planetario es R = 4000 km y GM = 9 × 10¹⁴ m³/s². Se mueve sin aire ni empuje posterior; ¿a qué rapidez tiende al alejarse indefinidamente? Datos: E_M/m = v²/2 − GM/r se conserva; la energía potencial es cero en el infinito; 1 km = 1000 m.",
+        "datos": {
+          "GM": 9,
+          "r0": 8000,
+          "R": 4000,
+          "v0": 17,
+          "modelo": {
+            "escalaGM": 100000000000000,
+            "escalaRadio": 1000,
+            "escalaRapidez": 1000
+          }
+        },
+        "opciones": [
+          {
+            "texto": "15 km/s",
+            "valor": 15,
+            "error": "GV-E-UMBRAL"
+          },
+          {
+            "texto": "17 km/s",
+            "valor": 17,
+            "error": "GV-E-SIN-GRAVEDAD"
+          },
+          {
+            "texto": "8 km/s",
+            "valor": 8,
+            "correcta": true
+          },
+          {
+            "texto": "2 km/s",
+            "valor": 2,
+            "error": "GV-E-RESTA"
           }
         ]
       }

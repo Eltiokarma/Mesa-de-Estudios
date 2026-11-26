@@ -1,0 +1,79 @@
+{
+  "titulo": "Gravitación, órbitas y escape: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una sonda de 230 kg está a 13 500 km del centro de una fuente de 6,3 × 10²⁴ kg. ¿Cuál es el módulo de la fuerza gravitatoria sobre la sonda? Datos: Modelo ideal: fuente esférica fija, cuerpo exterior y masa pequeña frente a la fuente; sin aire ni propulsión. G ≈ 6,67 × 10⁻¹¹ N·m²/kg²: constante de gravitación universal. F = G·M·m/r²; F: módulo de fuerza; M y m: masas; r: distancia entre centros. 1 km = 1000 m; 1 h = 3600 s; 1 MJ = 10⁶ J; 1 kg = 1000 g. Alternativas: A) ≈ 530,306 N   B) ≈ −530,306 N   C) ≈ 1 060,612 N   D) ≈ 132,577 N",
+      "respuesta": "A) ≈ 530,306 N",
+      "pasos": [
+        "F = (6,67 × 10⁻¹¹) × (6,3 × 10²⁴) × 230 / (1,35 × 10⁷)² ≈ 530,306 N"
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una sonda está a 9 500 km del centro del planeta ideal. ¿Cuál es el módulo del campo gravitatorio allí? Datos: Modelo ideal: fuente esférica fija, cuerpo exterior y masa pequeña frente a la fuente; sin aire ni propulsión. GM = 5,9 × 10¹⁴ m³/s²: constante gravitatoria G por masa de la fuente M. g = GM/r²; g: módulo del campo; r: distancia al centro de la fuente. 1 km = 1000 m; 1 h = 3600 s; 1 MJ = 10⁶ J; 1 kg = 1000 g. Alternativas: A) ≈ −6,537 N/kg   B) ≈ 6,537 N/kg   C) ≈ 26,15 N/kg   D) ≈ 1,634 N/kg",
+      "respuesta": "B) ≈ 6,537 N/kg",
+      "pasos": [
+        "g = (5,9 × 10¹⁴) / (9,5 × 10⁶)² ≈ 6,537 N/kg"
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una sonda de 370 kg está a 13 500 km del centro del planeta. ¿Cuál es su energía potencial gravitatoria, en megajoules? Datos: Modelo ideal: fuente esférica fija, cuerpo exterior y masa pequeña frente a la fuente; sin aire ni propulsión. GM = 6,7 × 10¹⁴ m³/s²: constante gravitatoria G por masa de la fuente M. E_PG = −GM·m/r; E_PG: energía potencial; m: masa; r: distancia central. La energía potencial gravitatoria vale cero en el infinito. 1 km = 1000 m; 1 h = 3600 s; 1 MJ = 10⁶ J; 1 kg = 1000 g. Alternativas: A) ≈ −9 181,481 MJ   B) ≈ −18 362,963 MJ   C) ≈ 18 362,963 MJ   D) ≈ −36 725,926 MJ",
+      "respuesta": "B) ≈ −18 362,963 MJ",
+      "pasos": [
+        "E_PG = −(6,7 × 10¹⁴) × 370 / (1,35 × 10⁷) / 10⁶ ≈ −18 362,963 MJ"
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un satélite recorre una órbita circular de radio 15 500 km alrededor del planeta ideal. ¿Cuál es su rapidez orbital? Datos: Modelo ideal: fuente esférica fija, cuerpo exterior y masa pequeña frente a la fuente; sin aire ni propulsión. GM = 5,1 × 10¹⁴ m³/s²: constante gravitatoria G por masa de la fuente M. v² = GM/r; v: rapidez circular; r: radio orbital desde el centro. 1 km = 1000 m; 1 h = 3600 s; 1 MJ = 10⁶ J; 1 kg = 1000 g. Alternativas: A) ≈ 4,056 km/s   B) ≈ −5,736 km/s   C) ≈ 8,112 km/s   D) ≈ 5,736 km/s",
+      "respuesta": "D) ≈ 5,736 km/s",
+      "pasos": [
+        "v = √((5,1 × 10¹⁴) / (1,55 × 10⁷)) / 1000 ≈ 5,736 km/s"
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una órbita elíptica llega a 11 000 km y 33 000 km como distancias mínima y máxima al foco ocupado por el planeta. ¿Cuál es su semieje mayor? Datos: Modelo ideal: fuente esférica fija, cuerpo exterior y masa pequeña frente a la fuente; sin aire ni propulsión. a = (r_p + r_a)/2; a: semieje mayor; r_p y r_a: distancias mínima y máxima al foco. 1 km = 1000 m; 1 h = 3600 s; 1 MJ = 10⁶ J; 1 kg = 1000 g. Alternativas: A) 44 000 km   B) 22 000 km   C) 11 000 km   D) 33 000 km",
+      "respuesta": "B) 22 000 km",
+      "pasos": [
+        "a = ((1,1 × 10⁷) + (3,3 × 10⁷)) / 2 / 1000 = 22 000 km"
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una sonda parte desde 7 500 km del centro, con rapidez radial 15 km/s hacia afuera. ¿A qué rapidez tiende al alejarse indefinidamente? Datos: Fuente esférica fija dominante; salida radial exterior hacia afuera, sin aire ni propulsión; energía potencial cero en el infinito. GM = 6,7 × 10¹⁴ m³/s²: constante gravitatoria G por masa de la fuente M. v_inf² = v_0² − 2GM/r_0; v_inf: rapidez residual; v_0: rapidez inicial; r_0: distancia central inicial. 1 km = 1000 m; 1 h = 3600 s; 1 MJ = 10⁶ J; 1 kg = 1000 g. Alternativas: A) ≈ 6,807 km/s   B) ≈ 11,648 km/s   C) 15 km/s   D) ≈ 1,633 km/s   E) ≈ 20,091 km/s",
+      "respuesta": "A) ≈ 6,807 km/s",
+      "pasos": [
+        "v_inf = √(15 000² − 2 × (6,7 × 10¹⁴) / (7,5 × 10⁶)) / 1000 ≈ 6,807 km/s"
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una sonda sale radialmente hacia afuera desde 16 000 km del centro, con 13 km/s. ¿Qué rapidez tiene al llegar a 32 000 km del centro? Datos: Modelo ideal: fuente esférica fija, cuerpo exterior y masa pequeña frente a la fuente; sin aire ni propulsión. GM = 5,1 × 10¹⁴ m³/s²: constante gravitatoria G por masa de la fuente M. v_f² = v_i² + 2GM·(1/r_f − 1/r_i); v: rapidez; r: distancia central; i/f: inicial/final. La energía potencial gravitatoria vale cero en el infinito. 1 km = 1000 m; 1 h = 3600 s; 1 MJ = 10⁶ J; 1 kg = 1000 g. Alternativas: A) ≈ 11,71 km/s   B) ≈ 12,372 km/s   C) ≈ 10,259 km/s   D) ≈ 14,173 km/s   E) 13 km/s",
+      "respuesta": "A) ≈ 11,71 km/s",
+      "pasos": [
+        "v_f = √(13 000² + 2 × (5,1 × 10¹⁴) × (1/(3,2 × 10⁷) − 1/(1,6 × 10⁷))) / 1000 ≈ 11,71 km/s"
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una sonda parte desde 11 500 km del centro, con rapidez radial 3 km/s hacia afuera. ¿Cuál es su distancia máxima al centro antes de regresar? Datos: Fuente esférica fija dominante; salida radial exterior hacia afuera, sin aire ni propulsión; energía potencial cero en el infinito. GM = 3,7 × 10¹⁴ m³/s²: constante gravitatoria G por masa de la fuente M. v_0²/2 − GM/r_0 = −GM/r_max; v_0: rapidez inicial; r_0/r_max: radios inicial/máximo. 1 km = 1000 m; 1 h = 3600 s; 1 MJ = 10⁶ J; 1 kg = 1000 g. Alternativas: A) ≈ 15 966,229 km   B) ≈ 10 088,915 km   C) ≈ 13 369,992 km   D) ≈ 1 869,992 km   E) 11 500 km",
+      "respuesta": "C) ≈ 13 369,992 km",
+      "pasos": [
+        "r_max = 1 / (1/(1,15 × 10⁷) − 3 000²/(2 × (3,7 × 10¹⁴))) / 1000 ≈ 13 369,992 km"
+      ]
+    }
+  ]
+}
