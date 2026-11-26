@@ -11,3 +11,6 @@ contra los límites semanales de los planes.
 | fisica.gravitacion | lector en frío A (ideas 1–3) | 125 547 | 2 min 25 s | 33 herramientas |
 | fisica.gravitacion | lector en frío B (ideas 4–6) | 126 028 | 2 min 29 s | 33 herramientas |
 | fisica.impulso-y-choques | auditoría y correcciones (cierre) | 402 256 | 31 min 34 s | 160 herramientas |
+| fisica.gravitacion | auditoría y correcciones (cierre) | 449 177 | 46 min 30 s | 239 herramientas |
+| razonamiento-verbal.cohesion-y-coherencia | escritura (fases 1 a 5) | 637 023 | 60 min | 141 herramientas |
+| trigonometria.reduccion-al-primer-cuadrante | escritura (fases 1 a 5) | 603 398 | 61 min 35 s | 190 herramientas |

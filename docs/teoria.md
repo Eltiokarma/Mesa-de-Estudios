@@ -456,17 +456,19 @@ Las faltas que esas reglas encontraron en el contenido ya hecho están en `Teori
 | Lectura en vivo | 12 |
 | Pregunta de predicción o de «Ahora tú» | 40 |
 | Opción | 14 |
-| `siFuera` | 20 |
-| Paso de «Mira» | 14, más su ecuación |
-| Regla | 30, más su ecuación |
-| Condición | 22 |
+| `siFuera` | 30 |
+| Paso de «Mira» | 25, más su ecuación |
+| Regla | 45, más su ecuación |
+| Condición | 35 |
 | Historia | 70 |
-| Solución de «Ahora tú» | 20, más su ecuación |
+| Solución de «Ahora tú» | 30, más su ecuación |
 | Tarjeta de «Lee» | 45, más su ecuación |
-| Paso de «Así se resuelve» | 30, más su ecuación |
+| Paso de «Así se resuelve» | 40, más su ecuación |
 | Enunciado de «Así se resuelve» | 40 |
 | Respuesta de «Así se resuelve» | 14 |
 | Línea de `datos` | 22, más su ecuación |
+
+**Gerson, 26 nov:** subieron los topes de los textos que explican (regla, condición, `siFuera`, paso de «Mira», solución y paso de «Así se resuelve»), porque cortados salían incoherentes; desde la Etapa 9 cada unidad pasa además por el redactor (`docs/metodo/unidad/redaccion-delegada.md`). Los textos que van junto al dibujo siguen cortos.
 
 Como en `escena-viva.md`: el tope no se cumple a costa de entender. Si no cabe con frases completas, la figura carga más o la idea se parte en dos. En razonamiento verbal, el texto de lectura es el objeto de estudio y no cuenta para el tope; sí cuentan la consigna, las preguntas y las opciones.
 
