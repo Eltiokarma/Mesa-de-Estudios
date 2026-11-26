@@ -126,15 +126,15 @@
         err('QM-CUENTA-LADO', FAMILIAS[ESP[g]], 'Bien contar los lugares. Pero desde el gas noble anterior se cuenta hacia adelante, no hacia atrás.'),
         err('QM-FILA-COLUMNA', `Periodo ${p}`, 'Ese es su periodo, bien hallado. Pero la familia es su columna.'),
         ...orden.filter(x => x !== g && x !== VEC[g] && x !== ESP[g]).slice(0, 1).map(x => err('QM-FAMILIA', FAMILIAS[x], 'Bien ubicar el periodo. Pero esa familia está en otra columna.'))],
-      solucion: [[`Gases nobles vecinos: ${NOBLES[p - 1]} y ${NOBLES[p]}. `, z === NOBLES[p] ? `${z} es un gas noble.` : z - NOBLES[p - 1] <= 2 ? `${z} está ${z - NOBLES[p - 1]} después del ${NOBLES[p - 1]}.` : `${z} está ${NOBLES[p] - z} antes del ${NOBLES[p]}.`],
+      solucion: [[`Los gases nobles más cercanos tienen Z = ${NOBLES[p - 1]} y Z = ${NOBLES[p]}. `, z === NOBLES[p] ? `El ${z} es uno de ellos: es un gas noble.` : z - NOBLES[p - 1] <= 2 ? `El ${z} está ${z - NOBLES[p - 1] === 1 ? '1 lugar' : `${z - NOBLES[p - 1]} lugares`} después del ${NOBLES[p - 1]}.` : `El ${z} está ${NOBLES[p] - z === 1 ? '1 lugar' : `${NOBLES[p] - z} lugares`} antes del ${NOBLES[p]}.`],
         ['Grupo ', v('gr', gTxt(g)), `: ${FAMILIAS[g].toLowerCase()}.`]] };
   }
   function periodoZ(rng) {
     const z = rng.ent ? 0 : 0, zz = rng.elegir([5, 7, 13, 15, 21, 26, 29, 33, 40, 47, 50, 53, 56, 79, 82, 12, 20, 38]), p = periodoDe(zz);
     return { correcta: `Periodo ${p}`, _datos: { z: zz },
       enunciado: ['Un elemento tiene ', v('Z', `Z = ${zz}`), '.'], pregunta: ['¿En qué ', v('per', 'periodo'), ' está?'], datos: [D.gases, 'Cada periodo termina en un gas noble'],
-      errores: [err('QM-PERIODO-ANTERIOR', `Periodo ${p - 1}`, 'Bien buscar los gases nobles. Pero el periodo es el del gas noble que lo cierra, no el anterior.'),
-        err('QM-PERIODO-CUENTA', `Periodo ${p + 1}`, 'Bien contar filas. Pero ese periodo empieza después del siguiente gas noble.'),
+      errores: [err('QM-PERIODO-ANTERIOR', `Periodo ${p - 1}`, 'Buscar los gases nobles es el camino. Pero el periodo es el del gas noble que lo cierra, no el del anterior.'),
+        err('QM-PERIODO-CUENTA', `Periodo ${p + 1}`, 'Contar filas es el camino. Pero ese periodo empieza recién después del gas noble siguiente.'),
         err('QM-FILA-COLUMNA', `Periodo ${Math.min(grupoDe(zz) || 7, 7) === p ? (p > 1 ? p - 2 || 7 : 7) : Math.min(grupoDe(zz) || 7, 7)}`, 'Bien la idea de fila y columna. Pero ese número sale de la columna, no de la fila.'),
         err('QM-PERIODO-Z', `Periodo ${Math.min(7, Math.floor(zz / 10) + 1) === p ? (p < 7 ? p + 2 : p - 2) : Math.min(7, Math.floor(zz / 10) + 1)}`, 'Bien ordenar por Z. Pero los periodos no tienen diez elementos cada uno.')].filter(e => !/Periodo (0|[8-9]|-)/.test(e.texto)),
       solucion: [[`${zz} está entre ${NOBLES[p - 1]} y ${NOBLES[p]}: el periodo ${p} termina en el ${NOBLES[p]}.`], [v('per', `Periodo ${p}`), '.']] };
@@ -166,12 +166,12 @@
   const REP = [3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 19, 20, 31, 32, 33, 34, 35, 37, 38, 49, 50, 51, 52, 53, 55, 56, 81, 82, 83, 84, 85];
   function opcionesLugar(z, conD) {
     const p = periodoDe(z), g = grupoDe(z), val = valencia(z), out = [];
-    if (g >= 13) out.push(err('QM-SOLO-P', ubTxt(p, val - 2 <= 2 ? val - 2 || 18 : val - 2 + 10), `Bien el periodo. Pero el nivel ${p} tiene también sus dos electrones s: son ${val}.`));
-    else out.push(err('QM-GRUPO-B', `Periodo ${p}, grupo ${g + 10} (${g === 1 ? 'IB' : 'IIB'})`, 'Bien el periodo. Pero el 10 se suma solo cuando termina en p: aquí termina en s.'));
-    out.push(err('QM-PERIODO-ANTERIOR', ubTxt(p - 1, g), `Bien el grupo. Pero el periodo es el nivel más alto con electrones: el ${p}.`));
-    if (p < 7) out.push(err('QM-PERIODO-CUENTA', ubTxt(p + 1, g), `Bien el grupo. Pero ningún electrón llega al nivel ${p + 1}.`));
-    if (val !== p && val <= 7 && p <= 2) out.push(err('QM-PERIODO-GRUPO', ubTxt(val, p), 'Bien los dos números. Pero van al revés: el nivel más alto es el periodo.'));
-    if (conD && p >= 4) out.push(err('QM-D-VALENCIA', ubTxt(p, Math.min(18, g + (g >= 13 ? 0 : 10))), 'Bien el periodo. Pero los d de adentro no cuentan en un grupo A.'));
+    if (g >= 13) out.push(err('QM-SOLO-P', ubTxt(p, val - 2 <= 2 ? val - 2 || 18 : val - 2 + 10), `Bien el periodo. Pero el nivel ${p} tiene también sus dos electrones s, así que sus electrones son ${val}.`));
+    else out.push(err('QM-GRUPO-B', `Periodo ${p}, grupo ${g + 10} (${g === 1 ? 'IB' : 'IIB'})`, 'Bien el periodo. Pero el 10 se suma solo cuando la configuración termina en p, y esta termina en s.'));
+    out.push(err('QM-PERIODO-ANTERIOR', ubTxt(p - 1, g), `Bien el grupo. Pero el periodo es el nivel más alto que tiene electrones, que es el ${p}.`));
+    if (p < 7) out.push(err('QM-PERIODO-CUENTA', ubTxt(p + 1, g), `Bien el grupo. Pero ningún electrón llega al nivel ${p + 1}: el más alto es el ${p}.`));
+    if (val !== p && val <= 7 && p <= 2) out.push(err('QM-PERIODO-GRUPO', ubTxt(val, p), 'Bien hallados los dos números. Pero van al revés: el número del nivel más alto es el periodo.'));
+    if (conD && p >= 4) out.push(err('QM-D-VALENCIA', ubTxt(p, Math.min(18, g + (g >= 13 ? 0 : 10))), 'Bien el periodo. Pero los electrones d de los niveles de adentro no cuentan en un grupo A.'));
     return out.filter(e => !/grupo (0|1[89]|[2-9]\d)\b/.test(e.texto) && !/Periodo 0/.test(e.texto));
   }
   function ubicarRep(rng) {
@@ -180,7 +180,7 @@
       enunciado: ['Un elemento tiene ', v('Z', `Z = ${z}`), '.'], pregunta: ['¿En qué ', v('per', 'periodo'), ' y en qué ', v('gr', 'grupo'), ' está?'],
       datos: [D.llenado, D.caben, D.periodo, D.grupoA],
       errores: opcionesLugar(z, true),
-      solucion: [[`${confTxt(z)}.`], ['Nivel más alto: ', v('per', `${p}`), ', con ', v('e', `${val} electrones`), ` (${ultimoNivel(z)}): `, v('gr', `grupo ${gTxt(g)}`), '.']] };
+      solucion: [[`Su configuración es ${confTxt(z)}.`], ['El nivel más alto es el ', v('per', `${p}`), ', con ', v('e', `${val} ${val === 1 ? 'electrón' : 'electrones'}`), ` (${ultimoNivel(z)}), así que está en el `, v('gr', `grupo ${gTxt(g)}`), '.']] };
   }
   const REP36 = [3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 19, 20, 31, 32, 33, 34, 35];
   function zLugar(rng) {
@@ -188,20 +188,20 @@
     return { correcta: `${z}`, _datos: { z },
       enunciado: ['Un elemento está en el ', v('per', `periodo ${p}`), ' y en el ', v('gr', `grupo ${ROM[g]}`), '.'], pregunta: ['¿Cuál es su ', v('Z', 'número atómico'), '?'],
       datos: [D.llenado, D.caben, D.periodo, D.grupoA, 'Átomo neutro: Z = número de electrones'],
-      errores: [arriba && err('QM-PERIODO-ANTERIOR', `${arriba}`, `Bien el grupo. Pero ese llega solo al nivel ${p - 1}: falta un nivel.`),
-        a && err('QM-PERIODO-CUENTA', `${a}`, `Bien el grupo. Pero ese ya tiene electrones en el nivel ${p + 1}.`),
+      errores: [arriba && err('QM-PERIODO-ANTERIOR', `${arriba}`, `Bien el grupo. Pero ese elemento llega solo al nivel ${p - 1}, y falta llenar un nivel más.`),
+        a && err('QM-PERIODO-CUENTA', `${a}`, `Bien el grupo. Pero ese elemento ya tiene electrones en el nivel ${p + 1}, así que está un periodo más abajo.`),
         err('QM-CUENTA-GRUPO', `${z + 1}`, 'Bien el periodo. Pero cuenta de nuevo los electrones del nivel más alto: sobra uno.'),
-        g >= 13 && valencia(z) > 3 && err('QM-SOLO-P', `${z + 2}`, `Bien el periodo. Pero ${ROM[g]} no son ${valencia(z)} electrones p: son ${valencia(z)} entre los s y los p.`),
+        g >= 13 && valencia(z) > 3 && err('QM-SOLO-P', `${z + 2}`, `Bien el periodo. Pero ${ROM[g]} no quiere decir ${valencia(z)} electrones p: son ${valencia(z)} entre los s y los p.`),
         err('QM-CUENTA-MENOS', `${z - 1}`, 'Bien el periodo. Pero falta un electrón en el nivel más alto.')].filter(e => e && +e.texto > 0),
-      solucion: [[`Nivel más alto ${p}, con ${valencia(z)} electrones: ${confTxt(z)}.`], [`${NOBLES[p - 1]} + ${z - NOBLES[p - 1]} = `, v('Z', `${z}`), '.']] };
+      solucion: [[`Su nivel más alto es el ${p}, con ${valencia(z)} ${valencia(z) === 1 ? 'electrón' : 'electrones'}: ${confTxt(z)}.`], [`${NOBLES[p - 1]} + ${z - NOBLES[p - 1]} = `, v('Z', `${z}`), '.']] };
   }
   function lewis(rng) {
     const z = rng.elegir(REP.filter(x => grupoDe(x) >= 13)), p = periodoDe(z), val = valencia(z), g = grupoDe(z);
     return { correcta: `${val} puntos`, _datos: { z },
       enunciado: ['La configuración de un elemento termina en ', ultimoNivel(z), '.'], pregunta: ['¿Cuántos puntos lleva su símbolo de Lewis?'], datos: [D.lewis],
       errores: [err('QM-SOLO-P', `${val - 2} puntos`, `Bien contar los electrones p. Pero el nivel ${p} tiene también sus dos s.`),
-        err('QM-LEWIS-GRUPO', `${g} puntos`, 'Ese es su grupo, bien hallado. Pero los puntos son los electrones del nivel más alto: 10 menos.'),
-        p !== val && err('QM-LEWIS-NIVEL', `${p} puntos`, 'Bien mirar el nivel más alto. Pero se cuentan sus electrones, no su número.'),
+        err('QM-LEWIS-GRUPO', `${g} puntos`, 'Ese es su grupo, bien hallado. Pero los puntos son los electrones del nivel más alto, que son 10 menos que el número del grupo.'),
+        p !== val && err('QM-LEWIS-NIVEL', `${p} puntos`, 'Mirar el nivel más alto es el camino. Pero los puntos cuentan los electrones de ese nivel, no su número.'),
         err('QM-LEWIS-PAR', `${2 * val > 8 ? 8 : 2 * val} puntos`, 'Bien contar los de valencia. Pero cada electrón es un punto, no un par.')].filter(e => e && e.texto !== `${val} puntos` && !/^-?0 puntos/.test(e.texto)),
       solucion: [[`Un punto por cada electrón del nivel ${p}: los de ${ultimoNivel(z)}.`], [v('e', `${val} puntos`), '.']] };
   }
@@ -218,11 +218,11 @@
       enunciado: [`El ${NOM[z]} tiene la configuración ${confTxt(z)}.`], pregunta: ['¿Cuál de estas configuraciones es de un elemento de su misma familia?'],
       datos: [D.grupoA, 'Los de una familia tienen los mismos electrones en su nivel más alto'],
       errores: candidatos.filter(([x, id]) => id !== 'c' && x !== b && x > 0 && x <= 86).map(([x, id]) => err(id, txt(x),
-        id === 'QM-FILA-COLUMNA' ? 'Ese está en su mismo periodo, cierto. Pero una familia es una columna.'
+        id === 'QM-FILA-COLUMNA' ? 'Ese está en su mismo periodo, cierto. Pero una familia es una columna, no una fila.'
           : id === 'QM-CUENTA-GRUPO' ? `Bien buscar en el periodo siguiente. Pero su nivel más alto tiene ${valencia(x)} electrones, no ${valencia(z)}.`
             : id === 'QM-D-VALENCIA' ? `Tiene ${valencia(z)} electrones d, como los de valencia ${el(z).replace(/^el /, 'del ')}, cierto. Pero termina en d: no es un grupo A.`
               : 'Bien el número de electrones de afuera. Pero ese termina en d: es un grupo B.')),
-      solucion: [[`El ${NOM[z]} tiene ${valencia(z)} electrones en su nivel más alto (${ultimoNivel(z)}).`], ['El de su familia, también: ', ultimoNivel(b), ` (Z = ${b}, `, v('gr', `grupo ${gTxt(g)}`), ').']] };
+      solucion: [[`El ${NOM[z]} tiene ${valencia(z)} electrones en su nivel más alto (${ultimoNivel(z)}).`], ['El elemento de su familia también los tiene: ', ultimoNivel(b), ` (Z = ${b}, `, v('gr', `grupo ${gTxt(g)}`), ').']] };
   }
   // ---- Idea 3: bloques y metales de transición ----
   const Z_D = [21, 22, 23, 25, 26, 27, 28, 30, 39, 40, 41, 43, 45, 48, 80].filter(z => z !== 41 && z !== 45 && z !== 43);
@@ -232,22 +232,22 @@
     return { correcta: ubTxt(p, g), _datos: { z },
       enunciado: [`${El(z)} (`, v('Z', `Z = ${z}`), `) tiene la configuración ${confTxt(z)}.`], pregunta: ['¿En qué ', v('per', 'periodo'), ' y en qué ', v('gr', 'grupo'), ' está?'],
       datos: [D.periodo, D.grupoB],
-      errores: [err('QM-PERIODO-D', ubTxt(p - 1, g), `Bien el grupo. Pero el periodo es el mayor n: el ${p}, el del ${p}s.`),
-        d !== g && d >= 1 && err('QM-GRUPO-SOLO-D', ubTxt(p, d), `Bien contar ${d === 1 ? 'el electrón d' : `los ${d} d`}. Pero también cuentan los ${s} del ${p}s.`),
-        err('QM-GRUPO-SOLO-S', ubTxt(p, s), 'Así sería un representativo. Pero termina en d: sus electrones d cuentan.'),
+      errores: [err('QM-PERIODO-D', ubTxt(p - 1, g), `Bien el grupo. Pero el periodo es el mayor n, el ${p}, que es el del ${p}s.`),
+        d !== g && d >= 1 && err('QM-GRUPO-SOLO-D', ubTxt(p, d), `Contaste bien ${d === 1 ? 'el electrón d' : `los ${d} electrones d`}. Pero también cuentan los ${s} del ${p}s.`),
+        err('QM-GRUPO-SOLO-S', ubTxt(p, s), 'Así sería en un representativo. Pero este termina en d, y entonces sus electrones d también cuentan.'),
         g + 10 <= 18 && err('QM-GRUPO-A', ubTxt(p, g + 10), 'Bien sumar los electrones. Pero el 10 se suma solo en los grupos A, que terminan en p.')].filter(Boolean),
-      solucion: [['Mayor n: ', v('per', `${p}`), '. Grupo: ', v('e', `${s}`), ' + ', v('e', `${d}`), ' = ', v('gr', gTxt(g)), '.']] };
+      solucion: [['El mayor n es ', v('per', `${p}`), ', y ese es el periodo. El grupo suma los s y los d: ', v('e', `${s}`), ' + ', v('e', `${d}`), ' = ', v('gr', gTxt(g)), '.']] };
   }
   const Z_BLOQUE = [11, 20, 38, 56, 13, 16, 35, 53, 82, 22, 26, 28, 30, 40, 47, 79];
   function bloque(rng) {
     const z = rng.elegir(Z_BLOQUE), g = grupoDe(z), b = g <= 2 ? 's' : g <= 12 ? 'd' : 'p', p = periodoDe(z);
     const otros = { s: ['p', 'd', 'f'], p: ['s', 'd', 'f'], d: ['s', 'p', 'f'] }[b];
     const EX = { s: 'El último electrón no cae en un s: mira el último subnivel de la configuración.', p: 'El último electrón no cae en un p: mira el último subnivel.',
-      d: 'El último electrón no cae en un d: mira el último subnivel de la configuración.', f: 'El bloque f son las dos filas de abajo; aquí no hay electrones f al final.' };
+      d: 'El último electrón no cae en un d: mira el último subnivel de la configuración.', f: 'El bloque f son las dos filas de abajo, y esta configuración no termina en f.' };
     return { correcta: `Bloque ${b}`, _datos: { z },
       enunciado: [`${El(z)} tiene la configuración ${confTxt(z)}.`], pregunta: ['¿De qué bloque es?'], datos: [D.bloque],
       errores: [...otros.map(x => err(x === 'f' ? 'QM-BLOQUE-F' : 'QM-BLOQUE', `Bloque ${x}`, EX[x])), err('QM-BLOQUE-PERIODO', `Bloque ${p}`, 'Bien mirar la configuración. Pero el bloque es una letra (s, p, d o f), no el nivel.')],
-      solucion: [[`El último subnivel que se llena es un ${b}${b === 'd' ? ` (${p - 1}d)` : ''}.`], [`Bloque ${b}.`]] };
+      solucion: [[`El último subnivel que se llena es un ${b}${b === 'd' ? ` (${p - 1}d)` : ''}.`], [`Por eso es del bloque ${b}.`]] };
   }
   const Z_ANOM = [24, 29, 47, 79];
   function anomalo(rng) {
@@ -256,10 +256,10 @@
       enunciado: [`${El(z)} (`, v('Z', `Z = ${z}`), `) tiene la configuración real ${confTxt(z)}: un electrón del ${p}s pasó al ${p - 1}d.`],
       pregunta: ['¿En qué ', v('per', 'periodo'), ' y en qué ', v('gr', 'grupo'), ' está?'], datos: [D.periodo, D.grupoB],
       errores: [err('QM-ANOMALO-GRUPO', ubTxt(p, g === 6 ? 7 : 12), 'Bien la configuración. Pero el grupo suma los electrones que tiene, no los que tendría.'),
-        err('QM-PERIODO-D', ubTxt(p - 1, g), `Bien el grupo. Pero el periodo es el mayor n: el ${p}.`),
-        err('QM-GRUPO-SOLO-D', ubTxt(p, d === 10 ? 10 : d), `Bien contar los ${d} d. Pero también cuenta el electrón del ${p}s.`),
-        err('QM-GRUPO-SOLO-S', ubTxt(p, 1), 'Así sería un alcalino. Pero termina en d: sus electrones d cuentan.')],
-      solucion: [['Mayor n: ', v('per', `${p}`), '. Grupo: ', v('e', `${s}`), ' + ', v('e', `${d}`), ' = ', v('gr', gTxt(g)), ' (el mismo que da la suma sin el cambio).']] };
+        err('QM-PERIODO-D', ubTxt(p - 1, g), `Bien el grupo. Pero el periodo es el mayor n, que es el ${p}.`),
+        err('QM-GRUPO-SOLO-D', ubTxt(p, d === 10 ? 10 : d), `Contaste bien los ${d} electrones d. Pero también cuenta el electrón del ${p}s.`),
+        err('QM-GRUPO-SOLO-S', ubTxt(p, 1), 'Así sería en un alcalino. Pero este termina en d, y entonces sus electrones d también cuentan.')],
+      solucion: [['El mayor n es ', v('per', `${p}`), ', y ese es el periodo. El grupo suma los s y los d: ', v('e', `${s}`), ' + ', v('e', `${d}`), ' = ', v('gr', gTxt(g)), ', lo mismo que daría la suma sin el cambio.']] };
   }
   function aB(rng) {
     const [a, b] = rng.elegir([[12, 30], [20, 48], [19, 29], [11, 29], [4, 30], [37, 47]]), ga = grupoDe(a), gb = grupoDe(b);
@@ -269,7 +269,7 @@
       errores: [err('QM-AB-IGUAL', `Sí: los dos tienen ${ga === 1 ? 'un electrón' : `${ga} electrones`} en su s de afuera`, `Bien contar el s de afuera. Pero ${el(b)} termina en d: es un grupo B.`),
         err('QM-AB-ROMANO', `Sí: los dos son del grupo ${ROM[ga].replace(/A$/, '')}`, 'Bien el número romano. Pero la letra cambia: A y B son columnas distintas.'),
         err('QM-AB-PERIODO', `No: están en periodos distintos`, 'Están en periodos distintos, cierto. Pero eso no decide la familia: decide la columna.'),
-        err('QM-AB-SUMA', `Sí: los dos suman ${ga + 10}`, 'Bien sumar los d del segundo. Pero el primero no tiene d: queda en la columna ' + ga + '.')],
+        err('QM-AB-SUMA', `Sí: los dos suman ${ga + 10}`, 'Sumar los d del segundo está bien. Pero el primero no tiene electrones d, así que queda en la columna ' + ga + '.')],
       solucion: [[`${El(a)} termina en s: grupo ${gTxt(ga)}. ${El(b)} termina en d: ${sd(b).s} + ${sd(b).d} = ${gb}, grupo ${gTxt(gb)}.`]] };
   }
   // ---- Idea 4: metales, no metales y semimetales ----
@@ -282,7 +282,7 @@
       enunciado: [`El ${NOM[z]} está en el `, v('per', `periodo ${p}`), ', ', v('gr', `grupo ${gTxt(g)}`), '.'], pregunta: ['¿Qué es: un metal, un no metal o un semimetal?'],
       datos: ['La escalera va del boro al polonio, entre los grupos 13 y 16', D.escalera],
       errores: ['metal', 'no metal', 'semimetal', 'gas'].filter(x => x !== c).map(x => err(SI[x][0], x === 'gas' ? 'Un gas noble' : `Un ${x}`, SI[x][1])),
-      solucion: [[c === 'semimetal' ? 'Está pegado a la escalera, en la lista de los seis semimetales.' : c === 'metal' ? 'Está a la izquierda de la escalera: es un metal.' : 'Está a la derecha de la escalera y no es de los seis semimetales: es un no metal.']] };
+      solucion: [[c === 'semimetal' ? 'Está pegado a la escalera, en la lista de los seis semimetales.' : c === 'metal' ? 'Está a la izquierda de la escalera, así que es un metal.' : 'Está a la derecha de la escalera y no es de los seis semimetales, así que es un no metal.']] };
   }
   // Tríos donde la EI del NIST sigue el orden (sin Mg–Al, Al–Ga, Ca–Ga ni P–S): «qué tan fácil pierde electrones» no se contradice.
   const TRIOS_M = [[11, 12, 14], [3, 11, 19], [12, 20, 38], [15, 33, 51], [19, 20, 32], [37, 50, 53], [6, 14, 50], [14, 15, 17], [55, 56, 81]];
@@ -292,10 +292,10 @@
     return { correcta: `El ${NOM[m]}`, _datos: { trio },
       enunciado: [`Tres elementos: ${trio.map(z => `${NOM[z]} (periodo ${periodoDe(z)}, grupo ${grupoDe(z)})`).join(', ')}.`], pregunta: ['¿Cuál tiene mayor carácter metálico?'],
       datos: ['Carácter metálico: qué tan fácil pierde electrones un elemento', D.escalera],
-      errores: [err('QM-METAL-INVERSO', `El ${NOM[menos]}`, 'Bien comparar los tres. Pero lo metálico crece hacia abajo y a la izquierda: ese es el menos metálico.'),
+      errores: [err('QM-METAL-INVERSO', `El ${NOM[menos]}`, 'Comparar los tres es el camino. Pero el carácter metálico crece hacia abajo y a la izquierda, y ese es el menos metálico.'),
         ...trio.filter(z => z !== m && z !== menos).map(z => err('QM-METAL-MEDIO', `El ${NOM[z]}`, 'Bien descartar al menos metálico. Pero hay otro más abajo o más a la izquierda.')),
         err('QM-METAL-IGUAL', 'Los tres por igual', 'Son vecinos, cierto. Pero no pierden electrones con la misma facilidad.'),
-        err('QM-SIN-LEY', 'No se puede saber sin probarlos', 'Bien dudar. Pero su lugar en la tabla ya lo dice.')],
+        err('QM-SIN-LEY', 'No se puede saber sin probarlos', 'Dudar está bien. Pero su lugar en la tabla ya dice cuál pierde electrones con más facilidad.')],
       solucion: [[`El ${NOM[m]} está más abajo o más a la izquierda que los otros dos: pierde electrones con más facilidad.`]] };
   }
   const PERFILES = [['Brilla, conduce bien la corriente y se deja laminar.', 'Un metal'], ['No brilla, no conduce y se rompe en polvo al golpearlo.', 'Un no metal'],
@@ -309,7 +309,7 @@
       enunciado: [`Un material puro, hecho de un solo elemento, se porta así: ${desc.charAt(0).toLowerCase()}${desc.slice(1)}`], pregunta: ['¿Qué clase de elemento es, lo más probable?'],
       datos: [D.metal, 'No metal: no brilla ni conduce; tiende a ganar electrones', 'Semimetal: propiedades intermedias entre metal y no metal'],
       errores: Object.keys(EX).filter(x => x !== c).map(x => err(EX[x][0], x, EX[x][1])),
-      solucion: [[{ 'Un metal': 'Brillar, conducir y dejarse laminar, todo a la vez, es lo de un metal.', 'Un no metal': 'Ni brillo ni conducción, y quebradizo: es un no metal.', 'Un semimetal': 'Brilla, pero conduce poco y es quebradizo: propiedades intermedias, un semimetal.', 'Un gas noble': 'Un gas que casi no reacciona es un gas noble.' }[c]]] };
+      solucion: [[{ 'Un metal': 'Brillar, conducir y dejarse laminar, todo a la vez, es propio de un metal.', 'Un no metal': 'No brilla, no conduce y es quebradizo: es un no metal.', 'Un semimetal': 'Brilla, pero conduce poco y es quebradizo: tiene propiedades intermedias, las de un semimetal.', 'Un gas noble': 'Un gas que casi no reacciona es un gas noble.' }[c]]] };
   }
   const CONSTRUIR = { 'familia-z': familiaZ, 'periodo-z': periodoZ, debajo, 'largo-periodo': largoPeriodo, 'ubicar-rep': ubicarRep, 'z-lugar': zLugar, lewis, 'par-familia': parFamilia,
     'ubicar-d': ubicarD, bloque, anomalo, 'a-b': aB, clase: claseP, 'mas-metalico': masMetalico, propiedades };

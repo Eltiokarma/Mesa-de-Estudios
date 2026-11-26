@@ -494,3 +494,10 @@ test('lector: los ejemplos del germanio y de los tres del periodo 3 no traen la 
   assert.ok(!/escalera/i.test(I4.ahoraTu.voz) || /fila/.test(I4.ahoraTu.voz), 'la voz sirve también para comparar en una columna');
   assert.ok(!/conduc|intermedi|medio camino/i.test([def.glosario.find(g => g.termino === 'semimetal').simple, def.glosario.find(g => g.termino === 'semimetal').def].join(' ')), 'el glosario no dice cómo conduce (Predice)');
 });
+
+// Verificación de cierre (26 nov): la regla de la idea 4 no dice que los no metales «no conducen» (el grafito conduce,
+// y DM.clases ya decía «casi no conduce»).
+test('idea 4: la regla dice que los no metales casi no conducen', () => {
+  const r = def.ideas[3].regla.texto;
+  assert.match(r, /no metales[^.]*casi no conducen/, r);
+});

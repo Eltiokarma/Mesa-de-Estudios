@@ -9,7 +9,7 @@
       "enunciado": "La plata (Z = 47) tiene la configuración real [Kr] 5s¹ 4d¹⁰: un electrón del 5s pasó al 4d. ¿En qué periodo y en qué grupo está? Datos: Periodo: el nivel más alto (el mayor n) con electrones. Grupos B (bloque d): el grupo suma los ns y los (n − 1)d. Alternativas: A) Periodo 5, grupo 12 (IIB)   B) Periodo 5, grupo 1 (IA)   C) Periodo 5, grupo 11 (IB)   D) Periodo 5, grupo 10 (VIIIB)",
       "respuesta": "C) Periodo 5, grupo 11 (IB)",
       "pasos": [
-        "Mayor n: 5. Grupo: 1 + 10 = 11 (IB) (el mismo que da la suma sin el cambio)."
+        "El mayor n es 5, y ese es el periodo. El grupo suma los s y los d: 1 + 10 = 11 (IB), lo mismo que daría la suma sin el cambio."
       ]
     },
     {
@@ -18,7 +18,7 @@
       "enunciado": "El selenio está en el periodo 4, grupo 16 (VIA). ¿Qué es: un metal, un no metal o un semimetal? Datos: La escalera va del boro al polonio, entre los grupos 13 y 16. Semimetales: B, Si, Ge, As, Sb y Te, junto a la escalera. Alternativas: A) Un gas noble   B) Un no metal   C) Un metal   D) Un semimetal",
       "respuesta": "B) Un no metal",
       "pasos": [
-        "Está a la derecha de la escalera y no es de los seis semimetales: es un no metal."
+        "Está a la derecha de la escalera y no es de los seis semimetales, así que es un no metal."
       ]
     },
     {
@@ -27,7 +27,7 @@
       "enunciado": "Un elemento está en el periodo 3 y en el grupo VIA. ¿Cuál es su número atómico? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p. Caben: 2 en un s, 6 en un p, 10 en un d, 14 en un f. Periodo: el nivel más alto (el mayor n) con electrones. Grupos A: los electrones del nivel más alto dan el romano; IIIA a VIIIA son las columnas 13 a 18. Átomo neutro: Z = número de electrones. Alternativas: A) 34   B) 17   C) 16   D) 8   E) 18",
       "respuesta": "C) 16",
       "pasos": [
-        "Nivel más alto 3, con 6 electrones: [Ne] 3s² 3p⁴.",
+        "Su nivel más alto es el 3, con 6 electrones: [Ne] 3s² 3p⁴.",
         "10 + 6 = 16."
       ]
     },
@@ -37,7 +37,7 @@
       "enunciado": "El cromo (Z = 24) tiene la configuración real [Ar] 4s¹ 3d⁵: un electrón del 4s pasó al 3d. ¿En qué periodo y en qué grupo está? Datos: Periodo: el nivel más alto (el mayor n) con electrones. Grupos B (bloque d): el grupo suma los ns y los (n − 1)d. Alternativas: A) Periodo 4, grupo 6 (VIB)   B) Periodo 4, grupo 7 (VIIB)   C) Periodo 4, grupo 5 (VB)   D) Periodo 4, grupo 1 (IA)",
       "respuesta": "A) Periodo 4, grupo 6 (VIB)",
       "pasos": [
-        "Mayor n: 4. Grupo: 1 + 5 = 6 (VIB) (el mismo que da la suma sin el cambio)."
+        "El mayor n es 4, y ese es el periodo. El grupo suma los s y los d: 1 + 5 = 6 (VIB), lo mismo que daría la suma sin el cambio."
       ]
     },
     {
@@ -46,8 +46,8 @@
       "enunciado": "Un elemento tiene Z = 7. ¿En qué periodo y en qué grupo está? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p. Caben: 2 en un s, 6 en un p, 10 en un d, 14 en un f. Periodo: el nivel más alto (el mayor n) con electrones. Grupos A: los electrones del nivel más alto dan el romano; IIIA a VIIIA son las columnas 13 a 18. Alternativas: A) Periodo 3, grupo 15 (VA)   B) Periodo 1, grupo 15 (VA)   C) Periodo 2, grupo 15 (VA)   D) Periodo 5, grupo 2 (IIA)",
       "respuesta": "C) Periodo 2, grupo 15 (VA)",
       "pasos": [
-        "[He] 2s² 2p³.",
-        "Nivel más alto: 2, con 5 electrones (2s² 2p³): grupo 15 (VA)."
+        "Su configuración es [He] 2s² 2p³.",
+        "El nivel más alto es el 2, con 5 electrones (2s² 2p³), así que está en el grupo 15 (VA)."
       ]
     },
     {
@@ -56,7 +56,7 @@
       "enunciado": "Un elemento está en el periodo 4 y en el grupo IA. ¿Cuál es su número atómico? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p. Caben: 2 en un s, 6 en un p, 10 en un d, 14 en un f. Periodo: el nivel más alto (el mayor n) con electrones. Grupos A: los electrones del nivel más alto dan el romano; IIIA a VIIIA son las columnas 13 a 18. Átomo neutro: Z = número de electrones. Alternativas: A) 20   B) 37   C) 11   D) 19   E) 18",
       "respuesta": "D) 19",
       "pasos": [
-        "Nivel más alto 4, con 1 electrones: [Ar] 4s¹.",
+        "Su nivel más alto es el 4, con 1 electrón: [Ar] 4s¹.",
         "18 + 1 = 19."
       ]
     },
@@ -67,7 +67,7 @@
       "respuesta": "A) [Kr] 5s² 4d¹⁰ 5p⁴",
       "pasos": [
         "El selenio tiene 6 electrones en su nivel más alto (4s² 4p⁴).",
-        "El de su familia, también: 5s² 5p⁴ (Z = 52, grupo 16 (VIA))."
+        "El elemento de su familia también los tiene: 5s² 5p⁴ (Z = 52, grupo 16 (VIA))."
       ]
     },
     {
@@ -76,8 +76,8 @@
       "enunciado": "Un elemento tiene Z = 6. ¿En qué periodo y en qué grupo está? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p. Caben: 2 en un s, 6 en un p, 10 en un d, 14 en un f. Periodo: el nivel más alto (el mayor n) con electrones. Grupos A: los electrones del nivel más alto dan el romano; IIIA a VIIIA son las columnas 13 a 18. Alternativas: A) Periodo 4, grupo 2 (IIA)   B) Periodo 2, grupo 14 (IVA)   C) Periodo 3, grupo 14 (IVA)   D) Periodo 1, grupo 14 (IVA)",
       "respuesta": "B) Periodo 2, grupo 14 (IVA)",
       "pasos": [
-        "[He] 2s² 2p².",
-        "Nivel más alto: 2, con 4 electrones (2s² 2p²): grupo 14 (IVA)."
+        "Su configuración es [He] 2s² 2p².",
+        "El nivel más alto es el 2, con 4 electrones (2s² 2p²), así que está en el grupo 14 (IVA)."
       ]
     }
   ]
