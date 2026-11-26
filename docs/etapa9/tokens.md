@@ -59,3 +59,4 @@ contra los límites semanales de los planes.
 | quimica.mol-y-composicion | redactor, unidad ya cerrada | 444 323 | 25 min | 82 herramientas |
 | quimica.nomenclatura-inorganica | redactor, unidad ya cerrada | 424 039 | 25 min | 81 herramientas |
 | geometria.puntos-notables | auditoría y correcciones (cierre) | 430 839 | 63 min 45 s | 176 herramientas |
+| quimica (tanda 2, 4 unidades) | verificación de notas del redactor | 316 366 | 19 min | 106 herramientas |
