@@ -5,7 +5,7 @@
 'use strict';
   // Datos y fórmulas del problema (contrato, punto 13): una lista va en el recuadro «Datos»; un texto, como antes.
   // «A_y» del texto de un generador se ve como A con subíndice y (no hay «y» subíndice en Unicode: «ᵧ» es una gamma).
-  const conSub = h => h.replace(/([A-Za-zÁÉÍÓÚáéíóúθρ\)])_([A-Za-z0-9]{1,14}(?:,[A-Za-z0-9]{1,14})*(?:\([A-Za-z0-9]{1,3}\))?)/g, '$1<sub>$2</sub>');
+  const conSub = h => h.replace(/([A-Za-zÁÉÍÓÚáéíóúθρ\)])_((?:[0-9]{0,3}[A-Z][A-Z0-9]{0,13}|[0-9]{0,3}[a-z][a-z0-9]{0,13}|[0-9]{1,3})(?:,(?:[0-9]{0,3}[A-Z][A-Z0-9]{0,13}|[0-9]{0,3}[a-z][a-z0-9]{0,13}|[0-9]{1,3}))*(?:\([A-Za-z0-9]{1,3}\))?)/g, '$1<sub>$2</sub>');
   const cajaDatos = (d, esc) => (Array.isArray(d) ? (d.length ? `<div class="te-datos"><p class="te-datos-et">Datos</p><ul>${d.map(x => `<li>${conSub(esc(x))}</li>`).join('')}</ul></div>` : '') : d ? `<p class="sub">${esc(d)}</p>` : '');
 const $app = document.getElementById('app');
 const $nav = document.getElementById('nav');
