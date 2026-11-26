@@ -16,14 +16,34 @@ Quien te llama te da: `UNIDAD`, `ARCHIVO`, el árbol de trabajo y `SCRATCH`. Mis
    (enunciado, Datos, pasos, solución y explicaciones de cada alternativa, en unas 20 semillas por idea), los 15
    ejemplos, el glosario y la práctica (enunciados, pasos y papel).
 3. Reescribe lo que está telegráfico, entrecortado, ambiguo, en jerga o que no se sigue de lo anterior: frases
-   completas, con sujeto y verbo, conectores donde hacen falta y el porqué dicho. Cada paso debe seguirse del anterior
-   sin saltos. Un término técnico se dice en palabras la primera vez.
-4. **«Vale si».** La app antepone «Vale si» a cada `condicion`: la condición debe continuar esa frase («Vale si el
+   completas, con sujeto y verbo, conectores donde hacen falta. Cada paso debe seguirse del anterior sin saltos. Un
+   término técnico se dice en palabras la primera vez.
+4. **Explica, no solo pules** (Gerson, 26 nov, después de ver química: «los sigo notando cortos y sin mucho
+   significado»). Una frase correcta pero seca no basta. El alumno estudia solo, sin profesor: el texto tiene que
+   decirle qué significa cada cosa y por qué es así. En concreto:
+   - **La regla** dice qué es cada término nuevo en palabras del alumno («una clase de partícula es un tipo de
+     molécula o de átomo: todas las del agua son H₂O»), **por qué** vale lo que dice y un caso concreto que el alumno
+     reconozca («el agua con sal se ve como una sola cosa, pero tiene dos clases de partícula: es mezcla»).
+   - **El recuadro de la regla** (la `ecuacion`) se lee como frase o lleva debajo, en el texto, qué dice cada línea; un
+     rótulo suelto («homogénea: 1 fase») va acompañado de qué es una fase.
+   - **«Vale si»** dice la condición **y qué pasa cuando no se cumple** («…; si el sistema no está cerrado, la masa
+     parece cambiar porque entra o sale gas»).
+   - **Lee y Mira** cuentan una idea por tarjeta o por paso, con el porqué; nada de listas de rótulos.
+   - **Los pasos de «Así se resuelve» y las soluciones** dicen qué se hace, **por qué se hace eso y no otra cosa**, y
+     qué significa el resultado («sale 70 °C: es lo que falta subir en Juliaca, menos que en Lima porque allá el agua
+     hierve antes»).
+   - **Cada `siFuera` y cada explicación de alternativa** nombra el razonamiento equivocado con un caso («si cuentas
+     el hielo como otra sustancia…»), dice por qué falla y qué se debió mirar.
+   - **El glosario**: `simple` en palabras de un alumno de 5.º, con un ejemplo de su vida.
+   Puedes agregar oraciones de explicación (el porqué, un ejemplo cotidiano, qué pasaría si no), siempre que sean
+   ciertas y no delaten respuestas. Lo que no cambias sigue siendo lo de abajo.
+5. **«Vale si».** La app antepone «Vale si» a cada `condicion`: la condición debe continuar esa frase («Vale si el
    lado final no cae sobre un eje»), no empezar otra («Vale si Fuera de los ejes.», «Vale si Atajo: …»). Al 26 nov
    había 33 condiciones así en 14 unidades.
-5. Los topes de palabras subieron el 26 nov para los textos que explican (`docs/teoria.md` §5: regla 45, condición 35,
-   `siFuera` 30, paso de Mira 25, solución 30, paso de «Así se resuelve» 40). Úsalos cuando haga falta; no alargues por
-   alargar. Lo que va junto al dibujo (título, voz, opción, lectura en vivo) sigue corto.
+6. **Topes** (`docs/teoria.md` §5, subidos otra vez el 26 nov para que quepa la explicación): regla 60, condición 45,
+   tarjeta de Lee 60, `siFuera` 40, paso de Mira 35, solución 40, paso de «Así se resuelve» 50. Lo que va junto al
+   dibujo (título, voz, opción, lectura en vivo) sigue corto. Si algo no cabe ni así, pártelo en dos pasos o dos
+   tarjetas.
 
 ## Lo que no cambias
 
@@ -39,5 +59,6 @@ Quien te llama te da: `UNIDAD`, `ARCHIVO`, el árbol de trabajo y `SCRATCH`. Mis
 
 Corre las pruebas de la unidad, de su práctica y `contenido/teoria/teoria.test.js`, el validador simulando
 `calidad: 2` y `node herramientas/ecuaciones-ancho.js` sobre la unidad. Escribe `rutinas/redaccion/<UNIDAD>.md`: qué
-cambiaste, por tipo de problema, con tres o cuatro ejemplos de antes y después, y lo que dejaste anotado para el
+cambiaste, por tipo de problema, con seis ejemplos de antes y después (al menos dos reglas y dos explicaciones de
+alternativas, para que Gerson vea cuánto se explica ahora), y lo que dejaste anotado para el
 auditor. Mensaje final: un resumen de cinco líneas, «Listo: sí/no» y la lista de archivos tocados.

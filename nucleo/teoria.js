@@ -58,12 +58,12 @@
 
   // Topes de palabras (docs/escena-viva.md, regla 1, ampliada para la teoría en docs/teoria.md).
   const PRESUPUESTO = {
-    // Gerson, 26 nov: los textos que explican suben (regla, condición, siFuera, paso, solución y resuelto),
+    // Gerson, 26 nov (dos veces: la segunda para que quepa el porqué): los textos que explican suben (regla, condición, siFuera, paso, solución y resuelto),
     // porque cortados salían incoherentes; los que van junto al dibujo (título, voz, opción, lectura) siguen cortos.
-    titulo: 6, consigna: 25, voz: 16, pregunta: 40, opcion: 14, siFuera: 30,
-    paso: 25, regla: 45, condicion: 35, historia: 70, enunciado: 40, solucion: 30, lectura: 12,
+    titulo: 6, consigna: 25, voz: 16, pregunta: 40, opcion: 14, siFuera: 40,
+    paso: 35, regla: 60, condicion: 45, historia: 70, enunciado: 40, solucion: 40, lectura: 12,
     // Fase 2 (decisión de Gerson, 15 nov): «Lee» (tarjetas para leer) y «Así se resuelve» (ejercicio resuelto paso a paso).
-    tarjeta: 45, resuelto: 40, respuesta: 14,
+    tarjeta: 60, resuelto: 50, respuesta: 14,
     // Contrato «se entiende sin profesor» (16 nov): qué debe poder decir el alumno y qué es cada símbolo.
     aprendizaje: 25, leyenda: 8,
     // Datos y fórmulas de un ejercicio (Gerson, 16 nov: «todos los datos deben darse, incluso las fórmulas»), una por línea.
