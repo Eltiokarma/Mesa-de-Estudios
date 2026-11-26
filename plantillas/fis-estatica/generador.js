@@ -165,12 +165,12 @@
       enunciado: [`Sobre la balanza de la bodega hay ${cosa} de ${m} kg. ${abajo ? `${lo[0].toUpperCase()}${lo.slice(1)} empujas hacia abajo con la mano, con ` : `Una cuerda ${lo} jala hacia arriba con `}`, Tt(nw(Fz)), ` y sigue ${quieto}.`],
       pregunta: ['¿Cuánto marca la balanza?'], datos: [D.peso, D.primera, D.balanza], correcta: Nv, fmt: nw,
       errores: [
-        e('N-MG', Pv, x => `Bien el peso. Pero la balanza no marca solo el peso: también cuenta la otra fuerza. ${x} no es.`),
-        e('N-SIGNO', abajo ? Pv - Fz : Pv + Fz, x => `Bien contar esa fuerza. Pero ${abajo ? 'empuja hacia abajo: se suma' : 'jala hacia arriba: se resta'}; así sale ${x}.`),
-        e('N-F', Fz, x => `Bien leer esa fuerza. Pero la balanza también aguanta el peso; ${x} no es.`),
-        e('N-MASA', m, x => `Bien la masa. Pero la balanza marca una fuerza, en newtons; ${x} es la masa con otra unidad.`),
+        e('N-MG', Pv, x => `Bien calculado el peso, pero la balanza no marca siempre el peso: la otra fuerza ${abajo ? 'aprieta más' : 'sostiene una parte'}. ${x} sería sin esa fuerza.`),
+        e('N-SIGNO', abajo ? Pv - Fz : Pv + Fz, x => `Bien contada esa fuerza, pero con el signo cambiado: ${abajo ? 'la mano empuja hacia abajo, como el peso, y se suma' : 'la cuerda jala hacia arriba y sostiene una parte, así que se resta'}. Así sale ${x}.`),
+        e('N-F', Fz, x => `Bien leída esa fuerza, pero la balanza también aguanta el peso del cuerpo, que es lo principal. ${x} es solo la otra fuerza.`),
+        e('N-MASA', m, x => `Bien la masa, pero la balanza marca una fuerza, en newtons: primero se pasa la masa a peso. ${x} es la masa con otra unidad.`),
       ],
-      solucion: [['El peso: ', Pp(`P = ${m} · 10 = ${nw(Pv)}`), '.'], ['Quieto: ', Nn(`N = ${Pv} ${abajo ? '+' : '−'} ${Fz} = ${nw(Nv)}`), '.']],
+      solucion: [['El peso es la masa por g: ', Pp(`P = ${m} · 10 = ${nw(Pv)}`), '.'], [abajo ? 'Está quieto, y la balanza aguanta el peso y la mano: ' : 'Está quieto, y la balanza aguanta lo que la cuerda no sostiene: ', Nn(`N = ${Pv} ${abajo ? '+' : '−'} ${Fz} = ${nw(Nv)}`), '.']],
       _datos: { m, F: Fz, abajo },
     };
   }
@@ -181,12 +181,12 @@
       pregunta: [entre ? '¿Con qué fuerza empuja la caja de abajo a la de arriba?' : '¿Con qué fuerza empuja el piso a la caja de abajo?'],
       datos: [D.peso, D.primera, D.tercera], correcta: pide, fmt: nw,
       errores: [
-        e('ES-SOLO', b * G, x => `Bien usar el peso de la caja de abajo. Pero ${entre ? 'la de arriba solo necesita que la sostengan a ella' : 'la de arriba también la aprieta'}; ${x} no es.`),
-        e('ES-PILA', entre ? (a + b) * G : a * G, x => `Bien sumar o separar pesos. Pero aquí no corresponde: ${x} no es.`),
-        e('N-SIGNO', Math.abs(b - a) * G, x => `Bien usar los dos pesos. Pero los dos empujan hacia abajo: no se restan; ${x} no es.`),
-        e('N-MASA', entre ? a : a + b, x => `Bien los kilos. Pero la fuerza va en newtons: ${x} es la masa.`),
+        e('ES-SOLO', b * G, x => (entre ? `Bien usado el peso de la caja de abajo, pero la de arriba no la carga: solo necesita que la sostengan a ella. ${x} no es.` : `Bien usado el peso de la caja de abajo, pero la de arriba también la aprieta hacia abajo. ${x} deja fuera esa caja.`)),
+        e('ES-PILA', entre ? (a + b) * G : a * G, x => (entre ? `Bien sumados los dos pesos, pero eso es lo que aguanta el piso; la de arriba solo necesita su propio peso. ${x} no es.` : `Bien usado el peso de la caja de arriba, pero el piso sostiene las dos cajas. ${x} deja fuera la de abajo.`)),
+        e('N-SIGNO', Math.abs(b - a) * G, x => `Bien usados los dos pesos, pero ninguno se opone al otro: los dos empujan hacia abajo, así que no se restan. ${x} no es.`),
+        e('N-MASA', entre ? a : a + b, x => `Bien los kilos, pero la fuerza va en newtons, y cada kilo pesa 10 N. ${x} es la masa.`),
       ],
-      solucion: [entre ? ['La de arriba está quieta: la sostienen con su peso, ', Nn(`N = ${a} · 10 = ${nw(pide)}`), '.'] : ['El piso sostiene las dos: ', Nn(`N = (${a} + ${b}) · 10 = ${nw(pide)}`), '.']],
+      solucion: [entre ? ['Sobre la caja de arriba solo actúan su peso y el empujón de la de abajo; quieta, ese empujón iguala su peso: ', Nn(`N = ${a} · 10 = ${nw(pide)}`), '.'] : ['El piso sostiene las dos cajas, porque la de arriba aprieta a la de abajo con su peso: ', Nn(`N = (${a} + ${b}) · 10 = ${nw(pide)}`), '.']],
       _datos: { a, b, entre },
     };
   }
@@ -196,12 +196,12 @@
       enunciado: [`Una persona de ${Mm} kg está sobre la balanza y sube una pesa de ${mp} kg a velocidad constante.`],
       pregunta: ['Mientras sube, ¿cuánto marca la balanza?'], datos: [D.peso, D.primera, D.tercera, D.balanza], correcta: Nv, fmt: nw,
       errores: [
-        e('N-MG', Mm * G, x => `Bien el peso de la persona. Pero la pesa le aprieta las manos; ${x} no es.`),
-        e('N-SIGNO', (Mm - mp) * G, x => `Bien contar la pesa. Pero empuja hacia abajo: se suma; ${x} no es.`),
-        e('ES-SUBIR', (Mm + 2 * mp) * G, x => `Bien sumar la pesa. Pero a velocidad constante no hace falta más; ${x} no es.`),
-        e('N-F', mp * G, x => `Bien el peso de la pesa. Falta lo que pesa la persona; ${x} no es.`),
+        e('N-MG', Mm * G, x => `Bien el peso de la persona, pero la pesa le aprieta las manos con su peso, y eso llega a la balanza. ${x} no es.`),
+        e('N-SIGNO', (Mm - mp) * G, x => `Bien contada la pesa, pero empuja las manos hacia abajo, como el peso de la persona, así que se suma. ${x} no es.`),
+        e('ES-SUBIR', (Mm + 2 * mp) * G, x => `Bien sumada la pesa, pero una sola vez: a velocidad constante sus fuerzas suman cero y no hace falta fuerza extra. ${x} no es.`),
+        e('N-F', mp * G, x => `Bien el peso de la pesa, pero falta lo que pesa la persona, que también está sobre la balanza. ${x} no es.`),
       ],
-      solucion: [['A velocidad constante, la mano empuja la pesa con su peso, y la pesa empuja la mano igual.'], ['La balanza aguanta todo: ', Nn(`N = (${Mm} + ${mp}) · 10 = ${nw(Nv)}`), '.']],
+      solucion: [['A velocidad constante la pesa no acelera: la mano la empuja con su peso y, por la tercera ley, la pesa empuja la mano igual.'], ['La balanza aguanta a la persona y a la pesa: ', Nn(`N = (${Mm} + ${mp}) · 10 = ${nw(Nv)}`), '.']],
       _datos: { M: Mm, mp },
     };
   }
@@ -214,12 +214,12 @@
       enunciado: [`Un letrero de `, Pp(nw(Pv)), ` cuelga de un nudo con dos cables iguales que forman ${a}° con el techo.`],
       pregunta: ['¿Cuánto jala cada cable?'], datos: [D.comp, D.equil, a === 30 ? D.trig30 : D.trig], correcta: Tv, fmt: nw,
       errores: [
-        e('E8', Pv / 2, x => `Bien repartir entre dos. Pero inclinados, solo una parte del jalón sube: ${x} se queda corto.`),
-        e('ST-SENCOS', Pv / (2 * C(a)), x => `Bien la idea. Pero lo que sube va con el seno del ángulo con la horizontal; con el coseno sale ${x}.`),
-        e('ST-P', Pv, x => `Bien que jale mucho. Pero son dos cables: ${x} sería uno solo, vertical.`),
-        e('ST-POR', Pv * S(a) / 2, x => `Bien usar el seno. Pero se divide entre él, no se multiplica; así sale ${x}.`),
+        e('E8', Pv / 2, x => `Bien repartido entre dos, pero eso vale con cables verticales: inclinados, solo una parte del jalón sube, y cada uno jala más. ${x} se queda corto.`),
+        e('ST-SENCOS', Pv / (2 * C(a)), x => `Bien la idea, pero con el ángulo medido desde el techo, lo que sube va con el seno; el coseno da la parte de lado. Con el coseno sale ${x}.`),
+        e('ST-P', Pv, x => `Bien que jale bastante, pero son dos cables y se reparten la carga. ${x} sería un solo cable vertical.`),
+        e('ST-POR', Pv * S(a) / 2, x => `Bien usado el seno, pero se divide entre él: la parte que sube, T · sen θ, es la que iguala la mitad del peso. Multiplicando sale ${x}.`),
       ],
-      solucion: [['Lo vertical de los dos sostiene el peso: ', `2 · T · sen ${a}° = ${Pv}`, '.'], ['Cada uno: ', Tt(`T = ${nw(Tv)}`), '.']],
+      solucion: [['Las partes horizontales se cancelan, porque los cables son iguales, y las verticales de los dos sostienen el peso: ', `2 · T · sen ${a}° = ${Pv}`, '.'], ['Se despeja lo que jala cada uno: ', Tt(`T = ${nw(Tv)}`), '.']],
       _datos: { P: Pv, a },
     };
   }
@@ -230,12 +230,12 @@
       enunciado: ['Un letrero de ', Pp(nw(Pv)), ' cuelga de un nudo con dos cables: uno forma 37° con el techo y el otro, 53°.'],
       pregunta: [`¿Cuánto jala el cable de ${cual}°?`], datos: [D.comp, D.equil, D.trig], correcta: Tv, fmt: nw,
       errores: [
-        e('E8', Pv / 2, x => `Bien que se repartan el peso. Pero con ángulos distintos no es por mitades: ${x} no es.`),
-        e('E8-b', otro, x => `Bien las dos tensiones. Pero ${x} es la del otro cable: el más parado jala más.`),
-        e('ST-P', Pv, x => `Bien que jale. Pero los dos cables se reparten el peso; ${x} no es.`),
-        e('ST-COMP', Tv * S(cual), x => `Bien la parte vertical de ese cable. Pero piden todo lo que jala, no ${x}.`),
+        e('E8', Pv / 2, x => `Bien que se repartan el peso, pero no por mitades: con ángulos distintos, el cable más parado carga más. ${x} no es.`),
+        e('E8-b', otro, x => `Bien halladas las dos tensiones, pero ${x} es la del otro cable: el de 53°, más parado, jala más.`),
+        e('ST-P', Pv, x => `Bien que jale, pero los dos cables se reparten el peso, y ninguno lo carga solo. ${x} no es.`),
+        e('ST-COMP', Tv * S(cual), x => `Bien la parte vertical de ese cable, pero piden todo lo que jala, que es más, porque otra parte va de lado. No es ${x}.`),
       ],
-      solucion: [['De lado se cancelan: T₁ · 4/5 = T₂ · 3/5. Hacia arriba suman el peso.'], [`El de ${cual}°: `, Tt(`T = ${nw(Tv)}`), '.']],
+      solucion: [['Con T₁ el cable de 37° y T₂ el de 53°, de lado se cancelan: T₁ · 4/5 = T₂ · 3/5. Hacia arriba suman el peso.'], [`Resolviendo las dos ecuaciones, el de ${cual}° jala `, Tt(`T = ${nw(Tv)}`), '.']],
       _datos: { P: Pv, cual },
     };
   }
@@ -246,12 +246,12 @@
       enunciado: [`Una escaladora de ${m} kg está quieta, con los pies contra una pared lisa, colgada de una cuerda que forma ${a}° con la pared.`],
       pregunta: ['¿Con qué fuerza la empuja la pared?'], datos: [D.peso, D.equil, D.trig, D.pared], correcta: Nv, fmt: nw,
       errores: [
-        e('ES-PESO', Pv, x => `Bien que la pared empuje. Pero empuja de lado; ${x} es el peso, que sostiene la cuerda.`),
-        e('ST-T', Tv, x => `Bien lo que jala la cuerda, ${x}. Pero la pared solo iguala su parte horizontal.`),
-        e('ST-SENCOS', Pv * S(a), x => `Bien usar el seno. Pero primero va la cuerda; partir el peso da ${x}.`),
-        e('ST-POR', Pv * C(a), x => `Bien partir una fuerza. Pero el peso es vertical; ${x} no es.`),
+        e('ES-PESO', Pv, x => `Bien que la pared empuje, pero una pared lisa empuja de lado y no sostiene el peso. ${x} es el peso, que lo sostiene la cuerda.`),
+        e('ST-T', Tv, x => `Bien hallado lo que jala la cuerda, ${x}, pero la pared solo iguala su parte horizontal, que es menor.`),
+        e('ST-SENCOS', Pv * S(a), x => `Bien usado el seno, pero sobre la cuerda, no sobre el peso: primero se halla la cuerda con lo vertical. Partir el peso da ${x}.`),
+        e('ST-POR', Pv * C(a), x => `Bien partir una fuerza, pero el peso ya es vertical y no tiene parte de lado: se parte la cuerda. ${x} no es.`),
       ],
-      solucion: [['Hacia arriba, solo la cuerda: ', Tt(`T · cos ${a}° = ${Pv}`), `, así que T = ${nw(Tv)}.`], ['De lado: ', Nn(`N = ${f(Tv)} · sen ${a}° = ${nw(Nv)}`), '.']],
+      solucion: [['La pared lisa solo empuja de lado, así que hacia arriba sostiene solo la cuerda: ', Tt(`T · cos ${a}° = ${Pv}`), `, y T = ${nw(Tv)}.`], ['De lado, la pared iguala la parte horizontal de la cuerda: ', Nn(`N = ${f(Tv)} · sen ${a}° = ${nw(Nv)}`), '.']],
       _datos: { m, a },
     };
   }
@@ -266,12 +266,12 @@
       enunciado: [`Un ropero de ${m} kg está en un piso con μ_s = ${f(mus)}. Lo empujas de lado con `, Tt(nw(Fz)), '.'],
       pregunta: ['¿Con cuánta fuerza lo frena el piso?'], datos: [D.peso, D.est, D.primera], correcta: Math.abs(r.roce), fmt: nw,
       errores: [
-        e('E10', tope, x => `Bien el tope, ${x}. Pero mientras no desliza, el piso frena solo lo que haga falta.`),
-        e('RZ-RESTA', tope - Fz, x => `Bien comparar con el tope. Pero el piso frena lo que empujas, no lo que falta: ${x} no es.`),
-        e('RZ-N', Pv, x => `Bien la normal, ${x}. Pero el rozamiento es otra fuerza, de lado.`),
-        e('RZ-MU', mus * Fz, x => `Bien usar μ_s. Pero va por la normal y solo da el tope; ${x} no es.`),
+        e('E10', tope, x => `Bien calculado el tope, ${x}, pero tu empujón no llega a él: mientras no desliza, el piso frena solo lo que haga falta.`),
+        e('RZ-RESTA', tope - Fz, x => `Bien comparado con el tope, pero lo que falta para llegar a él no es lo que frena el piso: frena lo que empujas. ${x} no es.`),
+        e('RZ-N', Pv, x => `Bien la normal, ${x}, pero el rozamiento es otra fuerza, de lado, y aquí vale mucho menos.`),
+        e('RZ-MU', mus * Fz, x => `Bien usado μ_s, pero se multiplica por la normal, no por tu empujón, y solo da el tope. ${x} no es.`),
       ],
-      solucion: [['El tope: ', Ff(`f_s máx = ${f(mus)} · ${Pv} = ${nw(tope)}`), '. No lo alcanzas: sigue quieto.'], ['Frena lo que empujas: ', Ff(`f_s = ${nw(Fz)}`), '.']],
+      solucion: [['El tope del estático es μ_s por la normal, que aquí es el peso: ', Ff(`f_s máx = ${f(mus)} · ${Pv} = ${nw(tope)}`), '. Tu empujón no llega, así que sigue quieto.'], ['Quieto, el piso frena justo lo que empujas: ', Ff(`f_s = ${nw(Fz)}`), '.']],
       _datos: { m, mus, F: Fz },
     };
   }
@@ -283,12 +283,12 @@
       pregunta: [pideN ? '¿Con cuánta fuerza la empuja la rampa?' : '¿Con cuánta fuerza la sostiene el rozamiento?'],
       datos: [D.peso, D.rampa, D.est, a === 30 ? D.trig30 : D.trig], correcta: val, fmt: nw,
       errores: [
-        e('ST-SENCOS', pideN ? m * G * S(a) : m * G * C(a), x => `Bien partir el peso. Pero ${pideN ? 'contra la rampa va P · cos θ' : 'a lo largo va P · sen θ'}; ${x} es la otra parte.`),
-        e('N-MG', m * G, x => `Bien el peso, ${x}. Pero en la rampa se parte en dos direcciones.`),
-        e('E10', mus * m * G * C(a), x => `Bien el tope μ_s · N, ${x}. Pero la caja está quieta: no está en su tope.`),
-        e('N-MASA', pideN ? m * C(a) : m * S(a), x => `Bien el ángulo. Pero va el peso en newtons, no la masa: ${x} no es.`),
+        e('ST-SENCOS', pideN ? m * G * S(a) : m * G * C(a), x => `Bien partido el peso, pero ${pideN ? 'contra la rampa va P · cos θ; P · sen θ es la parte que la haría bajar' : 'a lo largo va P · sen θ; P · cos θ es la parte que la aprieta'}. ${x} es la otra parte.`),
+        e('N-MG', m * G, x => `Bien el peso, ${x}, pero en la rampa se parte en dos direcciones, y cada fuerza equilibra solo una parte.`),
+        e('E10', mus * m * G * C(a), x => pideN ? `Bien el tope μ_s · N, ${x}, pero ese es el rozamiento más grande posible, y piden lo que empuja la rampa: la normal, que no lleva μ_s e iguala P · cos θ.` : `Bien el tope μ_s · N, ${x}, pero la caja está quieta sin estar a punto de resbalar: el rozamiento vale lo justo.`),
+        e('N-MASA', pideN ? m * C(a) : m * S(a), x => `Bien el ángulo, pero se parte el peso, en newtons, no la masa. ${x} no es.`),
       ],
-      solucion: [[`El peso, ${nw(m * G)}, se parte:`], pideN ? ['contra la rampa, ', Nn(`N = ${m * G} · cos ${a}° = ${nw(val)}`), '.'] : ['a lo largo, ', Ff(`f_s = ${m * G} · sen ${a}° = ${nw(val)}`), '.']],
+      solucion: [[`El peso, ${nw(m * G)}, se parte en dos: una parte a lo largo de la rampa y otra contra ella.`], pideN ? ['La caja no se hunde: contra la rampa, ', Nn(`N = ${m * G} · cos ${a}° = ${nw(val)}`), '.'] : ['La caja no resbala: a lo largo, el rozamiento iguala la parte que la haría bajar, ', Ff(`f_s = ${m * G} · sen ${a}° = ${nw(val)}`), '.']],
       _datos: { m, a, pideN },
     };
   }
@@ -299,12 +299,12 @@
       enunciado: [`Arrastras una caja de ${m} kg a velocidad constante con una fuerza de `, Tt(nw(Fz)), ` que forma ${a}° sobre la horizontal.`],
       pregunta: ['¿Con cuánta fuerza la empuja el piso?'], datos: [D.peso, D.comp, D.trig, D.primera], correcta: Nv, fmt: nw,
       errores: [
-        e('N-MG', Pv, x => `Bien que la normal sostenga la caja. Pero tu fuerza también la sostiene un poco; ${x} no es.`),
-        e('N-SIGNO', Pv + Fz * S(a), x => `Bien la parte vertical de tu fuerza. Pero jala hacia arriba: se resta; ${x} no es.`),
-        e('ST-SENCOS', Pv - Fz * C(a), x => `Bien restar. Pero hacia arriba va F · sen θ; con el coseno sale ${x}.`),
-        e('N-F', Fz * S(a), x => `Bien esa parte de tu fuerza, ${x}. Pero la normal sostiene el resto del peso.`),
+        e('N-MG', Pv, x => `Bien que la normal sostenga la caja, pero no sola: tu fuerza inclinada también la sostiene un poco. ${x} no es.`),
+        e('N-SIGNO', Pv + Fz * S(a), x => `Bien la parte vertical de tu fuerza, pero jala hacia arriba y ayuda al piso, así que se resta. ${x} no es.`),
+        e('ST-SENCOS', Pv - Fz * C(a), x => `Bien restar, pero con θ sobre la horizontal, hacia arriba va F · sen θ; con el coseno sale ${x}.`),
+        e('N-F', Fz * S(a), x => `Bien esa parte de tu fuerza, ${x}, pero la normal es lo que pone el piso para el resto del peso.`),
       ],
-      solucion: [['Tu fuerza sube con ', Tt(`${Fz} · sen ${a}° = ${nw(Fz * S(a))}`), '.'], ['Lo vertical suma cero: ', Nn(`N = ${Pv} − ${f(Fz * S(a))} = ${nw(Nv)}`), '.']],
+      solucion: [['Tu fuerza va inclinada, y su parte vertical levanta un poco la caja: ', Tt(`${Fz} · sen ${a}° = ${nw(Fz * S(a))}`), '.'], ['Lo vertical suma cero, así que el piso sostiene el resto del peso: ', Nn(`N = ${Pv} − ${f(Fz * S(a))} = ${nw(Nv)}`), '.']],
       _datos: { m, F: Fz, a },
     };
   }
@@ -316,12 +316,12 @@
       enunciado: [`En la balanza de resorte del mercado, de k = ${k} N/m, cuelgas una bolsa de ${f(m)} kg.`],
       pregunta: ['¿Cuánto se estira el resorte?'], datos: [D.peso, D.hooke, D.primera, D.cm], correcta: x, fmt: cm,
       errores: [
-        e('U-cm', Pv / k, x2 => `Bien la división. Pero da metros; escrito en centímetros sin pasar es ${x2}.`),
-        e('RS-INV', k / Pv, x2 => `Bien usar k y el peso. Pero x es la fuerza entre k; al revés sale ${x2}.`),
-        e('N-MASA', m / k * 100, x2 => `Bien en centímetros. Pero el resorte sostiene el peso, no la masa: ${x2} no es.`),
-        e('RS-DOBLE', 2 * x, x2 => `Bien la proporción. Pero ${x2} sería con el doble de peso.`),
+        e('U-cm', Pv / k, x2 => `Bien la división, pero da metros, porque k va en N/m; escrito en centímetros sin pasar es ${x2}.`),
+        e('RS-INV', k / Pv, x2 => `Bien usados k y el peso, pero x es la fuerza entre k: un resorte más duro se estira menos. Al revés sale ${x2}.`),
+        e('N-MASA', m / k * 100, x2 => `Bien en centímetros, pero el resorte sostiene el peso, en newtons, no la masa. ${x2} no es.`),
+        e('RS-DOBLE', 2 * x, x2 => `Bien la proporción, pero ${x2} sería con el doble de peso.`),
       ],
-      solucion: [['El resorte sostiene el peso: ', Tt(`F_e = ${nw(Pv)}`), '.'], [`x = ${Pv} ÷ ${k} = ${f(Pv / k, 4)} m = ${cm(x)}.`]],
+      solucion: [['La bolsa está quieta, así que el resorte la sostiene con su peso: ', Tt(`F_e = ${nw(Pv)}`), '.'], [`La deformación es esa fuerza entre k, en metros, pasada a centímetros: x = ${Pv} ÷ ${k} = ${f(Pv / k, 4)} m = ${cm(x)}.`]],
       unidad: 'cm', _datos: { m, k },
     };
   }
@@ -331,12 +331,12 @@
       enunciado: [`Un resorte de k = ${k} N/m mide ${L0} cm sin nada colgado. Le cuelgas ${m} kg.`],
       pregunta: ['¿Cuánto mide ahora?'], datos: [D.peso, D.hooke, D.largo, D.cm], correcta: L, fmt: cm,
       errores: [
-        e('RS-SOLO-X', x, x2 => `Bien lo que se estira, ${x2}. Pero piden cuánto mide: falta el largo natural.`),
-        e('RS-ENCOGE', L0 - x, x2 => `Bien x. Pero colgado se estira: el largo crece, no baja a ${x2}.`),
-        e('RS-LARGO', L0 * (1 + m), x2 => `Bien que crezca con el peso. Pero crece x, no el largo entero: ${x2} no es.`),
-        e('U-cm', L0 + x / 100, x2 => `Bien sumar. Pero x salió en metros: sin pasarlo da ${x2}.`),
+        e('RS-SOLO-X', x, x2 => `Bien lo que se estira, ${x2}, pero piden cuánto mide: su largo es el natural más eso.`),
+        e('RS-ENCOGE', L0 - x, x2 => `Bien calculado x, pero colgado se estira y el largo crece; no baja a ${x2}.`),
+        e('RS-LARGO', L0 * (1 + m), x2 => `Bien que crezca con el peso, pero lo proporcional es la deformación, no el largo entero. ${x2} no es.`),
+        e('U-cm', L0 + x / 100, x2 => `Bien sumar, pero x salió en metros y el largo está en centímetros; sin pasarlo da ${x2}.`),
       ],
-      solucion: [[`Se estira x = ${m * G} ÷ ${k} = ${f(x / 100, 4)} m = ${cm(x)}.`], [`Mide L = ${L0} + ${f(x)} = ${cm(L)}.`]],
+      solucion: [[`Lo que se estira es el peso entre k: x = ${m * G} ÷ ${k} = ${f(x / 100, 4)} m = ${cm(x)}.`], [`Mide su largo natural más lo que se estiró: L = ${L0} + ${f(x)} = ${cm(L)}.`]],
       unidad: 'cm', _datos: { L0, m, k },
     };
   }
@@ -346,12 +346,12 @@
       enunciado: [`Una carga de `, Pp(nw(Pv)), ` cuelga de una polea móvil liviana. Un tramo vertical de la cuerda va al techo y el otro, a un resorte de ${k} N/m amarrado al techo.`],
       pregunta: ['¿Cuánto se estira el resorte?'], datos: [D.hooke, D.polea, D.equil, D.cm], correcta: x, fmt: cm,
       errores: [
-        e('RS-POLEA', Pv / k * 100, x2 => `Bien la ley del resorte. Pero el resorte sostiene un solo tramo: ${x2} es con toda la carga.`),
-        e('MS-SUMA', Pv / 4 / k * 100, x2 => `Bien repartir. Pero son dos tramos, no cuatro: ${x2} no es.`),
-        e('U-cm', Tv / k, x2 => `Bien la cuenta. Pero salió en metros: sin pasarlo da ${x2}.`),
-        e('RS-DOBLE', 2 * Pv / k * 100, x2 => `Bien la polea. Pero reparte la carga, no la duplica: ${x2} no es.`),
+        e('RS-POLEA', Pv / k * 100, x2 => `Bien la ley del resorte, pero el resorte está en un solo tramo, y la polea cuelga de dos: ${x2} es con toda la carga.`),
+        e('MS-SUMA', Pv / 4 / k * 100, x2 => `Bien repartir, pero la polea cuelga de dos tramos, no de cuatro. ${x2} no es.`),
+        e('U-cm', Tv / k, x2 => `Bien la cuenta, pero salió en metros; sin pasarlo a centímetros da ${x2}.`),
+        e('RS-DOBLE', 2 * Pv / k * 100, x2 => `Bien la polea, pero reparte la carga entre los dos tramos, no la duplica. ${x2} no es.`),
       ],
-      solucion: [['Dos tramos sostienen la polea: ', Tt(`T = ${Pv} ÷ 2 = ${nw(Tv)}`), '; el resorte jala eso.'], [`x = ${Tv} ÷ ${k} = ${f(Tv / k, 4)} m = ${cm(x)}.`]],
+      solucion: [['La polea cuelga de dos tramos con la misma tensión, que se reparten la carga: ', Tt(`T = ${Pv} ÷ 2 = ${nw(Tv)}`), '. El resorte está en un tramo y jala eso.'], [`Se estira esa fuerza entre k: x = ${Tv} ÷ ${k} = ${f(Tv / k, 4)} m = ${cm(x)}.`]],
       unidad: 'cm', _datos: { P: Pv, k },
     };
   }
@@ -363,12 +363,12 @@
       enunciado: [`Jalas la punta de una llave de ${dc} cm con `, Tt(nw(Fz)), ', perpendicular a ella.'],
       pregunta: ['¿Qué torque das?'], datos: [D.tau, D.cm], correcta: Math.abs(r.tau), fmt: nm,
       errores: [
-        e('U-cm', Fz * dc, x => `Bien multiplicar. Pero el brazo va en metros: con centímetros sale ${x}.`),
-        e('TQ-DIV', Fz / (dc / 100), x => `Bien usar la fuerza y el brazo. Pero se multiplican; dividir da ${x}.`),
-        e('TQ-MITAD', Fz * dc / 200, x => `Bien fuerza por brazo. Pero el brazo es todo el largo; con la mitad sale ${x}.`),
-        e('TQ-SUMA', Fz + dc / 100, x => `Bien usar los dos datos. Pero se multiplican, no se suman: ${x} no es.`),
+        e('U-cm', Fz * dc, x => `Bien multiplicado, pero el torque va en N·m y el brazo tiene que ir en metros; con centímetros sale ${x}.`),
+        e('TQ-DIV', Fz / (dc / 100), x => `Bien usados la fuerza y el brazo, pero se multiplican: más brazo da más giro. Dividir da ${x}.`),
+        e('TQ-MITAD', Fz * dc / 200, x => `Bien fuerza por brazo, pero jalas la punta: el brazo es todo el largo. Con la mitad sale ${x}.`),
+        e('TQ-SUMA', Fz + dc / 100, x => `Bien usados los dos datos, pero el torque es la fuerza por el brazo, no su suma. ${x} no es.`),
       ],
-      solucion: [[`Perpendicular, el brazo es ${mt(dc / 100)}.`], [`τ = ${Fz} · ${f(dc / 100)} = ${nm(Math.abs(r.tau))}.`]],
+      solucion: [[`La fuerza es perpendicular, así que el brazo es todo el largo de la llave, ${mt(dc / 100)}.`], [`El torque es la fuerza por el brazo: τ = ${Fz} · ${f(dc / 100)} = ${nm(Math.abs(r.tau))}.`]],
       unidad: 'N·m', _datos: { F: Fz, d: dc },
     };
   }
@@ -381,12 +381,12 @@
       enunciado: [`En el sube y baja, una niña de ${ma} kg se sienta a ${mt(da)} del apoyo.`],
       pregunta: [`¿A qué distancia del otro lado debe sentarse un niño de ${mb} kg para que quede horizontal?`], datos: [D.peso, D.tau, D.giro], correcta: db, fmt: mt,
       errores: [
-        e('TQ-IGUAL', da, x => `Bien que se equilibre. Pero con pesos distintos, las distancias no son iguales: ${x} no es.`),
-        e('TQ-INV', mb * da / ma, x => `Bien la proporción. Pero al revés: el más liviano va más lejos; ${x} no es.`),
-        e('TQ-RESTA', da + (ma - mb) / 10, x => `Bien que se aleje. Pero no se suma la diferencia: ${x} no es.`),
-        e('TQ-DOBLE', 2 * db, x => `Bien igualar torques. Pero ${x} daría el doble del necesario.`),
+        e('TQ-IGUAL', da, x => `Bien que se equilibre, pero con pesos distintos las distancias no pueden ser iguales: se igualan los torques. ${x} no es.`),
+        e('TQ-INV', mb * da / ma, x => `Bien la proporción, pero al revés: el más liviano tiene que ir más lejos. ${x} no es.`),
+        e('TQ-RESTA', da + (ma - mb) / 10, x => `Bien que se aleje, pero no se suma la diferencia de kilos: se igualan peso por distancia. ${x} no es.`),
+        e('TQ-DOBLE', 2 * db, x => `Bien igualar torques, pero ${x} daría el doble del torque necesario, y bajaría ese lado.`),
       ],
-      solucion: [['Los torques se igualan: ', Pp(`${ma * G} · ${f(da)} = ${mb * G} · d`), '.'], [`d = ${mt(db)}.`]],
+      solucion: [['Para que quede horizontal, los torques se igualan: cada peso por su distancia al apoyo, ', Pp(`${ma * G} · ${f(da)} = ${mb * G} · d`), '.'], [`Se despeja d = ${mt(db)}: el niño, más liviano, va más lejos del apoyo.`]],
       unidad: 'm', _datos: { ma, da, mb },
     };
   }
@@ -396,12 +396,12 @@
       enunciado: [`Jalas la punta de una llave de ${mt(L)} con `, Tt(nw(Fz)), ` que forman ${a}° con la llave.`],
       pregunta: ['¿Qué torque das?'], datos: [D.tau, D.brazo, a === 30 ? D.trig30 : D.trig], correcta: Math.abs(r.tau), fmt: nm,
       errores: [
-        e('TQ-BRAZO', Fz * L, x => `Bien fuerza por distancia. Pero inclinada, el brazo es menor que la llave: ${x} no es.`),
-        e('TQ-COS', Fz * L * C(a), x => `Bien acortar el brazo. Pero va con el seno del ángulo con la llave; con el coseno sale ${x}.`),
-        e('TQ-DIV', Fz * S(a) / L, x => `Bien la parte de la fuerza. Pero se multiplica por la distancia: ${x} no es.`),
-        e('TQ-ENTRE-SEN', Fz * L / S(a), x => `Bien usar el seno. Pero el brazo se acorta: se multiplica por sen θ, no se divide; así sale ${x}.`),
+        e('TQ-BRAZO', Fz * L, x => `Bien fuerza por distancia, pero con la fuerza inclinada el brazo es menor que la llave. ${x} no es.`),
+        e('TQ-COS', Fz * L * C(a), x => `Bien acortado el brazo, pero con θ medido desde la llave va con el seno; con el coseno sale ${x}.`),
+        e('TQ-DIV', Fz * S(a) / L, x => `Bien la parte de la fuerza que hace girar, pero se multiplica por la distancia al eje, no se divide. ${x} no es.`),
+        e('TQ-ENTRE-SEN', Fz * L / S(a), x => `Bien usado el seno, pero inclinar acorta el brazo: se multiplica por sen θ, que es menor que 1. Dividiendo sale ${x}.`),
       ],
-      solucion: [[`El brazo: ${f(L)} · sen ${a}° = ${mt(Math.abs(r.brazo))}.`], [`τ = ${Fz} · ${f(Math.abs(r.brazo), 3)} = ${nm(Math.abs(r.tau))}.`]],
+      solucion: [[`La fuerza va inclinada, así que el brazo es el largo por el seno del ángulo: ${f(L)} · sen ${a}° = ${mt(Math.abs(r.brazo))}.`], [`El torque es la fuerza por ese brazo: τ = ${Fz} · ${f(Math.abs(r.brazo), 3)} = ${nm(Math.abs(r.tau))}.`]],
       unidad: 'N·m', _datos: { F: Fz, L, a },
     };
   }
@@ -415,12 +415,12 @@
       enunciado: [`Un tablón parejo de 4 m y `, Pp(nw(Pb)), ` está sobre dos caballetes en sus puntas, A y B. Un pintor de `, Pp(nw(Pv)), ` se para a ${mt(x)} de A.`],
       pregunta: [`¿Cuánto empuja el caballete ${pideB ? 'B' : 'A'}?`], datos: [D.rigido, D.cg, D.tau], correcta: val, fmt: nw,
       errores: [
-        e('RG-SIN-PESO', pideB ? Pv * x / 4 : Pv * (4 - x) / 4, x2 => `Bien los torques del pintor. Pero el tablón también pesa: ${x2} lo olvida.`),
-        e('RG-MITAD', (Pb + Pv) / 2, x2 => `Bien que se repartan todo. Pero por mitades solo con el pintor en el medio: ${x2} no es.`),
-        e('RG-OTRO', pideB ? r.R : r.R2, x2 => `Bien la cuenta. Pero ${x2} es lo que empuja el otro caballete.`),
-        e('RG-TODO', Pb + Pv, x2 => `Bien el peso total, ${x2}. Pero lo sostienen dos caballetes.`),
+        e('RG-SIN-PESO', pideB ? Pv * x / 4 : Pv * (4 - x) / 4, x2 => `Bien los torques del pintor, pero el tablón también pesa, y su peso va en el centro. ${x2} lo olvida.`),
+        e('RG-MITAD', (Pb + Pv) / 2, x2 => `Bien que se repartan el peso, pero por mitades solo si el pintor está en el medio. ${x2} no es.`),
+        e('RG-OTRO', pideB ? r.R : r.R2, x2 => `Bien la cuenta, pero ${x2} es lo que empuja el otro caballete; el más cercano al pintor carga más.`),
+        e('RG-TODO', Pb + Pv, x2 => `Bien el peso total, ${x2}, pero lo sostienen dos caballetes, y cada uno pone solo una parte.`),
       ],
-      solucion: [[`Torques respecto de ${pideB ? 'A' : 'B'}; el peso del tablón va a 2 m.`], [`Caballete ${pideB ? 'B' : 'A'}: `, Nn(nw(val)), '.']],
+      solucion: [[`Se toman torques respecto de ${pideB ? 'A' : 'B'}, donde ese caballete no hace torque; el peso del tablón actúa en su centro, a 2 m.`], [`Al despejar, el caballete ${pideB ? 'B' : 'A'} empuja `, Nn(nw(val)), '.']],
       _datos: { Pb, P: Pv, x, pideB },
     };
   }
@@ -432,12 +432,12 @@
       enunciado: [`Un tablón parejo de ${mt(L)} y ${kg(m)} está sobre un solo caballete, a ${mt(a)} de su punta A.`],
       pregunta: ['¿Qué peso hay que poner en A para que quede horizontal?'], datos: [D.peso, D.cg, D.tau, D.giro], correcta: Pc, fmt: nw,
       errores: [
-        e('E1', m * G * (L - 2 * a) / L, x => `Bien buscar un equilibrio. Pero se igualan torques, no lo que pesa cada lado: ${x} no es.`),
-        e('RG-PUNTA', m * G * (L - a) / a, x => `Bien el brazo de la carga. Pero el peso del tablón va en su centro, no en la punta: ${x} no es.`),
-        e('TQ-IGUAL', m * G, x => `Bien que equilibre al tablón. Pero sus brazos son distintos: ${x} no es.`),
-        e('TQ-INV', m * G * a / (L / 2 - a), x => `Bien los brazos. Pero al revés: la carga, con brazo corto, pesa más; ${x} no es.`),
+        e('E1', m * G * (L - 2 * a) / L, x => `Bien buscado un equilibrio, pero se igualan torques, peso por distancia al caballete, no lo que pesa cada lado. ${x} no es.`),
+        e('RG-PUNTA', m * G * (L - a) / a, x => `Bien el brazo de la carga, pero el peso de un tablón parejo va en su centro, no en la otra punta. ${x} no es.`),
+        e('TQ-IGUAL', m * G, x => `Bien que equilibre al tablón, pero sus brazos son distintos, así que sus pesos también. ${x} no es.`),
+        e('TQ-INV', m * G * a / (L / 2 - a), x => `Bien los brazos, pero cambiados: la carga por ${f(L / 2 - a)} m y el tablón por ${f(a)} m dan ${x}. Cada peso va con el suyo: la carga, ${f(a)} m hasta el caballete, y el tablón, ${f(L / 2 - a)} m; por eso la carga pesa ${a < L / 2 - a ? 'más' : 'menos'} que el tablón.`),
       ],
-      solucion: [[`El tablón pesa ${nw(m * G)}, en su centro: a ${mt(L / 2 - a)} del caballete.`], ['Torques iguales: ', Pp(`P · ${f(a)} = ${m * G} · ${f(L / 2 - a)}`), `, así que P = ${nw(Pc)}.`]],
+      solucion: [[`El tablón pesa ${nw(m * G)}, y su peso actúa en su centro, a ${mt(L / 2 - a)} del caballete.`], ['Los torques respecto del caballete se igualan: ', Pp(`P · ${f(a)} = ${m * G} · ${f(L / 2 - a)}`), `, así que P = ${nw(Pc)}.`]],
       _datos: { L, m, a },
     };
   }
@@ -451,12 +451,12 @@
       enunciado: [`Una escalera pareja de ${mt(L)} y `, Pp(nw(Pe)), ` se apoya en una pared lisa, a ${a}° del piso.${Pv ? ` Una persona de ${nw(Pv)} sube hasta ${mt(s)} del pie.` : ''}`],
       pregunta: ['¿Con cuánta fuerza la frena el piso?'], datos: [D.rigido, D.cg, D.tau, D.pared, D.trig], correcta: Np, fmt: nw,
       errores: [
-        e('RG-NORMAL', Pe + Pv, x => `Bien lo que sostiene el piso hacia arriba, ${x}. Pero el rozamiento es de lado.`),
-        e('ST-SENCOS', (Pe * L / 2 * sn + Pv * s * sn) / (L * c), x => `Bien los torques respecto del pie. Pero los pesos tienen brazo horizontal; cambiando seno y coseno sale ${x}.`),
-        e('RG-SIN-PESO', Pv ? Pe * L / 2 * c / (L * sn) : Pe / 2, x => (Pv ? `Bien la escalera. Pero la persona también hace torque: ${x} la olvida.` : `Bien buscar una parte del peso. Pero sale de los torques: ${x} no es.`)),
-        e('N-MG', Pe, x => `Bien el peso de la escalera, ${x}. Pero el piso frena lo que empuja la pared.`),
+        e('RG-NORMAL', Pe + Pv, x => `Bien lo que sostiene el piso hacia arriba, ${x}, pero esa es la normal; el rozamiento es la fuerza de lado.`),
+        e('ST-SENCOS', (Pe * L / 2 * sn + Pv * s * sn) / (L * c), x => `Bien los torques respecto del pie, pero los pesos son verticales y su brazo es horizontal, con el coseno; cambiando seno y coseno sale ${x}.`),
+        e('RG-SIN-PESO', Pv ? Pe * L / 2 * c / (L * sn) : Pe / 2, x => (Pv ? `Bien la escalera, pero la persona también hace torque respecto del pie. ${x} la olvida.` : `Bien buscada una parte del peso, pero sale de igualar torques, no de partirlo en dos. ${x} no es.`)),
+        e('N-MG', Pe, x => `Bien el peso de la escalera, ${x}, pero el piso frena de lado, con lo mismo que empuja la pared.`),
       ],
-      solucion: [['Torques respecto del pie: la pared, con brazo L · sen θ; los pesos, con su distancia horizontal.'], ['El piso frena lo que empuja la pared: ', Ff(`f = ${nw(Np)}`), '.']],
+      solucion: [['Se toman torques respecto del pie, donde las fuerzas del piso no hacen torque: la pared, con brazo L · sen θ; los pesos, con su distancia horizontal.'], ['La escalera no se desliza, así que el piso frena lo que empuja la pared: ', Ff(`f = ${nw(Np)}`), '.']],
       _datos: { L, Pe, a, P: Pv, s },
     };
   }

@@ -138,3 +138,31 @@ test('auditoría: ningún error da la correcta, y las distancias del sube y baja
     for (const a of p.alternativas) assert.ok(!/revisa la cuenta/.test(a.explicacion || ''), `semilla ${s}: «${a.explicacion}» no es un error con nombre`);
   }
 });
+
+test('verificación 26 nov: en el caballete, TQ-INV dice bien cuál pesa más (con L = 3 m y a = 1 m la carga pesa menos)', () => {
+  let vistos = 0;
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s, { idea: 'cuerpo-rigido' }), d = p._datos;
+    if (d.tipo !== 'caballete') continue;
+    const a = p.alternativas.find(x => x.error && x.error.id === 'TQ-INV');
+    if (!a) continue;
+    vistos++;
+    const Pb = 10 * d.m, Pc = Pb * (d.L / 2 - d.a) / d.a;
+    assert.match(a.error.explicacion, Pc > Pb ? /la carga pesa más que el tablón/ : /la carga pesa menos que el tablón/, `semilla ${s}: ${JSON.stringify(d)}`);
+  }
+  assert.ok(vistos > 10, `${vistos} casos`);
+});
+
+test('verificación 26 nov: en la caja quieta en la rampa, si piden lo que empuja la rampa, E10 habla de la normal', () => {
+  let vistos = 0;
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s, { idea: 'rozamiento-se-ajusta' }), d = p._datos;
+    if (d.tipo !== 'rampa' || !d.pideN) continue;
+    const a = p.alternativas.find(x => x.error && x.error.id === 'E10');
+    if (!a) continue;
+    vistos++;
+    assert.match(a.error.explicacion, /normal/, `semilla ${s}: ${a.error.explicacion}`);
+    assert.doesNotMatch(a.error.explicacion, /vale lo justo/, `semilla ${s}: habla del rozamiento cuando piden la normal`);
+  }
+  assert.ok(vistos > 10, `${vistos} casos`);
+});

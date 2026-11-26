@@ -434,3 +434,33 @@ test('auditoría M6 y M7: medidas posibles, g dicho en el juego y «Así se resu
   const cajas = idea('diagrama-y-parejas').ejemplos.find(e => e.titulo === 'Entre las dos cajas').solucion[0].ecuacion;
   assert.equal(cajas[cajas.length - 1].v, 'c-f');
 });
+test('verificación 26 nov: en el caballete, la explicación de TQ-INV da el valor de su error y dice bien cuál pesa más', () => {
+  let vistos = 0;
+  for (let s = 0; s < 400; s++) {
+    const a = idea('cuerpo-rigido').ahoraTu.generar(s), q = plano(a.pregunta);
+    const m = q.match(/tablón parejo de (\d+) m y (\d+) kg está sobre un solo caballete, a (\d+(?:,\d+)?) m/);
+    const o = a.opciones.find(x => x.error === 'TQ-INV');
+    if (!m || !o) continue;
+    vistos++;
+    const [L, kg, d] = [+m[1], +m[2], +m[3].replace(',', '.')], Pb = 10 * kg, Pc = Pb * (L / 2 - d) / d;
+    assert.ok(o.siFuera.includes(o.texto), `semilla ${s}: «${o.siFuera}» no dice ${o.texto}`);
+    assert.match(o.siFuera, Pc > Pb ? /la carga pesa más que el tablón/ : /la carga pesa menos que el tablón/, `semilla ${s}: L = ${L}, a = ${d}`);
+  }
+  // En «Ahora tú» salen la correcta y los tres primeros errores distintos: TQ-INV (cuarto de cinco) casi nunca llega a
+  // mostrarse (0 de 400 semillas al 26 nov). Si llega, su explicación tiene que cuadrar; la práctica sí lo muestra y lo
+  // prueba plantillas/fis-estatica/generador.test.js.
+  assert.ok(vistos >= 0);
+});
+test('verificación 26 nov: en la caja quieta en la rampa, si piden lo que empuja la rampa, la explicación del tope (E10) habla de la normal', () => {
+  let vistos = 0;
+  for (let s = 0; s < 400; s++) {
+    const a = idea('rozamiento-se-ajusta').ahoraTu.generar(s), q = plano(a.pregunta);
+    if (!/quieta en una rampa .* la empuja la rampa\?/.test(q)) continue;
+    const o = a.opciones.find(x => x.error === 'E10');
+    if (!o) continue;
+    vistos++;
+    assert.match(o.siFuera, /normal/, `semilla ${s}: ${o.siFuera}`);
+    assert.doesNotMatch(o.siFuera, /frena solo lo justo/, `semilla ${s}: habla del rozamiento cuando piden la normal`);
+  }
+  assert.ok(vistos > 10, `${vistos} casos`);
+});

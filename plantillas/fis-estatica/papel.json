@@ -9,8 +9,8 @@
       "enunciado": "Sobre la balanza de la bodega hay una caja de frutas de 25 kg. Una cuerda la jala hacia arriba con 80 N y sigue quieta. ¿Cuánto marca la balanza? Datos: Peso: P = m · g, con g = 10 m/s² (convención del examen). Quieto o a velocidad constante, las fuerzas suman cero: lo de arriba iguala a lo de abajo. La balanza marca con qué fuerza la aprietan: la normal que hace sobre lo que se apoya. Alternativas: A) 80 N   B) 250 N   C) 170 N   D) 25 N   E) 330 N",
       "respuesta": "C) 170 N",
       "pasos": [
-        "El peso: P = 25 · 10 = 250 N.",
-        "Quieto: N = 250 − 80 = 170 N."
+        "El peso es la masa por g: P = 25 · 10 = 250 N.",
+        "Está quieto, y la balanza aguanta lo que la cuerda no sostiene: N = 250 − 80 = 170 N."
       ]
     },
     {
@@ -19,8 +19,8 @@
       "enunciado": "Un letrero de 160 N cuelga de un nudo con dos cables iguales que forman 53° con el techo. ¿Cuánto jala cada cable? Datos: Una fuerza F que forma θ con la horizontal: F · cos θ de lado y F · sen θ hacia arriba. Partícula en equilibrio: lo horizontal suma cero y lo vertical suma cero. sen 37° = cos 53° = 3/5 y cos 37° = sen 53° = 4/5 (convención del examen). Alternativas: A) 100 N   B) 80 N   C) 133,33 N   D) 160 N   E) 64 N",
       "respuesta": "A) 100 N",
       "pasos": [
-        "Lo vertical de los dos sostiene el peso: 2 · T · sen 53° = 160.",
-        "Cada uno: T = 100 N."
+        "Las partes horizontales se cancelan, porque los cables son iguales, y las verticales de los dos sostienen el peso: 2 · T · sen 53° = 160.",
+        "Se despeja lo que jala cada uno: T = 100 N."
       ]
     },
     {
@@ -29,8 +29,8 @@
       "enunciado": "Un ropero de 20 kg está en un piso con μ_s = 0,5. Lo empujas de lado con 40 N. ¿Con cuánta fuerza lo frena el piso? Datos: Peso: P = m · g, con g = 10 m/s² (convención del examen). Rozamiento estático: f_s ≤ μ_s · N; quieto, vale lo que haga falta hasta ese tope. Quieto o a velocidad constante, las fuerzas suman cero: lo de arriba iguala a lo de abajo. Alternativas: A) 40 N   B) 20 N   C) 60 N   D) 100 N   E) 200 N",
       "respuesta": "A) 40 N",
       "pasos": [
-        "El tope: f_s máx = 0,5 · 200 = 100 N. No lo alcanzas: sigue quieto.",
-        "Frena lo que empujas: f_s = 40 N."
+        "El tope del estático es μ_s por la normal, que aquí es el peso: f_s máx = 0,5 · 200 = 100 N. Tu empujón no llega, así que sigue quieto.",
+        "Quieto, el piso frena justo lo que empujas: f_s = 40 N."
       ]
     },
     {
@@ -39,8 +39,8 @@
       "enunciado": "En la balanza de resorte del mercado, de k = 400 N/m, cuelgas una bolsa de 3 kg. ¿Cuánto se estira el resorte? Datos: Peso: P = m · g, con g = 10 m/s² (convención del examen). Fuerza elástica: F_e = k · x, con x lo que se estira desde el largo natural. Quieto o a velocidad constante, las fuerzas suman cero: lo de arriba iguala a lo de abajo. 1 m = 100 cm. Alternativas: A) 13,33 cm   B) 15 cm   C) 0,75 cm   D) 7,5 cm   E) 0,08 cm",
       "respuesta": "D) 7,5 cm",
       "pasos": [
-        "El resorte sostiene el peso: F_e = 30 N.",
-        "x = 30 ÷ 400 = 0,075 m = 7,5 cm."
+        "La bolsa está quieta, así que el resorte la sostiene con su peso: F_e = 30 N.",
+        "La deformación es esa fuerza entre k, en metros, pasada a centímetros: x = 30 ÷ 400 = 0,075 m = 7,5 cm."
       ]
     },
     {
@@ -49,8 +49,8 @@
       "enunciado": "En el sube y baja, una niña de 36 kg se sienta a 1,5 m del apoyo. ¿A qué distancia del otro lado debe sentarse un niño de 25 kg para que quede horizontal? Datos: Peso: P = m · g, con g = 10 m/s² (convención del examen). Torque: τ = F · d, con d el brazo: la distancia del eje a la línea de la fuerza. Sin girar, los torques horarios igualan a los antihorarios. Alternativas: A) 1,5 m   B) 2,16 m   C) 4,32 m   D) 2,6 m   E) 1,04 m",
       "respuesta": "B) 2,16 m",
       "pasos": [
-        "Los torques se igualan: 360 · 1,5 = 250 · d.",
-        "d = 2,16 m."
+        "Para que quede horizontal, los torques se igualan: cada peso por su distancia al apoyo, 360 · 1,5 = 250 · d.",
+        "Se despeja d = 2,16 m: el niño, más liviano, va más lejos del apoyo."
       ]
     },
     {
@@ -59,8 +59,8 @@
       "enunciado": "Un tablón parejo de 4 m y 100 N está sobre dos caballetes en sus puntas, A y B. Un pintor de 500 N se para a 1 m de A. ¿Cuánto empuja el caballete B? Datos: Cuerpo rígido en equilibrio: las fuerzas suman cero y los torques, respecto de un punto, también. El peso de una barra o un tablón parejo actúa en su centro. Torque: τ = F · d, con d el brazo: la distancia del eje a la línea de la fuerza. Alternativas: A) 175 N   B) 425 N   C) 600 N   D) 300 N   E) 125 N",
       "respuesta": "A) 175 N",
       "pasos": [
-        "Torques respecto de A; el peso del tablón va a 2 m.",
-        "Caballete B: 175 N."
+        "Se toman torques respecto de A, donde ese caballete no hace torque; el peso del tablón actúa en su centro, a 2 m.",
+        "Al despejar, el caballete B empuja 175 N."
       ]
     },
     {
@@ -69,8 +69,8 @@
       "enunciado": "Arrastras una caja de 20 kg a velocidad constante con una fuerza de 50 N que forma 53° sobre la horizontal. ¿Con cuánta fuerza la empuja el piso? Datos: Peso: P = m · g, con g = 10 m/s² (convención del examen). Una fuerza F que forma θ con la horizontal: F · cos θ de lado y F · sen θ hacia arriba. sen 37° = cos 53° = 3/5 y cos 37° = sen 53° = 4/5 (convención del examen). Quieto o a velocidad constante, las fuerzas suman cero: lo de arriba iguala a lo de abajo. Alternativas: A) 160 N   B) 170 N   C) 40 N   D) 200 N   E) 240 N",
       "respuesta": "A) 160 N",
       "pasos": [
-        "Tu fuerza sube con 50 · sen 53° = 40 N.",
-        "Lo vertical suma cero: N = 200 − 40 = 160 N."
+        "Tu fuerza va inclinada, y su parte vertical levanta un poco la caja: 50 · sen 53° = 40 N.",
+        "Lo vertical suma cero, así que el piso sostiene el resto del peso: N = 200 − 40 = 160 N."
       ]
     },
     {
@@ -79,8 +79,8 @@
       "enunciado": "Una escalera pareja de 5 m y 200 N se apoya en una pared lisa, a 37° del piso. Una persona de 400 N sube hasta 2,5 m del pie. ¿Con cuánta fuerza la frena el piso? Datos: Cuerpo rígido en equilibrio: las fuerzas suman cero y los torques, respecto de un punto, también. El peso de una barra o un tablón parejo actúa en su centro. Torque: τ = F · d, con d el brazo: la distancia del eje a la línea de la fuerza. Una pared lisa solo empuja perpendicular a ella: no tiene rozamiento. sen 37° = cos 53° = 3/5 y cos 37° = sen 53° = 4/5 (convención del examen). Alternativas: A) 133,33 N   B) 225 N   C) 400 N   D) 200 N   E) 600 N",
       "respuesta": "C) 400 N",
       "pasos": [
-        "Torques respecto del pie: la pared, con brazo L · sen θ; los pesos, con su distancia horizontal.",
-        "El piso frena lo que empuja la pared: f = 400 N."
+        "Se toman torques respecto del pie, donde las fuerzas del piso no hacen torque: la pared, con brazo L · sen θ; los pesos, con su distancia horizontal.",
+        "La escalera no se desliza, así que el piso frena lo que empuja la pared: f = 400 N."
       ]
     }
   ]

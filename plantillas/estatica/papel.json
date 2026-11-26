@@ -1,6 +1,6 @@
 {
   "titulo": "Estática: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Primero dibuja el diagrama de cuerpo libre: cada fuerza con quién la ejerce (la Tierra, el apoyo, la cuerda, el piso). El peso de una barra pareja va en su centro, no en un extremo. Para que un cuerpo no se traslade, las fuerzas suman cero; para que no gire, los momentos suman cero, todos tomados respecto a un mismo punto. El momento de una fuerza es la fuerza por su brazo, la distancia perpendicular del punto a la línea de la fuerza. Toma g = 10 m/s², sen 37° = 3/5 y cos 37° = 4/5.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Primero dibuja el diagrama de cuerpo libre: cada fuerza con quién la ejerce (la Tierra, el apoyo, la cuerda, el piso). El peso de una barra pareja va en su centro, no en un extremo. Para que un cuerpo no se traslade, las fuerzas suman cero; para que no gire, los torques suman cero, todos tomados respecto a un mismo punto. El torque de una fuerza es la fuerza por su brazo, la distancia perpendicular del punto a la línea de la fuerza. Toma g = 10 m/s², sen 37° = 3/5 y cos 37° = 4/5.",
   "problemas": [
     {
       "id": "p1",
@@ -9,7 +9,7 @@
       "respuesta": "Con 200 N. La piedrita soporta 1000 N.",
       "pasos": [
         "Fuerzas sobre la barreta: la piedra grande empuja la punta hacia abajo con 800 N, el agricultor empuja el otro extremo hacia abajo y la piedrita empuja hacia arriba en el apoyo.",
-        "Toma momentos respecto al apoyo, así la fuerza de la piedrita no gira nada. El brazo de los 800 N es 0,3 m; el del agricultor, 1,5 − 0,3 = 1,2 m.",
+        "Toma torques respecto al apoyo, así la fuerza de la piedrita no gira nada. El brazo de los 800 N es 0,3 m; el del agricultor, 1,5 − 0,3 = 1,2 m.",
         "Para que no gire: 800 · 0,3 = fuerza · 1,2, así que la fuerza es 240 / 1,2 = 200 N.",
         "Las fuerzas verticales suman cero: la piedrita empuja hacia arriba con 800 + 200 = 1000 N.",
         "La palanca no regala nada: con un cuarto de la fuerza, tu mano baja cuatro veces más de lo que sube la piedra."
@@ -26,9 +26,9 @@
       "pasos": [
         "El peso del tablón, 30 · 10 = 300 N, actúa en su centro, a 2,5 m de A. Desde el caballete, eso está a 2,5 − 1 = 1,5 m, del lado de B.",
         "La carga en A está a 1 m del caballete, del otro lado.",
-        "Momentos respecto al caballete: peso de la carga · 1 = 300 · 1,5, así que la carga pesa 450 N, es decir, 45 kg.",
+        "Torques respecto al caballete: peso de la carga · 1 = 300 · 1,5, así que la carga pesa 450 N, es decir, 45 kg.",
         "El caballete sostiene todo: 300 + 450 = 750 N hacia arriba.",
-        "Ojo: igualar lo que pesa el tablón a cada lado del caballete (60 N a un lado y 240 N al otro) daría 180 N, y es un error. Lo que se iguala son los momentos, no los pesos."
+        "Ojo: igualar lo que pesa el tablón a cada lado del caballete (60 N a un lado y 240 N al otro) daría 180 N, y es un error. Lo que se iguala son los torques, no los pesos."
       ],
       "verificar": [
         { "fn": "barra", "args": [{ "L": 5, "m": 30, "apoyos": [{ "x": 1 }], "cargas": [{ "x": 0, "F": "?" }] }], "espera": { "incognita": 450, "R": 750, "errores.igualarPesosLados": 180 } }
@@ -41,9 +41,9 @@
       "respuesta": "El apoyo A empuja con 600 N y el apoyo B, con 400 N.",
       "pasos": [
         "Fuerzas sobre la viga: su peso, 400 N, en el centro (a 3 m de A); el empuje de los pies de la persona, 600 N, a 2 m de A; y los dos apoyos hacia arriba.",
-        "Momentos respecto a A, así el apoyo A no gira nada: apoyo B · 6 = 400 · 3 + 600 · 2 = 2400, de donde el apoyo B empuja con 400 N.",
+        "Torques respecto a A, así el apoyo A no gira nada: apoyo B · 6 = 400 · 3 + 600 · 2 = 2400, de donde el apoyo B empuja con 400 N.",
         "Fuerzas verticales: apoyo A + 400 = 400 + 600, así que el apoyo A empuja con 600 N.",
-        "Compruébalo con momentos respecto a B: 600 · 6 = 400 · 3 + 600 · 4 = 3600. Da cero respecto a cualquier punto.",
+        "Compruébalo con torques respecto a B: 600 · 6 = 400 · 3 + 600 · 4 = 3600. Da cero respecto a cualquier punto.",
         "Tiene sentido: la persona está más cerca de A, y A carga más."
       ],
       "verificar": [
@@ -54,11 +54,11 @@
     {
       "id": "p4",
       "nivel": "básico",
-      "enunciado": "Para aflojar una tuerca usas una llave de 0,25 m. Jalas su extremo con 80 N, pero la fuerza forma 53° con la llave. ¿Qué momento le das a la tuerca? ¿Y si jalaras perpendicular a la llave?",
+      "enunciado": "Para aflojar una tuerca usas una llave de 0,25 m. Jalas su extremo con 80 N, pero la fuerza forma 53° con la llave. ¿Qué torque le das a la tuerca? ¿Y si jalaras perpendicular a la llave?",
       "respuesta": "16 N·m. Perpendicular, 20 N·m.",
       "pasos": [
         "El brazo no es el largo de la llave: es la distancia perpendicular desde la tuerca hasta la línea de la fuerza, 0,25 · sen 53° = 0,25 · 4/5 = 0,2 m.",
-        "Momento = 80 · 0,2 = 16 N·m.",
+        "Torque = 80 · 0,2 = 16 N·m.",
         "Otra forma: solo la parte de la fuerza perpendicular a la llave hace girar, 80 · sen 53° = 64 N, y 64 · 0,25 = 16 N·m. La parte a lo largo de la llave, 80 · cos 53° = 48 N, tiene su línea pasando por la tuerca y no gira nada.",
         "Perpendicular, el brazo es la llave entera: 80 · 0,25 = 20 N·m. Por eso conviene jalar en ángulo recto."
       ],
@@ -150,9 +150,9 @@
       "enunciado": "Una barra homogénea de 3 m y 20 kg está articulada a una pared por su extremo A y se mantiene horizontal con un cable atado al extremo B, que forma 53° con la barra. ¿Cuánto vale la tensión del cable?",
       "respuesta": "125 N.",
       "pasos": [
-        "Toma momentos respecto a la articulación A: así la fuerza de la pared, que no conoces, no gira nada.",
-        "El peso, 200 N, actúa en el centro, a 1,5 m de A: su momento es 200 · 1,5 = 300 N·m, en sentido horario.",
-        "La tensión está aplicada a 3 m de A, pero forma 53° con la barra: su brazo es 3 · sen 53° = 2,4 m, y su momento es tensión · 2,4, en sentido antihorario.",
+        "Toma torques respecto a la articulación A: así la fuerza de la pared, que no conoces, no gira nada.",
+        "El peso, 200 N, actúa en el centro, a 1,5 m de A: su torque es 200 · 1,5 = 300 N·m, en sentido horario.",
+        "La tensión está aplicada a 3 m de A, pero forma 53° con la barra: su brazo es 3 · sen 53° = 2,4 m, y su torque es tensión · 2,4, en sentido antihorario.",
         "Para que no gire: tensión · 2,4 = 300, así que la tensión vale 125 N.",
         "Comprueba: la parte vertical de la tensión, 125 · 4/5 = 100 N, sostiene la mitad del peso; la pared sostiene la otra mitad y además empuja hacia afuera con 125 · 3/5 = 75 N."
       ],
