@@ -673,3 +673,24 @@ test('igualdad-falsa: una base de varios signos va entre paréntesis al cuadrado
   const falsas = Teoria.pendientes(def, { semillas: 200 }).concat(Teoria.problemas(def, { semillas: 200 })).filter(x => /\[igualdad-falsa\]/.test(x));
   assert.deepEqual(falsas, []);
 });
+test('verificación 26 nov: las explicaciones de PR1 y PR-CUADRADO dicen la razón que de verdad tiene cada semilla', () => {
+  let vistos = 0;
+  for (let s = 0; s < 400; s++) {
+    for (const id of ['velocidad-tangencial', 'rapidez-constante-acelera']) {
+      const a = idea(id).ahoraTu.generar(s), q = plano(a.pregunta);
+      const ana = q.match(/Ana va a (\d+(?:,\d+)?) m del eje .* Beto, a (\d+(?:,\d+)?) m del eje/);
+      const pr1 = a.opciones.find(o => o.error === 'PR1');
+      if (ana && pr1) {
+        vistos++;
+        const k = +ana[2].replace(',', '.') / +ana[1].replace(',', '.');
+        if (k !== 0.5) assert.doesNotMatch(pr1.siFuera, /mitad/, `semilla ${s}: ${q} → «${pr1.siFuera}»`);
+      }
+      const oval = q.match(/óvalo de (la mitad|un tercio) del radio/), cu = a.opciones.find(o => o.error === 'PR-CUADRADO');
+      if (oval && cu) {
+        vistos++;
+        assert.match(cu.siFuera, oval[1] === 'la mitad' ? /la mitad del radio, la aceleración es el doble, no cuatro/ : /un tercio del radio, la aceleración es el triple, no nueve/, `semilla ${s}: «${cu.siFuera}»`);
+      }
+    }
+  }
+  assert.ok(vistos > 20, `${vistos} casos`);
+});

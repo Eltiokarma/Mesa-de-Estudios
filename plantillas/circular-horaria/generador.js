@@ -265,7 +265,7 @@
     const pregunta = ['¿Cuál es su ', v('x', 'aceleración centrípeta'), ` en t = ${t} s?`];
     const errores = [
       h('CI-coeficiente-como-alfa', (b + c * t) ** 2 / R, `Tomaste el coeficiente de t² como aT. Ese coeficiente es aT/2: aT = ${f(2 * c)} m/s², y v = v0 + aT·t.`),
-      h('acp-sin-cuadrado', vt / R, 'Dividiste la rapidez entre el radio sin elevarla al cuadrado: acp = v²/R.'),
+      h('acp-sin-cuadrado', vt / R, 'Dividiste la rapidez entre el radio sin elevarla al cuadrado. La aceleración centrípeta es acp = v²/R: con v sola, el resultado no queda en m/s².'),
       h('acp-con-omega0', b * b / R, 'Usaste la rapidez inicial, el coeficiente de t. La rapidez cambia: hay que calcularla en ese instante.'),
       pa('G2-altura-entre-tiempo', (S(t) / t) ** 2 / R, `Tomaste S(${t})/${t} como la rapidez. Eso no es la rapidez del instante: la rapidez es la pendiente de S-t, v = v0 + aT·t.`),
       h('CI-at-ac-cambiadas', 2 * c, 'Esa es la aceleración tangencial. La centrípeta depende de la rapidez: acp = v²/R.'),

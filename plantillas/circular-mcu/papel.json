@@ -9,7 +9,7 @@
       "enunciado": "Dos marcas, A y B, están sobre un mismo radio de un disco que gira con velocidad angular constante, separadas 40 cm. A se mueve a 1,2 m/s y B, que está más lejos del eje, a 4,4 m/s. ¿Cuál es la velocidad angular del disco? Datos: Todos los puntos de un mismo disco giran con la misma ω. Rapidez de un punto que gira: v = ω · r. 1 m = 100 cm. Alternativas: A) 14 rad/s   B) 8 rad/s   C) 11 rad/s   D) 0,08 rad/s   E) 3 rad/s",
       "respuesta": "B) 8 rad/s",
       "pasos": [
-        "Misma ω: vB − vA = ω·(rB − rA) = ω·d.",
+        "Los dos puntos están en el mismo disco, así que giran con la misma ω, y la diferencia de rapideces depende solo de su separación: vB − vA = ω·(rB − rA) = ω·d.",
         "ω = (4,4 − 1,2)/0,4 = 3,2/0,4 = 8 rad/s."
       ]
     },
@@ -20,7 +20,7 @@
       "respuesta": "D) 16π/5 m/s",
       "pasos": [
         "Una vuelta (2π rad) en 0,25 s: ω = 2π/0,25 = 8π rad/s.",
-        "El radio en metros: 40 cm = 0,4 m.",
+        "La rapidez se pide en m/s, así que el radio va en metros: 40 cm = 0,4 m.",
         "v = ω·r = 8π rad/s · 0,4 m = 16π/5 m/s."
       ]
     },
@@ -30,7 +30,7 @@
       "enunciado": "Dos marcas, A y B, están sobre un mismo radio de un disco que gira con velocidad angular constante, separadas 10 cm. A se mueve a 0,3 m/s y B, que está más lejos del eje, a 0,6 m/s. ¿Cuál es la velocidad angular del disco? Datos: Todos los puntos de un mismo disco giran con la misma ω. Rapidez de un punto que gira: v = ω · r. 1 m = 100 cm. Alternativas: A) 6 rad/s   B) 9 rad/s   C) 0,03 rad/s   D) 3 rad/s",
       "respuesta": "D) 3 rad/s",
       "pasos": [
-        "Misma ω: vB − vA = ω·(rB − rA) = ω·d.",
+        "Los dos puntos están en el mismo disco, así que giran con la misma ω, y la diferencia de rapideces depende solo de su separación: vB − vA = ω·(rB − rA) = ω·d.",
         "ω = (0,6 − 0,3)/0,1 = 0,3/0,1 = 3 rad/s."
       ]
     },
@@ -50,7 +50,7 @@
       "enunciado": "Dos marcas, A y B, están sobre un mismo radio de un disco que gira con velocidad angular constante, separadas 40 cm. A se mueve a 0,5 m/s y B, que está más lejos del eje, a 2,5 m/s. ¿Cuál es la velocidad angular del disco? Datos: Todos los puntos de un mismo disco giran con la misma ω. Rapidez de un punto que gira: v = ω · r. 1 m = 100 cm. Alternativas: A) 6,25 rad/s   B) 0,05 rad/s   C) 1,25 rad/s   D) 7,5 rad/s   E) 5 rad/s",
       "respuesta": "E) 5 rad/s",
       "pasos": [
-        "Misma ω: vB − vA = ω·(rB − rA) = ω·d.",
+        "Los dos puntos están en el mismo disco, así que giran con la misma ω, y la diferencia de rapideces depende solo de su separación: vB − vA = ω·(rB − rA) = ω·d.",
         "ω = (2,5 − 0,5)/0,4 = 2/0,4 = 5 rad/s."
       ]
     },
@@ -82,7 +82,7 @@
       "respuesta": "D) 9π/10 m/s",
       "pasos": [
         "90 rpm = 90 · 2π/60 rad/s = 3π rad/s.",
-        "El radio en metros: 30 cm = 0,3 m.",
+        "La rapidez se pide en m/s, así que el radio va en metros: 30 cm = 0,3 m.",
         "v = ω·r = 3π rad/s · 0,3 m = 9π/10 m/s."
       ]
     }

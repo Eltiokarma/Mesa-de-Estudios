@@ -76,7 +76,7 @@
   // Errores comunes a «discos» y «plataforma», en función del ángulo que se cree girado (en rad) y t.
   function erroresAngulo(phi, t, conMas = '') {
     const e = [];
-    if (phi !== 360) e.push(h('CI-vuelta-entera', 2 * PI / t, `Supusiste que tenía que dar una vuelta entera. Basta con que gire ${phi}°${conMas}.`));
+    if (phi !== 360) e.push(h('CI-vuelta-entera', 2 * PI / t, `Supusiste que tenía que dar una vuelta entera. Para volver a la posición pedida basta con que gire ${phi}°${conMas}, que es menos de una vuelta.`));
     e.push(h('CI-no-minima', (phi * RAD + 2 * PI) / t, `Le sumaste una vuelta: girar ${phi}° más una vuelta también sirve, pero no es la rapidez mínima.`));
     if (phi !== 180 && phi !== 360) e.push(h('CI-desfase-complementario', (360 - phi) * RAD / t, `Mediste el ángulo por el otro lado: ${360 - phi}° es lo que le falta a ${phi}° para la vuelta. Hacia el lado del giro, son ${phi}°.`));
     return e;

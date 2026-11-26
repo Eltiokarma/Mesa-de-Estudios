@@ -177,7 +177,7 @@
       correcta = correctaMag;
       errores = [
         h('CI-rpm-sin-60', wn * 2 * Math.PI, 'Pasaste de rpm a rad/s sin dividir entre 60: las rpm son vueltas por minuto, y un minuto tiene 60 s.'),
-        h('CI-rpm-sin-2pi', wn * Math.PI / 60, 'Multiplicaste por π en vez de 2π: una vuelta son 2π rad.'),
+        h('CI-rpm-sin-2pi', wn * Math.PI / 60, 'Multiplicaste por π en vez de 2π, pero π rad es media vuelta. Cada vuelta son 2π rad, así que las rpm se pasan a rad/s con 2π/60.'),
         ...enLaCadena.map(e => ({ ...e, valor: conv(e.valor) })),
       ];
       texto = x => P.pi(x, 'rad/s');
@@ -245,7 +245,7 @@
     ];
     if (diam) errores.unshift(h('CI-diametro-por-radio', 2 * correcta, 'Usaste el diámetro donde va el radio: v = ω·r, y el radio es la mitad del diámetro.'));
     if (pi) errores.push(h('CI-rpm-sin-60', correcta * 60, 'Pasaste de rpm a rad/s sin dividir entre 60: las rpm son vueltas por minuto.'),
-      h('CI-rpm-sin-2pi', correcta / 2, 'Multiplicaste por π en vez de 2π: una vuelta son 2π rad.'));
+      h('CI-rpm-sin-2pi', correcta / 2, 'Multiplicaste por π en vez de 2π, pero π rad es media vuelta. Cada vuelta son 2π rad, así que las rpm se pasan a rad/s con 2π/60.'));
     const texto = x => (pi ? P.pi(x, 'm/s') : `${f(x)} m/s`);
     const wA = aRad(w1), wB = wA * rA / g1;
     const wTxt = w => (pi ? P.pi(w, 'rad/s') : `${f(w)} rad/s`);

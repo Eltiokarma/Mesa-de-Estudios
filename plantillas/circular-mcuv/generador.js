@@ -147,11 +147,11 @@
     const pregunta = [`${modo === 'rad' ? '¿Qué ángulo gira' : '¿Cuántas vueltas da'} ${obj} en los primeros `, v('t', `${t} s`), ' desde que empieza a frenar?'];
     const errores = [
       h('mcuv-sin-frenar', sinFrenar, `Usaste θ = ω0·t − ½·α·t² con t = ${t} s, pero ${obj} se detiene antes, a los ${ts} s; después ya no gira. La ecuación no sabe que el freno no lo hace retroceder.`, CIN),
-      h('rectangulo-con-omega0', pS * t, 'Multiplicaste la rapidez inicial por el tiempo, como si no frenara.', CIN),
+      h('rectangulo-con-omega0', pS * t, `Multiplicaste la rapidez inicial por el tiempo, como si no frenara. En realidad gira cada vez más lento y se detiene a los ${ts} s; después ya no gira.`, CIN),
       h('CI-area-hasta-t', pS * t / 2, `Tomaste la rapidez media del frenado durante los ${t} s, pero el frenado dura solo ${ts} s.`),
       h('rectangulo-con-omega0', pS * ts, `Calculaste bien cuándo se detiene (${ts} s), pero multiplicaste la rapidez inicial por ese tiempo, como si no frenara.`, CIN),
     ];
-    if (modo === 'pi') errores.unshift(h('vueltas-sin-2pi', 2 * correcta, 'Tomaste π rad como una vuelta. Una vuelta son 2π rad.'));
+    if (modo === 'pi') errores.unshift(h('vueltas-sin-2pi', 2 * correcta, 'Tomaste π rad como una vuelta, pero π rad es media vuelta. Una vuelta entera son 2π rad.'));
     const solucion = [
       ['Primero, cuándo se detiene: ', v('w0', 'ω0'), '/', v('al', 'α'), ` = ${modo === 'rad' ? `${w0}/${al}` : `${P.pi(w0 * Math.PI)}/${P.pi(al * Math.PI)}`} = ${ts} s. Es menos que `, v('t', `${t} s`), ': después ya no gira.'],
       ...(modo === 'pi' ? [['En vueltas por segundo, ', v('w0', W(modo, w0)), ` = ${vps(pS)}.`]] : []),
@@ -265,12 +265,12 @@
       '; luego gira con rapidez constante durante ', v('t', `${t2} s`), ' y, al final, frena de manera uniforme hasta detenerse en ', v('t', `${t3} s`), '.'];
     const pregunta = [modo === 'rad' ? `¿Qué ángulo gira ${obj} en total?` : `¿Cuántas vueltas da ${obj} en total?`];
     const errores = [];
-    if (modo === 'pi') errores.push(h('vueltas-sin-2pi', 2 * correcta, 'Tomaste π rad como una vuelta. Una vuelta son 2π rad.'));
+    if (modo === 'pi') errores.push(h('vueltas-sin-2pi', 2 * correcta, 'Tomaste π rad como una vuelta, pero π rad es media vuelta. Una vuelta entera son 2π rad.'));
     errores.push(
       h('rectangulo-con-omegaf', pm * T, 'Multiplicaste la rapidez máxima por el tiempo total, como si hubiera girado así desde el comienzo. En el arranque y en el frenado la rapidez media es la mitad de la máxima.', CIN),
-      h('CI-tramo-olvidado', pm * (t1 + t3) / 2, 'Te olvidaste del tramo con rapidez constante, que es el que más gira.'),
+      h('CI-tramo-olvidado', pm * (t1 + t3) / 2, 'Te olvidaste del tramo con rapidez constante. En ese tramo también gira, y como va a su mayor rapidez, es el que más gira.'),
       h('CI-tramos-como-triangulo', pm * T / 2, 'Tomaste todo el movimiento como un solo triángulo. En el tramo del medio la rapidez no cambia: ahí la figura bajo ω-t es un rectángulo.'),
-      h('CI-tramo-olvidado', pm * (t1 / 2 + t2), 'Te olvidaste del frenado: también gira mientras frena, hasta detenerse.'),
+      h('CI-tramo-olvidado', pm * (t1 / 2 + t2), 'Te olvidaste del frenado. Mientras frena también gira, más lento cada vez, hasta detenerse: ese ángulo se suma al de los otros tramos.'),
     );
     const solucion = [
       ['Rapidez máxima, al final del arranque: ', v('wm', 'ωmáx'), ' = ', v('al', 'α'), ' · t1 = ', modo === 'rad' ? `${a1} · ${t1} = ${wm} rad/s` : `${P.pi(a1 * Math.PI)} · ${t1} = ${P.pi(wm * Math.PI)} rad/s = ${vps(pm)}`, '.'],

@@ -111,12 +111,12 @@
     const enunciado = [`${Obj} gira con rapidez constante y da `, v('f', `${n} vueltas`), ' en ', v('t', tTxt), '.'];
     const errores = [
       h('CI-periodo-por-frecuencia', 2 * PI * ts / n, `Dividiste al revés: ${ts} s entre ${n} vueltas es lo que dura una vuelta (el periodo). ω = 2π·(vueltas/tiempo).`),
-      h('vueltas-sin-2pi', PI * n / ts, 'Tomaste π rad como una vuelta. Una vuelta son 2π rad.'),
+      h('vueltas-sin-2pi', PI * n / ts, 'Tomaste π rad como una vuelta, pero π rad es media vuelta. Una vuelta entera son 2π rad, así que cada vuelta cuenta el doble.'),
     ];
     if (enMin) errores.push(h('CI-unidades-sin-convertir', 2 * PI * n / t, 'Usaste los minutos como si fueran segundos. Antes de dividir, hay que pasar el tiempo a segundos.'));
     errores.push(h('CI-multiplica-por-tiempo', 2 * PI * n * ts, 'Multiplicaste por el tiempo. La velocidad angular es lo girado entre el tiempo que tarda: ω = 2π·n/t.'));
     const solucion = [
-      ...(enMin ? [['El tiempo en segundos: ', v('t', `${tTxt} = ${ts} s`), '.']] : []),
+      ...(enMin ? [['ω se pide en rad/s, así que primero se pasa el tiempo a segundos: ', v('t', `${tTxt} = ${ts} s`), '.']] : []),
       ['Cada vuelta son 2π rad: ', v('w', 'ω'), ` = 2π · ${n}/${ts} = `, v('w', texto(correcta)), '.'],
     ];
     return cerrar(rng, semilla, { pi: true, correcta, errores, texto, unidad: 'rad/s', variables, enunciado, pregunta, solucion,
@@ -152,13 +152,13 @@
       errores.push(h('CI-rpm-sin-60', 60 * correcta, 'No dividiste entre 60: las rpm son vueltas por minuto, y la rapidez se pide por segundo.'));
     } else {
       errores.push(h('vueltas-sin-2pi', correcta / 2, 'Tomaste π rad como una vuelta. Una vuelta son 2π rad: ω = 2π/T.'));
-      errores.push(h('CI-periodo-por-frecuencia', 2 * PI * dato * r / 100, 'Multiplicaste 2π por el periodo. El periodo divide: ω = 2π/T.'));
+      errores.push(h('CI-periodo-por-frecuencia', 2 * PI * dato * r / 100, 'Multiplicaste 2π por el periodo. ω es lo que gira en cada segundo: una vuelta, 2π rad, repartida en el periodo, así que ω = 2π/T.'));
     }
     errores.push(h('CI-unidades-sin-convertir', 100 * correcta, 'Dejaste el radio en centímetros: así la rapidez sale en cm/s, no en m/s.'));
     errores.push(h('CI-v-entre-radio', w / (r / 100), 'Dividiste ω entre el radio. La rapidez del borde es ω por el radio: v = ω·r.'));
     const solucion = [
       pasoW,
-      ...(diam ? [['El radio es la mitad del diámetro: ', v('r', `r = ${r} cm = ${f(r / 100)} m`), '.']] : [['El radio en metros: ', v('r', `${r} cm = ${f(r / 100)} m`), '.']]),
+      ...(diam ? [['El radio es la mitad del diámetro: ', v('r', `r = ${r} cm = ${f(r / 100)} m`), '.']] : [['La rapidez se pide en m/s, así que el radio va en metros: ', v('r', `${r} cm = ${f(r / 100)} m`), '.']]),
       [v('vv', 'v'), ` = ω·r = ${piTxt(w, 'rad/s')} · ${f(r / 100)} m = `, v('vv', texto(correcta)), '.'],
     ];
     return cerrar(rng, semilla, { pi: true, correcta, errores, texto, unidad: 'm/s', variables, enunciado, pregunta, solucion,
@@ -184,8 +184,8 @@
       const rr = v('r', diam ? `${f(2 * r)} m de diámetro` : `${f(r)} m de radio`);
       const enunciado = esc.txt(v('vv', `${f(vv)} m/s`), rr);
       const errores = [
-        h('acp-sin-cuadrado', vv / r, 'Dividiste la rapidez entre el radio sin elevarla al cuadrado: acp = v²/r.'),
-        h('acp-por-radio', vv * vv * r, 'Multiplicaste por el radio. El radio divide: acp = v²/r.'),
+        h('acp-sin-cuadrado', vv / r, 'Dividiste la rapidez entre el radio sin elevarla al cuadrado. La aceleración centrípeta es acp = v²/r: con v sola, el resultado no queda en m/s².'),
+        h('acp-por-radio', vv * vv * r, 'Multiplicaste por el radio, pero el radio divide: acp = v²/r. Una curva más cerrada, de radio menor, da más aceleración, no menos.'),
         h('CI-acp-con-2', 2 * vv * vv / r, 'Pusiste un 2 que no va, como en v² = 2·a·d del MRUV. La aceleración centrípeta es v²/r.'),
       ];
       if (diam) errores.unshift(h('CI-diametro-por-radio', vv * vv / (2 * r), 'Usaste el diámetro donde va el radio: el radio es la mitad del diámetro.'));
@@ -205,12 +205,12 @@
     const pregunta2 = ['¿Cuál es el módulo de la ', v('a', 'aceleración centrípeta'), ' de la marca?'];
     const errores = [
       h('acp-sin-cuadrado', w * r, 'Multiplicaste ω por el radio sin elevar ω al cuadrado: eso es la rapidez de la marca, en m/s. acp = ω²·r.'),
-      h('CI-cuadrado-al-radio', w * r * r, 'Elevaste al cuadrado el radio en vez de ω: acp = ω²·r.'),
+      h('CI-cuadrado-al-radio', w * r * r, 'Elevaste al cuadrado el radio en vez de ω. Con ω, la aceleración centrípeta es acp = ω²·r: lo que va al cuadrado es ω, y el radio va una sola vez.'),
       h('acp-por-radio', w * w / r, 'Dividiste entre el radio. Con ω, el radio multiplica: acp = ω²·r (es v²/r con v = ω·r).'),
       h('CI-unidades-sin-convertir', w * w * rcm, 'Dejaste el radio en centímetros: así la aceleración sale en cm/s², no en m/s².'),
     ];
     const solucion = [
-      ['El radio en metros: ', v('r', `${rcm} cm = ${f(r)} m`), '.'],
+      ['La aceleración se pide en m/s², así que el radio va en metros: ', v('r', `${rcm} cm = ${f(r)} m`), '.'],
       [v('a', 'acp'), ' = ', v('vv', 'ω'), '²·', v('r', 'r'), ` = ${w}² · ${f(r)} = `, v('a', texto(correcta)), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, texto, unidad: 'm/s²', variables, enunciado, pregunta: pregunta2, solucion,
@@ -235,8 +235,8 @@
         h('CI-unidades-sin-convertir', k / 2 * 3600 * tm, 'Multiplicaste por 60 dos veces: los minutos se pasan a segundos una sola vez.'),
       ];
       const solucion = [
-        ['El tiempo en segundos: ', v('t', `${tTxt} = ${60 * tm} s`), '.'],
-        ['Ángulo girado: θ = ω·t = ', v('w', wTxt), ` · ${60 * tm} s = ${P.pi(k * PI * 60 * tm, 'rad')}.`],
+        ['ω está en rad/s, así que el tiempo va en segundos: ', v('t', `${tTxt} = ${60 * tm} s`), '.'],
+        ['Gira parejo, así que el ángulo girado es ω por el tiempo: θ = ω·t = ', v('w', wTxt), ` · ${60 * tm} s = ${P.pi(k * PI * 60 * tm, 'rad')}.`],
         ['Cada vuelta son 2π rad: ', v('n', 'vueltas'), ` = ${P.pi(k * PI * 60 * tm)}/(2π) = `, v('n', vueltasTxt(correcta)), '.'],
       ];
       return cerrar(rng, semilla, { correcta, errores, texto: vueltasTxt, unidad: 'vueltas', variables, enunciado, pregunta, solucion,
@@ -305,7 +305,7 @@
       ];
       const solucion = [
         ['Distancia de ', v('B', 'B'), ' al eje: ', v('d', `${R} − ${dB} = ${rB} cm`), '.'],
-        ['Misma ω para las dos: ', v('x', 'vA/vB'), ` = rA/rB = ${R}/${rB} = `, v('x', texto(correcta)), '.'],
+        ['Las dos marcas están en el mismo disco y giran con la misma ω, así que sus rapideces van como sus radios: ', v('x', 'vA/vB'), ` = rA/rB = ${R}/${rB} = `, v('x', texto(correcta)), '.'],
       ];
       return cerrar(rng, semilla, { correcta, errores, texto, unidad: '', variables, enunciado, pregunta, solucion,
         datos: { tipo: 'rigido', sub, R, dB } });
@@ -326,7 +326,7 @@
       h('CI-sin-restar', vA / (d / 100), `Dividiste la rapidez de A entre la separación, como si A estuviera a ${d} cm del eje. Los ${d} cm separan a A de B, no a A del eje: explican la diferencia, vB − vA = ω·d.`),
     ];
     const solucion = [
-      ['Misma ω: ', v('B', 'vB'), ' − ', v('A', 'vA'), ' = ω·(rB − rA) = ω·', v('d', 'd'), '.'],
+      ['Los dos puntos están en el mismo disco, así que giran con la misma ω, y la diferencia de rapideces depende solo de su separación: ', v('B', 'vB'), ' − ', v('A', 'vA'), ' = ω·(rB − rA) = ω·', v('d', 'd'), '.'],
       [v('x', 'ω'), ` = (${f(vB)} − ${f(vA)})/${f(d / 100)} = ${f(vB - vA)}/${f(d / 100)} = `, v('x', texto(w)), '.'],
     ];
     return cerrar(rng, semilla, { correcta: w, errores, texto, unidad: 'rad/s', variables, enunciado, pregunta, solucion,

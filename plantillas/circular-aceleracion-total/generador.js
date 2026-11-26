@@ -131,7 +131,7 @@
     const ac0 = vv / R; // la «acp» sin el cuadrado
     const errores = pide === 'at' ? [
       pa('TR9-sen-cos-cambiados', acp * T.tan, `Pusiste las componentes al revés en la tangente. Con el ángulo medido desde la velocidad, tan ${ang}° = acp/aT, así que aT = acp/tan ${ang}°.`),
-      h('acp-sin-cuadrado', ac0 / T.tan, 'Calculaste la aceleración centrípeta como v/r, sin el cuadrado: acp = v²/r.'),
+      h('acp-sin-cuadrado', ac0 / T.tan, 'Calculaste la aceleración centrípeta como v/r, sin el cuadrado. La rapidez va al cuadrado, acp = v²/r: así el resultado queda en m/s², que son unidades de aceleración.'),
       h('CI-total-por-tangencial', acp / T.sen, 'Ese es el módulo de la aceleración total, la hipotenusa del triángulo. La tangencial es el cateto que va sobre la velocidad.'),
       pa('TR9-razon-equivocada', acp * T.cos, `Multiplicaste acp por cos ${ang}°. aT y acp son los dos catetos: los une la tangente, aT = acp/tan ${ang}°.`),
       ...(diam ? [h('CI-diametro-por-radio', at / 2, 'Usaste el diámetro como radio en acp = v²/r: el radio es la mitad del diámetro.')] : []),
@@ -139,7 +139,7 @@
       h('a-suma-sin-pitagoras', at + acp, 'Sumaste las dos componentes como números. aT y acp son perpendiculares: el módulo de la total sale con Pitágoras (o con el seno del ángulo).'),
       pa('TR9-sen-cos-cambiados', acp / T.cos, `Cambiaste seno y coseno. acp es el cateto opuesto al ángulo de ${ang}° (medido desde la velocidad): a = acp/sen ${ang}°.`),
       h('a-solo-centripeta', acp, 'Esa es solo la aceleración centrípeta. Como la rapidez cambia, también hay aceleración tangencial, y la total es la hipotenusa.'),
-      h('acp-sin-cuadrado', ac0 / T.sen, 'Calculaste la aceleración centrípeta como v/r, sin el cuadrado: acp = v²/r.'),
+      h('acp-sin-cuadrado', ac0 / T.sen, 'Calculaste la aceleración centrípeta como v/r, sin el cuadrado. La rapidez va al cuadrado, acp = v²/r: así el resultado queda en m/s², que son unidades de aceleración.'),
       ...(diam ? [h('CI-diametro-por-radio', a / 2, 'Usaste el diámetro como radio en acp = v²/r: el radio es la mitad del diámetro.')] : []),
     ];
     const solucion = [
@@ -173,7 +173,7 @@
         h('CI-sin-el-2', k, 'Usaste ω² = α·θ sin el 2. Desde el reposo, ω² = 2·α·θ; con acp = ω²·r y aT = α·r, la razón acp/aT vale 2θ.'),
         h('CI-cociente-depende-del-radio', k * R / 2, 'Multiplicaste por la distancia al eje, pero el radio se cancela: acp/aT = ω²r/(αr) = 2θ, igual para todas las marcas del disco.'),
         h('CI-cociente-depende-de-alfa', k / (2 * al), 'Dividiste entre α, pero α se cancela: ω² = 2αθ y aT = αr dan acp/aT = 2θ, sea cual sea α.'),
-        h('CI-at-ac-cambiadas', 1 / (2 * k), 'Pusiste la razón al revés: acp/aT = 2θ, no aT/acp.'),
+        h('CI-at-ac-cambiadas', 1 / (2 * k), 'Pusiste la razón al revés. Desde el reposo, ω² = 2αθ, así que acp/aT = ω²r/(αr) = 2θ; lo que te salió es aT/acp, su inverso.'),
         h('CI-cociente-depende-de-alfa', k * al / 2, 'Multiplicaste por α, pero α se cancela: la razón acp/aT solo depende de lo girado.'),
       ];
       const solucion = [
@@ -191,7 +191,7 @@
       h('CI-sin-el-2', th, 'Usaste ω² = α·θ sin el 2. Desde el reposo, ω² = 2·α·θ, y la tangente vale acp/aT = 2θ.'),
       h('CI-at-ac-cambiadas', 1 / (2 * th), 'Pusiste la razón al revés: esa es la tangente del ángulo con el radio. Con la velocidad, la tangente es acp/aT.'),
       h('CI-cociente-depende-del-radio', 2 * th * R, 'Multiplicaste por la distancia al eje, pero el radio se cancela: acp/aT = ω²r/(αr) = 2θ.'),
-      h('CI-cociente-depende-de-alfa', 2 * th * al, 'Multiplicaste por α, pero α se cancela: acp/aT = 2αθ/α = 2θ.'),
+      h('CI-cociente-depende-de-alfa', 2 * th * al, 'Multiplicaste por α, pero α se cancela: acp/aT = 2αθ/α = 2θ. Por eso la razón solo depende del ángulo girado, sea cual sea α.'),
       h('CI-cuadrado-de-theta', th * th, 'Elevaste lo girado al cuadrado. Desde el reposo, ω² = 2αθ: la tangente es 2θ, lineal en θ.'),
     ];
     const solucion = [
@@ -221,7 +221,7 @@
         h('acp-con-omega0', w0 * w0 * R, 'Usaste la velocidad angular del comienzo. La aceleración centrípeta cambia con ω: hay que calcular ω en ese instante.'),
         h('acp-sin-cuadrado', w * R, 'Multiplicaste ω por el radio sin elevar ω al cuadrado: eso es la rapidez de la marca. acp = ω²·r.'),
         h('CI-omega-media', ((w0 + w) / 2) ** 2 * R, 'Usaste la velocidad angular media del intervalo. La aceleración centrípeta es la del instante: con ω al final.'),
-        h('CI-at-ac-cambiadas', al * R, 'Esa es la aceleración tangencial, aT = α·r. La centrípeta es ω²·r.'),
+        h('CI-at-ac-cambiadas', al * R, 'Esa es la aceleración tangencial, aT = α·r, que mide cuánto gana la rapidez. La centrípeta es otra parte, ω²·r, y depende de qué tan rápido gira.'),
         h('CI-omega-sin-inicial', (al * t) ** 2 * R, 'Calculaste ω como si partiera del reposo. Ya giraba a ω0: ω = ω0 + α·t.'),
       ];
       const solucion = [
@@ -249,12 +249,12 @@
     const conTh = x => acp0 + x * at * th;
     const errores = sub === 'modulo' ? [
       h('a-suma-sin-pitagoras', at + acpF, 'Sumaste las dos componentes como números. aT y acp son perpendiculares: |a| = √(aT² + acp²).'),
-      h('acp-con-omega0', Math.hypot(at, acp0), 'Usaste la aceleración centrípeta del comienzo. Como la rapidez creció, acp también creció.'),
+      h('acp-con-omega0', Math.hypot(at, acp0), 'Usaste la aceleración centrípeta del comienzo. Como la rapidez creció, acp = v²/r también creció: hay que calcularla con la rapidez del instante que piden.'),
       h('a-solo-centripeta', acpF, 'Esa es solo la aceleración centrípeta. La rapidez sigue cambiando: también hay aceleración tangencial.'),
       h('CI-sin-el-2', Math.hypot(at, conTh(1)), 'Olvidaste el 2 de v² = v0² + 2·aT·s: la acp crece en 2·aT·θ.'),
       h('a-suma-sin-pitagoras', at + acp0, 'Sumaste aT con la acp del comienzo, como números. Hay que usar la acp de ese instante y Pitágoras.'),
     ] : [
-      h('acp-con-omega0', acp0, 'Esa es la aceleración centrípeta del comienzo. Como la rapidez crece, acp también crece.'),
+      h('acp-con-omega0', acp0, 'Esa es la aceleración centrípeta del comienzo. Como la rapidez crece, acp = v²/r también crece: hay que calcularla con la rapidez del instante que piden.'),
       h('CI-sin-el-2', conTh(1), 'Olvidaste el 2 de v² = v0² + 2·aT·s: dividida entre r, la acp crece en 2·aT·θ.'),
       h('CI-angulo-por-arco', (v0 * v0 + 2 * at * th) / R, 'Usaste el ángulo como si fuera el arco recorrido. El arco es s = θ·r.'),
       h('CI-suma-at-a-acp0', acp0 + at, 'Sumaste la tangencial a la centrípeta del comienzo. Lo que crece la centrípeta depende de cuánto aumentó la rapidez: 2·aT·θ.'),

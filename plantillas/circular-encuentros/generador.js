@@ -191,7 +191,7 @@
       h('CI-uno-quieto', (juntos ? p : g - p) / Math.max(a.n, b.n), 'Hiciste la cuenta como si solo se moviera el más rápido y el otro estuviera quieto.'),
     ];
     if (!juntos) errores.push(h('CI-tiempo-del-encuentro', g / rel, `Ese es el instante en que se encuentran. La separación de ${phi}° llega antes, cuando todavía les faltan ${phi}° para cruzarse.`));
-    errores.push(h('vuelta-del-rapido', 1 / Math.max(a.n, b.n), 'Ese es el tiempo que tarda el más rápido en dar una vuelta.'));
+    errores.push(h('vuelta-del-rapido', 1 / Math.max(a.n, b.n), 'Ese es el tiempo que tarda el más rápido en dar una vuelta. El encuentro depende de los dos movimientos a la vez, así que entran las dos rapideces.'));
     const solucion = [
       ['En vueltas por segundo: ', v('A', pasoVps(modo, a)), ' y ', v('B', pasoVps(modo, b)), '.'],
       [mismo ? `Van en el mismo sentido: la separación crece con la diferencia de rapideces, ${fr(rel)} de vuelta por segundo.` : `Van en sentidos contrarios: la separación cambia con la suma de las rapideces, ${fr(rel)} de vuelta por segundo.`],
@@ -234,7 +234,7 @@
     const vA = L / TA;
     solucion.push(['En ese tiempo, A da ', `${L}/${TA} = `, v('t', vueltasTxt(vA)), '.']);
     const errV = [
-      h('CI-vueltas-del-otro', L / TB, 'Esas son las vueltas de B. A tiene otro periodo.'),
+      h('CI-vueltas-del-otro', L / TB, 'Esas son las vueltas de B. A tiene otro periodo, así que en el mismo tiempo da otro número de vueltas: el tiempo entre su periodo.'),
       ...errT.map(e => ({ ...e, valor: e.valor / TA, explicacion: e.explicacion + ' Con ese tiempo, las vueltas de A salen mal.' })),
     ];
     return cerrar(rng, semilla, { correcta: vA, errores: errV, texto: vueltasTxt, unidad: 'vueltas', enunciado, pregunta, solucion,

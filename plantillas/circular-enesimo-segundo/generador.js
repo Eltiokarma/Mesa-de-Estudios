@@ -109,7 +109,7 @@
           h('CI-enesimo-segundo-dato-como-total', 2 * thk / (k * k), `Tomaste el dato como lo girado en los primeros ${k} segundos (θ = ½·α·t²). Es solo lo del ${ORD[k]} segundo.`),
           h('CI-enesimo-segundo-razon-n', thk / k, `Dividiste lo girado entre ${k}, como si fuera ω = θ/t. Lo girado en el segundo ${k} es ½·α·(2·${k} − 1).`),
           h('CI-enesimo-segundo-impar-corrido', 2 * thk / (2 * k + 1), `Usaste el impar del segundo ${k + 1} (2·${k} + 1). El segundo ${k} va de t = ${k - 1} s a t = ${k} s: su impar es 2·${k} − 1 = ${2 * k - 1}.`),
-          h('CI-sin-mitad', thk / (2 * k - 1), 'Olvidaste el ½: lo girado en el segundo n es ½·α·(2n − 1).'),
+          h('CI-sin-mitad', thk / (2 * k - 1), 'Olvidaste el ½. Lo girado en el segundo n es θ(n) − θ(n − 1), y como θ = ½·α·t², esa resta da ½·α·(2n − 1).'),
           h('CI-enesimo-segundo-como-primero', 2 * thk, `Usaste θ = ½·α, que es lo girado en el primer segundo. En el segundo ${k} gira ${2 * k - 1} veces eso.`),
         ];
         solucion = [
