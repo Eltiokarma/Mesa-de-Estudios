@@ -6,80 +6,80 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "La especie K₂MnO₄. ¿Qué estado de oxidación (EO) tiene el Mn? Datos: EO del K: +1 (grupo 1). EO del O: −2. Σ n · EO = carga de la especie (0 si es neutra); n: número de átomos de cada elemento. Alternativas: A) +8   B) +7   C) +6   D) +4",
+      "enunciado": "Piensa en la especie K₂MnO₄. ¿Qué estado de oxidación (EO) tiene el Mn? Datos: EO del K: +1 (grupo 1). EO del O: −2. Σ n · EO = carga de la especie (0 si es neutra); n: número de átomos de cada elemento. Alternativas: A) +8   B) +7   C) +6   D) +4",
       "respuesta": "C) +6",
       "pasos": [
-        "Los demás átomos suman −6; la carga es 0.",
+        "Los demás átomos suman −6 y la carga es 0, así que el Mn aporta lo que falta.",
         "EO −6 = 0 → EO = +6"
       ]
     },
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "El peróxido de potasio. El K tiene EO +1. ¿Cuál es su fórmula? Datos: Peróxido: tiene el ion O₂²⁻, dos O unidos, cada uno con EO −1. Un ion de varios átomos no se parte: el O₂²⁻ va entero. Alternativas: A) K₂O₂   B) K₂O₄   C) K₂O   D) KO",
+      "enunciado": "Piensa en el peróxido de potasio. El K tiene EO +1. ¿Cuál es su fórmula? Datos: Peróxido: tiene el ion O₂²⁻, dos O unidos, cada uno con EO −1. Un ion de varios átomos no se parte: el O₂²⁻ va entero. Alternativas: A) K₂O₂   B) K₂O₄   C) K₂O   D) KO",
       "respuesta": "A) K₂O₂",
       "pasos": [
-        "Dos K y un O₂²⁻ dejan carga 0.",
+        "Dos K y un O₂²⁻ dejan carga 0, y el ion O₂²⁻ no se parte.",
         "K₂O₂"
       ]
     },
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "El cobalto con EO +3. ¿Cuál es la fórmula de su hidróxido? Datos: Hidróxido: un OH⁻ (carga −1) por cada unidad de EO del metal, entre paréntesis si se repite. Alternativas: A) CoH₃   B) CoOH   C) Co(OH)₃   D) Co₂O₃   E) CoOH₃",
+      "enunciado": "El cobalto tiene EO +3. ¿Cuál es la fórmula de su hidróxido? Datos: Hidróxido: un OH⁻ (carga −1) por cada unidad de EO del metal, entre paréntesis si se repite. Alternativas: A) CoH₃   B) CoOH   C) Co(OH)₃   D) Co₂O₃   E) CoOH₃",
       "respuesta": "C) Co(OH)₃",
       "pasos": [
-        "Hacen falta 3 OH⁻ para compensar +3.",
+        "Hacen falta tres OH⁻ para compensar +3.",
         "Co(OH)₃"
       ]
     },
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "El óxido FeO. El hierro tiene EO +2 y +3. ¿Cuál es su nombre tradicional? Datos: EO del O: −2. Tradicional, elemento con dos EO: -⁠oso para el menor e -⁠ico para el mayor. Alternativas: A) óxido de hierro(II)   B) óxido de hierro   C) óxido ferroso   D) óxido férrico",
+      "enunciado": "Piensa en el óxido FeO. El hierro puede tener EO +2 y +3. ¿Cuál es su nombre tradicional? Datos: EO del O: −2. Tradicional, elemento con dos EO: -⁠oso para el menor e -⁠ico para el mayor. Alternativas: A) óxido de hierro(II)   B) óxido de hierro   C) óxido ferroso   D) óxido férrico",
       "respuesta": "C) óxido ferroso",
       "pasos": [
-        "El hierro tiene +2, el menor de sus dos EO.",
+        "El hierro tiene +2, el menor de sus dos EO, así que lleva -⁠oso.",
         "FeO: óxido ferroso"
       ]
     },
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "El fosfato de potasio. ¿Cuál es su fórmula? Datos: La sal junta fichas enteras de catión y anión hasta carga 0, con los números más chicos. Un ion de varios átomos va entre paréntesis si se repite. Iones: K⁺ y PO₄³⁻. Alternativas: A) KPO₄   B) K₆(PO₄)₂   C) K₃PO₄   D) K(PO₄)₃",
+      "enunciado": "Piensa en el fosfato de potasio. ¿Cuál es su fórmula? Datos: La sal junta fichas enteras de catión y anión hasta carga 0, con los números más chicos. Un ion de varios átomos va entre paréntesis si se repite. Iones: K⁺ y PO₄³⁻. Alternativas: A) KPO₄   B) K₆(PO₄)₂   C) K₃PO₄   D) K(PO₄)₃",
       "respuesta": "C) K₃PO₄",
       "pasos": [
-        "3 K y 1 PO₄³⁻ dejan carga 0.",
+        "Tres K y un PO₄³⁻ dejan carga 0.",
         "K₃PO₄"
       ]
     },
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "La especie C₂O₄²⁻, con 2 átomos de C. ¿Qué estado de oxidación (EO) tiene cada C? Datos: EO del O: −2. Σ n · EO = carga de la especie (0 si es neutra); n: número de átomos de cada elemento. Alternativas: A) +3   B) +1   C) +4   D) +5   E) +2",
+      "enunciado": "Piensa en la especie C₂O₄²⁻, que tiene 2 átomos de C. ¿Qué estado de oxidación (EO) tiene cada C? Datos: EO del O: −2. Σ n · EO = carga de la especie (0 si es neutra); n: número de átomos de cada elemento. Alternativas: A) +3   B) +1   C) +4   D) +5   E) +2",
       "respuesta": "A) +3",
       "pasos": [
-        "Los demás átomos suman −8; la carga es −2.",
+        "Los demás átomos suman −8 y la carga es −2, así que los 2 C aportan lo que falta.",
         "2 · EO −8 = −2 → EO = +3"
       ]
     },
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "El oxácido HClO. ¿Cómo se llama? Datos: EO del Cl en sus oxácidos: +1, +3, +5, +7. Con cuatro EO: hipo-⁠…-⁠oso, -⁠oso, -⁠ico, per-…-⁠ico. EO del O: −2; del H: +1. Alternativas: A) ácido perclórico   B) ácido cloroso   C) ácido clórico   D) ácido hipocloroso",
+      "enunciado": "Piensa en el oxácido HClO. ¿Cómo se llama? Datos: EO del Cl en sus oxácidos: +1, +3, +5 y +7. Con cuatro EO: hipo-⁠…-⁠oso, -⁠oso, -⁠ico, per-…-⁠ico. EO del O: −2; del H: +1. Alternativas: A) ácido perclórico   B) ácido cloroso   C) ácido clórico   D) ácido hipocloroso",
       "respuesta": "D) ácido hipocloroso",
       "pasos": [
-        "El Cl tiene +1: la suma de los EO da 0.",
+        "Con +1 en el Cl, la suma de los EO da 0, y ese EO decide el nombre.",
         "HClO: ácido hipocloroso"
       ]
     },
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Una unidad de CuSO₄·5H₂O. ¿Cuántos átomos de oxígeno tiene? Datos: El ·nH₂O son n moléculas de agua enteras por cada unidad de la sal. El número delante del H₂O multiplica sus dos H y su O. Alternativas: A) 9   B) 4   C) 5   D) 19",
+      "enunciado": "Piensa en una unidad de CuSO₄·5H₂O. ¿Cuántos átomos de oxígeno tiene? Datos: El ·nH₂O son n moléculas de agua enteras por cada unidad de la sal. El número delante del H₂O multiplica sus dos H y su O. Alternativas: A) 9   B) 4   C) 5   D) 19",
       "respuesta": "A) 9",
       "pasos": [
-        "La sal tiene 4 O y cada una de las 5 aguas, uno.",
+        "La sal tiene 4 O, y cada una de las 5 aguas tiene uno.",
         "4 + 5 = 9"
       ]
     }

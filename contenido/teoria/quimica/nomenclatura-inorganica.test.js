@@ -171,3 +171,17 @@ test('M: la fórmula del hidruro: los Datos dicen qué va primero (la alternativ
   for (let s = 4; s < 400; s += 5) { const c = idea('peroxidos-hidruros').ahoraTu.generar(s);
     if (/hidruro de/.test(plano(c.pregunta))) assert.ok(c.datos.some(d => /va primero/.test(d)), `semilla ${s}`); }
 });
+
+// Verificación de la pasada de redacción (26 nov, rutinas/redaccion/quimica.nomenclatura-inorganica.md): la sal sin
+// paréntesis (QM-POLI) ya no pega dos subíndices («ZnClO₂₂» se leía «42»; ningún subíndice pasa de 12), y el nombre Stock de un hidróxido no trae
+// en Datos la plantilla «óxido de».
+test('redacción: QM-POLI sin subíndices pegados; el Stock de un hidróxido no dice «óxido de»', () => {
+  let poli = 0, hid = 0;
+  for (const i of def.ideas) for (let s = 0; s < 400; s++) {
+    const a = i.ahoraTu.generar(s), q = plano(a.pregunta);
+    for (const o of a.opciones) if (o.error === 'QM-POLI' && !/^Una parte/.test(o.texto)) { poli++; assert.ok(((o.texto).match(/[₀-₉]+/g) || []).every(x => +[...x].map(c => '₀₁₂₃₄₅₆₇₈₉'.indexOf(c)).join('') <= 12), `${i.id} ${s}: ${o.texto}`); }
+    if (/Stock/.test(q) && /\(OH\)|OH\b|hidróxido/.test(q)) { hid++; assert.ok(!a.datos.some(d => /«óxido de»/.test(plano(d))), `${i.id} ${s}: ${q}`); }
+  }
+  for (const i of def.ideas) for (const e of i.ejemplos) if (/hidróxido|\(OH\)|NaOH/.test(e.enunciado) && /Stock/.test(e.enunciado)) { hid++; assert.ok(!(e.datos || []).some(d => /«óxido de»/.test(plano(d))), e.titulo); }
+  assert.ok(poli > 20 && hid > 20, `${poli} QM-POLI, ${hid} hidróxidos`);
+});

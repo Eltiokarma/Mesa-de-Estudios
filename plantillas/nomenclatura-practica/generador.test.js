@@ -93,3 +93,12 @@ test('cierre: el −2 del H en un hidruro no lleva el código del signo, y el gu
     const t = [...p.datos, ...p.alternativas.map(a => a.error ? a.error.explicacion : '')].join(' ');
     assert.ok(!/(^|[^A-Za-z0-9_\-])-(oso|ico|uro|ito|ato|hídrico)\b/.test(t), t); }
 });
+
+// Verificación de la pasada de redacción (26 nov): la sal sin paréntesis (QM-POLI) multiplica el último subíndice en vez
+// de pegar dos («ZnClO₂₂» se leía «42»).
+test('redacción: QM-POLI sin subíndices pegados (400 semillas por idea)', () => {
+  let n = 0;
+  for (const idea of Object.keys(gen.TIPOS_POR_IDEA)) for (let s = 0; s < 400; s++) for (const a of gen.generar(s, { idea }).alternativas)
+    if (a.error && a.error.id === 'QM-POLI') { n++; assert.ok(((a.texto).match(/[₀-₉]+/g) || []).every(x => +[...x].map(c => '₀₁₂₃₄₅₆₇₈₉'.indexOf(c)).join('') <= 12), `${s}: ${a.texto}`); }
+  assert.ok(n > 10, `${n}`);
+});
