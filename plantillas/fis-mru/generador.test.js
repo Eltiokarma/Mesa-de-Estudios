@@ -183,12 +183,13 @@ test('cada error usa un código de la unidad, del informe o del informe transver
   }
 });
 
-test('cada explicación empieza por lo que el alumno hizo bien, muestra lo que da su error y no nombra una letra', () => {
+// Redacción delegada (26 nov 2026): las explicaciones dejaron de empezar todas con «Bien» (telegrama «Bien X. Pero Y»);
+// ahora dicen en una oración completa qué estuvo bien y qué faltó, así que esta prueba ya no exige ese arranque.
+test('cada explicación muestra lo que da su error y no nombra una letra', () => {
   for (let s = 0; s < 1500; s++) {
     const p = gen.generar(s);
     for (const a of p.alternativas.filter(x => x.error)) {
       const e = a.error.explicacion;
-      assert.match(e, /^Bien/, `semilla ${s}: ${e}`);
       assert.ok(e.includes(a.texto), `semilla ${s}: «${e}» no muestra ${a.texto}`);
       assert.ok(!/\b(alternativa|opción|letra) [A-E]\b|\([A-E]\)|\bla [A-E]\b/.test(e), `semilla ${s}: nombra una letra: ${e}`);
       assert.ok(e.split(/\s+/).length <= 40, `semilla ${s}: explicación larga (${e.split(/\s+/).length} palabras): ${e}`);
@@ -408,4 +409,26 @@ test('velocidad relativa: u y c son velocidades con signo; ninguna solución esc
     if (/(^|[^\p{L}])u = /u.test(sol) && d.tipo !== 'dos-viajes') assert.match(sol, /con u la velocidad del bote respecto al agua/, `semilla ${s} (${d.tipo})`);
   }
   assert.ok(dos >= 20, 'salen los dos viajes');
+});
+
+// Verificación de la pasada de redacción (26 nov 2026): en estas explicaciones, «…, pero el tiempo es el de los dos
+// tramos, 50 s; así salen 13,5 m/s» se leía como si la cuenta correcta diera el valor equivocado. El valor del error va
+// con lo que hizo el alumno («dividirlo solo entre … da …»). Y «desde ahí la ves» decía que desde la pista se ve la
+// velocidad relativa: se ve desde tu combi.
+const comoLeida = g => {
+  const out = [];
+  for (let s = 0; s < 600; s++) {
+    const p = g.generar(s);
+    for (const a of p.alternativas) if (a.error && ['XT-SIN-DIVIDIR', 'MED-UN-TIEMPO', 'VR-UNO', 'REL-SIN-MARCO', 'REL-SOLO-A'].includes(a.error.id)) out.push([s, a]);
+  }
+  return out;
+};
+test('redacción: el valor del error va con lo que hizo el alumno, no tras la cuenta correcta', () => {
+  const vistas = comoLeida(gen);
+  assert.ok(vistas.length > 100);
+  for (const [s, a] of vistas) {
+    assert.doesNotMatch(a.error.explicacion, /; (así salen|con eso queda) [^;]+\.$/, `semilla ${s} ${a.error.id}: ${a.error.explicacion}`);
+    assert.doesNotMatch(a.error.explicacion, /desde ahí la ves/, `semilla ${s}: ${a.error.explicacion}`);
+    assert.ok(a.error.explicacion.includes(a.texto), `semilla ${s}: no muestra ${a.texto}`);
+  }
 });

@@ -583,7 +583,9 @@ test('M9: todo ejemplo y «Ahora tú» de A4 que usa lo que se cierra la separac
   const trae = ds => (ds || []).some(d => /la separación cambia la suma de las rapideces/.test(plano(d)));
   for (const e of idea('encuentro').ejemplos) if (usa(e.solucion.map(p => p.texto))) assert.ok(trae(e.datos), e.titulo);
   for (let s = 0; s < 40; s++) { const a = idea('encuentro').ahoraTu.generar(s); if (usa(a.solucion.texto)) assert.ok(trae(a.datos), `semilla ${s}`); }
-  assert.match(plano(idea('encuentro').regla.condicion), /tₑ: instante del encuentro/);
+  // Verificación de la redacción (26 nov): la condición define tₑ y D en prosa, no como rótulos entre paréntesis.
+  assert.match(plano(idea('encuentro').regla.condicion), /no hay instante de encuentro, tₑ\./);
+  assert.doesNotMatch(plano(idea('encuentro').regla.condicion), /\(tₑ:|tₑ: /);
 });
 
 // ---------- Ronda 2 del lector en frío (18 nov, noche) ----------
@@ -613,7 +615,7 @@ test('ronda 2: las reglas dicen lo que el lector no encontraba (±, pendiente, r
   assert.match(r('grafica-xt').texto, /^La pendiente es cuánto sube la recta por cada segundo/);
   assert.ok(r('grafica-xt').dibujo.datos.lineas.some(l => l.puntos[1][1] < l.puntos[0][1] && l.trazo === 'discontinua'), 'A2: una recta que baja');
   assert.match(r('desplazamiento-distancia').texto, /No es el promedio de las rapideces, salvo que los tramos duren lo mismo/);
-  assert.match(r('encuentro').condicion, /D: separación al empezar/);
+  assert.match(r('encuentro').condicion, /D, la separación al empezar,/);
   assert.match(r('encuentro').texto, /De frente, v de B es negativa/);
   assert.match(r('velocidad-relativa').texto, /Río arriba, u es negativa/);
 });
@@ -697,7 +699,8 @@ test('cabos: en A5, u y c tienen un solo significado (velocidades con signo) en 
   }
   assert.ok(conU >= 2, 'hay ejercicios con la letra u (el de dos viajes y «Así se resuelve»)');
   // La regla y «Mira» la presentan igual, y la línea de la academia sigue, en palabras.
-  assert.match(i.regla.condicion, /cada v con su signo \(\+ río abajo\); u se mide desde el agua y c, desde la orilla/);
+  // Verificación de la redacción (26 nov): lo mismo, en prosa y sin la taquigrafía «cada v con su signo (+ río abajo)».
+  assert.match(i.regla.condicion, /cada velocidad lleva su signo, \+ río abajo; u se mide desde el agua, y c, desde la orilla\./);
   assert.match(plano(i.mira.pasos[0].texto), /^u: la velocidad del bote respecto al agua/);
   assert.match(plano(i.mira.pasos[1].texto), /^c: la velocidad de la corriente/);
   assert.match(i.regla.texto, /academia/);
@@ -710,7 +713,8 @@ test('cabos: en A5, u y c tienen un solo significado (velocidades con signo) en 
     assert.ok(m && /^\d+$/.test(m[3]), `resuelve ${s}: los dos tiempos, enteros («${plano(r.enunciado)}»)`);
     const [L, t1, t2] = m.slice(1).map(Number), a = L / t1, b = -L / t2;
     const paso = r.pasos.find(p => p.tipo === 'cuentas');
-    assert.equal(plano(paso.texto), `Río abajo: ${L} ÷ ${t1} = ${fmt(a)} m/s. Río arriba, hacia el lado −: −${L} ÷ ${t2} = ${fmt(b)} m/s.`, `resuelve ${s}`);
+    // Verificación de la redacción (26 nov): el paso dice qué se divide y por qué río arriba sale negativo.
+    assert.equal(plano(paso.texto), `Río abajo, el bote avanza ${L} m en ${t1} s: ${L} ÷ ${t1} = ${fmt(a)} m/s. Río arriba va hacia el lado −, así que su velocidad es negativa: −${L} ÷ ${t2} = ${fmt(b)} m/s.`, `resuelve ${s}`);
     assert.equal(plano(paso.ecuacion), `u + c = ${fmt(a)}; −u + c = ${fmt(b)}`, `resuelve ${s}`);
     assert.equal(plano(r.respuesta), `La corriente va a ${fmt((a + b) / 2)} m/s`);
   }

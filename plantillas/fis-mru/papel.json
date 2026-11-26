@@ -29,7 +29,7 @@
       "enunciado": "En la pista corres 36 m hasta la valla en 18 s y vuelves 16 m por el mismo carril en 2 s. ¿Cuál es tu rapidez media en todo el paseo? Datos: Rapidez media = d/Δt, con d la distancia recorrida: todo el camino, sin signo. Velocidad media: vₘ = Δx/Δt, con Δx = posición final − posición inicial. Alternativas: A) 2,6 m/s   B) 5 m/s   C) 3,6 m/s   D) 1,8 m/s   E) 1 m/s",
       "respuesta": "A) 2,6 m/s",
       "pasos": [
-        "Camino recorrido: d = 36 + 16 = 52 m. Tiempo: 18 + 2 = 20 s.",
+        "El camino recorrido suma la ida y la vuelta, d = 36 + 16 = 52 m, y el tiempo es 18 + 2 = 20 s.",
         "Rapidez media = 52 ÷ 20 = 2,6 m/s."
       ]
     },
@@ -39,7 +39,7 @@
       "enunciado": "La gráfica x–t de un mototaxi es una recta de (0 s; 10 m) a (3 s; 25 m), y ahí se corta. Si sigue igual, ¿qué distancia recorre en los primeros 8 s? Datos: Velocidad en la gráfica x–t: v = (x₂ − x₁)/(t₂ − t₁). Distancia recorrida: todo el camino, sin signo. Alternativas: A) 40 m   B) 25 m   C) 120 m   D) 50 m",
       "respuesta": "A) 40 m",
       "pasos": [
-        "Pendiente: v = (25 − 10) ÷ 3 = 5 m/s.",
+        "La pendiente da la velocidad: v = (25 − 10) ÷ 3 = 5 m/s.",
         "Sin vuelta, recorre lo que avanza: 5 · 8 = 40 m."
       ]
     },
@@ -59,7 +59,7 @@
       "enunciado": "Un mototaxi a 18 km/h va 90 m delante de una combi a 54 km/h, los dos hacia el mismo lado. ¿Cuánto tiempo tarda la combi en alcanzarlo? Datos: Dos móviles se encuentran cuando están en la misma posición en el mismo instante. Posición con velocidad constante: x = x₀ + v · t. 1 km = 1000 m y 1 h = 3600 s. Alternativas: A) 9 s   B) 6 s   C) 4,5 s   D) 18 s   E) 2,5 s",
       "respuesta": "A) 9 s",
       "pasos": [
-        "En m/s: 54 km/h = 15 m/s y 18 km/h = 5 m/s.",
+        "Primero se pasan las rapideces a m/s, dividiendo entre 3,6: 54 km/h = 15 m/s y 18 km/h = 5 m/s.",
         "15 · t = 90 + 5 · t → 10 · t = 90 → t = 9 s."
       ]
     },
@@ -69,7 +69,7 @@
       "enunciado": "Un ciclista hace la mitad de su recorrido a 3 m/s. Del resto, la mitad del tiempo va a 12 m/s y la otra mitad del tiempo, a 6 m/s. ¿Cuál es su rapidez media en todo el recorrido? Datos: Rapidez media = d/Δt, con d la distancia recorrida: todo el camino, sin signo. Tiempo de un tramo con rapidez constante: distancia ÷ rapidez. Distancia de un tramo con rapidez constante: rapidez · tiempo. Alternativas: A) 3 m/s   B) 4,5 m/s   C) 7 m/s   D) 12 m/s   E) 6 m/s",
       "respuesta": "B) 4,5 m/s",
       "pasos": [
-        "Segunda mitad: dos tiempos iguales, así que va a (12 + 6) ÷ 2 = 9 m/s.",
+        "En la segunda mitad, los dos tiempos son iguales, así que ahí el promedio sí vale: (12 + 6) ÷ 2 = 9 m/s.",
         "Si cada mitad mide 1, los tiempos son 1/3 y 1/9: rapidez media = 2 ÷ (1/3 + 1/9) = 4,5 m/s."
       ]
     },
