@@ -16,3 +16,5 @@ contra los límites semanales de los planes.
 | trigonometria.reduccion-al-primer-cuadrante | escritura (fases 1 a 5) | 603 398 | 61 min 35 s | 190 herramientas |
 | aritmetica.potenciacion-y-radicacion | escritura (fases 1 a 5) | 645 744 | 71 min 45 s | 199 herramientas |
 | algebra.binomio-de-newton | escritura (fases 1 a 5) | 621 818 | 78 min | 184 herramientas |
+| quimica.reacciones-y-balance | escritura (fases 1 a 5) | 764 713 | 78 min 20 s | 240 herramientas |
+| geometria.puntos-notables | escritura (fases 1 a 5) | 708 600 | 80 min | 232 herramientas |
