@@ -125,8 +125,8 @@
       errores = [
         suma ? p('VE-suma-modulos', a + b, `Si ${AyB} apuntaran al mismo lado, sí serían ${a} + ${b}. Aquí forman ${t}°: la resultante es menor.`, E8)
              : p('VE-resta-modulos', Math.abs(a - b), `Si ${AyB} apuntaran al mismo lado, la diferencia sí mediría ${Math.abs(a - b)}. Con ${t}° es mayor.`, M2),
-        suma ? h('VE-coseno-con-menos', raiz(R2(a, b, t, -1)), `Bien la ley de cosenos, pero con θ entre ${AyB} la suma lleva +2AB·cos θ.`)
-             : h('VE-diferencia-con-mas', raiz(R2(a, b, t, 1)), `Bien la ley de cosenos; con +2AB·cos θ sale |${SUMA}|. Para la diferencia va el menos.`),
+        suma ? h('VE-coseno-con-menos', raiz(R2(a, b, t, -1)), `Bien elegida la ley de cosenos, pero con θ entre ${AyB}, la suma lleva +2AB·cos θ.`)
+             : h('VE-diferencia-con-mas', raiz(R2(a, b, t, 1)), `Bien elegida la ley de cosenos, pero con +2AB·cos θ sale |${SUMA}|; la diferencia lleva el menos.`),
         h('VE-pitagoras-siempre', raiz(a * a + b * b), `Pitágoras sería exacto si formaran 90°. Con ${t}° falta el término 2AB·cos θ.`),
         suma ? p('VE-resta-modulos', Math.abs(a - b), `Si ${AyB} fueran opuestos (180°), sí sería la resta. Aquí forman ${t}°.`, M2)
              : p('VE-suma-modulos', a + b, `Si ${AyB} fueran opuestos (180°), la diferencia sí sería la suma. Aquí forman ${t}°.`, E8),
@@ -154,9 +154,9 @@
         pregunta = [`¿Qué ángulo forman ${AyB}?`];
       }
       errores = [
-        tres ? h('VE-angulo-interior', 180 - t, `Bien el triángulo: ese es su ángulo interior. Con ${AyB} desde un mismo punto, es el suplemento.`)
-             : h('VE-coseno-con-menos', 180 - t, 'Bien el despeje, pero con −2AB·cos θ el coseno cambia de signo y sale el suplemento.'),
-        h('VE-angulo-complementario', Math.abs(90 - t), 'Bien el número, pero es el coseno, no el seno. Tomado como seno, sale el complemento.'),
+        tres ? h('VE-angulo-interior', 180 - t, `Bien leído el triángulo, pero ese es su ángulo interior; desde un mismo punto, ${AyB} forman su suplemento.`)
+             : h('VE-coseno-con-menos', 180 - t, 'Bien hecho el despeje, pero con −2AB·cos θ el coseno cambia de signo y sale el suplemento.'),
+        h('VE-angulo-complementario', Math.abs(90 - t), 'Bien calculado el número, pero es un coseno, no un seno; tomado como seno, sale el complemento.'),
         h('VE-pitagoras-siempre', 90, `Si fueran perpendiculares, R² sería ${a * a + b * b}. Aquí R² = ${P.formatear(r2, 2)}: no forman 90°.`),
       ];
       const c = (r2 - a * a - b * b) / (2 * a * b);
@@ -182,7 +182,7 @@
       pregunta = [`¿Qué ángulo forman ${AyB}?`];
       errores = [
         h('VE-razon-invertida', 180 - op.t, 'Bien planteado, pero con la razón al revés: cos θ cambia de signo y sale el suplemento.'),
-        h('VE-angulo-complementario', Math.abs(90 - op.t), 'Bien el número, pero es el coseno, no el seno. Tomado como seno, sale el complemento.'),
+        h('VE-angulo-complementario', Math.abs(90 - op.t), 'Bien calculado el número, pero es un coseno, no un seno; tomado como seno, sale el complemento.'),
         h('VE-diagonales-perpendiculares', 90, `Cierto: las diagonales ${SUMA} y ${RESTA} del rombo son perpendiculares. Se pide el ángulo entre los lados.`),
         h('VE-angulo-con-resultante', op.t / 2, `Cierto: ${SUMA} parte θ en dos. Ese es un medio; el ángulo entre ${AyB} es el doble.`),
       ];
@@ -204,10 +204,10 @@
       enunciado = [`${ctx.que} pueden girar. Su resultante mide como máximo `, `${M} ${u}`, ' y como mínimo ', `${m} ${u}`, '.'];
       pregunta = [`¿Cuánto mide la resultante cuando ${AyB} forman `, v('t', `${t}°`), '?'];
       errores = [
-        h('VE-maximo-minimo-como-modulos', raiz(R2(M, m, t)), `Bien usar el máximo y el mínimo; primero salen A y B: A + B = ${M}, A − B = ${m}.`),
+        h('VE-maximo-minimo-como-modulos', raiz(R2(M, m, t)), `Bien usados el máximo y el mínimo, pero de A + B = ${M} y A − B = ${m} salen A y B.`),
         t === 90 ? h('VE-sin-raiz', r2, `Bien calculado R² = ${r2}; solo faltó sacar la raíz cuadrada.`)
                  : h('VE-pitagoras-siempre', raiz(a * a + b * b), `Pitágoras sería exacto si formaran 90°. Con ${t}° falta el término 2AB·cos θ.`),
-        h('VE-coseno-con-menos', raiz(R2(a, b, t, -1)), `Bien la ley de cosenos, pero con θ entre ${AyB} la suma lleva +2AB·cos θ.`),
+        h('VE-coseno-con-menos', raiz(R2(a, b, t, -1)), `Bien elegida la ley de cosenos, pero con θ entre ${AyB}, la suma lleva +2AB·cos θ.`),
         h('VE-promedio-max-min', (M + m) / 2, `El promedio del máximo y el mínimo da el módulo mayor (${a}): es un paso, no la resultante.`),
         h('VE-sin-raiz', r2, `Bien calculado R² = ${P.formatear(r2, 2)}; solo faltó sacar la raíz cuadrada.`),
       ];

@@ -69,10 +69,10 @@
    * Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): las fórmulas de los dos productos (con componentes y
    * con el ángulo) y, si hace falta, la tabla de academia, una por línea. Nunca el cos θ ni el número que sale.
    */
-  const ESCALAR = (dim) => `Producto escalar: ${AB} = A_xB_x + A_yB_y${dim === 3 ? ' + A_zB_z' : ''}.`;
+  const ESCALAR = (dim) => `Producto escalar: ${AB} = A_x B_x + A_y B_y${dim === 3 ? ' + A_z B_z' : ''}.`;
   const ESC_ANG = `Con el ángulo θ entre ${AyB}: ${AB} = A B cos θ.`;
   const VEC_ANG = `Producto vectorial: |${AxB}| = A B sen θ.`;
-  const CRUZ_Z = `En el plano xy: ${AxB} = (A_xB_y − A_yB_x) ${K}.`;
+  const CRUZ_Z = `En el plano xy: ${AxB} = (A_x B_y − A_y B_x) ${K}.`;
   function lineasDatos(tipo, d) {
     const dim = d.a && d.a.length === 3 && d.a[2] || d.b && d.b.length === 3 && d.b[2] ? 3 : 2;
     if (tipo === 'escalar') return [ESCALAR(dim)];
@@ -125,7 +125,7 @@
         h('VE-escalar-signo-final', -correcta, 'Cambiaste el signo del resultado al sumar los productos.'),
       ];
       solucion = [
-        [`El producto escalar multiplica componente por componente y suma: ${AB} = A_xB_x + A_yB_y`, dim === 3 ? ' + A_zB_z.' : '.'],
+        [`El producto escalar multiplica componente por componente y suma: ${AB} = A_x B_x + A_y B_y`, dim === 3 ? ' + A_z B_z.' : '.'],
         [`${AB} = `, a.slice(0, dim).map((x, q) => `(${f(x)})(${f(b[q])})`).join(' + '), ` = ${prods.map(f).join(' + ').replace(/\+ −/g, '− ')}.`],
         [`${AB} = `, v('X', f(correcta)), correcta === 0 ? `: ${AyB} son perpendiculares.` : correcta < 0 ? `: es negativo, así que el ángulo entre ${AyB} es obtuso.` : `: es positivo, así que el ángulo entre ${AyB} es agudo.`],
       ];
@@ -184,13 +184,13 @@
       enunciado = ['En el plano xy se tienen ', v('A', `${A_} = ${ijk(a)}`), ' y ', v('B', `${B_} = ${ijk(b)}`), `. Su producto vectorial es ${AxB} = `, v('X', 'c'), `${K}.`];
       pregunta = ['¿Cuánto vale c?'];
       errores = [
-        h('VE-mano-derecha-invertida', -correcta, `Calculaste ${BxA}, que apunta al revés: ${AxB} = −(${BxA}). Con ${I} × ${J} = ${K}, la componente es A_xB_y − A_yB_x, en ese orden.`),
-        h('VE-signo-determinante', a[0] * b[1] + a[1] * b[0], 'Sumaste los dos productos cruzados. En el determinante se restan: A_xB_y − A_yB_x.'),
+        h('VE-mano-derecha-invertida', -correcta, `Calculaste ${BxA}, que apunta al revés: ${AxB} = −(${BxA}). Con ${I} × ${J} = ${K}, la componente es A_x B_y − A_y B_x, en ese orden.`),
+        h('VE-signo-determinante', a[0] * b[1] + a[1] * b[0], 'Sumaste los dos productos cruzados. En el determinante se restan: A_x B_y − A_y B_x.'),
         h('VE-escalar-por-vectorial', a[0] * b[0] + a[1] * b[1], 'Calculaste el producto escalar (x con x, y con y). El vectorial cruza: x con y.'),
         h('VE-vectorial-modulos', Math.abs(a[0] * b[1]) + Math.abs(a[1] * b[0]), 'Sumaste los productos cruzados sin sus signos.'),
       ];
       solucion = [
-        [`Con ${I} × ${J} = ${K} y ${J} × ${I} = −${K} (y ${I} × ${I} = ${J} × ${J} = 0${P.FLECHA}), ${AxB} = (A_xB_y − A_yB_x) ${K}.`],
+        [`Con ${I} × ${J} = ${K} y ${J} × ${I} = −${K} (y ${I} × ${I} = ${J} × ${J} = 0${P.FLECHA}), ${AxB} = (A_x B_y − A_y B_x) ${K}.`],
         [`c = (${f(a[0])})(${f(b[1])}) − (${f(a[1])})(${f(b[0])}) = ${f(a[0] * b[1])} − (${f(a[1] * b[0])}).`],
         ['c = ', v('X', f(correcta)), correcta > 0 ? `: ${AxB} sale de la pantalla (+${K}); de ${A_} a ${B_} se gira en sentido antihorario.` : `: ${AxB} entra en la pantalla (−${K}); de ${A_} a ${B_} se gira en sentido horario.`],
       ];

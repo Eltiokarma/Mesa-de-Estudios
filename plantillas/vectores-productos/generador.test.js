@@ -65,10 +65,10 @@ test('datos: una lista de líneas cortas en texto plano, en todos los tipos', ()
 
 function revisarDatos(p, d, s) {
   const t = p._datos.tipo;
-  if (['escalar', 'angulo', 'perpendicular'].includes(t)) assert.ok(d.includes('A_xB_x + A_yB_y'), `semilla ${s}: falta el producto escalar`);
+  if (['escalar', 'angulo', 'perpendicular'].includes(t)) assert.ok(d.includes('A_x B_x + A_y B_y'), `semilla ${s}: falta el producto escalar`);
   if (t === 'angulo') assert.ok(d.includes('A B cos θ') && d.includes('cos 37° = 4/5') && !/cos θ = /.test(d), `semilla ${s}: ángulo`);
   if (t === 'perpendicular') assert.ok(d.includes('= 0'), `semilla ${s}: falta la condición de perpendicular`);
-  if (t === 'vectorial-z') assert.ok(d.includes('A_xB_y − A_yB_x'), `semilla ${s}: falta el producto vectorial`);
+  if (t === 'vectorial-z') assert.ok(d.includes('A_x B_y − A_y B_x'), `semilla ${s}: falta el producto vectorial`);
   if (t === 'modulo-cruz') assert.ok(d.includes('sen θ') && d.includes('sen² θ + cos² θ = 1'), `semilla ${s}: módulo del vectorial`);
   if (t === 'area') assert.ok(d.includes('área del paralelogramo'), `semilla ${s}: falta el área del paralelogramo`);
 }

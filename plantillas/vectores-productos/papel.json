@@ -17,10 +17,10 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Se tienen los vectores A⃗ = −2î + 4ĵ − 2k̂ y B⃗ = 5î + 4ĵ − 4k̂. ¿Cuánto vale el producto escalar A⃗·B⃗? Datos: Producto escalar: A⃗·B⃗ = A_xB_x + A_yB_y + A_zB_z. Alternativas: A) 34   B) −14   C) −34   D) 14   E) 5",
+      "enunciado": "Se tienen los vectores A⃗ = −2î + 4ĵ − 2k̂ y B⃗ = 5î + 4ĵ − 4k̂. ¿Cuánto vale el producto escalar A⃗·B⃗? Datos: Producto escalar: A⃗·B⃗ = A_x B_x + A_y B_y + A_z B_z. Alternativas: A) 34   B) −14   C) −34   D) 14   E) 5",
       "respuesta": "D) 14",
       "pasos": [
-        "El producto escalar multiplica componente por componente y suma: A⃗·B⃗ = A_xB_x + A_yB_y + A_zB_z.",
+        "El producto escalar multiplica componente por componente y suma: A⃗·B⃗ = A_x B_x + A_y B_y + A_z B_z.",
         "A⃗·B⃗ = (−2)(5) + (4)(4) + (−2)(−4) = −10 + 16 + 8.",
         "A⃗·B⃗ = 14: es positivo, así que el ángulo entre A⃗ y B⃗ es agudo."
       ]
@@ -50,10 +50,10 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Se tienen los vectores A⃗ = 4î − ĵ − 2k̂ y B⃗ = −4î + 2ĵ − 5k̂. ¿Cuánto vale el producto escalar A⃗·B⃗? Datos: Producto escalar: A⃗·B⃗ = A_xB_x + A_yB_y + A_zB_z. Alternativas: A) 28   B) 21   C) −6   D) −8   E) 8",
+      "enunciado": "Se tienen los vectores A⃗ = 4î − ĵ − 2k̂ y B⃗ = −4î + 2ĵ − 5k̂. ¿Cuánto vale el producto escalar A⃗·B⃗? Datos: Producto escalar: A⃗·B⃗ = A_x B_x + A_y B_y + A_z B_z. Alternativas: A) 28   B) 21   C) −6   D) −8   E) 8",
       "respuesta": "D) −8",
       "pasos": [
-        "El producto escalar multiplica componente por componente y suma: A⃗·B⃗ = A_xB_x + A_yB_y + A_zB_z.",
+        "El producto escalar multiplica componente por componente y suma: A⃗·B⃗ = A_x B_x + A_y B_y + A_z B_z.",
         "A⃗·B⃗ = (4)(−4) + (−1)(2) + (−2)(−5) = −16 − 2 + 10.",
         "A⃗·B⃗ = −8: es negativo, así que el ángulo entre A⃗ y B⃗ es obtuso."
       ]
@@ -61,7 +61,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Se tienen los vectores A⃗ = −2î − 4ĵ y B⃗ = î − 2ĵ. ¿Qué ángulo forman A⃗ y B⃗? Datos: Producto escalar: A⃗·B⃗ = A_xB_x + A_yB_y. Con el ángulo θ entre A⃗ y B⃗: A⃗·B⃗ = A B cos θ. Módulo: A = √(A_x² + A_y²). Valores de academia: cos 30° = √3/2, cos 37° = 4/5, cos 53° = 3/5 y cos 60° = 1/2. Para un ángulo obtuso, el coseno es negativo: cos(180° − α) = −cos α. Alternativas: A) 37°   B) 90°   C) 127°   D) 53°",
+      "enunciado": "Se tienen los vectores A⃗ = −2î − 4ĵ y B⃗ = î − 2ĵ. ¿Qué ángulo forman A⃗ y B⃗? Datos: Producto escalar: A⃗·B⃗ = A_x B_x + A_y B_y. Con el ángulo θ entre A⃗ y B⃗: A⃗·B⃗ = A B cos θ. Módulo: A = √(A_x² + A_y²). Valores de academia: cos 30° = √3/2, cos 37° = 4/5, cos 53° = 3/5 y cos 60° = 1/2. Para un ángulo obtuso, el coseno es negativo: cos(180° − α) = −cos α. Alternativas: A) 37°   B) 90°   C) 127°   D) 53°",
       "respuesta": "D) 53°",
       "pasos": [
         "De A⃗·B⃗ = A B cos θ: cos θ = A⃗·B⃗ / (A B).",
@@ -73,10 +73,10 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Se tienen los vectores A⃗ = 2î − 2ĵ y B⃗ = −4î − ĵ. ¿Cuánto vale el producto escalar A⃗·B⃗? Datos: Producto escalar: A⃗·B⃗ = A_xB_x + A_yB_y. Alternativas: A) 6   B) −6   C) 10   D) −5",
+      "enunciado": "Se tienen los vectores A⃗ = 2î − 2ĵ y B⃗ = −4î − ĵ. ¿Cuánto vale el producto escalar A⃗·B⃗? Datos: Producto escalar: A⃗·B⃗ = A_x B_x + A_y B_y. Alternativas: A) 6   B) −6   C) 10   D) −5",
       "respuesta": "B) −6",
       "pasos": [
-        "El producto escalar multiplica componente por componente y suma: A⃗·B⃗ = A_xB_x + A_yB_y.",
+        "El producto escalar multiplica componente por componente y suma: A⃗·B⃗ = A_x B_x + A_y B_y.",
         "A⃗·B⃗ = (2)(−4) + (−2)(−1) = −8 + 2.",
         "A⃗·B⃗ = −6: es negativo, así que el ángulo entre A⃗ y B⃗ es obtuso."
       ]
@@ -84,10 +84,10 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "En el plano xy se tienen A⃗ = −4î − 2ĵ y B⃗ = −î + 4ĵ. Su producto vectorial es A⃗ × B⃗ = ck̂. ¿Cuánto vale c? Datos: î × ĵ = k̂, ĵ × î = −k̂ y î × î = ĵ × ĵ = 0⃗. En el plano xy: A⃗ × B⃗ = (A_xB_y − A_yB_x) k̂. Alternativas: A) −4   B) −14   C) −18   D) 18",
+      "enunciado": "En el plano xy se tienen A⃗ = −4î − 2ĵ y B⃗ = −î + 4ĵ. Su producto vectorial es A⃗ × B⃗ = ck̂. ¿Cuánto vale c? Datos: î × ĵ = k̂, ĵ × î = −k̂ y î × î = ĵ × ĵ = 0⃗. En el plano xy: A⃗ × B⃗ = (A_x B_y − A_y B_x) k̂. Alternativas: A) −4   B) −14   C) −18   D) 18",
       "respuesta": "C) −18",
       "pasos": [
-        "Con î × ĵ = k̂ y ĵ × î = −k̂ (y î × î = ĵ × ĵ = 0⃗), A⃗ × B⃗ = (A_xB_y − A_yB_x) k̂.",
+        "Con î × ĵ = k̂ y ĵ × î = −k̂ (y î × î = ĵ × ĵ = 0⃗), A⃗ × B⃗ = (A_x B_y − A_y B_x) k̂.",
         "c = (−4)(4) − (−2)(−1) = −16 − (2).",
         "c = −18: A⃗ × B⃗ entra en la pantalla (−k̂); de A⃗ a B⃗ se gira en sentido horario."
       ]

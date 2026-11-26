@@ -94,10 +94,10 @@
       enunciado = [`En un ${nombre} ${letras.join('')} de lado `, v('L', `${L} ${u}`), `, se dibujan los vectores que van de A a cada uno de los otros vértices (${letras.slice(1).map(x => VEC('A' + x)).join(', ')}).`];
       pregunta = ['¿Cuánto mide su resultante?'];
       errores = [
-        pa('VE-suma-modulos', redondeo(sumaMod), 'Bien juntar todas las flechas, pero apuntan a lados distintos: se suman como flechas, no como números.'),
-        h('VE-cuenta-repetido', redondeo((n - 1) * Rc), `Bien usar el centro: cada flecha es ${VEC('AO')} + ${VEC('OX')}. Al sumar, ${VEC('AO')} queda ${n} veces, no ${n - 1}.`),
+        pa('VE-suma-modulos', redondeo(sumaMod), 'Bien juntadas todas las flechas, pero apuntan a lados distintos: se suman como flechas, no como números.'),
+        h('VE-cuenta-repetido', redondeo((n - 1) * Rc), `Bien usado el centro, porque cada flecha es ${VEC('AO')} + ${VEC('OX')}; pero al sumar, ${VEC('AO')} queda ${n} veces, no ${n - 1}.`),
         h('VE-hex-solo-diagonal', redondeo(mayor), 'Cierto, esa es la flecha más larga. Las demás también suman.'),
-        h('VE-cuenta-doble', redondeo(2 * n * Rc), `Bien usar el centro, pero cada flecha cuenta una vez: la resultante es ${n} veces ${VEC('AO')}, no ${2 * n}.`),
+        h('VE-cuenta-doble', redondeo(2 * n * Rc), `Bien usado el centro, pero cada flecha cuenta una vez: la resultante es ${n} veces ${VEC('AO')}, no ${2 * n}.`),
         h('VE-se-anulan', 0, 'Se anularían si salieran del centro. Desde A, todas apuntan hacia el mismo lado del polígono.'),
       ];
       solucion = [
@@ -116,8 +116,8 @@
         pa('VE-suma-modulos', (n - 1) * L, `Si los lados fueran en línea recta, sí sumarían eso. Cola con punta, ${VEC('R')} va del inicio al final.`),
         h('VE-se-anulan', 0, `Con los ${n} lados, sí se anulan. Aquí falta uno, y la resultante es justo ese lado.`),
         h('VE-perimetro', n * L, 'Ese es el perímetro: la suma de los largos. La resultante es una flecha.'),
-        h('VE-cuenta-repetido', 2 * L, 'Bien ver que la resultante es el lado que falta; ese lado cuenta una sola vez.'),
-        h('VE-resta-lado', (n - 2) * L, 'Bien ver el lado que falta, pero los lados no van en la misma dirección: no se restan largos.'),
+        h('VE-cuenta-repetido', 2 * L, 'Bien visto que la resultante es el lado que falta, pero ese lado cuenta una sola vez.'),
+        h('VE-resta-lado', (n - 2) * L, 'Bien visto el lado que falta, pero los lados no van en la misma dirección, así que sus largos no se restan.'),
       ];
       solucion = [
         [`Con los ${n} lados cola con punta se vuelve al punto de partida: la suma es ${CERO}.`],
@@ -133,8 +133,8 @@
       errores = [
         pa('VE-suma-modulos', redondeo((n - 1) * Rc), 'Si los radios apuntaran al mismo lado, sí sumarían eso. Apuntan a lados distintos.'),
         h('VE-se-anulan', 0, `Con los ${n} radios, sí se anulan. Aquí falta ${VEC('O' + letras[quita])}: la suma es esa flecha al revés.`),
-        h('VE-lado-por-radio', L, 'Bien ver que vale lo que falta; pero lo que falta es un radio, no un lado.'),
-        h('VE-cuenta-repetido', redondeo(2 * Rc), 'Bien ver la flecha que falta; cuenta una sola vez, al revés.'),
+        h('VE-lado-por-radio', L, 'Bien visto que la suma vale lo que falta, pero lo que falta es un radio, no un lado.'),
+        h('VE-cuenta-repetido', redondeo(2 * Rc), 'Bien vista la flecha que falta, pero cuenta una sola vez y al revés.'),
         h('VE-diametro', redondeo(2 * Rc), 'Ese es el diámetro. La resultante es un solo radio, al revés.'),
       ];
       solucion = [

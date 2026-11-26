@@ -221,17 +221,17 @@
       errores = [
         cardinal ? h('VE-recorrido-vs-desplazamiento', sumaMod, 'Bien sumados los tramos: eso es lo caminado. La distancia al inicio sale de las componentes.')
                  : pa('VE-suma-modulos', sumaMod, 'Si todos apuntaran al mismo lado, sí sumarían eso. Hay que sumar componente por componente.', E8),
-        h('VE-sen-cos-cambiados', Math.hypot(CX, CY), 'Bien partir en componentes, pero con θ desde +x: x lleva el coseno e y el seno.'),
-        h('VE-signo-por-cuadrante', Math.hypot(AX, AY), 'Bien las componentes, pero fuera del primer cuadrante alguna es negativa y resta.'),
-        h('VE-componentes-sumadas', Math.abs(X) + Math.abs(Y), 'Bien R_x y R_y; son perpendiculares, así que el módulo sale con Pitágoras, no sumándolas.'),
+        h('VE-sen-cos-cambiados', Math.hypot(CX, CY), 'Bien partido en componentes, pero con θ medido desde +x, la x lleva el coseno y la y, el seno.'),
+        h('VE-signo-por-cuadrante', Math.hypot(AX, AY), 'Bien halladas las componentes, pero fuera del primer cuadrante alguna es negativa y resta.'),
+        h('VE-componentes-sumadas', Math.abs(X) + Math.abs(Y), 'Bien halladas R_x y R_y, pero son perpendiculares: el módulo sale con Pitágoras, no sumándolas.'),
         h('VE-sin-raiz', r2, `Bien calculado R² = ${f(r2)}; solo faltó sacar la raíz cuadrada.`),
       ];
       if (tipo === 'combinacion') {
         const [SX, SY] = (() => { let x = 0, y = 0; vs.forEach((w, i) => { x += Math.abs(coef[i]) * w.x; y += Math.abs(coef[i]) * w.y; }); return [x, y]; })();
         const [UX, UY] = (() => { let x = 0, y = 0; vs.forEach((w, i) => { x += Math.sign(coef[i]) * w.x; y += Math.sign(coef[i]) * w.y; }); return [x, y]; })();
         errores.splice(1, 0,
-          h('VE-resta-como-suma', Math.hypot(SX, SY), `Bien sumar por componentes; −${P.vec('B')} es ${P.vec('B')} al revés: sus componentes cambian de signo.`),
-          h('VE-coeficiente-olvidado', Math.hypot(UX, UY), `Bien sumar por componentes; falta el coeficiente: 2${P.vec('A')} tiene el doble de cada componente de ${P.vec('A')}.`));
+          h('VE-resta-como-suma', Math.hypot(SX, SY), `Bien sumado por componentes, pero −${P.vec('B')} es ${P.vec('B')} al revés, así que sus componentes cambian de signo.`),
+          h('VE-coeficiente-olvidado', Math.hypot(UX, UY), `Bien sumado por componentes, pero faltó el coeficiente: 2${P.vec('A')} tiene el doble de cada componente de ${P.vec('A')}.`));
       }
     } else {
       const an = anguloNotable(X, Y);
@@ -243,11 +243,11 @@
       const ref = an.ref, cuadrante = X > 0 && Y > 0 ? 1 : X < 0 && Y > 0 ? 2 : X < 0 ? 3 : 4;
       const conRef = r => (cuadrante === 1 ? r : cuadrante === 2 ? 180 - r : cuadrante === 3 ? 180 + r : 360 - r);
       errores = [
-        h('VE-tangente-invertida', conRef(90 - ref), `Bien con la tangente, pero es R_y/R_x. Al revés sale el complemento: ${90 - ref}° en vez de ${ref}°.`),
+        h('VE-tangente-invertida', conRef(90 - ref), `Bien usada la tangente, pero va R_y/R_x; al revés sale el complemento: ${90 - ref}° en vez de ${ref}°.`),
         h('VE-angulo-de-referencia', ref, `Cierto, ${ref}° es el ángulo con el eje x. Desde +x, en sentido antihorario, es ${an.t}°.`),
-        h('VE-sentido-opuesto', (an.t + 180) % 360, 'Bien la dirección, pero apunta al revés: las dos componentes cambiaron de signo.'),
-        h('VE-signo-por-cuadrante', cuadrante === 1 ? 180 - an.t : ref, 'Bien el ángulo de referencia; el signo de una componente te llevó a otro cuadrante.'),
-        h('VE-signo-por-cuadrante', 360 - an.t, 'Bien el ángulo de referencia; el signo de R_y te llevó a otro cuadrante.'),
+        h('VE-sentido-opuesto', (an.t + 180) % 360, 'Bien la dirección, pero el sentido quedó al revés: las dos componentes cambiaron de signo.'),
+        h('VE-signo-por-cuadrante', cuadrante === 1 ? 180 - an.t : ref, 'Bien hallado el ángulo de referencia, pero el signo de una componente te llevó a otro cuadrante.'),
+        h('VE-signo-por-cuadrante', 360 - an.t, 'Bien hallado el ángulo de referencia, pero el signo de R_y te llevó a otro cuadrante.'),
       ];
     }
 

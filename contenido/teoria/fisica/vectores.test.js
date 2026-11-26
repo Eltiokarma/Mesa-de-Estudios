@@ -148,3 +148,28 @@ test('la práctica de Vectores usa el color de cada magnitud', () => {
   }
   assert.ok(n > 2000);
 });
+
+// Verificación de la pasada de redacción (26 nov 2026).
+//   - «Así se resuelve» del unitario decía «0,38² + 0,92² = 1», que da 0,9908: una suma de cuadrados escrita con «=»
+//     tiene que ser cierta tal como se lee.
+//   - En el ángulo desde el producto escalar, el distractor `directo` (150° cuando el ángulo es 120°) no decía qué
+//     error modela: es tomar el cociente como seno y buscar el ángulo obtuso de ese seno.
+test('redacción: las sumas de cuadrados son ciertas y el distractor del ángulo nombra su error', () => {
+  const plano = x => (x == null ? '' : typeof x === 'string' ? x : Array.isArray(x) ? x.map(plano).join('') : typeof x === 'object' ? plano(x.t ?? x.texto ?? '') : String(x));
+  const num = t => Number(t.replace(',', '.'));
+  const idea = id => def.ideas.find(i => i.id === id);
+  for (let s = 0; s < 200; s++) {
+    for (const p of idea('componentes').resuelve.generar(s).pasos) {
+      for (const m of plano(p.texto).matchAll(/(\d+(?:,\d+)?)² \+ (\d+(?:,\d+)?)² = (\d+(?:,\d+)?)(?![\d/])/g)) {
+        assert.ok(Math.abs(num(m[1]) ** 2 + num(m[2]) ** 2 - num(m[3])) < 1e-9, `semilla ${s}: «${m[0]}» es falso`);
+      }
+    }
+    const a = idea('productos').ahoraTu.generar(s);
+    for (const o of a.opciones || []) {
+      if (o.id !== 'directo') continue;
+      assert.equal(o.texto, '150°', `semilla ${s}: ${o.texto}`);
+      assert.match(o.siFuera, /seno/, `semilla ${s}: ${o.siFuera}`);
+      assert.match(o.siFuera, /obtuso/, `semilla ${s}: ${o.siFuera}`);
+    }
+  }
+});

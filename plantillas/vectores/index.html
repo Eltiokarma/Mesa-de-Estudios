@@ -1312,7 +1312,7 @@ const EXPS = [
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>`,
     q2:{ boton:'Otra pregunta: el triángulo',
       q:`Ahora ${av_()} = (4; 0) y ${bv_()} = (1; 3). ¿Cuánto mide el área del triángulo que forman ${av_()} y ${bv_()}, y hacia dónde apunta ${ar_('a\u20D7 × b\u20D7')}?`,
-      datos:['En el plano: a\u20D7 × b\u20D7 = (aₓb_y − a_ybₓ) k̂. Si sale positivo, a\u20D7 × b\u20D7 sale de la pantalla.', '|a\u20D7 × b\u20D7| es el área del paralelogramo que forman a\u20D7 y b\u20D7.'],
+      datos:['En el plano: a\u20D7 × b\u20D7 = (a<sub>x</sub>·b<sub>y</sub> − a<sub>y</sub>·b<sub>x</sub>) k̂. Si sale positivo, a\u20D7 × b\u20D7 sale de la pantalla.', '|a\u20D7 × b\u20D7| es el área del paralelogramo que forman a\u20D7 y b\u20D7.'],
       opts:[['a', `${fmt(AR.triangulo, 0)}, y a\u20D7 × b\u20D7 entra en la pantalla`, 'VE-mano-derecha-invertida', 'hipotesis'],
             ['b', `${fmt(AR.errores.sinMitad, 0)}, y a\u20D7 × b\u20D7 sale de la pantalla`, 'VE-area-sin-mitad', 'hipotesis'],
             ['c', `${fmt(AR.triangulo, 0)}, y a\u20D7 × b\u20D7 sale de la pantalla`],
