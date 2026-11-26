@@ -11,7 +11,8 @@ gastar contexto»). Revisas todo el contenido, pero idea por idea.
 ## Paso 1: capturas para el lector en frío (primero, para que la sesión lance a los lectores en paralelo)
 `MESA_URL=http://localhost:<PORT> node herramientas/capturas-teoria.js <UNIDAD> <SCRATCH>/lector momentos,ejemplos --entera --lector`
 (si se cae por tiempo, copia la herramienta a tu SCRATCH con más espera). Comprueba que hay capturas de todas las
-ideas y manda a la sesión, con SendMessage a `main`, un mensaje corto: «Capturas del lector listas en <ruta>, ideas:
+ideas y que ninguna es la pantalla de error «No se pudo abrir la teoría» ni está repetida (compara su md5: el 26 nov, con
+la máquina cargada, un lector entero miró solo pantallas de error; si pasa, vuelve a sacarlas con más espera) y manda a la sesión, con SendMessage a `main`, un mensaje corto: «Capturas del lector listas en <ruta>, ideas:
 <ids>». Después sigue con el paso 2 sin esperar.
 
 ## Paso 2: auditoría (`docs/metodo/unidad/5-auditor.md`)
