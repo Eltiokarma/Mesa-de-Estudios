@@ -97,8 +97,13 @@
     if (tipo === 'paquete') return `<rect x="${n(x - 6)}" y="${n(y - 6)}" width="12" height="12" rx="2" fill="${fill}"${fo} stroke="currentColor" stroke-width="${g}"${op}/>`
       + (tenue ? '' : `<path d="M${n(x)} ${n(y - 6)}V${n(y + 6)}M${n(x - 6)} ${n(y)}H${n(x + 6)}" stroke="currentColor" stroke-width="1.2"/>`);
     if (tipo === 'canica') return `<circle cx="${n(x)}" cy="${n(y)}" r="4.5" fill="${fill}"${fo} stroke="currentColor" stroke-width="${tenue ? 1.5 : 2}"${op}/>`;
-    if (tipo === 'pelota') return `<circle cx="${n(x)}" cy="${n(y)}" r="6.5" fill="${fill}"${fo} stroke="currentColor" stroke-width="${g}"${op}/>`
-      + (tenue ? '' : `<path d="M${n(x - 4.5)} ${n(y - 2)}Q${n(x)} ${n(y + 2.5)} ${n(x + 4.5)} ${n(y - 2)}" fill="none" stroke="currentColor" stroke-width="1.2"/>`);
+    // pelota de fútbol (26 nov, dibujos reconocibles): el pentágono negro del centro y las costuras que salen de él
+    if (tipo === 'pelota') {
+      const pen = [0, 1, 2, 3, 4].map(k => [x + 2.6 * Math.sin(k * 1.2566), y - 2.6 * Math.cos(k * 1.2566)]);
+      return `<circle cx="${n(x)}" cy="${n(y)}" r="6.5" fill="${tenue ? 'none' : 'var(--card)'}" stroke="currentColor" stroke-width="${g}"${op}/>`
+        + (tenue ? '' : `<path d="M${pen.map(q => `${n(q[0])} ${n(q[1])}`).join('L')}Z" fill="currentColor" stroke="none"/>`
+          + `<path d="${pen.map(q => `M${n(q[0])} ${n(q[1])}L${n(x + (q[0] - x) * 2.3)} ${n(y + (q[1] - y) * 2.3)}`).join('')}" fill="none" stroke="currentColor" stroke-width="1"/>`);
+    }
     // piedra: un canto rodado, más ancho que alto (cuatro curvas, sin esquinas)
     return `<path d="M${n(x - 7)} ${n(y + 0.5)}C${n(x - 7)} ${n(y - 4)} ${n(x - 3)} ${n(y - 5.5)} ${n(x + 1)} ${n(y - 5.5)}C${n(x + 5)} ${n(y - 5.5)} ${n(x + 7)} ${n(y - 2.5)} ${n(x + 7)} ${n(y + 1)}`
       + `C${n(x + 7)} ${n(y + 4)} ${n(x + 3.5)} ${n(y + 5.5)} ${n(x - 0.5)} ${n(y + 5.5)}C${n(x - 4.5)} ${n(y + 5.5)} ${n(x - 7)} ${n(y + 4)} ${n(x - 7)} ${n(y + 0.5)}Z" fill="${fill}"${fo} stroke="currentColor" stroke-width="${g}" stroke-linejoin="round"${op}/>`;
@@ -126,8 +131,13 @@
     if (tipo === 'manguera') {
       // la manguera tendida en el piso y su boquilla, que apunta con el ángulo del chorro (el agua sale de su punta)
       const ca = Math.cos(ang), sa = Math.sin(ang);
-      const s = `<path d="M${M + 2} ${n(YF - 2)}H${n(XL - 6)}" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`
-        + `<path d="M${n(XL - 6)} ${n(YF - 2)}L${n(XL + 8 * ca)} ${n(YP - 8 * sa)}" stroke="${ink}" stroke-width="6" stroke-linecap="round"/>`;
+      // 26 nov (dibujos reconocibles): la manguera enrollada en el piso (tres vueltas) y la boquilla con su gatillo; una
+      // raya sola no se leía como manguera. La punta de la boquilla y su ángulo no cambian.
+      const cx = M + 16, rr = [13, 10, 7];
+      let s = rr.map((r, k) => `<ellipse cx="${cx}" cy="${n(YF - 4.5 - k * 1.2)}" rx="${r}" ry="${n(r * 0.32)}" fill="none" stroke="${ink}" stroke-width="2.5"/>`).join('');
+      s += `<path d="M${cx + 13} ${n(YF - 3)}C${cx + 24} ${n(YF - 1)} ${n((cx + XL) / 2)} ${n(YF - 2)} ${n(XL - 6)} ${n(YF - 2)}" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`;
+      s += `<path d="M${n(XL - 6)} ${n(YF - 2)}L${n(XL + 8 * ca)} ${n(YP - 8 * sa)}" stroke="${ink}" stroke-width="6" stroke-linecap="round"/>`
+        + `<path d="M${n(XL - 6)} ${n(YF - 2)}L${n(XL - 6 + 6 * sa)} ${n(YF - 2 + 6 * ca)}" stroke="${ink}" stroke-width="2" stroke-linecap="round"/>`;
       return { s: `<g class="kit-objeto" data-objeto="manguera" data-prueba="si">${s}</g>`, caja: { nombre: 'manguera', x0: M + 2, x1: XL + 3, y0: YP - 4, y1: YF } };
     }
     if (tipo === 'avioneta') {
@@ -142,8 +152,14 @@
       return { s: `<g class="kit-objeto" data-objeto="avioneta" data-prueba="si">${s}</g>`, caja: { nombre: 'avioneta', x0: x - 34, x1: x + 24, y0: y - 14, y1: y + 14 } };
     }
     if (tipo === 'mesa') {
-      const s = `<rect x="46" y="${YP + B}" width="${X0 - 46}" height="6" rx="2" fill="${ink}" fill-opacity="0.16" stroke="${ink}" stroke-width="2"/>`
-        + `<path d="M54 ${YP + B + 6}V${n(YF)}M${X0 - 8} ${YP + B + 6}V${n(YF)}" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`;
+      // 26 nov (dibujos reconocibles): el tablero con su canto y el faldón, y las patas de atrás, tenues y corridas: de
+      // perfil, dos patas y una raya se leían como un arco de fútbol. El borde del tablero (de donde sale) no cambia.
+      const yt = YP + B;
+      const s = `<path d="M60 ${n(yt + 10)}V${n(YF - 5)}M${X0 - 2} ${n(yt + 10)}V${n(YF - 5)}" stroke="${ink}" stroke-width="3" stroke-linecap="round" stroke-opacity="0.35"/>`
+        + `<path d="M50 ${yt}L58 ${n(yt - 5)}H${X0 - 4}L${X0} ${yt}Z" fill="${ink}" fill-opacity="0.1" stroke="${ink}" stroke-width="1.5" stroke-linejoin="round"/>`
+        + `<rect x="46" y="${yt}" width="${X0 - 46}" height="6" rx="1.5" fill="${ink}" fill-opacity="0.22" stroke="${ink}" stroke-width="2"/>`
+        + `<path d="M52 ${yt + 6}V${yt + 12}H${X0 - 6}V${yt + 6}" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linejoin="round"/>`
+        + `<path d="M54 ${yt + 6}V${n(YF)}M${X0 - 8} ${yt + 6}V${n(YF)}" stroke="${ink}" stroke-width="3.5" stroke-linecap="round"/>`;
       return { s: `<g class="kit-objeto" data-objeto="mesa" data-prueba="si">${s}</g>`, caja: { nombre: 'mesa', x0: 45, x1: X0 + 1, y0: YP + B - 1, y1: YF } };
     }
     if (tipo === 'azotea' || tipo === 'muro') {
@@ -159,9 +175,11 @@
       return { s: `<g class="kit-objeto" data-objeto="${tipo}" data-prueba="si">${s}</g>`, caja: { nombre: tipo, x0: 42, x1: X0 + 8, y0: YP - 4, y1: YF } };
     }
     // peña: el borde arriba, la cara que baja al agua con un saliente, y unas matas de ichu en el borde
-    const s = `<path d="M46 ${n(YF + 3)}V${YP + B}H${X0}C${X0 + 3} ${YP + B} ${X0 + 4} ${YP + B + 4} ${X0 + 1} ${YP + B + 8}C${X0 - 5} ${n(YP + (YF - YP) * 0.35)} ${X0 - 2} ${n(YP + (YF - YP) * 0.6)} ${X0 - 9} ${n(YF + 3)}Z" fill="${ink}" fill-opacity="0.09" stroke="none"/>`
+    const s = `<path d="M46 ${n(YF + 3)}V${YP + B}H${X0}C${X0 + 3} ${YP + B} ${X0 + 4} ${YP + B + 4} ${X0 + 1} ${YP + B + 8}C${X0 - 5} ${n(YP + (YF - YP) * 0.35)} ${X0 - 2} ${n(YP + (YF - YP) * 0.6)} ${X0 - 9} ${n(YF + 3)}Z" fill="${ink}" fill-opacity="0.14" stroke="none"/>`
       + `<path d="M46 ${YP + B}H${X0}C${X0 + 3} ${YP + B} ${X0 + 4} ${YP + B + 4} ${X0 + 1} ${YP + B + 8}C${X0 - 5} ${n(YP + (YF - YP) * 0.35)} ${X0 - 2} ${n(YP + (YF - YP) * 0.6)} ${X0 - 9} ${n(YF + 3)}" fill="none" stroke="${ink}" stroke-width="2" stroke-linecap="round"/>`
-      + `<path d="M52 ${YP + B}l-2 -6M55 ${YP + B}l1 -7M58 ${YP + B}l3 -5M70 ${YP + B}l-2 -5M73 ${YP + B}l1 -6" stroke="${ink}" stroke-width="1.3" stroke-linecap="round" fill="none"/>`;
+      + `<path d="M52 ${YP + B}l-2 -6M55 ${YP + B}l1 -7M58 ${YP + B}l3 -5M70 ${YP + B}l-2 -5M73 ${YP + B}l1 -6" stroke="${ink}" stroke-width="1.3" stroke-linecap="round" fill="none"/>`
+      // 26 nov (dibujos reconocibles): las capas de la roca y unas grietas, para que la cara se lea como peña y no como pared.
+      + (() => { let r = ''; const h = YF - YP - B; for (let k = 1; k <= Math.min(6, Math.floor(h / 22)); k++) { const y = YP + B + h * k / (Math.min(6, Math.floor(h / 22)) + 1); r += `M50 ${n(y)}Q${n(62 + 6 * (k % 2))} ${n(y + 3)} ${X0 - 10 + (k % 2 ? 2 : -3)} ${n(y - 1)}M${58 + 9 * (k % 3)} ${n(y + 2)}l${k % 2 ? 3 : -2} ${n(Math.min(12, h / 14))}`; } return r ? `<path d="${r}" stroke="${ink}" stroke-width="1.2" stroke-opacity="0.4" stroke-linecap="round" fill="none"/>` : ''; })();
     return { s: `<g class="kit-objeto" data-objeto="pena" data-prueba="si">${s}</g>`, caja: { nombre: 'pena', x0: 46, x1: X0 + 4, y0: YP, y1: YF + 3 } };
   }
 

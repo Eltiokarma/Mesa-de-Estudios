@@ -109,11 +109,11 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | fis-rio · (sin objeto) | se reconoce | río con bote, remero y orilla | [ver](capturas/fis-rio--sin-objeto.webp) |  |
 | fis-sonido · eco | se reconoce | persona gritando frente al cerro | [ver](capturas/fis-sonido--eco.webp) |  |
 | fis-sonido · trueno | se reconoce | nube con rayo y persona | [ver](capturas/fis-sonido--trueno.webp) |  |
-| fis-tiro · (sin objeto) | a medias | piedra desde una peña: la peña se lee como pared; la piedra es un circulito | [ver](capturas/fis-tiro--sin-objeto.webp) |  |
-| fis-tiro · agua | a medias | chorro de manguera: la manguera tendida es una raya oscura en el piso; no se lee | [ver](capturas/fis-tiro--agua.webp) |  |
-| fis-tiro · canica | a medias | canica que sale de una mesa: la mesa de perfil se lee como arco de fútbol | [ver](capturas/fis-tiro--canica.webp) |  |
+| fis-tiro · (sin objeto) | a medias | piedra desde una peña: la peña se lee como pared; la piedra es un circulito | [ver](capturas/fis-tiro--sin-objeto.webp) | redibujado: capas de roca y grietas en la cara de la peña; se lee como peña ([antes y después](antes-despues/fis-tiro--sin-objeto.webp)) |
+| fis-tiro · agua | a medias | chorro de manguera: la manguera tendida es una raya oscura en el piso; no se lee | [ver](capturas/fis-tiro--agua.webp) | redibujado: manguera enrollada en tres vueltas y boquilla con gatillo; mejora a medias (el rollo queda chico), para diseñador ([antes y después](antes-despues/fis-tiro--agua.webp)) |
+| fis-tiro · canica | a medias | canica que sale de una mesa: la mesa de perfil se lee como arco de fútbol | [ver](capturas/fis-tiro--canica.webp) | redibujado: tablero con canto y faldón, patas de atrás tenues; mejora a medias (la mesa alta y angosta todavía se adivina), para diseñador ([antes y después](antes-despues/fis-tiro--canica.webp)) |
 | fis-tiro · paquete | se reconoce | avioneta que suelta un paquete | [ver](capturas/fis-tiro--paquete.webp) |  |
-| fis-tiro · pelota | a medias | pelota pateada: un circulito en el piso; nada dice pelota ni cancha | [ver](capturas/fis-tiro--pelota.webp) |  |
+| fis-tiro · pelota | a medias | pelota pateada: un circulito en el piso; nada dice pelota ni cancha | [ver](capturas/fis-tiro--pelota.webp) | redibujado: pelota de fútbol con su pentágono y costuras ([antes y después](antes-despues/fis-tiro--pelota.webp)) |
 | fis-tiro · piedra | se reconoce | piedra desde la azotea de un edificio | [ver](capturas/fis-tiro--piedra.webp) |  |
 | fis-ventana · (sin objeto) | se reconoce | carretera con combi y postes, dos miradas | [ver](capturas/fis-ventana--sin-objeto.webp) |  |
 | fis-xt · (sin objeto) | se reconoce | gráfica x–t (diagrama propio del tema) | [ver](capturas/fis-xt--sin-objeto.webp) |  |
@@ -187,7 +187,7 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 |---|---|---|---|---|
 | rm-aros · (sin objeto) | se reconoce | patio con aros y alumnos (diagrama de conjuntos) | [ver](capturas/rm-aros--sin-objeto.webp) |  |
 | rm-casos · (sin objeto) | se reconoce | calle con nube y cisterna | [ver](capturas/rm-casos--sin-objeto.webp) |  |
-| rm-certeza · (sin objeto) | a medias | tómbola: caja con bolitas; falta el tambor con manija | [ver](capturas/rm-certeza--sin-objeto.webp) |  |
+| rm-certeza · (sin objeto) | a medias | tómbola: caja con bolitas; falta el tambor con manija | [ver](capturas/rm-certeza--sin-objeto.webp) | para diseñador: se probó con varillas y manivela y no mejoró (la fila larga de bolitas obliga a una caja ancha; un tambor pide otro acomodo) |
 | rm-familia · (sin objeto) | se reconoce | árbol familiar con retratos | [ver](capturas/rm-familia--sin-objeto.webp) |  |
 | rm-objeto · (sin objeto) | se reconoce | campeonato con pelotas, tablero y alumnos | [ver](capturas/rm-objeto--sin-objeto.webp) |  |
 | rm-orden · (sin objeto) | se reconoce | cola de alumnos y banca numerada | [ver](capturas/rm-orden--sin-objeto.webp) |  |
