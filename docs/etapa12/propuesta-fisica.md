@@ -64,7 +64,7 @@ Contrato geométrico previsto:
 3. Una misma escala de fuerza para todas las flechas de una comparación; lo mismo para rapidez. Una presión es escalar: las flechas muestran fuerzas normales, no una supuesta «dirección de la presión».
 4. Los niveles de un tubo en U conservan el volumen. Se distinguirán la superficie inicial, la interfaz, la altura de cada columna y el desnivel entre superficies.
 5. Los piezómetros usarán altura geométrica y presión con una referencia común. No se normalizará cada columna a su propio espacio disponible.
-6. Un bloque parcialmente sumergido mostrará la fracción geométrica exacta que usa el motor; la flecha o suspensión necesaria para mantenerlo quieto estará presente.
+6. Cuando la inmersión sea un dato o un estado observable del juego, el bloque mostrará esa fracción geométrica exacta. Si es la incógnita, se usará un esquema independiente de su solución. La suspensión necesaria estará presente.
 7. Una incógnita no se dibujará con una cota calculada ni aparecerá en alt. Si se pregunta un estado posterior, la figura previa mostrará el estado inicial.
 8. Cifras, control, lectura, dibujo y misión procederán del mismo estado canónico. La animación no introducirá una evolución que el modelo no calcula.
 
@@ -187,6 +187,7 @@ Se mantiene la paleta compatible con la unidad de Fluidos: presión turquesa, al
 | E | Empuje del fluido; no se usa E para energía | N | Carmín h |
 | P | Peso del cuerpo; se distingue de p por letra y unidad | N | Carmín h |
 | T | Tensión que lee la suspensión ideal; no es período ni temperatura | N | Carmín h |
+| W | Trabajo de una fuerza | J | Naranja o |
 | ρ | Densidad; los subíndices distinguen cuerpo y fluidos | kg/m³ | Violeta f |
 | m | Masa del cuerpo indicado | kg | Violeta f |
 | γ | Coeficiente de tensión superficial | N/m | Violeta f |
@@ -224,9 +225,9 @@ Se asignarán entre dos y cuatro términos nuevos por idea, con una explicación
 
 | Idea | Candidatos, sujetos a comprobar el catálogo global |
 | --- | --- |
-| 1 | Presión, densidad, presión absoluta, presión manométrica |
+| 1 | Presión, densidad, pistón, presión manométrica; la referencia absoluta se explica junto con presión |
 | 2 | Manómetro, barómetro, interfaz, vasos comunicantes |
-| 3 | Pistón, prensa hidráulica, fluido incompresible |
+| 3 | Prensa hidráulica, ventaja mecánica, fluido incompresible si no se estrenó antes |
 | 4 | Empuje, volumen desplazado, peso aparente |
 | 5 | Tensión superficial, línea de contacto, menisco, capilaridad |
 | 6 | Caudal, flujo estacionario, línea de corriente, viscosidad |
