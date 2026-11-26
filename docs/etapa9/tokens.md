@@ -33,3 +33,4 @@ contra los límites semanales de los planes.
 | fisica.gravitacion | redactor (Escribidor Escribano) | 433 203 | 39 min | 74 herramientas |
 | quimica.tabla-periodica | redactor, unidad ya cerrada | 308 148 | 42 min | 64 herramientas |
 | razonamiento-matematico.arreglos-numericos | redactor (Escribidor Escribano) | 390 313 | 38 min | 64 herramientas |
+| geometria.puntos-notables | redactor (Escribidor Escribano) | 375 618 | 43 min | 67 herramientas |
