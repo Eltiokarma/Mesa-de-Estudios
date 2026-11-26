@@ -45,9 +45,20 @@
       if (!b || !ve(b, paso)) return;
       if (b.inmersion !== undefined && !['completa', 'parcial', 'fuera'].includes(b.inmersion)) throw new Error('bloque.inmersion: completa, parcial o fuera');
       if (b.forma !== undefined && !['regular', 'ancho'].includes(b.forma)) throw new Error('bloque.forma: regular o ancho');
+      if (b.fraccionDada !== undefined) {
+        if (!esq) throw new Error('bloque.fraccionDada: solo en esquema prismático');
+        entre(b.fraccionDada, 0, 1, 'bloque.fraccionDada');
+        if ((b.inmersion === 'completa' && b.fraccionDada !== 1) || (b.inmersion === 'fuera' && b.fraccionDada !== 0) || (b.inmersion === 'parcial' && !(b.fraccionDada > 0 && b.fraccionDada < 1))) throw new Error('bloque.fraccionDada: contradice la relación declarada');
+      }
+      if (b.fraccionSuperiorDada !== undefined) {
+        if (!esq || capas.length !== 2 || b.inmersion !== 'completa') throw new Error('bloque.fraccionSuperiorDada: esquema de dos capas e inmersión completa');
+        if (!(b.fraccionSuperiorDada > 0 && b.fraccionSuperiorDada < 1)) throw new Error('bloque.fraccionSuperiorDada: entre cero y uno, sin extremos');
+        if (b.fraccionDada !== undefined && b.fraccionDada !== 1) throw new Error('bloque.fraccionSuperiorDada: el cuerpo debe estar completamente dentro');
+      }
       const ancho = esq ? b.forma === 'ancho' ? 78 : 52 : positivo(b.ancho, 'bloque.ancho') * escala('transversal'), alto = esq ? b.forma === 'ancho' ? 44 : 62 : positivo(b.alto, 'bloque.alto') * escala('vertical');
       const superficie = esq ? BASE - 96 : Y(nivel);
-      const base = esq ? b.inmersion === 'completa' ? BASE - 8 : b.inmersion === 'fuera' ? superficie - 8 : superficie + alto * .58 : Y(finito(b.base, 'bloque.base')), top = base - alto, id = b.id || 'bloque-' + v.id;
+      const base = esq ? b.fraccionSuperiorDada !== undefined ? capas[0].superior + (1 - b.fraccionSuperiorDada) * alto : b.fraccionDada !== undefined ? superficie + b.fraccionDada * alto : b.inmersion === 'completa' ? BASE - 8 : b.inmersion === 'fuera' ? superficie - 8 : superficie + alto * .58 : Y(finito(b.base, 'bloque.base')), top = base - alto, id = b.id || 'bloque-' + v.id;
+      if (b.fraccionSuperiorDada !== undefined && (top < superficie || base > BASE)) throw new Error('bloque.fraccionSuperiorDada: la proporción no cabe entre superficie y fondo');
       rect(id, cx - ancho / 2, top, ancho, alto, true);
       ref(id, cx, (top + base) / 2, { izq: cx - ancho / 2, der: cx + ancho / 2, arriba: top, abajo: base });
       for (const c of capas) {

@@ -125,6 +125,8 @@ La igualdad de trabajos solo se afirmará en ese modelo horizontal sin pérdidas
 
 Juego: bloque prismático de 600 cm³ sostenido mediante un mecanismo externo. Se controla la inmersión, con marcas de 100 cm³. Misión: desplazar 400 cm³ de líquido. El testigo tiene dos tercios del bloque sumergidos. El dinamómetro permanece cubierto; no se liberará el bloque ni se mostrará una fuerza de soporte calculada antes de Predice.
 
+La implementación usa un bloque de 10 × 5 × 12 cm dentro de una tina de base 24 × 10 cm. Hay holgura en ambas direcciones horizontales; el nivel sube según el volumen desplazado dividido entre 240 cm². En la mesa libre, un bloque ancho de 20 × 10 × 5 cm cabe en una tina de base 30 × 20 cm. Se distingue la flotación en equilibrio del estado inicial al soltar un cuerpo que se hundirá; no se representa una animación ni un apoyo inexistentes.
+
 Predice: un bloque de 0,8 kg y 500 cm³ está completamente sumergido en el líquido del modelo, de densidad 1000 kg/m³. Un dinamómetro lo sostiene en reposo, sin contacto con el recipiente. Con g = 10 m/s², se pide su lectura.
 
 | Opción prevista | Operación del caso |

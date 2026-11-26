@@ -195,3 +195,25 @@ test('Fluidos E12: capas dadas y relaciones de inmersión canónicas no reciben 
   }
   const d = vaso(); d.vasos[0].capas = [{ alto: .1 }]; assert.throws(() => P.dibujar(d), /coincidir/);
 });
+
+test('Fluidos E12: 400 fracciones publicadas conservan proporción del bloque prismático', () => {
+  for(let s=0;s<400;s++) {
+    const fraccion=s/399,d={tipo:'vasos',modo:'esquema',vasos:[{id:'tina',bloque:{id:'bloque',forma:s%2?'ancho':'regular',fraccionDada:fraccion}}]};
+    const g=revisar(d),b=g.referencias.bloque,sup=g.referencias['superficie-tina'];
+    cerca((b.abajo-sup.y)/(b.abajo-b.arriba),fraccion);
+  }
+  const d={tipo:'vasos',modo:'esquema',vasos:[{id:'tina',bloque:{fraccionDada:1.1}}]};
+  assert.throws(()=>P.dibujar(d),/fraccionDada/);d.vasos[0].bloque={inmersion:'completa',fraccionDada:.4};assert.throws(()=>P.dibujar(d),/contradice/);
+});
+
+test('Fluidos E12: 400 repartos publicados entre dos capas conservan volúmenes relativos', () => {
+  for(let s=0;s<400;s++){
+    const fraccion=.3+.4*s/399,d={tipo:'vasos',modo:'esquema',vasos:[{id:'tina',capas:[{tono:3},{tono:1}],bloque:{id:'bloque',inmersion:'completa',fraccionSuperiorDada:fraccion,forma:s%2?'ancho':'regular'}}]};
+    const g=revisar(d),b=g.referencias.bloque,y=g.referencias['interfaz-tina-1'].y;
+    cerca((y-b.arriba)/(b.abajo-b.arriba),fraccion);cerca((b.abajo-y)/(b.abajo-b.arriba),1-fraccion);
+    assert.ok(b.arriba>=g.referencias['superficie-tina'].y&&b.abajo<=242);
+  }
+  for(const bloque of[{inmersion:'completa',fraccionSuperiorDada:0},{inmersion:'parcial',fraccionSuperiorDada:.4}]){
+    const d={tipo:'vasos',modo:'esquema',vasos:[{id:'tina',capas:[{},{}],bloque}]};assert.throws(()=>P.dibujar(d),/fraccionSuperiorDada/);
+  }
+});
