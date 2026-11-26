@@ -110,83 +110,83 @@ function construirGr1(Kit) {
       const distancia = dr(c), masa = dm(c);
       datos.push(modelo, datoG, ley);
       if (c.rKm != null || c.gramos != null) datos.push('1 km = 1000 m; 1 kg = 1000 g.');
-      if (c.rKm != null) solucion.push({ texto: 'La separación entre centros se expresa en metros.', ecuacion: [r, ` = ${numero(c.rKm)} · 1000 = ${numero(distancia)} m`] });
-      if (c.gramos != null) solucion.push({ texto: 'La masa de la sonda se expresa en kilogramos.', ecuacion: [m, ` = ${numero(c.gramos)} ÷ 1000 = ${numero(masa)} kg`] });
+      if (c.rKm != null) solucion.push({ texto: 'Primero pasamos la separación entre centros a metros, porque G está en unidades del SI.', ecuacion: [r, ` = ${numero(c.rKm)} · 1000 = ${numero(distancia)} m`] });
+      if (c.gramos != null) solucion.push({ texto: 'Pasamos la masa de la sonda a kilogramos, porque G está en unidades del SI.', ecuacion: [m, ` = ${numero(c.gramos)} ÷ 1000 = ${numero(masa)} kg`] });
       if (c.tipo === 'directa') {
         resultado = c.G * c.M * masa / distancia ** 2;
         enunciado = [...masas, 'La separación entre centros es ', descR, '. ¿Cuál es el módulo de la fuerza gravitatoria sobre la sonda?'];
         solucion.push({ texto: 'Sustituimos las dos masas y la separación entre centros en la ley de gravitación.', ecuacion: eq(F, { frac: [[numero(c.G), ' · ', lit('f', c.M), ' · ', lit('f', masa)], cuadrado('i', distancia)] }, resultado) });
-        error('lineal', c.G * c.M * masa / distancia, 'Bien incluir la distancia; faltó elevarla al cuadrado.');
-        error('sin-sonda', c.G * c.M / distancia ** 2, 'Bien usar la fuente; omitiste la masa de la sonda.');
-        error('doble', 2 * resultado, 'Bien calcular una fuerza; sumaste las dos fuerzas mutuas.');
-        error('signo', -resultado, 'Bien el tamaño; diste signo negativo a un módulo.');
-        error('mitad', resultado / 2, 'Bien hallar la atracción; repartiste su módulo entre ambos cuerpos.');
-        error('distancia-doble', resultado / 4, 'Bien cuadrar la distancia; antes duplicaste la separación dada.');
-        if (c.gramos != null) error('sin-gramos', resultado * 1000, 'Bien convertir la distancia; dejaste la masa en gramos.');
-        if (c.rKm != null) error('sin-km', resultado * 1e6, 'Bien usar ambas masas; trataste kilómetros como metros.');
+        error('lineal', c.G * c.M * masa / distancia, 'Bien planteada la ley, pero la separación va elevada al cuadrado y tú la usaste sin elevar.');
+        error('sin-sonda', c.G * c.M / distancia ** 2, 'Bien usada la masa del planeta, pero faltó multiplicar también por la masa de la sonda.');
+        error('doble', 2 * resultado, 'Bien calculada la atracción, pero sumaste las dos fuerzas mutuas, y cada una actúa sobre un cuerpo distinto.');
+        error('signo', -resultado, 'Bien calculado el tamaño, pero un módulo de fuerza nunca es negativo.');
+        error('mitad', resultado / 2, 'Bien hallada la atracción, pero la repartiste entre los dos cuerpos, y cada uno recibe la fuerza completa.');
+        error('distancia-doble', resultado / 4, 'Bien elevada la separación al cuadrado, pero antes la duplicaste, y la separación dada ya va de centro a centro.');
+        if (c.gramos != null) error('sin-gramos', resultado * 1000, 'Bien convertida la distancia, pero la masa de la sonda quedó en gramos, y la ley pide kilogramos.');
+        if (c.rKm != null) error('sin-km', resultado * 1e6, 'Bien usadas las dos masas, pero tomaste los kilómetros como si fueran metros.');
       } else if (c.tipo === 'masa') {
         resultado = c.F * distancia ** 2 / (c.G * c.M); unidad = 'kg'; color = 'f'; simbolo = m; simboloTexto = 'm';
         enunciado = ['Una sonda está a ', descR, ' del centro de un planeta de ', valor(c.M, 'kg', 'f'), '. La atracción vale ', valor(c.F, 'N', 'h'), '. ¿Qué masa tiene la sonda?'];
-        solucion.push({ texto: 'Multiplicamos la fuerza por el cuadrado de la distancia y dividimos entre G por M.', ecuacion: eq(m, { frac: [[lit('h', c.F), ' · ', cuadrado('i', distancia)], [numero(c.G), ' · ', lit('f', c.M)]] }, resultado) });
-        error('lineal', c.F * distancia / (c.G * c.M), 'Bien despejar la masa; usaste la distancia sin cuadrar.');
-        error('inversa', (c.G * c.M) / (c.F * distancia ** 2), 'Bien reunir los datos; invertiste el cociente completo.');
-        error('doble', 2 * resultado, 'Bien despejar; contaste dos veces la fuerza dada.');
-        error('mitad', resultado / 2, 'Bien usar el módulo; repartiste la fuerza entre dos.');
-        error('signo', -resultado, 'Bien el tamaño; una masa no lleva signo negativo.');
+        solucion.push({ texto: 'Despejamos m de la ley: multiplicamos la fuerza por el cuadrado de la distancia y dividimos entre G por M.', ecuacion: eq(m, { frac: [[lit('h', c.F), ' · ', cuadrado('i', distancia)], [numero(c.G), ' · ', lit('f', c.M)]] }, resultado) });
+        error('lineal', c.F * distancia / (c.G * c.M), 'Bien despejada la masa, pero usaste la distancia sin elevarla al cuadrado.');
+        error('inversa', (c.G * c.M) / (c.F * distancia ** 2), 'Bien reunidos los datos, pero invertiste el cociente: la fuerza y la distancia al cuadrado van arriba, y G por M va abajo.');
+        error('doble', 2 * resultado, 'Bien hecho el despeje, pero contaste dos veces la fuerza dada.');
+        error('mitad', resultado / 2, 'Bien usado el módulo, pero repartiste la fuerza entre los dos cuerpos, y la sonda recibe la fuerza completa.');
+        error('signo', -resultado, 'Bien calculado el tamaño, pero una masa nunca lleva signo negativo.');
       } else {
         resultado = Math.sqrt(c.G * c.M * masa / c.F) / 1000; unidad = 'km'; color = 'i'; simbolo = r; simboloTexto = 'r';
         enunciado = [...masas, 'La atracción tiene módulo ', valor(c.F, 'N', 'h'), '. ¿Cuál es la separación entre centros, en kilómetros?'];
         datos.push('1 km = 1000 m.');
-        solucion.push({ texto: 'Despejamos el cuadrado de la separación. La raíz positiva da una distancia.', ecuacion: eq(r, [{ raiz: [{ frac: [[numero(c.G), ' · ', lit('f', c.M), ' · ', lit('f', masa)], lit('h', c.F)] }] }, ' ÷ 1000'], resultado) });
-        error('sin-raiz', (c.G * c.M * masa / c.F) / 1000, 'Bien despejar el cuadrado; faltó sacar la raíz.');
-        error('sin-km', resultado * 1000, 'Bien hallar metros; faltó convertirlos a kilómetros.');
-        error('doble', 2 * resultado, 'Bien hallar la separación; la confundiste con un diámetro.');
-        error('mitad', resultado / 2, 'Bien la raíz; dividiste otra vez entre dos.');
-        error('signo', -resultado, 'Bien el tamaño; una separación no es negativa.');
+        solucion.push({ texto: 'Despejamos el cuadrado de la separación y sacamos su raíz positiva, porque una distancia no es negativa; luego pasamos de metros a kilómetros.', ecuacion: eq(r, [{ raiz: [{ frac: [[numero(c.G), ' · ', lit('f', c.M), ' · ', lit('f', masa)], lit('h', c.F)] }] }, ' ÷ 1000'], resultado) });
+        error('sin-raiz', (c.G * c.M * masa / c.F) / 1000, 'Bien despejado el cuadrado de la separación, pero faltó sacar la raíz.');
+        error('sin-km', resultado * 1000, 'Bien hallada la separación en metros, pero faltó pasarla a kilómetros.');
+        error('doble', 2 * resultado, 'Bien hallada la separación, pero la duplicaste como si fuera un diámetro.');
+        error('mitad', resultado / 2, 'Bien sacada la raíz, pero después dividiste entre dos, y ese paso no corresponde.');
+        error('signo', -resultado, 'Bien calculado el tamaño, pero una separación nunca es negativa.');
       }
     } else if (c.tipo === 'mutua') {
       resultado = c.F0;
       enunciado = ['Un planeta A tiene ', valor(c.ma, 'kg', 'f'), ' y una sonda B, ', valor(c.mb, 'kg', 'f'), '. A atrae a B con ', valor(c.F0, 'N', 'h'), '. ¿Con qué módulo de fuerza B atrae a A?'];
       datos.push('Las fuerzas gravitatorias mutuas tienen igual módulo y sentidos opuestos; actúan sobre cuerpos distintos.');
       solucion.push({ texto: 'La tercera ley de Newton iguala los módulos de estas dos fuerzas, aunque las masas sean distintas.', ecuacion: [sub(F, 'sobre A'), ' = ', sub(F, 'sobre B'), ` = ${numero(resultado)} N`] });
-      error('por-masas', c.F0 * c.mb / c.ma, 'Bien comparar masas; aumentaste una de las fuerzas mutuas.');
-      error('inversa-masas', c.F0 * c.ma / c.mb, 'Bien distinguir cuerpos; redujiste una de las fuerzas mutuas.');
-      error('doble', 2 * c.F0, 'Bien reconocer dos fuerzas; sumaste sus módulos.');
-      error('cero', 0, 'Bien notar sentidos opuestos; cancelaste fuerzas sobre cuerpos distintos.');
-      error('mitad', c.F0 / 2, 'Bien reconocer dos cuerpos; repartiste la fuerza entre ambos.');
-      error('signo', -c.F0, 'Bien invertir el sentido; un módulo no es negativo.');
+      error('por-masas', c.F0 * c.mb / c.ma, 'Bien comparadas las masas, pero multiplicaste la fuerza por la masa de B entre la de A, y las fuerzas mutuas tienen igual módulo.');
+      error('inversa-masas', c.F0 * c.ma / c.mb, 'Bien distinguidos los cuerpos, pero multiplicaste la fuerza por la masa de A entre la de B, y las fuerzas mutuas tienen igual módulo.');
+      error('doble', 2 * c.F0, 'Bien reconocidas las dos fuerzas, pero sumaste sus módulos, y cada una actúa sobre un cuerpo distinto.');
+      error('cero', 0, 'Bien notados los sentidos opuestos, pero las dos fuerzas actúan sobre cuerpos distintos, así que no se cancelan.');
+      error('mitad', c.F0 / 2, 'Bien reconocidos los dos cuerpos, pero repartiste la fuerza entre ellos, y cada uno recibe la fuerza completa.');
+      error('signo', -c.F0, 'Bien invertido el sentido, pero un módulo nunca es negativo.');
     } else if (['razon', 'masa-razon', 'distancia-razon'].includes(c.tipo)) {
       // Auditoría (26 nov): la ley general, no el atajo de cocientes (en Datos se partía a 390 px y dejaba «)²» solo).
       datos.push('Los subíndices ref y nuevo distinguen el ensayo de referencia del ensayo modificado.', ley, 'G es la misma en los dos ensayos.');
       if (c.tipo === 'razon') {
         resultado = c.F0 * c.kM * c.km / c.kr ** 2;
-        enunciado = ['La atracción de referencia es ', valor(c.F0, 'N', 'h'), '. La masa fuente pasa a ', q('f', factor(c.kM)), ', la masa atraída a ', q('f', factor(c.km)), ' y la separación a ', q('i', factor(c.kr)), ' sus valores originales. ¿Cuál es la nueva fuerza?'];
-        solucion.push({ texto: 'Las dos masas multiplican la fuerza; el factor de separación aparece elevado al cuadrado.', ecuacion: eq(Fn, [lit('h', c.F0), ' · ', lit('f', c.kM), ' · ', lit('f', c.km), ' ÷ ', cuadrado('i', c.kr)], resultado) });
-        error('lineal', c.F0 * c.kM * c.km / c.kr, 'Bien cambiar las masas; dividiste solo una vez por distancia.');
-        error('sin-distancia', c.F0 * c.kM * c.km, 'Bien multiplicar las masas; omitiste el cambio de separación.');
-        error('sin-masas', c.F0 / c.kr ** 2, 'Bien cuadrar la separación; omitiste los cambios de masa.');
-        error('sin-fuente', c.F0 * c.km / c.kr ** 2, 'Bien cambiar la sonda; omitiste la masa fuente.');
-        error('sin-sonda', c.F0 * c.kM / c.kr ** 2, 'Bien cambiar la fuente; omitiste la otra masa.');
-        error('multiplica-distancia', c.F0 * c.kM * c.km * c.kr ** 2, 'Bien cuadrar la separación; multiplicaste en vez de dividir.');
-        error('signo', -resultado, 'Bien el tamaño; un módulo de fuerza no es negativo.');
+        enunciado = ['La atracción de referencia es ', valor(c.F0, 'N', 'h'), '. La masa fuente pasa a ser ', q('f', factor(c.kM)), ' la original; la de la sonda, ', q('f', factor(c.km)), ' la suya, y la separación, ', q('i', factor(c.kr)), ' la original. ¿Cuál es la nueva fuerza?'];
+        solucion.push({ texto: 'Como G no cambia, multiplicamos la fuerza de referencia por los factores de las dos masas y la dividimos entre el factor de separación al cuadrado.', ecuacion: eq(Fn, [lit('h', c.F0), ' · ', lit('f', c.kM), ' · ', lit('f', c.km), ' ÷ ', cuadrado('i', c.kr)], resultado) });
+        error('lineal', c.F0 * c.kM * c.km / c.kr, 'Bien cambiadas las masas, pero dividiste una sola vez entre el factor de separación, y ese factor va al cuadrado.');
+        error('sin-distancia', c.F0 * c.kM * c.km, 'Bien multiplicados los factores de masa, pero olvidaste dividir entre el cambio de separación al cuadrado.');
+        error('sin-masas', c.F0 / c.kr ** 2, 'Bien elevado al cuadrado el factor de separación, pero olvidaste multiplicar por los cambios de las masas.');
+        error('sin-fuente', c.F0 * c.km / c.kr ** 2, 'Bien cambiada la masa de la sonda, pero olvidaste el cambio de la masa fuente.');
+        error('sin-sonda', c.F0 * c.kM / c.kr ** 2, 'Bien cambiada la masa fuente, pero olvidaste el cambio de la masa de la sonda.');
+        error('multiplica-distancia', c.F0 * c.kM * c.km * c.kr ** 2, 'Bien elevado al cuadrado el factor de separación, pero multiplicaste por él. Una separación mayor debilita la atracción, así que se divide.');
+        error('signo', -resultado, 'Bien calculado el tamaño, pero un módulo de fuerza nunca es negativo.');
       } else if (c.tipo === 'masa-razon') {
         resultado = c.F1 / c.F0 * c.kr ** 2 / c.km; unidad = 'veces'; color = 'f'; simbolo = [sub(M, 'nueva'), '/', sub(M, 'ref')]; simboloTexto = 'M_nueva/M_ref';
-        enunciado = ['La atracción pasa de ', valor(c.F0, 'N', 'h'), ' a ', valor(c.F1, 'N', 'h'), '. La masa atraída pasa a ', q('f', factor(c.km)), ' y la separación a ', q('i', factor(c.kr)), ' las originales. ¿Por qué factor cambió la masa fuente?'];
-        solucion.push({ texto: 'Aislamos el factor de masa fuente; compensamos el cambio de la otra masa y de la separación.', ecuacion: eq(simbolo, [{ frac: [lit('h', c.F1), lit('h', c.F0)] }, ' · ', cuadrado('i', c.kr), ' ÷ ', lit('f', c.km)], resultado) });
-        error('lineal', c.F1 / c.F0 * c.kr / c.km, 'Bien comparar fuerzas; compensaste la distancia sin cuadrar.');
-        error('sin-distancia', c.F1 / c.F0 / c.km, 'Bien comparar masas; omitiste el cambio de separación.');
-        error('inversa', 1 / resultado, 'Bien reunir factores; invertiste el cociente pedido.');
-        error('multiplica-sonda', c.F1 / c.F0 * c.kr ** 2 * c.km, 'Bien cuadrar la distancia; multiplicaste el factor de sonda.');
-        error('doble', 2 * resultado, 'Bien aislar el factor; duplicaste el resultado.');
+        enunciado = ['La atracción pasa de ', valor(c.F0, 'N', 'h'), ' a ', valor(c.F1, 'N', 'h'), '. La masa de la sonda pasa a ser ', q('f', factor(c.km)), ' la original, y la separación, ', q('i', factor(c.kr)), ' la original. ¿Por qué factor cambió la masa fuente?'];
+        solucion.push({ texto: 'Despejamos el factor de la masa fuente: dividimos las dos fuerzas, multiplicamos por el factor de separación al cuadrado y dividimos entre el factor de la sonda.', ecuacion: eq(simbolo, [{ frac: [lit('h', c.F1), lit('h', c.F0)] }, ' · ', cuadrado('i', c.kr), ' ÷ ', lit('f', c.km)], resultado) });
+        error('lineal', c.F1 / c.F0 * c.kr / c.km, 'Bien comparadas las fuerzas, pero compensaste la separación sin elevar su factor al cuadrado.');
+        error('sin-distancia', c.F1 / c.F0 / c.km, 'Bien compensada la masa de la sonda, pero olvidaste el cambio de separación.');
+        error('inversa', 1 / resultado, 'Bien reunidos los factores, pero invertiste el cociente: se pide la masa nueva entre la de referencia.');
+        error('multiplica-sonda', c.F1 / c.F0 * c.kr ** 2 * c.km, 'Bien elevada la separación al cuadrado, pero multiplicaste por el factor de la sonda en vez de dividir entre él.');
+        error('doble', 2 * resultado, 'Bien despejado el factor, pero después lo duplicaste sin motivo.');
       } else {
         resultado = Math.sqrt(c.F0 * c.kM * c.km / c.F1); unidad = 'veces'; color = 'i'; simbolo = [sub(r, 'nuevo'), '/', sub(r, 'ref')]; simboloTexto = 'r_nuevo/r_ref';
-        enunciado = ['La atracción pasa de ', valor(c.F0, 'N', 'h'), ' a ', valor(c.F1, 'N', 'h'), '. La fuente pasa a ', q('f', factor(c.kM)), ' su masa y la sonda a ', q('f', factor(c.km)), '. ¿Por qué factor cambió la separación?'];
-        solucion.push({ texto: 'El balance de factores da el cuadrado del factor de distancia; tomamos su raíz positiva.', ecuacion: eq(simbolo, { raiz: [{ frac: [[lit('h', c.F0), ' · ', lit('f', c.kM), ' · ', lit('f', c.km)], lit('h', c.F1)] }] }, resultado) });
-        error('sin-raiz', resultado ** 2, 'Bien hallar el cuadrado; faltó sacar la raíz.');
-        error('inversa', 1 / resultado, 'Bien sacar una raíz; invertiste el factor pedido.');
-        error('sin-masas', Math.sqrt(c.F0 / c.F1), 'Bien comparar fuerzas; omitiste los cambios de masa.');
-        error('sin-sonda', Math.sqrt(c.F0 * c.kM / c.F1), 'Bien cambiar la fuente; omitiste la masa de la sonda.');
-        error('doble', 2 * resultado, 'Bien despejar la distancia; duplicaste el factor hallado.');
+        enunciado = ['La atracción pasa de ', valor(c.F0, 'N', 'h'), ' a ', valor(c.F1, 'N', 'h'), '. La masa fuente pasa a ser ', q('f', factor(c.kM)), ' la original, y la de la sonda, ', q('f', factor(c.km)), ' la suya. ¿Por qué factor cambió la separación?'];
+        solucion.push({ texto: 'Al comparar las dos fuerzas sale el cuadrado del factor de separación; sacamos su raíz positiva para obtener el factor.', ecuacion: eq(simbolo, { raiz: [{ frac: [[lit('h', c.F0), ' · ', lit('f', c.kM), ' · ', lit('f', c.km)], lit('h', c.F1)] }] }, resultado) });
+        error('sin-raiz', resultado ** 2, 'Bien hallado el cuadrado del factor, pero faltó sacar la raíz.');
+        error('inversa', 1 / resultado, 'Bien sacada la raíz, pero invertiste el factor: se pide la separación nueva entre la de referencia.');
+        error('sin-masas', Math.sqrt(c.F0 / c.F1), 'Bien comparadas las fuerzas, pero olvidaste los cambios de las masas.');
+        error('sin-sonda', Math.sqrt(c.F0 * c.kM / c.F1), 'Bien incluido el cambio de la masa fuente, pero olvidaste el de la masa de la sonda.');
+        error('doble', 2 * resultado, 'Bien despejada la separación, pero después duplicaste el factor hallado.');
       }
     } else if (c.tipo === 'superposicion') {
       const a = c.G * c.MA * c.m / c.x ** 2, b = c.G * c.MB * c.m / (c.D - c.x) ** 2;
@@ -195,34 +195,34 @@ function construirGr1(Kit) {
       enunciado = ['A y B tienen ', valor(c.MA, 'kg', 'f'), ' y ', valor(c.MB, 'kg', 'f'), '. Sus centros están separados ', valor(c.D / 1000, 'km', 'i'), '. Una sonda de ', valor(c.m, 'kg', 'f'), ' está ', valor(Math.abs(c.x) / 1000, 'km', 'i'), c.x < 0 ? ' a la izquierda de A.' : ' a la derecha de A, entre ambas.', ' ¿Cuál es la fuerza horizontal neta?'];
       datos.push(modelo, datoG, ['A está a la izquierda de B. Derecha positiva; ', sub(r, 'A'), ' y ', sub(r, 'B'), ' son separaciones entre centros.'],
         [sub(F, 'A'), ' = G · ', sub(M, 'A'), ' · ', m, ' / ', { sup: [sub(r, 'A'), '2'] }], [sub(F, 'B'), ' = G · ', sub(M, 'B'), ' · ', m, ' / ', { sup: [sub(r, 'B'), '2'] }, '. Cada fuerza apunta hacia su fuente.'],
-        '1 km = 1000 m. La componente neta es la suma de componentes de las dos fuerzas.');
-      solucion.push({ texto: 'Determinamos las dos separaciones; cada atracción apunta desde la sonda hacia su fuente.', ecuacion: [sub(r, 'A'), ` = ${numero(Math.abs(c.x))} m; `, sub(r, 'B'), ` = ${numero(c.D - c.x)} m`] });
-      solucion.push({ texto: 'Calculamos por separado los módulos de las fuerzas gravitatorias.', ecuacion: [sub(F, 'A'), ` ≈ ${numero(a)} N; `, sub(F, 'B'), ` ≈ ${numero(b)} N`] });
-      solucion.push({ texto: 'Sumamos sus componentes sin redondear los valores intermedios. El signo identifica el sentido.', ecuacion: [Fx, ' = ', sa < 0 ? '−' : '', sub(F, 'A'), sb < 0 ? ' − ' : ' + ', sub(F, 'B'), ' ≈ ', valor(resultado, 'N', 'h')] });
-      error('modulos', a + b, 'Bien hallar ambas fuerzas; sumaste módulos sin sus sentidos.');
-      error('signo', -resultado, 'Bien combinar fuerzas; invertiste el sentido resultante.');
-      error('solo-a', sa * a, 'Bien calcular A; omitiste la atracción de B.');
-      error('solo-b', sb * b, 'Bien calcular B; omitiste la atracción de A.');
-      error('resta-modulos', a - b, 'Bien hallar módulos; restaste sin identificar los sentidos.');
-      error('doble', 2 * resultado, 'Bien sumar componentes; contaste dos veces la resultante.');
+        '1 km = 1000 m. La componente neta es la suma de las componentes de las dos fuerzas.');
+      solucion.push({ texto: 'Hallamos la separación de la sonda a cada fuente. Cada atracción apunta desde la sonda hacia su fuente.', ecuacion: [sub(r, 'A'), ` = ${numero(Math.abs(c.x))} m; `, sub(r, 'B'), ` = ${numero(c.D - c.x)} m`] });
+      solucion.push({ texto: 'Con la ley de gravitación, calculamos por separado el módulo de cada atracción.', ecuacion: [sub(F, 'A'), ` ≈ ${numero(a)} N; `, sub(F, 'B'), ` ≈ ${numero(b)} N`] });
+      solucion.push({ texto: 'Sumamos las componentes con su signo, sin redondear los valores intermedios. El signo de la suma dice hacia dónde apunta la fuerza neta.', ecuacion: [Fx, ' = ', sa < 0 ? '−' : '', sub(F, 'A'), sb < 0 ? ' − ' : ' + ', sub(F, 'B'), ' ≈ ', valor(resultado, 'N', 'h')] });
+      error('modulos', a + b, 'Bien halladas las dos fuerzas, pero sumaste sus módulos sin mirar hacia dónde apunta cada una.');
+      error('signo', -resultado, 'Bien combinadas las fuerzas, pero invertiste el sentido de la resultante.');
+      error('solo-a', sa * a, 'Bien calculada la atracción de A, pero olvidaste la de B.');
+      error('solo-b', sb * b, 'Bien calculada la atracción de B, pero olvidaste la de A.');
+      error('resta-modulos', a - b, 'Bien hallados los módulos, pero los restaste sin ver hacia dónde apunta cada fuerza.');
+      error('doble', 2 * resultado, 'Bien sumadas las componentes, pero contaste dos veces la resultante.');
     } else if (c.tipo === 'equilibrio') {
       resultado = c.D * Math.sqrt(c.MA) / (Math.sqrt(c.MA) + Math.sqrt(c.MB)) / 1000;
       unidad = 'km'; color = 'i'; simbolo = sub(r, 'A'); simboloTexto = 'r_A';
       enunciado = ['Dos fuentes A y B tienen masas ', valor(c.MA, 'kg', 'f'), ' y ', valor(c.MB, 'kg', 'f'), ', separadas ', valor(c.D / 1000, 'km', 'i'), '. Entre sus centros, ¿a qué distancia de A se anula la fuerza neta sobre una sonda?'];
-      datos.push(modelo, 'Entre las fuentes, las atracciones tienen sentidos opuestos; la fuerza neta nula exige módulos iguales.',
+      datos.push(modelo, 'Entre las fuentes, las dos atracciones apuntan en sentidos opuestos; la fuerza neta es cero cuando sus módulos son iguales.',
         // Auditoría (26 nov): la ley iba como texto crudo («F_A = G·M_A·m/r_A^2»); ahora con su notación.
         [sub(F, 'A'), ' = G · ', sub(M, 'A'), ' · ', m, ' / ', { sup: [sub(r, 'A'), '2'] }], [sub(F, 'B'), ' = G · ', sub(M, 'B'), ' · ', m, ' / ', { sup: [sub(r, 'B'), '2'] }],
         [sub(r, 'A'), ' + ', sub(r, 'B'), ' = D'], '1 km = 1000 m. D es la separación entre los centros de A y B.');
       const razon = Math.sqrt(c.MB / c.MA);
-      solucion.push({ texto: 'Igualamos los módulos. La constante G y la masa de la sonda se cancelan.', ecuacion: [{ frac: [sub(r, 'B'), sub(r, 'A')] }, ' = ', { raiz: [{ frac: [lit('f', c.MB), lit('f', c.MA)] }] }, exacto(razon) ? ' = ' : ' ≈ ', numero(razon)] });
+      solucion.push({ texto: 'Igualamos los módulos de las dos atracciones. G y la masa de la sonda se cancelan, y queda la razón entre las separaciones.', ecuacion: [{ frac: [sub(r, 'B'), sub(r, 'A')] }, ' = ', { raiz: [{ frac: [lit('f', c.MB), lit('f', c.MA)] }] }, exacto(razon) ? ' = ' : ' ≈ ', numero(razon)] });
       // Auditoría (26 nov): el despeje saltaba de la razón al resultado; ahora se ve r_A + razón · r_A = D.
-      solucion.push({ texto: ['Las dos separaciones suman D, y ', sub(r, 'B'), ' es la razón por ', sub(r, 'A'), '.'], ecuacion: [sub(r, 'A'), ' + ', numero(razon), ' · ', sub(r, 'A'), ' = ', valor(c.D / 1000, 'km', 'i')] });
-      solucion.push({ texto: 'Despejamos la distancia desde A.', ecuacion: eq(simbolo, { frac: [lit('i', c.D / 1000), `1 + ${numero(razon)}`] }, resultado) });
-      error('mitad', c.D / 2000, 'Bien buscar entre ambas; supusiste masas iguales.');
-      error('lineal', c.D * c.MA / (c.MA + c.MB) / 1000, 'Bien comparar masas; usaste la proporción sin raíz.');
-      error('desde-b', c.D / 1000 - resultado, 'Bien hallar el punto; mediste desde B en vez de A.');
-      error('sin-suma', c.D * Math.sqrt(c.MA / c.MB) / 1000, 'Bien obtener la razón; dividiste D entre ella sin usar que las separaciones suman D.');
-      error('doble', 2 * resultado, 'Bien ubicar el punto; duplicaste la distancia desde A.');
+      solucion.push({ texto: ['Las dos separaciones suman D, y ', sub(r, 'B'), ' es la razón multiplicada por ', sub(r, 'A'), '.'], ecuacion: [sub(r, 'A'), ' + ', numero(razon), ' · ', sub(r, 'A'), ' = ', valor(c.D / 1000, 'km', 'i')] });
+      solucion.push({ texto: 'Juntamos los dos términos que llevan la distancia desde A y la despejamos.', ecuacion: eq(simbolo, { frac: [lit('i', c.D / 1000), `1 + ${numero(razon)}`] }, resultado) });
+      error('mitad', c.D / 2000, 'Bien buscado el punto entre las dos fuentes, pero el punto medio solo sirve cuando las masas son iguales.');
+      error('lineal', c.D * c.MA / (c.MA + c.MB) / 1000, 'Bien comparadas las masas, pero la razón de separaciones es la raíz de la razón de masas, y faltó sacar la raíz.');
+      error('desde-b', c.D / 1000 - resultado, 'Bien hallado el punto, pero mediste su distancia desde B y no desde A.');
+      error('sin-suma', c.D * Math.sqrt(c.MA / c.MB) / 1000, 'Bien obtenida la razón, pero dividiste D entre ella sin usar que las dos separaciones suman D.');
+      error('doble', 2 * resultado, 'Bien ubicado el punto, pero duplicaste su distancia desde A.');
     } else throw new Error(`Tipo desconocido en ley universal: ${c.tipo}`);
     const aproximado = aproximadoG || !exacto(resultado);
     const vistos = new Set([textoValor(resultado, unidad, aproximadoG)]);
@@ -258,11 +258,11 @@ function construirGr1(Kit) {
     { tipo: 'superposicion', nivel: 3, titulo: 'La sonda queda a la izquierda', G, MA: 4e24, MB: 2e24, m: 120, D: 9e6, x: -3e6 },
   ];
   const causasCortas = {
-    lineal: 'usa la distancia sin elevarla al cuadrado', 'sin-distancia': 'omite la separación', 'sin-masas': 'omite las masas',
-    'sin-fuente': 'omite la fuente', 'sin-sonda': 'omite la sonda', 'multiplica-distancia': 'multiplica por distancia cuadrada',
-    signo: 'invierte el signo', 'sin-raiz': 'omite la raíz', inversa: 'invierte el cociente',
-    doble: 'duplica el resultado', modulos: 'suma módulos', 'solo-a': 'solo cuenta A', 'solo-b': 'solo cuenta B',
-    'resta-modulos': 'resta módulos', mitad: 'supone masas iguales', 'desde-b': 'mide desde B', 'sin-suma': 'divide D entre la razón',
+    lineal: 'no elevas la separación al cuadrado', 'sin-distancia': 'olvidas el cambio de separación', 'sin-masas': 'olvidas los cambios de masa',
+    'sin-fuente': 'olvidas la masa fuente', 'sin-sonda': 'olvidas la masa de la sonda', 'multiplica-distancia': 'multiplicas por la separación al cuadrado',
+    signo: 'cambias el signo', 'sin-raiz': 'no sacas la raíz', inversa: 'inviertes el cociente',
+    doble: 'duplicas el resultado', modulos: 'sumas los módulos sin sus sentidos', 'solo-a': 'solo cuentas la fuente A', 'solo-b': 'solo cuentas la fuente B',
+    'resta-modulos': 'restas los módulos sin sus sentidos', mitad: 'supones masas iguales', 'desde-b': 'mides desde B', 'sin-suma': 'divides D entre la razón',
   };
   let indiceLetra = 0;
   const ejemplos = casosEjemplo.map(c => {
@@ -273,7 +273,7 @@ function construirGr1(Kit) {
       if (incorrectas.length !== 4) throw new Error(`Faltan errores distintos en ${c.titulo}`);
       e.alternativas = incorrectas.map(x => x.texto);
       e.alternativas.splice(indiceLetra++, 0, textoValor(b.resultado, b.unidad, c.G != null));
-      e.solucion.push({ texto: incorrectas.map(x => `${textoValor(x.valor, '', c.G != null)}: ${causasCortas[x.id]}.`).join(' ') });
+      e.solucion.push({ texto: incorrectas.map(x => `${textoValor(x.valor, '', c.G != null)} sale si ${causasCortas[c.tipo === 'equilibrio' && x.id === 'lineal' ? 'sin-raiz' : x.id]}.`).join(' ') });
     }
     return e;
   });
@@ -304,9 +304,9 @@ function construirGr1(Kit) {
     if (b.errores.length < 3) throw new Error(`Faltan alternativas en semilla ${semilla}: ${b.verificacion.tipo}`);
     if (resuelto) return { enunciado: b.enunciado, datos: b.datos, dibujo: b.dibujo, respuesta: b.respuesta, verificacion: b.verificacion,
       pasos: [{ tipo: 'pide', texto: 'Identificamos la magnitud pedida y a qué cuerpo o separación pertenece.' },
-        { tipo: 'regla', texto: b.verificacion.tipo === 'superposicion' ? 'Calculamos cada fuerza y sumamos sus componentes sobre la misma sonda.' : 'La ley usa ambas masas y la separación entre centros al cuadrado.' },
+        { tipo: 'regla', texto: b.verificacion.tipo === 'superposicion' ? 'Calculamos cada fuerza y sumamos sus componentes sobre la misma sonda.' : 'Usamos la ley de gravitación: la fuerza depende de las dos masas y del cuadrado de la separación entre centros.' },
         ...b.solucion.map(x => ({ tipo: 'cuentas', ...x })),
-        { tipo: 'sentido', texto: b.verificacion.tipo === 'superposicion' ? 'El signo señala el sentido de la fuerza neta sobre la sonda.' : 'Comprobamos la unidad pedida. Los módulos, las masas y las separaciones son no negativos.' }] };
+        { tipo: 'sentido', texto: b.verificacion.tipo === 'superposicion' ? 'El signo señala el sentido de la fuerza neta sobre la sonda.' : 'Comprobamos que la respuesta esté en la unidad pedida y que no sea negativa, porque módulos, masas y separaciones nunca lo son.' }] };
     return { pregunta: b.enunciado, datos: b.datos, dibujo: b.dibujo, verificacion: b.verificacion,
       opciones: [{ id: 'c', texto: textoValor(b.resultado, b.unidad, b.verificacion.G != null), correcta: true }, ...b.errores.slice(0, 3).map(x => ({ id: x.id, texto: x.texto, error: x.error, siFuera: x.siFuera }))],
       solucion: { texto: b.verificacion.tipo === 'superposicion' ? 'Cada atracción apunta hacia su fuente. Sumamos las componentes sin redondear los pasos intermedios.' : 'Aplicamos la ley a las mismas masas y separaciones que da el problema.', ecuacion: b.solucion.at(-1).ecuacion } };
@@ -321,17 +321,17 @@ function construirGr1(Kit) {
     actividad: 'Comparar dos ensayos con las mismas masas y distinta separación entre centros.',
     temas: ['Ley de gravitación universal'], pieza: 'fis-gravitacion',
     lee: { tarjetas: [
-      { titulo: 'Un planeta y una sonda', texto: ['La ley de gravitación universal describe una atracción entre cuerpos con masa. En estos ensayos didácticos comparamos un planeta y una sonda con paneles solares. La fuerza sobre la sonda apunta hacia el planeta.'], dibujo: figuraJuego(1.5, false) },
-      { titulo: 'De centro a centro', texto: ['La distancia entre centros se escribe ', r, '. La cota une el centro del planeta con el centro de la sonda. No mide desde la superficie. Las masas se escriben ', M, ' y ', m, ', en kilogramos.'] },
-      { titulo: 'Qué medimos en cada ensayo', texto: ['El módulo de la fuerza ', F, ' se mide en newtons. La constante de gravitación universal se escribe G. Usaremos G ≈ 6,67 × 10⁻¹¹ N·m²/kg². El subíndice ref identifica el ensayo de referencia.'] },
+      { titulo: 'Un planeta y una sonda', texto: ['Todo cuerpo con masa atrae a cualquier otro cuerpo con masa, y la ley de gravitación universal dice con cuánta fuerza. Aquí comparamos un planeta y una sonda: la fuerza sobre la sonda apunta hacia el planeta.'], dibujo: figuraJuego(1.5, false) },
+      { titulo: 'De centro a centro', texto: ['La distancia ', r, ' va del centro del planeta al centro de la sonda; no se mide desde la superficie. La masa del planeta se escribe ', M, ' y la de la sonda, ', m, ', las dos en kilogramos.'] },
+      { titulo: 'Qué medimos en cada ensayo', texto: ['El tamaño de la fuerza, su módulo ', F, ', se mide en newtons. La constante de gravitación universal se escribe G, y usaremos G ≈ 6,67 × 10⁻¹¹ N·m²/kg². El subíndice ref marca el ensayo de referencia.'] },
     ] },
     juega: {
       consigna: 'Compara ensayos con las mismas masas. Cambia la separación entre centros y observa cómo cambia la atracción sobre la sonda.',
-      voz: 'La referencia queda fija. El ensayo elegido cambia de separación.',
+      voz: 'La referencia no cambia; el ensayo elegido se aleja o se acerca.',
       controles: [{ id: 'k', etiqueta: 'Separación respecto de la referencia', min: 1, max: 3, paso: 0.5, inicio: 1, unidad: 'veces', decimales: 1, color: 'c-i', auto: { velocidad: 0.25, modo: 'rebota' } }],
       mision: { texto: 'Haz que la fuerza sea la cuarta parte de la referencia.',
         logrado: a => Math.abs(fuerza(ref.M, ref.m, ref.r * a.k) / Fref - 0.25) < 1e-10,
-        testigo: [{ k: 2 }], bien: 'La fuerza del ensayo coincide con la fracción que buscabas.' },
+        testigo: [{ k: 2 }], bien: 'Coincide: con esta separación, la fuerza es la cuarta parte de la referencia.' },
       // Auditoría (26 nov): con el avance automático el control mostraba «1,1 veces» y el dibujo, 13 599,24 km.
       // Dibujo y lectura usan el valor con la cifra que muestra el control.
       dibujo: a => figuraJuego(Math.round(a.k * 10) / 10),
@@ -344,22 +344,22 @@ function construirGr1(Kit) {
       datos: ['La fuerza de referencia es 160 N.', 'La masa fuente se duplica y la masa de la sonda se triplica.', 'La separación entre centros también se duplica.'],
       dibujo: figura(pred), revelar: figura({ ...pred, resultado: predCaso.resultado, unidad: 'N', color: 'h', simboloTexto: 'F_nueva', aproximado: false }, true),
       opciones: [{ id: 'c', texto: textoValor(predCaso.resultado, 'N', false), correcta: true }, ...predErrores.map(e => ({ id: e.id, texto: e.texto, error: e.error, siFuera: e.siFuera }))],
-      coincide: 'Las dos masas aumentan la atracción; la mayor separación la reduce. Hay que combinar los tres cambios.',
+      coincide: 'Las dos masas aumentan la atracción y la mayor separación la reduce, así que hay que combinar los tres cambios.',
       verificacion: predCaso.verificacion,
     },
     mira: {
       pieza: 'fis-gravitacion', datos: { ...figura(pred).datos, cortes: [figura(pred).datos, figura({ ...pred, resultado: predCaso.resultado, unidad: 'N', color: 'h', simboloTexto: 'F_nueva' }, true).datos] },
       pasos: [
-        { estado: { corte: 0 }, texto: 'Comparamos con la referencia: G es la misma constante en ambos ensayos.', ecuacion: leyRazones },
-        { estado: { corte: 0 }, texto: 'Las dos masas multiplican juntas el numerador.', ecuacion: ['Factor de masas = 2 · 3 = 6'] },
-        { estado: { corte: 0 }, texto: 'La separación duplicada aparece al cuadrado en el denominador.', ecuacion: ['Factor de separación = 2² = 4'] },
-        { estado: { corte: 1 }, texto: 'Multiplicamos la fuerza de referencia por el factor combinado.', ecuacion: [Fn, ` = 160 · 6 ÷ 4 = ${numero(predCaso.resultado)} N`] },
+        { estado: { corte: 0 }, texto: 'Dividimos el ensayo nuevo entre la referencia; como G es la misma en los dos, se cancela.', ecuacion: leyRazones },
+        { estado: { corte: 0 }, texto: 'Cada masa que crece aumenta la fuerza en la misma proporción, así que sus dos factores se multiplican.', ecuacion: ['Factor de masas = 2 · 3 = 6'] },
+        { estado: { corte: 0 }, texto: 'La separación está al cuadrado en el denominador: al duplicarla, la fuerza se divide entre su cuadrado.', ecuacion: ['Factor de separación = 2² = 4'] },
+        { estado: { corte: 1 }, texto: 'Multiplicamos la fuerza de referencia por el factor de las masas y la dividimos entre el de la separación.', ecuacion: [Fn, ` = 160 · 6 ÷ 4 = ${numero(predCaso.resultado)} N`] },
       ],
     },
     regla: {
-      texto: 'La atracción crece con cada masa y disminuye con el cuadrado de la separación entre centros. Las fuerzas mutuas tienen igual módulo y sentidos opuestos; actúan sobre cuerpos distintos.',
+      texto: 'La atracción es proporcional a cada masa y disminuye con el cuadrado de la separación entre centros. Los dos cuerpos se atraen con fuerzas de igual módulo y sentidos opuestos, y cada fuerza actúa sobre un cuerpo distinto.',
       ecuacion: [F, ' = ', { frac: [['G · ', M, ' · ', m], { sup: [r, '2'] }] }],
-      condicion: 'Cuerpos pequeños o esferas con la masa repartida por igual; el cuerpo atraído está fuera y r se mide entre centros.',
+      condicion: 'los cuerpos son pequeños o son esferas con la masa repartida por igual, el cuerpo atraído está fuera de la esfera y r se mide entre centros.',
       voz: 'Con varias fuentes, calcula cada atracción y suma sus componentes sobre el mismo cuerpo.',
       dibujo: figura({ tipo: 'directa', M: 5e24, m: 200, r: 1.5e7, G }),
     },
@@ -437,34 +437,34 @@ function caso(c) {
     resultado=c.mu/c.r**2;
     enunciado=['Un planeta tiene ',valor(c.mu,'m³/s²'),' como producto GM = G·M. Una sonda está a ',valor(c.r/1000,'km','i'),' del centro. ¿Cuál es el módulo del campo gravitatorio allí?'];
     datos.push(modelo,[g,' = GM / ',r,'². El módulo se expresa en N/kg.'],'1 km = 1000 m.');
-    paso('Expresamos la distancia desde el centro en metros.',[lit('i',c.r/1000),' · 1000'],c.r,r,'m','i');
-    paso('Dividimos el producto gravitacional entre la distancia al cuadrado.',{frac:[lit('tinta',c.mu),cuadrado('i',c.r)]},resultado);
-    error('lineal',c.mu/c.r,'Usa la distancia sin elevarla al cuadrado.');
-    error('doble',2*resultado,'Duplica el campo calculado.');
-    error('mitad',resultado/2,'Divide entre dos el campo calculado.');
-    error('inversa',1/resultado,'Invierte el cociente entre GM y r².');
+    paso('Pasamos a metros la distancia desde el centro.',[lit('i',c.r/1000),' · 1000'],c.r,r,'m','i');
+    paso('Dividimos GM entre el cuadrado de esa distancia.',{frac:[lit('tinta',c.mu),cuadrado('i',c.r)]},resultado);
+    error('lineal',c.mu/c.r,'Bien ubicado el punto, pero usaste la distancia sin elevarla al cuadrado.');
+    error('doble',2*resultado,'Bien hecho el cociente, pero después duplicaste el campo calculado.');
+    error('mitad',resultado/2,'Bien hecho el cociente, pero después dividiste el campo entre dos.');
+    error('inversa',1/resultado,'Bien usados GM y la distancia, pero invertiste el cociente: GM va arriba y r² va abajo.');
   } else if(c.tipo==='altura'){
     const fuente=c.mu==null?c.g0*c.R**2:c.mu,gs=fuente/c.R**2,distancia=c.R+c.h;
     resultado=fuente/distancia**2;
     enunciado=[c.aprox?'En un modelo terrestre aproximado, ':'Un planeta modelo tiene ',c.mu==null?['campo superficial ',valor(c.g0,'N/kg')]:['GM ',c.aprox?'≈ ':'= ',valor(c.mu,'m³/s²')],', radio ',valor(c.R/1000,'km','i'),' y una sonda a ',valor(c.h/1000,'km','i'),' sobre la superficie. ¿Qué campo hay allí?'];
     datos.push(modelo,[r,' = ',R,' + ',h,'. La altura se mide desde la superficie.'],[g,' = GM / ',r,'²; GM = ',g0,'·',R,'².'],'1 km = 1000 m.');
     if(c.aprox)datos.push('GM y R son aproximaciones; la altura de 400 km es hipotética.');
-    paso('Sumamos radio y altura, ambos expresados en metros.',[lit('i',c.R),' + ',lit('i',c.h)],distancia,r,'m','i');
-    paso('Usamos la distancia total desde el centro.',c.mu==null?[lit('tinta',c.g0),' · ',{frac:[cuadrado('i',c.R),cuadrado('i',distancia)]}]:{frac:[lit('tinta',c.mu),cuadrado('i',distancia)]},resultado);
-    error('altura-sola',fuente/c.h**2,'Mide desde la superficie en lugar del centro.');
-    error('lineal',gs*c.R/distancia,'Usa una razón de distancias sin elevarla al cuadrado.');
-    error('superficie',gs,'Conserva el campo de la superficie.');
-    error('cuadrado-altura',gs/(1+(c.h/c.R)**2),'Cuadra la razón h/R antes de sumarle uno.');
+    paso('La ley mide desde el centro, así que sumamos el radio y la altura, los dos en metros.',[lit('i',c.R),' + ',lit('i',c.h)],distancia,r,'m','i');
+    paso('Con la distancia desde el centro, calculamos el campo en la posición de la sonda.',c.mu==null?[lit('tinta',c.g0),' · ',{frac:[cuadrado('i',c.R),cuadrado('i',distancia)]}]:{frac:[lit('tinta',c.mu),cuadrado('i',distancia)]},resultado);
+    error('altura-sola',fuente/c.h**2,'Bien usada una distancia, pero la mediste desde la superficie, y la ley pide medirla desde el centro del planeta.');
+    error('lineal',gs*c.R/distancia,'Bien comparadas las distancias, pero la razón entre ellas va elevada al cuadrado.');
+    error('superficie',gs,'Bien recordado el campo de la superficie, pero la sonda está más arriba, donde el campo es menor.');
+    error('cuadrado-altura',gs/(1+(c.h/c.R)**2),'Bien usada la razón h/R, pero la elevaste al cuadrado antes de sumarle uno; primero se suma y después se eleva.');
   } else if(c.tipo==='planeta'){
     resultado=c.g0*c.kM/c.kR**2;
     enunciado=['En el planeta de referencia, el campo superficial vale ',valor(c.g0,'N/kg'),'. Otro planeta tiene ',valor(c.kM,'veces','f'),' su masa y ',valor(c.kR,'veces','i'),' su radio. ¿Qué campo superficial tiene?'];
     datos.push(modelo,['En la superficie, ',r,' = ',R,'.'],[g,' = G·',q('f','M'),' / ',R,'². G no cambia entre planetas.']);
-    paso('Combinamos el cambio de masa y el cuadrado del cambio de radio.',[lit('tinta',c.g0),' · ',{frac:[lit('f',c.kM),cuadrado('i',c.kR)]}],resultado);
-    error('lineal',c.g0*c.kM/c.kR,'Usa el factor de radio sin elevarlo al cuadrado.');
-    error('sin-masa',c.g0/c.kR**2,'Omite el cambio de masa del planeta.');
-    error('sin-radio',c.g0*c.kM,'Omite el cambio de radio del planeta.');
-    error('inversa',c.g0*c.kR**2/c.kM,'Invierte el factor combinado de masa y radio.');
-    error('radio-solo',c.g0/c.kR,'Considera solo el factor de radio sin cuadrarlo.');
+    paso('Multiplicamos el campo superficial por el factor de masa y lo dividimos entre el cuadrado del factor de radio.',[lit('tinta',c.g0),' · ',{frac:[lit('f',c.kM),cuadrado('i',c.kR)]}],resultado);
+    error('lineal',c.g0*c.kM/c.kR,'Bien comparados los planetas, pero usaste el factor de radio sin elevarlo al cuadrado.');
+    error('sin-masa',c.g0/c.kR**2,'Bien elevado al cuadrado el factor de radio, pero olvidaste el cambio de masa del planeta.');
+    error('sin-radio',c.g0*c.kM,'Bien incluido el cambio de masa, pero olvidaste el cambio de radio del planeta.');
+    error('inversa',c.g0*c.kR**2/c.kM,'Bien reunidos los dos factores, pero los invertiste: la masa va arriba y el radio al cuadrado va abajo.');
+    error('radio-solo',c.g0/c.kR,'Bien considerado el radio, pero olvidaste la masa y no elevaste el factor de radio al cuadrado.');
   } else if(c.tipo==='peso'){
     const campo=c.mu/c.r**2;
     resultado=c.m*campo;unidad='N';color='h';simbolo=F;simboloTexto='F';
@@ -472,62 +472,62 @@ function caso(c) {
     datos.push(modelo,[g,' = GM / ',r,'².'],[F,' = ',m,'·',g,'. La masa se expresa en kg.'],'1 km = 1000 m.');
     paso('Primero calculamos el campo en la posición de la sonda.',{frac:[lit('tinta',c.mu),cuadrado('i',c.r)]},campo,g,'N/kg','tinta');
     paso('El peso es la masa de la sonda multiplicada por ese campo.',[lit('f',c.m),' · ',{frac:[lit('tinta',c.mu),cuadrado('i',c.r)]}],resultado);
-    error('sin-masa',campo,'Da el campo sin multiplicarlo por la masa.');
-    error('doble',2*resultado,'Duplica el peso calculado.');
-    error('divide',campo/c.m,'Divide el campo entre la masa.');
-    error('cuadrado',c.m*campo**2,'Multiplica la masa por el campo al cuadrado.');
-    error('mitad',resultado/2,'Divide entre dos el peso calculado.');
+    error('sin-masa',campo,'Bien calculado el campo, pero faltó multiplicarlo por la masa de la sonda para obtener el peso.');
+    error('doble',2*resultado,'Bien planteado el peso, pero después lo duplicaste.');
+    error('divide',campo/c.m,'Bien calculado el campo, pero lo dividiste entre la masa, y el peso es la masa por el campo.');
+    error('cuadrado',c.m*campo**2,'Bien usada la masa, pero la multiplicaste por el campo al cuadrado, y el campo va sin elevar.');
+    error('mitad',resultado/2,'Bien planteado el peso, pero después lo dividiste entre dos.');
   } else if(c.tipo==='masa'){
     resultado=c.F/c.g;unidad='kg';color='f';simbolo=m;simboloTexto='m';
     enunciado=['En un punto con campo de ',valor(c.g,'N/kg'),', el peso gravitatorio de una sonda vale ',valor(c.F,'N','h'),'. ¿Cuál es la masa de la sonda?'];
     datos.push([F,' = ',m,'·',g,'. F es el módulo del peso gravitatorio.'],'La masa se expresa en kg y no cambia al cambiar de lugar.');
-    paso('Dividimos el peso entre el campo de ese punto.',{frac:[lit('h',c.F),lit('tinta',c.g)]},resultado);
-    error('producto',c.F*c.g,'Multiplica el peso por el campo.');
-    error('inversa',c.g/c.F,'Divide el campo entre el peso.');
-    error('doble',2*resultado,'Duplica la masa calculada.');
-    error('mitad',resultado/2,'Divide entre dos la masa calculada.');
-    error('diferencia',c.F-c.g,'Resta el valor del campo al del peso.');
+    paso('Como el peso es la masa por el campo, dividimos el peso entre el campo de ese punto.',{frac:[lit('h',c.F),lit('tinta',c.g)]},resultado);
+    error('producto',c.F*c.g,'Bien relacionados el peso y la masa, pero multiplicaste el peso por el campo; para hallar la masa se divide.');
+    error('inversa',c.g/c.F,'Bien elegida la división, pero la invertiste: el peso va arriba y el campo, abajo.');
+    error('doble',2*resultado,'Bien hecha la división, pero después duplicaste la masa.');
+    error('mitad',resultado/2,'Bien hecha la división, pero después dividiste la masa entre dos.');
+    error('diferencia',c.F-c.g,'Bien usados el peso y el campo, pero los restaste, y la masa sale de dividirlos.');
   } else if(c.tipo==='altura-inversa'){
     const campo=c.g==null?c.F/c.m:c.g,distancia=c.R*Math.sqrt(c.g0/campo),altura=distancia-c.R;
     resultado=altura/1000;unidad='km';color='i';simbolo=h;simboloTexto='h';
     enunciado=c.g==null?['Un planeta tiene radio ',valor(c.R/1000,'km','i'),' y campo superficial ',valor(c.g0,'N/kg'),'. Una sonda de ',valor(c.m,'kg','f'),' pesa ',valor(c.F,'N','h'),'. ¿A qué altura sobre la superficie está?']:['Un planeta de radio ',valor(c.R/1000,'km','i'),' tiene campo superficial ',valor(c.g0,'N/kg'),'. ¿A qué altura sobre su superficie el campo vale ',valor(c.g,'N/kg'),'?'];
     datos.push(modelo,[g,' / ',g0,' = (',R,' / ',r,')².'],[r,' = ',R,' + ',h,'.'],'1 km = 1000 m.');
-    if(c.g==null){datos.push([F,' = ',m,'·',g,'. El peso gravitatorio de la sonda se mide en N.']);paso('Dividimos el peso de la sonda entre su masa.',{frac:[lit('h',c.F),lit('f',c.m)]},campo,g,'N/kg','tinta');}
+    if(c.g==null){datos.push([F,' = ',m,'·',g,'. El peso gravitatorio de la sonda se mide en N.']);paso('Primero hallamos el campo donde está la sonda: dividimos su peso entre su masa.',{frac:[lit('h',c.F),lit('f',c.m)]},campo,g,'N/kg','tinta');}
     // Auditoría (26 nov): el despeje de r no se decía (lector en frío).
     paso(['Despejamos ',r,' de la relación de campos: ',r,' = ',R,' · √(',g0,' / ',g,').'],[lit('i',c.R),' · ',{raiz:[{frac:[lit('tinta',c.g0),lit('tinta',campo)]}]}],distancia,r,'m','i');
-    paso('Restamos el radio y convertimos la altura a kilómetros.',{frac:[[lit('i',distancia),' − ',lit('i',c.R)],'1000']},resultado);
-    error('desde-centro',distancia/1000,'Da la distancia desde el centro sin restar el radio.');
-    error('sin-raiz',c.R*(c.g0/campo-1)/1000,'Usa el cociente de campos sin extraer su raíz.');
-    error('inversa',c.R*(Math.sqrt(campo/c.g0)-1)/1000,'Invierte el cociente de campos dentro de la raíz.');
-    error('radio',c.R/1000,'Da el radio del planeta como altura.');
-    error('mitad',resultado/2,'Divide entre dos la altura calculada.');
+    paso('La altura se mide desde la superficie: restamos el radio y pasamos el resultado a kilómetros.',{frac:[[lit('i',distancia),' − ',lit('i',c.R)],'1000']},resultado);
+    error('desde-centro',distancia/1000,'Bien hallada la distancia desde el centro, pero faltó restarle el radio para obtener la altura.');
+    error('sin-raiz',c.R*(c.g0/campo-1)/1000,'Bien usado el cociente de campos, pero faltó sacarle la raíz antes de multiplicar por el radio.');
+    error('inversa',c.R*(Math.sqrt(campo/c.g0)-1)/1000,'Bien planteada la raíz, pero invertiste el cociente de campos que va dentro de ella.');
+    error('radio',c.R/1000,'Bien recordado el radio, pero lo diste como si fuera la altura de la sonda.');
+    error('mitad',resultado/2,'Bien hallada la altura, pero después la dividiste entre dos.');
   } else if(c.tipo==='superposicion'){
     const ra=Math.abs(c.x),rb=Math.abs(c.D-c.x),ga=c.muA/ra**2,gb=c.muB/rb**2,ca=Math.sign(-c.x)*ga,cb=Math.sign(c.D-c.x)*gb;
     resultado=ca+cb;simbolo=gx;simboloTexto='g_x';
     // Auditoría (26 nov): «GM_A» y «g_x» iban como texto crudo (la teoría no convierte «_» en subíndice).
     enunciado=['Dos fuentes tienen ',sub(mu,'A'),' = ',valor(c.muA,'m³/s²'),' y ',sub(mu,'B'),' = ',valor(c.muB,'m³/s²'),'. A está en x = 0 y B, en ',valor(c.D/1000,'km','i'),'. ¿Cuál es ',gx,' en x = ',valor(c.x/1000,'km','i'),'?'];
-    datos.push('Las fuentes son esféricas; el punto está fuera de ambas. Ignoramos otras fuentes.','La derecha es positiva. Cada campo apunta hacia su fuente.','Cada módulo es GM dividido entre su distancia al cuadrado.','La superposición suma componentes de campos en el mismo punto.','1 km = 1000 m.');
-    paso('El campo de A apunta desde el punto hacia A.',[String(Math.sign(-c.x)),' · ',{frac:[lit('tinta',c.muA),cuadrado('i',ra)]}],ca,sub(g,'Ax'));
-    paso('Desde B, la distancia es D − x. Su campo apunta hacia B.',[String(Math.sign(c.D-c.x)),' · ',{frac:[lit('tinta',c.muB),cuadrado('i',rb)]}],cb,sub(g,'Bx'));
-    paso('Sumamos las componentes sin redondear los resultados intermedios.',[
+    datos.push('Las fuentes son esféricas; el punto está fuera de ambas. Ignoramos otras fuentes.','La derecha es positiva. Cada campo apunta hacia su fuente.','Cada módulo es GM dividido entre su distancia al cuadrado.','Por superposición, el campo total es la suma de las componentes de los dos campos en ese punto.','1 km = 1000 m.');
+    paso('Calculamos el campo de A, que apunta desde el punto hacia A; su signo dice hacia qué lado.',[String(Math.sign(-c.x)),' · ',{frac:[lit('tinta',c.muA),cuadrado('i',ra)]}],ca,sub(g,'Ax'));
+    paso('La distancia a B es D − x. Calculamos su campo, que apunta desde el punto hacia B.',[String(Math.sign(c.D-c.x)),' · ',{frac:[lit('tinta',c.muB),cuadrado('i',rb)]}],cb,sub(g,'Bx'));
+    paso('Sumamos las dos componentes con su signo, sin redondear los resultados intermedios.',[
       String(Math.sign(-c.x)),' · ',{frac:[lit('tinta',c.muA),cuadrado('i',ra)]},' + ',String(Math.sign(c.D-c.x)),' · ',{frac:[lit('tinta',c.muB),cuadrado('i',rb)]}],resultado);
-    error('suma',ga+gb,'Suma módulos aunque los campos puedan oponerse.');
-    error('signo',-resultado,'Invierte el sentido del campo resultante.');
-    error('solo-A',ca,'Conserva solo el campo producido por A.');
-    error('solo-B',cb,'Conserva solo el campo producido por B.');
-    error('resta-modulos',Math.abs(ga-gb),'Resta módulos y toma siempre un resultado positivo.');
+    error('suma',ga+gb,'Bien calculados los dos campos, pero sumaste sus módulos, y en este punto pueden apuntar en sentidos opuestos.');
+    error('signo',-resultado,'Bien combinados los campos, pero invertiste el sentido del campo resultante.');
+    error('solo-A',ca,'Bien calculado el campo de A, pero olvidaste sumar el de B.');
+    error('solo-B',cb,'Bien calculado el campo de B, pero olvidaste sumar el de A.');
+    error('resta-modulos',Math.abs(ga-gb),'Bien hallados los módulos, pero los restaste y tomaste el resultado positivo sin mirar los sentidos.');
   } else if(c.tipo==='nulo'){
     const distancia=c.D*Math.sqrt(c.muA)/(Math.sqrt(c.muA)+Math.sqrt(c.muB));
     resultado=distancia/1000;unidad='km';color='i';simbolo=sub(r,'A');simboloTexto='r_A';
     enunciado=['Dos fuentes tienen ',sub(mu,'A'),' = ',valor(c.muA,'m³/s²'),' y ',sub(mu,'B'),' = ',valor(c.muB,'m³/s²'),'. Sus centros están separados ',valor(c.D/1000,'km','i'),'. Entre ellas, ¿a qué distancia de A se anula el campo?'];
     datos.push('Las fuentes son esféricas. El punto buscado está fuera de ambas y entre sus centros.','En ese intervalo, los campos tienen sentidos opuestos.',[sub(mu,'A'),' / ',sub(r,'A'),'² = ',sub(mu,'B'),' / ',sub(r,'B'),'²; ',sub(r,'A'),' + ',sub(r,'B'),' = D.'],'1 km = 1000 m.');
-    paso('Igualar los módulos fija la razón de las distancias.',{raiz:[{frac:[lit('tinta',c.muB),lit('tinta',c.muA)]}]},Math.sqrt(c.muB/c.muA),[sub(r,'B'),' / ',sub(r,'A')],'');
-    paso('La suma de ambas distancias es la separación de los centros.',{frac:[lit('i',c.D/1000),['1 + ',{raiz:[{frac:[lit('tinta',c.muB),lit('tinta',c.muA)]}]}]]},resultado);
-    error('lineal',c.D*c.muA/(c.muA+c.muB)/1000,'Reparte la distancia según GM, sin extraer raíces.');
-    error('mitad',c.D/2000,'Coloca el punto en la mitad pese a las fuentes distintas.');
-    error('complemento',(c.D-distancia)/1000,'Da la distancia medida desde B.');
-    error('cociente',c.D*Math.sqrt(c.muA/c.muB)/1000,'Multiplica la separación por la razón de raíces.');
-    error('inversa',c.D/(1+c.muA/c.muB)/1000,'Usa la razón inversa de GM sin extraer raíces.');
+    paso('Igualamos los módulos de los dos campos; de ahí sale la razón entre las dos distancias.',{raiz:[{frac:[lit('tinta',c.muB),lit('tinta',c.muA)]}]},Math.sqrt(c.muB/c.muA),[sub(r,'B'),' / ',sub(r,'A')],'');
+    paso('Como las dos distancias suman la separación entre los centros, despejamos la distancia desde A.',{frac:[lit('i',c.D/1000),['1 + ',{raiz:[{frac:[lit('tinta',c.muB),lit('tinta',c.muA)]}]}]]},resultado);
+    error('lineal',c.D*c.muA/(c.muA+c.muB)/1000,'Bien comparadas las fuentes, pero repartiste la distancia según GM sin sacar las raíces.');
+    error('mitad',c.D/2000,'Bien buscado el punto entre las fuentes, pero la mitad solo sirve cuando las dos fuentes son iguales.');
+    error('complemento',(c.D-distancia)/1000,'Bien hallado el punto, pero diste su distancia desde B y no desde A.');
+    error('cociente',c.D*Math.sqrt(c.muA/c.muB)/1000,'Bien sacada la razón de raíces, pero multiplicaste la separación por ella en vez de repartirla.');
+    error('inversa',c.D/(1+c.muA/c.muB)/1000,'Bien comparadas las fuentes, pero usaste la razón inversa de GM y no sacaste las raíces.');
   } else if(c.tipo==='balanza'){
     const campo=campoLocal(c),peso=c.m*campo;
     resultado=peso*(1-c.beta);unidad='N';color='h';simbolo=N;simboloTexto='N';
@@ -538,23 +538,22 @@ function caso(c) {
     datos.push('Ignoramos rozamiento y otras fuerzas sobre el bloque. El sensor inferior mide la fuerza normal.','β es la fracción del campo local que acelera la sonda hacia el planeta.',[N,' = ',m,'·',g,'·(1 − β)']);
     if(c.g==null)datos.push([g,' = GM / ',r,'²; ',r,' = ',R,' + ',h,'; GM = ',g0,'·',R,'².'],'1 km = 1000 m.');
     const cuentaCampo=c.g!=null?lit('tinta',c.g):c.mu!=null?{frac:[lit('tinta',c.mu),cuadrado('i',c.r)]}:[lit('tinta',c.g0),' · ',{frac:[cuadrado('i',c.R),cuadrado('i',c.R+c.h)]}];
-    if(c.g==null)paso('Calculamos el campo donde se realiza la medición.',cuentaCampo,campo,g,'N/kg','tinta');
+    if(c.g==null)paso('Calculamos el campo en el lugar donde está la sonda.',cuentaCampo,campo,g,'N/kg','tinta');
     // Auditoría (26 nov): con el campo ya calculado en el paso anterior, se usa su valor (antes se repetía la cuenta y se partía a 390 px).
-    paso('La caída de la sonda reduce la fuerza de apoyo necesaria.',[lit('f',c.m),' · ',c.g==null&&exacto(campo)?lit('tinta',campo):{par:[cuentaCampo]},' · (1 − ',lit('tinta',c.beta),')'],resultado);
-    error('gravedad',peso,'Da el peso gravitatorio en lugar del apoyo.');
-    error('suma',peso*(1+c.beta),'Suma la fracción de aceleración en lugar de restarla.');
-    error('beta',peso*c.beta,'Da la fuerza neta que acelera al bloque.');
-    error('sin-masa',campo*(1-c.beta),'Omite la masa del bloque al calcular el apoyo.');
-    error('doble',2*resultado,'Duplica la fuerza de apoyo calculada.');
-    error('cuadrado',c.m*campo**2,'Multiplica la masa por el campo al cuadrado.');
-    error('inversa',c.m/campo,'Divide la masa entre el campo.');
-    error('resta',campo-c.m,'Resta el valor de masa al del campo.');
+    paso('Como la sonda acelera hacia el planeta, el sensor empuja menos: el apoyo es el peso por (1 − β).',[lit('f',c.m),' · ',c.g==null&&exacto(campo)?lit('tinta',campo):{par:[cuentaCampo]},' · (1 − ',lit('tinta',c.beta),')'],resultado);
+    error('gravedad',peso,'Bien calculado el peso del bloque, pero el sensor mide el apoyo, que es menor porque la sonda acelera hacia el planeta.');
+    error('suma',peso*(1+c.beta),'Bien usada la fracción de aceleración, pero la sumaste; la caída reduce el apoyo, así que se resta.');
+    error('beta',peso*c.beta,'Bien calculada la fuerza neta que acelera al bloque, pero el sensor mide el apoyo, no la fuerza neta.');
+    error('sin-masa',campo*(1-c.beta),'Bien restada la parte de la aceleración, pero faltó multiplicar por la masa del bloque.');
+    error('doble',2*resultado,'Bien planteado el apoyo, pero después lo duplicaste.');
+    error('cuadrado',c.m*campo**2,'Bien usada la masa, pero la multiplicaste por el campo al cuadrado, y el campo va sin elevar.');
+    error('inversa',c.m/campo,'Bien reunidos la masa y el campo, pero dividiste la masa entre el campo.');
+    error('resta',campo-c.m,'Bien reunidos la masa y el campo, pero los restaste, y esas dos magnitudes no se restan.');
   }else throw new Error(`Tipo de campo desconocido: ${c.tipo}`);
-  const rescate={campo:'Bien ubicas el punto;',altura:'Bien usas una distancia;',planeta:'Bien comparas planetas;',peso:'Bien buscas una fuerza;',masa:'Bien relacionas peso y masa;','altura-inversa':'Bien relacionas campos y distancias;',superposicion:'Bien consideras la atracción;',nulo:'Bien comparas las fuentes;',balanza:'Bien consideras el bloque;'};
-  const segundaPersona=causa=>causa.replace(/^(Usa|Duplica|Divide|Invierte|Mide|Conserva|Cuadra|Omite|Considera|Da|Multiplica|Resta|Suma|Reparte|Coloca)\b/,v=>({Usa:'usas',Duplica:'duplicas',Divide:'divides',Invierte:'inviertes',Mide:'mides',Conserva:'conservas',Cuadra:'cuadras',Omite:'omites',Considera:'consideras',Da:'das',Multiplica:'multiplicas',Resta:'restas',Suma:'sumas',Reparte:'repartes',Coloca:'colocas'})[v]);
+  // Redacción (26 nov): cada causa ya dice qué se hizo bien y qué faltó, en segunda persona.
   const visto=new Set([numero(resultado)]);
   const unicos=errores.filter(e=>{const k=numero(e.valor);if(!Number.isFinite(e.valor)||visto.has(k))return false;visto.add(k);return true;})
-    .map(e=>({...e,texto:textoValor(e.valor,unidad,!!c.aprox),error:`GR2-${c.tipo}-${e.id}`,siFuera:`${rescate[c.tipo]} ${segundaPersona(e.causa)} Sale ${textoValor(e.valor,unidad,!!c.aprox)}.`}));
+    .map(e=>({...e,texto:textoValor(e.valor,unidad,!!c.aprox),error:`GR2-${c.tipo}-${e.id}`,siFuera:`${e.causa} Así sale ${textoValor(e.valor,unidad,!!c.aprox)}.`}));
   return {resultado,unidad,color,simboloTexto,enunciado,datos,solucion,dibujo:figura(c),respuesta:[simbolo,c.aprox||!exacto(resultado)?' ≈ ':' = ',valor(resultado,unidad,color)],errores:unicos,
     verificacion:{...c,respuesta:{valor:resultado,unidad,aproximado:!!c.aprox||!exacto(resultado)},errores:unicos.map(e=>({id:e.id,valor:e.valor}))}};
 }
@@ -576,7 +575,7 @@ function caso(c) {
     {nivel:3,titulo:'Localizar la sonda mediante su peso',tipo:'altura-inversa',g0:27,R:7e6,F:180,m:60},
     {nivel:3,titulo:'Una segunda pareja de fuentes',tipo:'nulo',muA:16e14,muB:25e14,D:2.7e7}
   ];
-  const cortas={suma:'suma módulos',signo:'invierte el sentido','solo-A':'omite B','solo-B':'omite A','resta-modulos':'resta módulos',lineal:'omite las raíces',mitad:'toma la mitad',complemento:'mide desde B',cociente:'multiplica por la razón',inversa:'invierte el cociente',gravedad:'confunde apoyo con peso',beta:'da la fuerza neta','sin-masa':'omite la masa',doble:'duplica el apoyo',cuadrado:'cuadra el campo',resta:'resta masa y campo','desde-centro':'mide desde el centro','sin-raiz':'omite la raíz',radio:'da el radio'};
+  const cortas={suma:'sumas los módulos',signo:'inviertes el sentido','solo-A':'olvidas el campo de B','solo-B':'olvidas el campo de A','resta-modulos':'restas los módulos',lineal:'no sacas las raíces',mitad:'tomas la mitad de la separación',complemento:'mides desde B',cociente:'multiplicas por la razón de raíces',inversa:'inviertes el cociente',gravedad:'confundes el apoyo con el peso',beta:'das la fuerza neta','sin-masa':'olvidas la masa',doble:'duplicas el apoyo',cuadrado:'elevas el campo al cuadrado',resta:'restas la masa y el campo','desde-centro':'mides desde el centro','sin-raiz':'no sacas la raíz',radio:'das el radio'};
   let letra=0;
   const ejemplos=casosEjemplo.map(c=>{
     const b=caso(c),e={nivel:c.nivel,titulo:c.titulo,enunciado:b.enunciado,datos:b.datos,dibujo:b.dibujo,solucion:b.solucion,respuesta:b.respuesta,verificacion:b.verificacion};
@@ -584,7 +583,7 @@ function caso(c) {
     if(c.nivel===3){
       const errs=b.errores.slice(0,4);if(errs.length<4)throw new Error(`Faltan errores en ${c.titulo}`);
       e.alternativas=errs.map(e=>e.texto);e.alternativas.splice(letra++,0,textoValor(b.resultado,b.unidad,!!c.aprox));
-      e.solucion.push({texto:errs.map(e=>`${textoValor(e.valor,'',!!c.aprox)}: ${cortas[e.id]}.`).join(' ')});
+      e.solucion.push({texto:errs.map(e=>`${textoValor(e.valor,'',!!c.aprox)} sale si ${cortas[e.id]}.`).join(' ')});
     }return e;
   });
   function entrada(semilla,resuelto){
@@ -606,13 +605,13 @@ function caso(c) {
     const b=caso(entrada(s,resuelto));
     if(b.errores.length<3)throw new Error(`Faltan alternativas de campo en semilla ${s}`);
     if(resuelto)return{enunciado:b.enunciado,datos:b.datos,dibujo:b.dibujo,respuesta:b.respuesta,verificacion:b.verificacion,pasos:[
-      {tipo:'pide',texto:'Identificamos si se pide campo, fuerza, masa o una distancia medida desde un origen preciso.'},
-      {tipo:'regla',texto:b.verificacion.tipo==='balanza'?'La fuerza de apoyo se distingue de la atracción gravitatoria.':'El campo depende de las fuentes y de la posición, no de la masa de prueba.'},
+      {tipo:'pide',texto:'Identificamos qué se pide (un campo, una fuerza, una masa o una distancia) y desde dónde se mide cada distancia.'},
+      {tipo:'regla',texto:b.verificacion.tipo==='balanza'?'El sensor mide la fuerza de apoyo, que no es lo mismo que la atracción gravitatoria sobre el bloque.':'El campo depende de las fuentes y de la posición, no de la masa de prueba.'},
       ...b.solucion.map(p=>({tipo:'cuentas',...p})),
       {tipo:'sentido',texto:b.verificacion.tipo==='superposicion'?'El signo del campo resultante indica hacia qué lado sería atraída una masa de prueba.':'Comprobamos la unidad pedida y el origen desde el que se mide cada distancia.'}]};
     return{pregunta:b.enunciado,datos:b.datos,dibujo:b.dibujo,verificacion:b.verificacion,
       opciones:[{id:'c',texto:textoValor(b.resultado,b.unidad),correcta:true},...b.errores.slice(0,3).map(e=>({id:e.id,texto:e.texto,error:e.error,siFuera:e.siFuera}))],
-      solucion:{texto:b.verificacion.tipo==='balanza'?'Calculamos primero el campo local y después la fuerza de apoyo.':'Aplicamos el campo a la posición indicada y conservamos el origen de cada distancia.',ecuacion:b.solucion.at(-1).ecuacion}};
+      solucion:{texto:b.verificacion.tipo==='balanza'?'Calculamos primero el campo local y después la fuerza de apoyo.':'Usamos el campo de la posición indicada, con cada distancia medida desde el centro de su fuente.',ecuacion:b.solucion.at(-1).ecuacion}};
   }
 
 
@@ -634,9 +633,9 @@ function caso(c) {
     return{pieza:'fis-gravitacion',datos:d,estado:{}};
   }
   const predErrores=[
-    {id:'altura-sola',valor:pred.g0/pred.kH**2,causa:'Bien usas la altura; falta contar también el radio.'},
-    {id:'lineal',valor:pred.g0/(1+pred.kH),causa:'Bien cuentas el radio; falta elevar la razón al cuadrado.'},
-    {id:'superficie',valor:pred.g0,causa:'Bien recuerdas la superficie; ahora el punto tiene otra distancia.'}
+    {id:'altura-sola',valor:pred.g0/pred.kH**2,causa:'Bien usada la altura, pero la ley mide desde el centro, así que falta sumarle el radio.'},
+    {id:'lineal',valor:pred.g0/(1+pred.kH),causa:'Bien sumado el radio, pero la razón entre las distancias va elevada al cuadrado.'},
+    {id:'superficie',valor:pred.g0,causa:'Bien recordado el campo de la superficie, pero la sonda está más lejos del centro, donde el campo es menor.'}
   ];
   const idea = {
     id: 'campo-gravitatorio',
@@ -644,38 +643,38 @@ function caso(c) {
     aprendizaje:'Distingues campo, masa y peso; calculas el campo desde el centro del planeta y sumas los efectos de varias fuentes.',
     actividad:'Cambiar la masa de una sonda que permanece en la misma posición.',temas:['Campo gravitatorio','Variación de g con la altura'],pieza:'fis-gravitacion',
     lee: { tarjetas: [
-      {titulo:'Una posición, varias sondas',texto:['Una masa de prueba es un cuerpo pequeño que usamos para explorar la atracción de una fuente sin alterar apreciablemente su distribución. En esta mesa cambiamos la sonda y mantenemos fijo el lugar.'],dibujo:figuraJuego(20,false)},
-      {titulo:'Campo y fuerza se distinguen',texto:['El campo gravitatorio g⃗ tiene módulo, dirección y sentido. Su módulo ',g,' es la fuerza por cada kilogramo colocado en un punto, en N/kg. La masa se mide en kg y el peso gravitatorio, en N.']},
-      {titulo:'Dos orígenes para medir',texto:['El radio ',R,' va del centro a la superficie. La altura ',h,' empieza en la superficie. La distancia ',r,' empieza en el centro. El producto GM = G·M reúne la constante y la masa de la fuente.']}
+      {titulo:'Una posición, varias sondas',texto:['Una masa de prueba es un cuerpo pequeño que ponemos en un punto para medir cuánto lo atrae un planeta; es tan pequeño que no cambia al planeta. Aquí cambiamos la sonda y dejamos fijo el lugar.'],dibujo:figuraJuego(20,false)},
+      {titulo:'Campo y fuerza se distinguen',texto:['El campo gravitatorio g⃗ dice cuánto y hacia dónde atrae el planeta en un punto. Su módulo ',g,' es la fuerza sobre cada kilogramo puesto allí, en N/kg. La masa se mide en kg y el peso, en N.']},
+      {titulo:'Dos orígenes para medir',texto:['El radio ',R,' va del centro a la superficie, y la altura ',h,', de la superficie hacia arriba; la distancia ',r,' se mide desde el centro. GM es la constante G por la masa del planeta, que los problemas suelen dar como un solo dato.']}
     ]},
-    juega: { consigna:'Cambia la masa de la sonda sin moverla. Compara el peso que señala la flecha en cada ensayo.',voz:'La fuente y la posición permanecen fijas.',
+    juega: { consigna:'Cambia la masa de la sonda sin moverla. Compara el peso que señala la flecha en cada ensayo.',voz:'El planeta y la posición no cambian; solo cambia la sonda.',
       controles:[{id:'m',etiqueta:'Masa de la sonda',min:20,max:80,paso:20,inicio:20,unidad:'kg',decimales:0,color:'c-f',auto:{velocidad:10,modo:'rebota'}}],
-      mision:{texto:'Elige una sonda cuyo peso gravitatorio sea 250 N.',logrado:a=>Math.abs(a.m*campoJuego-250)<1e-9,testigo:[{m:40}],bien:'Esa masa recibe la fuerza gravitatoria que buscabas.'},
+      mision:{texto:'Elige una sonda cuyo peso gravitatorio sea 250 N.',logrado:a=>Math.abs(a.m*campoJuego-250)<1e-9,testigo:[{m:40}],bien:'Coincide: con esa masa, el peso de la sonda es 250 N.'},
       // Auditoría (26 nov): dibujo y lectura con la masa entera que muestra el control; la lectura enuncia la relación.
       dibujo:a=>figuraJuego(Math.round(a.m)),lectura:a=>{const mm=Math.round(a.m);return['Peso: ',valor(mm,'kg','f'),' · 6,25 N/kg = ',valor(mm*campoJuego,'N','h')];},
-      leyenda:[{s:m,t:'masa de prueba, en kilogramos'},{s:r,t:'distancia desde el centro, en kilómetros'},{s:F,t:'peso gravitatorio, en newtons'},{s:mu,t:'producto G·M; unidad: m³/s²'}],minimo:2},
+      leyenda:[{s:m,t:'masa de prueba, en kilogramos'},{s:r,t:'distancia desde el centro, en kilómetros'},{s:F,t:'peso gravitatorio, en newtons'},{s:mu,t:'G por la masa del planeta (m³/s²)'}],minimo:2},
     predice: { pregunta:'En otro planeta, ¿qué campo gravitatorio hay a una altura igual a dos radios sobre la superficie?',
-      datos:['El campo en la superficie vale 18 N/kg.','La altura h sobre la superficie es 2 R; R es el radio del planeta.','El planeta es una esfera cuya masa se reparte igual en todas las direcciones. Ignoramos otras fuentes.'],
+      datos:['El campo en la superficie vale 18 N/kg.','La altura h sobre la superficie es 2 R, donde R es el radio del planeta.','El planeta es una esfera cuya masa se reparte igual en todas las direcciones. Ignoramos otras fuentes.'],
       dibujo:figuraPred(false),revelar:figuraPred(true),
       opciones:[{id:'c',texto:textoValor(predResultado,'N/kg'),correcta:true},...predErrores.map(e=>({id:e.id,texto:textoValor(e.valor,'N/kg'),error:`GR2-predice-${e.id}`,siFuera:`${e.causa} Así sale ${textoValor(e.valor,'N/kg')}.`}))],
-      coincide:'La altura empieza en la superficie; para aplicar la ley necesitamos llegar desde el centro hasta la sonda.',
+      coincide:'La altura empieza en la superficie, pero la ley mide desde el centro, así que la distancia es el radio más la altura.',
       verificacion:{tipo:'prediccion-altura',...pred,respuesta:{valor:predResultado,unidad:'N/kg',aproximado:false},errores:predErrores.map(e=>({id:e.id,valor:e.valor}))}},
     mira: { pieza:'fis-gravitacion',datos:{...figuraPred(false).datos,cortes:[figuraPred(false).datos,figuraPred(true).datos]},pasos:[
       {estado:{corte:0},texto:'Sumamos el radio y la altura para medir desde el centro.',ecuacion:[r,' = ',R,' + ',h,' = ',R,' + 2',R,' = 3',R]},
-      {estado:{corte:0},texto:'La misma fuente permite comparar los campos mediante sus distancias.',ecuacion:[{frac:[g,g0]},' = ',{sup:[{par:[{frac:[R,r]}]},'2']}]},
-      {estado:{corte:1},texto:'El campo queda dividido entre el cuadrado de tres.',ecuacion:[g,' = 18 · (1/3)² = ',valor(predResultado,'N/kg')]}
+      {estado:{corte:0},texto:'Como el planeta es el mismo, GM se cancela al dividir los dos campos y solo quedan las distancias.',ecuacion:[{frac:[g,g0]},' = ',{sup:[{par:[{frac:[R,r]}]},'2']}]},
+      {estado:{corte:1},texto:'La sonda está tres veces más lejos del centro, así que el campo se divide entre tres al cuadrado.',ecuacion:[g,' = 18 · (1/3)² = ',valor(predResultado,'N/kg')]}
     ]},
-    regla: { texto:'El campo depende de la fuente y del lugar. Peso: masa por campo. Dos campos se suman con sus sentidos. Una balanza mide cuánto la aprietan, no el peso.',
+    regla: { texto:'El campo depende del planeta y de la distancia a su centro, no de la sonda, y el peso es la masa por ese campo. Los campos de dos fuentes se suman con sus sentidos. Una balanza mide cuánto la aprietan, no el peso.',
       ecuacion:[g,' = ',{frac:[['G·',q('f','M')],{sup:[r,'2']}]},'; ',F,' = ',m,'·',g,'; ',r,' = ',R,' + ',h],
-      condicion:'Fuera de una fuente esférica con masa distribuida radialmente. La fórmula del módulo usa la distancia desde su centro.',
-      voz:'En caída libre sin apoyo, el peso aparente es cero aunque la atracción gravitatoria siga actuando.',dibujo:figura({tipo:'campo',mu:7e14,r:1e7})},
+      condicion:'el punto está fuera de un planeta esférico cuya masa se reparte igual en todas las direcciones, y r se mide desde su centro.',
+      voz:'En caída libre, la balanza marca cero aunque la gravedad siga atrayendo al cuerpo.',dibujo:figura({tipo:'campo',mu:7e14,r:1e7})},
     ejemplos: ejemplos,
     resuelve: { pieza:'fis-gravitacion',generar:s=>generar(s,true) },
     ahoraTu: { pieza:'fis-gravitacion',generar:s=>generar(s,false) }
   };
   const glosario=[
     {termino:'campo gravitatorio',simbolo:'g⃗',medida:'N/kg',simple:'La fuerza gravitatoria por cada kilogramo colocado en un punto.',def:'Magnitud vectorial que expresa la fuerza gravitatoria por unidad de masa de prueba en una posición.',ejemplos:['Una sonda permite explorar el campo en un punto.','El campo se expresa en N/kg.','Para describir un campo se indican su módulo, dirección y sentido.']},
-    {termino:'masa de prueba',simbolo:'m',medida:'kg',simple:'Un cuerpo pequeño con el que exploramos la atracción de una fuente.',def:'Cuerpo de masa pequeña cuyo uso para explorar un campo no altera apreciablemente la distribución de la fuente.',ejemplos:['Una sonda pequeña puede usarse como masa de prueba.','La masa de prueba se mide en kilogramos.','Dos sondas de distinta masa pueden explorar el mismo punto.']},
+    {termino:'masa de prueba',simbolo:'m',medida:'kg',simple:'Un cuerpo pequeño con el que exploramos la atracción de una fuente.',def:'Cuerpo tan pequeño que, al ponerlo en un punto para medir el campo, no cambia la fuente que lo produce.',ejemplos:['Una sonda pequeña puede usarse como masa de prueba.','La masa de prueba se mide en kilogramos.','Dos sondas de distinta masa pueden explorar el mismo punto.']},
     {termino:'superposición',simple:'La suma de los efectos que producen varias fuentes en un mismo punto.',def:'Principio por el que el campo total es la suma vectorial de los campos producidos por cada fuente.',ejemplos:['Dos fuentes pueden atraer una sonda en sentidos opuestos.','Los campos se suman en la misma posición.','En una recta, usamos componentes con signo para sumar los campos.']}
   ];
   const letras={g:'módulo del campo gravitatorio',g_0:'módulo del campo gravitatorio en la superficie del planeta',g_x:'componente horizontal del campo resultante',g_A:'módulo del campo producido por A',g_B:'módulo del campo producido por B',g_Ax:'componente horizontal del campo de A',g_Bx:'componente horizontal del campo de B',
@@ -723,7 +722,7 @@ function construirGr3(Kit) {
   const referencia = 'La energía potencial gravitatoria se toma cero en el infinito.';
   // Auditoría (26 nov): «1 km/s = 1000 m/s» solo cuando el caso tiene una rapidez.
   const unidades = c => c.v != null || c.v1 != null ? '1 GJ = 10⁹ J; 1 km = 1000 m; 1 km/s = 1000 m/s.' : '1 GJ = 10⁹ J; 1 km = 1000 m.';
-  const datosBase = c => ['Fuente esférica fija y posiciones exteriores. Masa de la sonda despreciable; energía potencial cero en el infinito.', `GM = ${numero(c.GM)} m³/s²: producto de G por la masa fuente.`, leyEP, unidades(c)];
+  const datosBase = c => ['Fuente esférica fija y posiciones exteriores. Masa de la sonda despreciable; energía potencial cero en el infinito.', `GM = ${numero(c.GM)} m³/s²: G por la masa del planeta.`, leyEP, unidades(c)];
 
   function figura(c, revelar = false) {
     const masaSI = masa(c), dos = c.r1 != null && c.r2 != null || c.tipo === 'cambio-dado';
@@ -776,29 +775,29 @@ function construirGr3(Kit) {
         resultado = c.Ep2 - c.Ep1; simbolo = ['Δ', EP]; simboloTexto = 'ΔE_PG';
         enunciado = ['La energía potencial de una sonda pasa de ', cantidad(c.Ep1, 'GJ'), ' a ', cantidad(c.Ep2, 'GJ'), ', con la misma referencia. ¿Cuánto cambia?'];
         datos.push(leyCambio);
-        solucion.push({ texto: 'Restamos el valor final menos el inicial, conservando los signos.', ecuacion: ['Δ', EP, ` = (${numero(c.Ep2)}) − (${numero(c.Ep1)}) = ${numero(resultado)} GJ`] });
-        error('resta-invertida', -resultado, 'Bien identificar los extremos; invertiste el orden de la resta.');
-        error('suma-extremos', c.Ep1 + c.Ep2, 'Bien conservar los signos; sumaste las energías.');
-        error('solo-inicial', c.Ep1, 'Bien leer el inicio; conservaste solo ese valor.');
-        error('solo-final', c.Ep2, 'Bien leer el final; conservaste solo ese valor.');
+        solucion.push({ texto: 'Restamos la energía final menos la inicial, cada una con su signo.', ecuacion: ['Δ', EP, ` = (${numero(c.Ep2)}) − (${numero(c.Ep1)}) = ${numero(resultado)} GJ`] });
+        error('resta-invertida', -resultado, 'Bien identificados los extremos, pero invertiste el orden de la resta: va la final menos la inicial.');
+        error('suma-extremos', c.Ep1 + c.Ep2, 'Bien conservados los signos, pero sumaste las energías, y el cambio se obtiene restándolas.');
+        error('solo-inicial', c.Ep1, 'Bien leída la energía inicial, pero diste solo ese valor y no la restaste de la final.');
+        error('solo-final', c.Ep2, 'Bien leída la energía final, pero diste solo ese valor y no le restaste la inicial.');
       } else if (c.tipo === 'trabajo-dado') {
         resultado = -c.dEp; simbolo = WG; simboloTexto = 'W_g';
         enunciado = ['La energía potencial de una sonda cambia en ', cantidad(c.dEp, 'GJ'), '. ¿Qué trabajo realiza la gravedad durante ese desplazamiento?'];
         datos.push(leyTrabajo);
-        solucion.push({ texto: 'El trabajo gravitatorio lleva el signo opuesto al cambio de energía potencial.', ecuacion: [WG, ` = −(${numero(c.dEp)}) = ${numero(resultado)} GJ`] });
-        error('signo', c.dEp, 'Bien usar el cambio potencial; conservaste su mismo signo.');
-        error('doble', 2 * resultado, 'Bien cambiar el signo; contaste el trabajo dos veces.');
-        error('mitad', resultado / 2, 'Bien cambiar el signo; añadiste un medio innecesario.');
-        error('nulo', 0, 'Bien distinguir las energías; supusiste trabajo nulo pese al cambio.');
+        solucion.push({ texto: 'El trabajo de la gravedad es el cambio de energía potencial con el signo cambiado.', ecuacion: [WG, ` = −(${numero(c.dEp)}) = ${numero(resultado)} GJ`] });
+        error('signo', c.dEp, 'Bien usado el cambio de energía potencial, pero el trabajo de la gravedad lleva el signo contrario.');
+        error('doble', 2 * resultado, 'Bien cambiado el signo, pero después contaste el trabajo dos veces.');
+        error('mitad', resultado / 2, 'Bien cambiado el signo, pero después lo multiplicaste por un medio que no corresponde.');
+        error('nulo', 0, 'Bien distinguidas las energías, pero si la energía potencial cambia, la gravedad sí hace trabajo.');
       } else {
         resultado = c.Ec + c.Ep; simbolo = EM; simboloTexto = 'E_M';
         enunciado = ['Una sonda tiene energía cinética ', cantidad(c.Ec, 'GJ'), ' y energía potencial ', cantidad(c.Ep, 'GJ'), '. ¿Cuál es su energía mecánica?'];
         datos.push([EM, ' = ', EC, ' + ', EP]);
-        solucion.push({ texto: 'Sumamos las energías conservando sus signos.', ecuacion: [EM, ` = ${numero(c.Ec)} + (${numero(c.Ep)}) = ${numero(resultado)} GJ`] });
-        error('potencial-positiva', c.Ec - c.Ep, 'Bien sumar energías; cambiaste el signo de la potencial.');
-        error('solo-cinetica', c.Ec, 'Bien leer el movimiento; omitiste la energía potencial.');
-        error('solo-potencial', c.Ep, 'Bien leer la posición; omitiste la energía cinética.');
-        error('sin-medio', 2 * c.Ec + c.Ep, 'Bien incluir ambas energías; duplicaste la energía cinética.');
+        solucion.push({ texto: 'La energía mecánica es la suma de la cinética y la potencial, cada una con su signo.', ecuacion: [EM, ` = ${numero(c.Ec)} + (${numero(c.Ep)}) = ${numero(resultado)} GJ`] });
+        error('potencial-positiva', c.Ec - c.Ep, 'Bien sumadas las energías, pero le cambiaste el signo a la potencial, que es negativa.');
+        error('solo-cinetica', c.Ec, 'Bien leída la energía cinética, pero olvidaste sumarle la energía potencial.');
+        error('solo-potencial', c.Ep, 'Bien leída la energía potencial, pero olvidaste sumarle la energía cinética.');
+        error('sin-medio', 2 * c.Ec + c.Ep, 'Bien incluidas las dos energías, pero duplicaste la energía cinética.');
       }
     } else if (['potencial', 'altura', 'toneladas'].includes(c.tipo)) {
       resultado = ep(c.GM, mm, rr) / 1e9;
@@ -807,69 +806,69 @@ function construirGr3(Kit) {
         : ['Una sonda de ', cantidad(c.toneladas == null ? mm : c.toneladas, c.toneladas == null ? 'kg' : 't', 'f'), ' está a ', cantidad(rr / 1000, 'km', 'i'), ' del centro del planeta. ¿Cuál es su energía potencial gravitatoria?'];
       if (c.tipo === 'altura') {
         datos.push([r, ' = ', R, ' + ', h]);
-        solucion.push({ texto: 'La separación se mide desde el centro, sumando radio y altura.', ecuacion: [r, ` = ${numero(c.R / 1000)} + ${numero(c.h / 1000)} = `, cantidad(rr / 1000, 'km', 'i')] });
+        solucion.push({ texto: 'La distancia se mide desde el centro, así que sumamos el radio y la altura.', ecuacion: [r, ` = ${numero(c.R / 1000)} + ${numero(c.h / 1000)} = `, cantidad(rr / 1000, 'km', 'i')] });
       }
-      if (c.tipo === 'toneladas') { datos.push('1 t = 1000 kg.'); solucion.push({ texto: 'La masa se expresa en kilogramos.', ecuacion: [m, ` = ${numero(c.toneladas)} · 1000 = `, cantidad(mm, 'kg', 'f')] }); }
-      solucion.push({ texto: 'Sustituimos los datos en la energía con referencia en el infinito.', ecuacion: [EP, ' = −', { frac: [[numero(c.GM), ' · ', cantidad(mm, '', 'f')], cantidad(rr, '', 'i')] }, ' J'] });
-      solucion.push({ texto: 'Convertimos joules a gigajoules. El signo corresponde a la referencia elegida.', ecuacion: resultadoEq(EP, resultado) });
-      error('signo', -resultado, 'Bien usar las magnitudes; omitiste el signo de esta referencia.');
-      error('radio-cuadrado', resultado / rr, 'Bien medir desde el centro; elevaste el radio al cuadrado.');
-      error('sin-masa', resultado / mm, 'Bien usar la fuente; omitiste la masa de la sonda.');
-      error('mitad', resultado / 2, 'Bien usar la separación; añadiste un factor de un medio.');
-      if (c.tipo === 'altura') error('desde-superficie', ep(c.GM, mm, c.h) / 1e9, 'Bien incluir la altura; la usaste como separación central.');
-      if (c.tipo === 'toneladas') error('sin-toneladas', resultado / 1000, 'Bien convertir kilómetros; dejaste la masa en toneladas.');
+      if (c.tipo === 'toneladas') { datos.push('1 t = 1000 kg.'); solucion.push({ texto: 'Pasamos la masa de toneladas a kilogramos.', ecuacion: [m, ` = ${numero(c.toneladas)} · 1000 = `, cantidad(mm, 'kg', 'f')] }); }
+      solucion.push({ texto: 'Reemplazamos los datos en la energía potencial, que vale cero en el infinito.', ecuacion: [EP, ' = −', { frac: [[numero(c.GM), ' · ', cantidad(mm, '', 'f')], cantidad(rr, '', 'i')] }, ' J'] });
+      solucion.push({ texto: 'Pasamos de joules a gigajoules. El signo negativo sale de poner el cero en el infinito.', ecuacion: resultadoEq(EP, resultado) });
+      error('signo', -resultado, 'Bien usadas las magnitudes, pero olvidaste el signo negativo, que sale de poner el cero en el infinito.');
+      error('radio-cuadrado', resultado / rr, 'Bien medida la distancia desde el centro, pero la elevaste al cuadrado, y en la energía va sin elevar.');
+      error('sin-masa', resultado / mm, 'Bien usada la masa del planeta, pero faltó multiplicar también por la masa de la sonda.');
+      error('mitad', resultado / 2, 'Bien usada la distancia, pero agregaste un factor de un medio que no corresponde.');
+      if (c.tipo === 'altura') error('desde-superficie', ep(c.GM, mm, c.h) / 1e9, 'Bien incluida la altura, pero la usaste como distancia al centro, y falta sumarle el radio.');
+      if (c.tipo === 'toneladas') error('sin-toneladas', resultado / 1000, 'Bien planteada la cuenta, pero dejaste la masa en toneladas, y la fórmula pide kilogramos.');
     } else if (['cambio', 'trabajo', 'tramos'].includes(c.tipo)) {
       const fin = c.tipo === 'tramos' ? c.r3 : c.r2, u1 = ep(c.GM, mm, c.r1) / 1e9, u2 = ep(c.GM, mm, fin) / 1e9;
       resultado = c.tipo === 'cambio' ? u2 - u1 : u1 - u2;
       simbolo = c.tipo === 'cambio' ? ['Δ', EP] : WG; simboloTexto = c.tipo === 'cambio' ? 'ΔE_PG' : 'W_g';
       enunciado = c.tipo === 'tramos'
-        ? ['Una sonda de ', cantidad(mm, 'kg', 'f'), ' pasa por separaciones centrales de ', cantidad(c.r1 / 1000, 'km', 'i'), ', ', cantidad(c.r2 / 1000, 'km', 'i'), ' y ', cantidad(c.r3 / 1000, 'km', 'i'), '. ¿Qué trabajo total realiza la gravedad?']
+        ? ['Una sonda de ', cantidad(mm, 'kg', 'f'), ' pasa, una tras otra, por distancias al centro de ', cantidad(c.r1 / 1000, 'km', 'i'), ', ', cantidad(c.r2 / 1000, 'km', 'i'), ' y ', cantidad(c.r3 / 1000, 'km', 'i'), '. ¿Qué trabajo total realiza la gravedad?']
         : ['Una sonda de ', cantidad(mm, 'kg', 'f'), ' pasa de ', cantidad(c.r1 / 1000, 'km', 'i'), ' a ', cantidad(c.r2 / 1000, 'km', 'i'), ' del centro. ', c.tipo === 'cambio' ? '¿Cuánto cambia su energía potencial?' : '¿Qué trabajo realiza la gravedad?'];
       datos.push(leyCambio, leyTrabajo);
       // Auditoría (26 nov): las energías de los extremos aparecían sin su cuenta (lector en frío, tarjeta de tramos).
       const iFin = c.tipo === 'tramos' ? '3' : '2';
-      solucion.push({ texto: 'Calculamos la energía inicial con la misma referencia.', ecuacion: [sub('E', 'PG,1'), ' = −', { frac: [`${numero(c.GM)} · ${numero(mm)}`, numero(c.r1)] }, exacto(u1 * 1e9) ? ' = ' : ' ≈ ', `${numero(u1 * 1e9)} J`] });
-      solucion.push({ texto: 'Y la energía final, con la misma referencia.', ecuacion: [sub('E', 'PG,' + iFin), ' = −', { frac: [`${numero(c.GM)} · ${numero(mm)}`, numero(fin)] }, exacto(u2 * 1e9) ? ' = ' : ' ≈ ', `${numero(u2 * 1e9)} J`] });
-      solucion.push({ texto: c.tipo === 'tramos' ? 'Los cambios intermedios se cancelan; el trabajo depende de los extremos.' : c.tipo === 'cambio' ? 'Restamos energía final menos inicial, conservando ambos signos.' : 'El trabajo gravitatorio es energía inicial menos energía final.',
+      solucion.push({ texto: 'Calculamos la energía potencial en la posición inicial.', ecuacion: [sub('E', 'PG,1'), ' = −', { frac: [`${numero(c.GM)} · ${numero(mm)}`, numero(c.r1)] }, exacto(u1 * 1e9) ? ' = ' : ' ≈ ', `${numero(u1 * 1e9)} J`] });
+      solucion.push({ texto: 'Con el mismo cero, calculamos la energía potencial en la posición final.', ecuacion: [sub('E', 'PG,' + iFin), ' = −', { frac: [`${numero(c.GM)} · ${numero(mm)}`, numero(fin)] }, exacto(u2 * 1e9) ? ' = ' : ' ≈ ', `${numero(u2 * 1e9)} J`] });
+      solucion.push({ texto: c.tipo === 'tramos' ? 'El paso intermedio no importa: el trabajo de la gravedad solo depende de la posición inicial y de la final.' : c.tipo === 'cambio' ? 'Restamos la energía final menos la inicial, cada una con su signo.' : 'El trabajo de la gravedad es la energía inicial menos la final.',
         ecuacion: resultadoEq(simbolo, resultado) });
-      error('resta-invertida', -resultado, 'Bien calcular los extremos; invertiste el orden de la resta.');
-      error('suma-extremos', u1 + u2, 'Bien conservar los signos; sumaste las energías de los extremos.');
-      error('solo-inicial', u1, 'Bien calcular el inicio; diste solo la energía inicial.');
-      error('solo-final', u2, 'Bien calcular el final; diste solo la energía final.');
-      error('modulo', Math.abs(u2) + Math.abs(u1), 'Bien hallar los tamaños; sumaste módulos en vez del cambio.');
-      error('modulo-inicial', Math.abs(u1), 'Bien hallar el inicio; tomaste su módulo como cambio sin restar el final.');
+      error('resta-invertida', -resultado, 'Bien calculados los extremos, pero invertiste el orden de la resta.');
+      error('suma-extremos', u1 + u2, 'Bien conservados los signos, pero sumaste las energías de los extremos en vez de restarlas.');
+      error('solo-inicial', u1, 'Bien calculada la energía inicial, pero diste solo ese valor.');
+      error('solo-final', u2, 'Bien calculada la energía final, pero diste solo ese valor.');
+      error('modulo', Math.abs(u2) + Math.abs(u1), 'Bien hallados los tamaños, pero sumaste sus módulos en vez de calcular el cambio.');
+      error('modulo-inicial', Math.abs(u1), 'Bien hallada la energía inicial, pero tomaste su módulo como si fuera el cambio, sin restar la final.');
     } else if (c.tipo === 'mecanica') {
       const cin = ec(mm, c.v) / 1e9, pot = ep(c.GM, mm, rr) / 1e9;
       resultado = cin + pot; simbolo = EM; simboloTexto = 'E_M';
       enunciado = ['Una sonda de ', cantidad(mm, 'kg', 'f'), ' tiene rapidez ', cantidad(c.v / 1000, 'km/s', 'o'), ' a ', cantidad(rr / 1000, 'km', 'i'), ' del centro. ¿Cuál es su energía mecánica?'];
       datos.push(leyEC, [EM, ' = ', EC, ' + ', EP]);
-      solucion.push({ texto: 'Calculamos energía cinética y potencial por separado.', ecuacion: [EC, exacto(cin) ? ' = ' : ' ≈ ', cantidad(cin, 'GJ'), '; ', EP, exacto(pot) ? ' = ' : ' ≈ ', cantidad(pot, 'GJ')] });
-      solucion.push({ texto: 'Sumamos las dos energías, conservando el signo de la potencial.', ecuacion: resultadoEq(EM, resultado) });
-      error('potencial-positiva', cin - pot, 'Bien sumar las energías; cambiaste el signo de la potencial.');
-      error('sin-medio', 2 * cin + pot, 'Bien incluir el movimiento; omitiste el medio de la energía cinética.');
-      error('solo-cinetica', cin, 'Bien calcular el movimiento; omitiste la energía potencial.');
-      error('solo-potencial', pot, 'Bien calcular la posición; omitiste la energía cinética.');
+      solucion.push({ texto: 'Calculamos por separado la energía cinética y la potencial.', ecuacion: [EC, exacto(cin) ? ' = ' : ' ≈ ', cantidad(cin, 'GJ'), '; ', EP, exacto(pot) ? ' = ' : ' ≈ ', cantidad(pot, 'GJ')] });
+      solucion.push({ texto: 'Sumamos las dos energías; la potencial entra con su signo negativo.', ecuacion: resultadoEq(EM, resultado) });
+      error('potencial-positiva', cin - pot, 'Bien sumadas las energías, pero le cambiaste el signo a la potencial, que es negativa.');
+      error('sin-medio', 2 * cin + pot, 'Bien incluido el movimiento, pero olvidaste el medio de la energía cinética.');
+      error('solo-cinetica', cin, 'Bien calculada la energía cinética, pero olvidaste sumarle la potencial.');
+      error('solo-potencial', pot, 'Bien calculada la energía potencial, pero olvidaste sumarle la cinética.');
     } else if (c.tipo === 'distancia') {
       resultado = -c.GM * mm / (c.EpGJ * 1e9) / 1000; unidad = 'km'; color = 'i'; simbolo = r; simboloTexto = 'r';
       enunciado = ['Una sonda de ', cantidad(mm, 'kg', 'f'), ' tiene energía potencial ', cantidad(c.EpGJ, 'GJ'), '. ¿A qué distancia del centro del planeta se encuentra?'];
-      solucion.push({ texto: 'Despejamos la separación; el signo negativo cancela el de la energía dada.', ecuacion: [r, ' = −', { frac: [['GM · ', m], EP] }] });
+      solucion.push({ texto: 'Despejamos r de la energía potencial; el signo menos de la fórmula cancela el de la energía dada.', ecuacion: [r, ' = −', { frac: [['GM · ', m], EP] }] });
       // Auditoría (26 nov): faltaba el reemplazo con los GJ pasados a J (lector en frío).
-      solucion.push({ texto: 'Reemplazamos con la energía en joules; la separación sale en metros.', ecuacion: [r, ' = −', { frac: [`${numero(c.GM)} · ${numero(mm)}`, `(${numero(c.EpGJ * 1e9)})`] }, exacto(resultado * 1000) ? ' = ' : ' ≈ ', numero(resultado * 1000)] });
-      solucion.push({ texto: 'Convertimos la separación obtenida en metros a kilómetros.', ecuacion: resultadoEq(r, resultado) });
-      error('signo', -resultado, 'Bien despejar la separación; omitiste el signo de la fórmula.');
-      error('sin-km', resultado * 1000, 'Bien obtener metros; los presentaste como kilómetros.');
-      error('raiz-extra', Math.sqrt(resultado * 1000) / 1000, 'Bien despejar; tomaste una raíz que aquí no corresponde.');
-      error('mitad', resultado / 2, 'Bien hallar la distancia; añadiste un medio innecesario.');
+      solucion.push({ texto: 'Reemplazamos con la energía en joules; la distancia sale en metros.', ecuacion: [r, ' = −', { frac: [`${numero(c.GM)} · ${numero(mm)}`, `(${numero(c.EpGJ * 1e9)})`] }, exacto(resultado * 1000) ? ' = ' : ' ≈ ', numero(resultado * 1000)] });
+      solucion.push({ texto: 'Pasamos la distancia de metros a kilómetros.', ecuacion: resultadoEq(r, resultado) });
+      error('signo', -resultado, 'Bien despejada la distancia, pero olvidaste el signo menos de la fórmula, y una distancia no es negativa.');
+      error('sin-km', resultado * 1000, 'Bien obtenida la distancia en metros, pero la diste como si fueran kilómetros.');
+      error('raiz-extra', Math.sqrt(resultado * 1000) / 1000, 'Bien hecho el despeje, pero sacaste una raíz que no corresponde, porque aquí la distancia va sin cuadrado.');
+      error('mitad', resultado / 2, 'Bien hallada la distancia, pero agregaste un factor de un medio que no corresponde.');
     } else if (c.tipo === 'masa-trabajo') {
       resultado = c.trabajoGJ * 1e9 / (c.GM * (1 / c.r2 - 1 / c.r1)); unidad = 'kg'; color = 'f'; simbolo = m; simboloTexto = 'm';
       enunciado = ['Al pasar de ', cantidad(c.r1 / 1000, 'km', 'i'), ' a ', cantidad(c.r2 / 1000, 'km', 'i'), ' del centro, la gravedad realiza ', cantidad(c.trabajoGJ, 'GJ'), ' de trabajo sobre una sonda. ¿Cuál es su masa?'];
       datos.push(leyCambio, leyTrabajo);
-      solucion.push({ texto: 'Expresamos el trabajo como la disminución de energía potencial.', ecuacion: [WG, ' = GM · ', m, ' · (1/', sub(r, '2'), ' − 1/', sub(r, '1'), ')'] });
-      solucion.push({ texto: 'Despejamos la masa con el trabajo convertido a joules.', ecuacion: resultadoEq(m, resultado) });
-      error('signo', -resultado, 'Bien usar ambos radios; invertiste su resta.');
-      error('sin-giga', resultado / 1e9, 'Bien despejar la masa; usaste gigajoules como joules.');
-      error('medio', resultado / 2, 'Bien combinar las posiciones; añadiste un medio al resultado.');
-      error('doble', resultado * 2, 'Bien calcular el trabajo; lo contaste dos veces.');
+      solucion.push({ texto: 'El trabajo de la gravedad es lo que disminuye la energía potencial; lo escribimos con las dos distancias.', ecuacion: [WG, ' = GM · ', m, ' · (1/', sub(r, '2'), ' − 1/', sub(r, '1'), ')'] });
+      solucion.push({ texto: 'Pasamos el trabajo a joules y despejamos la masa.', ecuacion: resultadoEq(m, resultado) });
+      error('signo', -resultado, 'Bien usadas las dos distancias, pero invertiste el orden de su resta.');
+      error('sin-giga', resultado / 1e9, 'Bien despejada la masa, pero usaste los gigajoules como si fueran joules.');
+      error('medio', resultado / 2, 'Bien combinadas las posiciones, pero agregaste un factor de un medio al resultado.');
+      error('doble', resultado * 2, 'Bien calculado el trabajo, pero lo contaste dos veces.');
     } else if (c.tipo === 'rapidez') {
       const pot1 = ep(c.GM, mm, c.r1), pot2 = ep(c.GM, mm, c.r2), cin1 = ec(mm, c.v1), cin2 = cin1 + pot1 - pot2;
       if (cin2 <= 0) throw new Error('El caso de rapidez requiere una posición alcanzable con rapidez positiva.');
@@ -877,30 +876,30 @@ function construirGr3(Kit) {
       enunciado = ['Una sonda de ', cantidad(mm, 'kg', 'f'), ' pasa de ', cantidad(c.r1 / 1000, 'km', 'i'), ' a ', cantidad(c.r2 / 1000, 'km', 'i'), ' del centro. Su rapidez inicial es ', cantidad(c.v1 / 1000, 'km/s', 'o'), '. ¿Cuál es la final?'];
       datos[0] = 'Solo gravedad y movimiento exterior sobre una recta central. Fuente fija, masa de sonda despreciable y cero potencial en el infinito.';
       datos.push(leyEC, leyConservacion);
-      solucion.push({ texto: 'La disminución de energía potencial se añade a la energía cinética inicial.', ecuacion: [sub('E', 'C,2'), ' = ', sub('E', 'C,1'), ' + ', sub('E', 'PG,1'), ' − ', sub('E', 'PG,2')] });
-      solucion.push({ texto: 'Calculamos sin redondear las energías intermedias.', ecuacion: resultadoEq(sub('E', 'C,2'), cin2 / 1e9, 'GJ') });
-      solucion.push({ texto: 'Despejamos la rapidez positiva de la energía cinética.', ecuacion: resultadoEq(sub(v, '2'), resultado) });
-      error('sin-medio', resultado / Math.SQRT2, 'Bien hallar la energía final; omitiste el medio al despejar su rapidez.');
-      if (pot1 >= pot2) error('sin-inicial', Math.sqrt(2 * (pot1 - pot2) / mm) / 1000, 'Bien calcular el cambio potencial; omitiste la energía cinética inicial.');
-      else error('cambio-invertido', Math.sqrt(2 * (cin1 - pot1 + pot2) / mm) / 1000, 'Bien incluir el movimiento inicial; invertiste el cambio potencial.');
-      error('sin-gravedad', c.v1 / 1000, 'Bien conservar el dato inicial; omitiste el cambio potencial.');
-      error('signo', -resultado, 'Bien hallar el tamaño; una rapidez no lleva signo negativo.');
-      error('sin-km', resultado * 1000, 'Bien hallar metros por segundo; los presentaste como kilómetros por segundo.');
+      solucion.push({ texto: 'Sin otras fuerzas, la energía mecánica se conserva: la energía potencial que se pierde se suma a la cinética inicial.', ecuacion: [sub('E', 'C,2'), ' = ', sub('E', 'C,1'), ' + ', sub('E', 'PG,1'), ' − ', sub('E', 'PG,2')] });
+      solucion.push({ texto: 'Calculamos la energía cinética final sin redondear las energías intermedias.', ecuacion: resultadoEq(sub('E', 'C,2'), cin2 / 1e9, 'GJ') });
+      solucion.push({ texto: 'De la energía cinética despejamos la rapidez, que es positiva.', ecuacion: resultadoEq(sub(v, '2'), resultado) });
+      error('sin-medio', resultado / Math.SQRT2, 'Bien hallada la energía cinética final, pero olvidaste el medio al despejar la rapidez.');
+      if (pot1 >= pot2) error('sin-inicial', Math.sqrt(2 * (pot1 - pot2) / mm) / 1000, 'Bien calculado el cambio de energía potencial, pero olvidaste la energía cinética inicial.');
+      else error('cambio-invertido', Math.sqrt(2 * (cin1 - pot1 + pot2) / mm) / 1000, 'Bien incluido el movimiento inicial, pero invertiste el cambio de energía potencial.');
+      error('sin-gravedad', c.v1 / 1000, 'Bien usado el dato inicial, pero olvidaste que la gravedad cambia la rapidez en el camino.');
+      error('signo', -resultado, 'Bien hallado el tamaño, pero una rapidez nunca lleva signo negativo.');
+      error('sin-km', resultado * 1000, 'Bien hallada la rapidez en metros por segundo, pero la diste como si fueran kilómetros por segundo.');
     } else if (c.tipo === 'razon') {
       resultado = c.Ep0 * c.kM * c.km / c.kr;
-      enunciado = ['La energía potencial inicial es ', cantidad(c.Ep0, 'GJ'), '. La masa fuente cambia por ', numero(c.kM), ', la masa de la sonda por ', numero(c.km), ' y la separación por ', numero(c.kr), '. ¿Cuál es la nueva energía?'];
+      enunciado = ['La energía potencial inicial es ', cantidad(c.Ep0, 'GJ'), '. La masa del planeta se multiplica por ', numero(c.kM), ', la de la sonda, por ', numero(c.km), ' y la distancia al centro, por ', numero(c.kr), '. ¿Cuál es la nueva energía?'];
       datos.splice(2, 1); datos.push('Cada factor multiplica la magnitud inicial correspondiente; ambas referencias son cero en el infinito.');
-      solucion.push({ texto: 'Las masas multiplican el numerador y la separación divide una sola vez.', ecuacion: [sub('E', 'PG,nueva'), ' = ', sub('E', 'PG,inicial'), ' · ', { frac: [`${numero(c.kM)} · ${numero(c.km)}`, numero(c.kr)] }] });
-      solucion.push({ texto: 'El valor conserva el signo de la referencia inicial.', ecuacion: resultadoEq(sub('E', 'PG,nueva'), resultado) });
-      error('cuadrado', resultado / c.kr, 'Bien comparar separaciones; usaste el cuadrado propio de la fuerza.');
-      error('sin-masas', c.Ep0 / c.kr, 'Bien incluir la separación; omitiste los cambios de masa.');
-      error('sin-radio', c.Ep0 * c.kM * c.km, 'Bien combinar las masas; omitiste el cambio de separación.');
-      error('signo', -resultado, 'Bien hallar el tamaño; cambiaste el signo de la energía.');
+      solucion.push({ texto: 'Los factores de las masas multiplican la energía, y el de la distancia la divide una sola vez, sin elevarlo.', ecuacion: [sub('E', 'PG,nueva'), ' = ', sub('E', 'PG,inicial'), ' · ', { frac: [`${numero(c.kM)} · ${numero(c.km)}`, numero(c.kr)] }] });
+      solucion.push({ texto: 'La nueva energía conserva el signo negativo de la inicial.', ecuacion: resultadoEq(sub('E', 'PG,nueva'), resultado) });
+      error('cuadrado', resultado / c.kr, 'Bien comparadas las distancias, pero elevaste su factor al cuadrado, como en la fuerza; en la energía va sin elevar.');
+      error('sin-masas', c.Ep0 / c.kr, 'Bien incluida la distancia, pero olvidaste los cambios de las masas.');
+      error('sin-radio', c.Ep0 * c.kM * c.km, 'Bien combinadas las masas, pero olvidaste el cambio de distancia.');
+      error('signo', -resultado, 'Bien hallado el tamaño, pero le cambiaste el signo a la energía.');
     } else throw new Error(`Tipo de energía desconocido: ${c.tipo}`);
     const textos = new Set([opcion(resultado, unidad)]);
     const err = errores.filter(e => {
       const t = opcion(e.valor, unidad); if (!Number.isFinite(e.valor) || textos.has(t)) return false; textos.add(t); return true;
-    }).map(e => ({ ...e, texto: opcion(e.valor, unidad), error: `GR3-${e.id.toUpperCase()}`, siFuera: `${e.causa} Sale ${opcion(e.valor, unidad)}.` }));
+    }).map(e => ({ ...e, texto: opcion(e.valor, unidad), error: `GR3-${e.id.toUpperCase()}`, siFuera: `${e.causa} Así sale ${opcion(e.valor, unidad)}.` }));
     return { enunciado, datos, solucion, respuesta: resultadoEq(simbolo, resultado), resultado, unidad, color, simboloTexto, errores: err,
       dibujo: figura({ ...c, resultado, unidad, color, simboloTexto }),
       verificacion: { ...c, respuesta: { valor: resultado, unidad, aproximado: !exacto(resultado) }, errores: err.map(e => ({ id: e.id, valor: e.valor })) } };
@@ -922,13 +921,21 @@ function construirGr3(Kit) {
     { tipo: 'tramos', nivel: 3, titulo: 'Una ida y otra vuelta', GM: 4e14, m: 280, r1: 8e6, r2: 2e7, r3: 1.4e7 },
     { tipo: 'rapidez', nivel: 3, titulo: 'Una subida todavía posible', GM: 2e14, m: 480, r1: 1e7, r2: 2e7, v1: 7000 },
   ];
+  // Redacción (26 nov): causas cortas de las alternativas de nivel 3, en segunda persona.
+  const cortas = { 'sin-medio': 'olvidas el medio de la energía cinética', 'sin-inicial': 'olvidas la energía cinética inicial',
+    'cambio-invertido': 'inviertes el cambio de energía potencial', 'sin-gravedad': 'olvidas el cambio de energía potencial', signo: 'cambias el signo',
+    'sin-km': 'dejas la rapidez en metros por segundo', 'sin-giga': 'usas los gigajoules como joules', medio: 'agregas un factor de un medio',
+    doble: 'cuentas el trabajo dos veces', cuadrado: 'elevas al cuadrado el factor de distancia', 'sin-masas': 'olvidas los cambios de masa',
+    'sin-radio': 'olvidas el cambio de distancia', 'resta-invertida': 'inviertes el orden de la resta', 'suma-extremos': 'sumas las energías de los extremos',
+    'solo-inicial': 'das solo la energía inicial', 'solo-final': 'das solo la energía final', modulo: 'sumas los módulos en vez de restar',
+    'modulo-inicial': 'tomas solo el módulo de la energía inicial' };
   let letra = 0;
   const ejemplos = fijos.map(c => {
     const b = caso(c), e = { nivel: c.nivel, titulo: c.titulo, enunciado: b.enunciado, datos: b.datos, figura: b.dibujo, solucion: b.solucion.slice(), respuesta: b.respuesta, verificacion: b.verificacion };
     if (c.nivel === 3) {
       const errores = b.errores.slice(0, 4); if (errores.length < 4) throw new Error(`Faltan distractores: ${c.titulo}`);
       e.alternativas = errores.map(x => x.texto); e.alternativas.splice(letra++, 0, opcion(b.resultado, b.unidad));
-      e.solucion.push({ texto: errores.map(x => `${numero(x.valor)}: ${x.causa.replace(/^Bien [^;]+; /, '')}`).join(' ') });
+      e.solucion.push({ texto: errores.map(x => { if (!cortas[x.id]) throw new Error(`Falta la causa corta de ${x.id}`); return `${numero(x.valor)} sale si ${cortas[x.id]}.`; }).join(' ') });
     }
     return e;
   });
@@ -957,12 +964,12 @@ function construirGr3(Kit) {
     if (b.errores.length < 3) throw new Error(`Faltan opciones de energía en ${s}.`);
     if (resuelto) return { enunciado: b.enunciado, datos: b.datos, dibujo: b.dibujo, verificacion: b.verificacion, respuesta: b.respuesta,
       pasos: [{ tipo: 'pide', texto: 'Identificamos la energía, el trabajo o la magnitud que pide el problema.' },
-        { tipo: 'regla', texto: 'Usamos el mismo cero de energía potencial en todas las posiciones.' },
+        { tipo: 'regla', texto: 'Usamos el mismo cero de energía potencial, el infinito, en todas las posiciones.' },
         ...b.solucion.map(x => ({ tipo: 'cuentas', ...x })),
-        { tipo: 'sentido', texto: 'La energía puede ser negativa por la referencia; una masa, separación o rapidez no puede serlo.' }] };
+        { tipo: 'sentido', texto: 'Con el cero en el infinito, la energía potencial sale negativa; una masa, una distancia o una rapidez nunca lo son.' }] };
     return { pregunta: b.enunciado, datos: b.datos, dibujo: b.dibujo, verificacion: b.verificacion,
       opciones: [{ id: 'c', texto: opcion(b.resultado, b.unidad), correcta: true }, ...b.errores.slice(0, 3).map(x => ({ id: x.id, texto: x.texto, error: x.error, siFuera: x.siFuera }))],
-      solucion: { texto: 'Conservamos la referencia y los signos. Calculamos sin redondear las energías intermedias.', ecuacion: b.solucion.at(-1).ecuacion } };
+      solucion: { texto: 'Usamos el mismo cero en el infinito y conservamos los signos, sin redondear las energías intermedias.', ecuacion: b.solucion.at(-1).ecuacion } };
   }
   const p = { tipo: 'cambio', GM: 4e14, m: 300, r1: 1e7, r2: 2e7 }, pc = caso(p);
   const erroresPred = ['resta-invertida', 'suma-extremos', 'modulo-inicial'].map(id => pc.errores.find(e => e.id === id));
@@ -972,35 +979,35 @@ function construirGr3(Kit) {
     actividad: 'Comparar la energía de una sonda en dos posiciones exteriores de un planeta.',
     temas: ['Energía gravitatoria'], pieza: 'fis-gravitacion',
     lee: { tarjetas: [
-      { titulo: 'La misma sonda, dos posiciones', texto: ['En Trabajo y energía, ', EP, ' = ', m, '·g·', h, ' supone un campo aproximadamente constante y un cero local. Aquí comparas posiciones alejadas del planeta: el campo cambia con la separación y elegimos otro nivel de referencia.'], dibujo: juegoFigura(12000, false) },
-      { titulo: 'Una referencia común', texto: ['La referencia en el infinito asigna cero a la energía potencial cuando la separación crece sin límite. Es una elección matemática; no es una superficie. Escribiremos ', EP, ' para esa energía, medida en joules.'] },
-      { titulo: 'Qué mirar al comparar', texto: ['El trabajo gravitatorio es el trabajo realizado por la fuerza de gravedad. Conserva la misma masa y cambia la separación. Compara los valores de energía de ambas posiciones. Un gigajoule, GJ, equivale a mil millones de joules.'] },
+      { titulo: 'La misma sonda, dos posiciones', texto: ['En Trabajo y energía usaste ', EP, ' = ', m, '·g·', h, ', que sirve cerca del suelo, donde el campo casi no cambia. Aquí la sonda se aleja mucho del planeta, el campo cambia con la distancia y el cero se pone en otro nivel de referencia.'], dibujo: juegoFigura(12000, false) },
+      { titulo: 'Una referencia común', texto: ['Aquí la energía potencial vale cero cuando la sonda está infinitamente lejos del planeta: es la referencia en el infinito. Es una elección para hacer cuentas, no un lugar real. Esa energía se escribe ', EP, ' y se mide en joules.'] },
+      { titulo: 'Qué mirar al comparar', texto: ['El trabajo gravitatorio es el que hace la fuerza de gravedad cuando la sonda cambia de posición. En el juego, la masa no cambia; solo cambia la distancia al centro. Un gigajoule (GJ) equivale a mil millones de joules.'] },
     ] },
     juega: {
       consigna: 'Compara la misma sonda en dos posiciones de un planeta ideal. Mueve la posición elegida y observa su energía potencial.',
-      voz: 'Ambos valores usan la misma referencia. Conserva los signos al compararlos.',
+      voz: 'Las dos energías usan el mismo cero; compáralas con su signo.',
       controles: [{ id: 'rKm', etiqueta: 'Distancia al centro', color: 'c-i', opciones: [8000, 12000, 16000, 20000].map(valor => ({ valor, texto: `${fmt(valor)} km` })), inicio: 8000 }],
       mision: { texto: 'Ubica la sonda donde su energía potencial sea −10 GJ.', logrado: a => Math.abs(ep(4e14, 400, a.rKm * 1000) / 1e9 + 10) < 1e-10,
-        testigo: [{ rKm: 16000 }], bien: 'La energía coincide con el valor buscado usando la misma referencia.' },
+        testigo: [{ rKm: 16000 }], bien: 'Coincide: a esa distancia, la energía potencial de la sonda es −10 GJ.' },
       dibujo: a => juegoFigura(a.rKm),
-      lectura: a => { const actual = ep(4e14, 400, a.rKm * 1000), inicial = ep(4e14, 400, 8e6); return actual === inicial ? 'Las posiciones coinciden y sus energías potenciales también.' : 'Al alejarla, su energía potencial aumenta hacia cero.'; },
-      leyenda: [{ s: m, t: 'masa de la sonda, en kilogramos' }, { s: r, t: 'distancia al centro, en kilómetros' }, { s: EP, t: 'energía potencial gravitatoria, en gigajoules' }, { s: 'GM', t: 'producto de G por la masa fuente' }], minimo: 2,
+      lectura: a => { const actual = ep(4e14, 400, a.rKm * 1000), inicial = ep(4e14, 400, 8e6); return actual === inicial ? 'Las posiciones coinciden y sus energías potenciales también.' : 'Al alejarla, su energía potencial sube y se acerca a cero.'; },
+      leyenda: [{ s: m, t: 'masa de la sonda, en kilogramos' }, { s: r, t: 'distancia al centro, en kilómetros' }, { s: EP, t: 'energía potencial gravitatoria, en gigajoules' }, { s: 'GM', t: 'G por la masa del planeta' }], minimo: 2,
     },
     predice: {
       pregunta: 'Una sonda cambia de posición. ¿Cuál es el cambio de su energía potencial gravitatoria?',
       datos: ['La sonda tiene 300 kg; GM es 4 × 10¹⁴ m³/s².', 'Pasa de 10 000 km a 20 000 km del centro.', 'La referencia de energía potencial es cero en el infinito.', '1 km = 1000 m; 1 GJ = 10⁹ J.'],
       dibujo: figura(p), revelar: figura({ ...p, resultado: pc.resultado, unidad: 'GJ', simboloTexto: 'ΔE_PG' }, true),
       opciones: [{ id: 'c', texto: opcion(pc.resultado, 'GJ'), correcta: true }, ...erroresPred.map(e => ({ id: e.id, texto: e.texto, error: e.error, siFuera: e.siFuera }))],
-      coincide: 'El cambio se obtiene restando energía final menos inicial, aunque ambos valores sean negativos.', verificacion: pc.verificacion,
+      coincide: 'El cambio es la energía final menos la inicial, aunque las dos sean negativas.', verificacion: pc.verificacion,
     },
     mira: { pieza: 'fis-gravitacion', datos: { ...figura(p).datos, cortes: [figura(p).datos, figura({ ...p, resultado: pc.resultado, unidad: 'GJ', simboloTexto: 'ΔE_PG' }, true).datos] },
-      pasos: [{ estado: { corte: 0 }, texto: 'Usamos la referencia en el infinito para calcular cada posición.', ecuacion: leyEP },
+      pasos: [{ estado: { corte: 0 }, texto: 'Con el cero en el infinito, calculamos la energía potencial en cada posición.', ecuacion: leyEP },
         { estado: { corte: 0 }, texto: 'Calculamos la energía potencial en la posición inicial.', ecuacion: [sub('E', 'PG,1'), ` = ${numero(ep(p.GM, p.m, p.r1) / 1e9)} GJ`] },
-        { estado: { corte: 0 }, texto: 'Calculamos la energía final con la misma referencia.', ecuacion: [sub('E', 'PG,2'), ` = ${numero(ep(p.GM, p.m, p.r2) / 1e9)} GJ`] },
-        { estado: { corte: 1 }, texto: 'Restamos el valor final menos el inicial; el cambio es positivo.', ecuacion: ['Δ', EP, ` = (${numero(ep(p.GM, p.m, p.r2) / 1e9)}) − (${numero(ep(p.GM, p.m, p.r1) / 1e9)}) = ${numero(pc.resultado)} GJ`] }] },
+        { estado: { corte: 0 }, texto: 'Con el mismo cero, calculamos la energía potencial en la posición final.', ecuacion: [sub('E', 'PG,2'), ` = ${numero(ep(p.GM, p.m, p.r2) / 1e9)} GJ`] },
+        { estado: { corte: 1 }, texto: 'Restamos la final menos la inicial; el cambio sale positivo porque la sonda se alejó.', ecuacion: ['Δ', EP, ` = (${numero(ep(p.GM, p.m, p.r2) / 1e9)}) − (${numero(ep(p.GM, p.m, p.r1) / 1e9)}) = ${numero(pc.resultado)} GJ`] }] },
     regla: {
-      texto: 'El trabajo de la gravedad es el cambio de energía potencial con el signo cambiado (final menos inicial; cero en el infinito). Sin otras fuerzas, la energía mecánica se conserva.',
-      ecuacion: leyEP, condicion: 'Fuente esférica fija, masa de la sonda despreciable frente a ella y posiciones exteriores.',
+      texto: 'La energía potencial es negativa y se acerca a cero al alejarse la sonda. El trabajo de la gravedad es el cambio de energía potencial, final menos inicial, con el signo cambiado. Sin otras fuerzas, la energía mecánica se conserva.',
+      ecuacion: leyEP, condicion: 'el planeta es esférico y está fijo, la masa de la sonda es despreciable frente a la suya y todas las posiciones están fuera del planeta.',
       voz: 'El signo negativo depende de la referencia; no significa que la energía desaparezca.',
       dibujo: figura({ tipo: 'cambio', GM: 3e14, m: 240, r1: 1.2e7, r2: 2.4e7 }),
     },
@@ -1093,139 +1100,139 @@ function construirGr4(Kit) {
     if (c.tipo === 'rapidez') {
       datos.push(fuente(c), leyV, conv);
       enunciado = ['Un satélite describe una órbita circular de radio ', valor(c.r / 1000, 'km', 'i'), '. ¿Cuál es su rapidez orbital?'];
-      final(rapidez(c.GM, c.r) / 1000, 'km/s', v, 'v', 'o', 'La raíz positiva del cociente da la rapidez. Convertimos metros por segundo a kilómetros por segundo.', [{ raiz: [{ frac: [numero(c.GM), numero(c.r)] }] }, ' ÷ 1000']);
-      error('sin-raiz', c.GM / c.r / 1000, 'Bien formar el cociente; faltó sacar su raíz.');
-      error('radio-doble', rapidez(c.GM, 2 * c.r) / 1000, 'Bien aplicar la relación; usaste el diámetro en lugar del radio.');
-      error('sin-conversion', resultado * 1000, 'Bien hallar metros por segundo; faltó convertir a kilómetros por segundo.');
-      error('raiz-mitad', resultado / 2, 'Bien usar una raíz; dividiste la rapidez otra vez entre dos.');
+      final(rapidez(c.GM, c.r) / 1000, 'km/s', v, 'v', 'o', 'Sacamos la raíz positiva de GM entre r, que es la rapidez, y la pasamos a kilómetros por segundo.', [{ raiz: [{ frac: [numero(c.GM), numero(c.r)] }] }, ' ÷ 1000']);
+      error('sin-raiz', c.GM / c.r / 1000, 'Bien formado el cociente, pero faltó sacar su raíz.');
+      error('radio-doble', rapidez(c.GM, 2 * c.r) / 1000, 'Bien aplicada la relación, pero usaste el diámetro en lugar del radio.');
+      error('sin-conversion', resultado * 1000, 'Bien hallada la rapidez en metros por segundo, pero faltó pasarla a kilómetros por segundo.');
+      error('raiz-mitad', resultado / 2, 'Bien sacada la raíz, pero después dividiste la rapidez entre dos.');
     } else if (c.tipo === 'periodo') {
       datos.push(leyT, conv);
       enunciado = ['Un satélite recorre una órbita circular de radio ', valor(c.r / 1000, 'km', 'i'), ' con rapidez ', valor(c.v / 1000, 'km/s', 'o'), '. ¿Cuánto dura una vuelta, en minutos?'];
-      final(2 * Math.PI * c.r / c.v / 60, 'min', T, 'T', 'd', 'Dividimos la circunferencia entre la rapidez y pasamos los segundos a minutos.', ['2π × ', numero(c.r), ' ÷ ', numero(c.v), ' ÷ 60']);
-      error('sin-dos', resultado / 2, 'Bien dividir entre la rapidez; usaste media circunferencia.');
-      error('sin-pi', 2 * c.r / c.v / 60, 'Bien incluir el diámetro; faltó el factor π.');
-      error('sin-minutos', resultado * 60, 'Bien hallar segundos; los presentaste como minutos.');
-      error('radio-como-camino', c.r / c.v / 60, 'Bien dividir distancia entre rapidez; el radio no es una vuelta.');
+      final(2 * Math.PI * c.r / c.v / 60, 'min', T, 'T', 'd', 'Una vuelta mide 2π por el radio; la dividimos entre la rapidez y pasamos los segundos a minutos.', ['2π × ', numero(c.r), ' ÷ ', numero(c.v), ' ÷ 60']);
+      error('sin-dos', resultado / 2, 'Bien dividido entre la rapidez, pero usaste media circunferencia en vez de la vuelta completa.');
+      error('sin-pi', 2 * c.r / c.v / 60, 'Bien incluido el diámetro, pero faltó multiplicar por π.');
+      error('sin-minutos', resultado * 60, 'Bien hallado el tiempo en segundos, pero lo diste como si fueran minutos.');
+      error('radio-como-camino', c.r / c.v / 60, 'Bien dividida la distancia entre la rapidez, pero el radio no es el camino de una vuelta.');
     } else if (c.tipo === 'radio') {
       datos.push(fuente(c), leyV, conv);
       enunciado = ['Un satélite describe una órbita circular con rapidez ', valor(c.v / 1000, 'km/s', 'o'), '. ¿Cuál es el radio orbital, en kilómetros?'];
-      final(c.GM / c.v ** 2 / 1000, 'km', r, 'r', 'i', 'Despejamos el radio y convertimos su valor de metros a kilómetros.', [{ frac: [numero(c.GM), { sup: [numero(c.v), '2'] }] }, ' ÷ 1000']);
-      error('sin-cuadrado', c.GM / c.v / 1000, 'Bien despejar el radio; dividiste por la rapidez sin cuadrarla.');
-      error('diametro', 2 * resultado, 'Bien hallar el radio; respondiste con el diámetro.');
-      error('sin-conversion', resultado * 1000, 'Bien hallar metros; faltó convertirlos a kilómetros.');
-      error('mitad', resultado / 2, 'Bien despejar; trataste el radio obtenido como un diámetro.');
+      final(c.GM / c.v ** 2 / 1000, 'km', r, 'r', 'i', 'Despejamos el radio: dividimos GM entre el cuadrado de la rapidez y pasamos el resultado a kilómetros.', [{ frac: [numero(c.GM), { sup: [numero(c.v), '2'] }] }, ' ÷ 1000']);
+      error('sin-cuadrado', c.GM / c.v / 1000, 'Bien despejado el radio, pero dividiste entre la rapidez sin elevarla al cuadrado.');
+      error('diametro', 2 * resultado, 'Bien hallado el radio, pero respondiste con el diámetro.');
+      error('sin-conversion', resultado * 1000, 'Bien hallado el radio en metros, pero faltó pasarlo a kilómetros.');
+      error('mitad', resultado / 2, 'Bien hecho el despeje, pero después dividiste el radio entre dos, como si fuera un diámetro.');
     } else if (c.tipo === 'masa-satelite') {
       datos.push(leyV, 'Las dos órbitas tienen el mismo radio y el mismo planeta.');
       enunciado = ['Un satélite de ', valor(c.m, 'kg', 'f'), ' tiene rapidez circular ', valor(c.v / 1000, 'km/s', 'o'), '. Otro tiene ', valor(c.km * c.m, 'kg', 'f'), '. En la misma órbita, ¿qué rapidez necesita el segundo?'];
       final(c.v / 1000, 'km/s', v, 'v', 'o', 'La masa del satélite se cancela al igualar gravedad y fuerza centrípeta; no modifica la rapidez circular.', [sub(v, 'nueva'), ' = ', sub(v, 'inicial')]);
-      error('masa-lineal', resultado * c.km, 'Bien comparar las masas; multiplicaste también la rapidez por ese factor.');
-      error('masa-raiz', resultado * Math.sqrt(c.km), 'Bien recordar la raíz; introdujiste la masa del satélite bajo ella.');
-      error('masa-inversa', resultado / c.km, 'Bien comparar satélites; dividiste la rapidez entre el factor de masa.');
-      error('masa-raiz-inversa', resultado / Math.sqrt(c.km), 'Bien usar una raíz; dividiste por la raíz del factor de masa.');
+      error('masa-lineal', resultado * c.km, 'Bien comparadas las masas, pero multiplicaste la rapidez por ese factor, y la rapidez circular no depende de la masa del satélite.');
+      error('masa-raiz', resultado * Math.sqrt(c.km), 'Bien recordada la raíz, pero metiste dentro la masa del satélite, que se cancela.');
+      error('masa-inversa', resultado / c.km, 'Bien comparados los satélites, pero dividiste la rapidez entre el factor de masa, que no interviene.');
+      error('masa-raiz-inversa', resultado / Math.sqrt(c.km), 'Bien usada una raíz, pero dividiste entre la raíz del factor de masa, que no interviene.');
     } else if (c.tipo === 'energia') {
       datos.push(fuente(c), leyE, 'El cero de energía potencial gravitatoria está en el infinito.', conv);
       enunciado = ['Un satélite de ', valor(c.m, 'kg', 'f'), ' describe una órbita circular de radio ', valor(c.r / 1000, 'km', 'i'), '. ¿Cuál es su energía mecánica, en megajoules?'];
-      final(-c.GM * c.m / (2 * c.r) / 1e6, 'MJ', E, 'E_M', null, 'La energía mecánica circular incluye energía cinética y potencial. Es negativa con el cero elegido.', [{ frac: [['−', numero(c.GM), ' × ', numero(c.m)], ['2 × ', numero(c.r)]] }, ' ÷ 10⁶']);
-      error('solo-potencial', 2 * resultado, 'Bien conservar el signo; respondiste con la energía potencial sola.');
-      error('solo-cinetica', -resultado, 'Bien hallar el módulo; respondiste con la energía cinética positiva.');
-      error('sin-masa', resultado / c.m, 'Bien usar la energía circular; omitiste multiplicar por la masa del satélite.');
-      error('sin-megajoules', resultado * 1e6, 'Bien hallar joules; los presentaste como megajoules.');
+      final(-c.GM * c.m / (2 * c.r) / 1e6, 'MJ', E, 'E_M', null, 'Sumamos la energía cinética y la potencial de la órbita; el resultado es negativo porque el cero está en el infinito.', [{ frac: [['−', numero(c.GM), ' × ', numero(c.m)], ['2 × ', numero(c.r)]] }, ' ÷ 10⁶']);
+      error('solo-potencial', 2 * resultado, 'Bien conservado el signo, pero respondiste solo con la energía potencial; falta sumarle la cinética.');
+      error('solo-cinetica', -resultado, 'Bien hallado el tamaño, pero respondiste con la energía cinética, que es positiva.');
+      error('sin-masa', resultado / c.m, 'Bien usada la energía de la órbita, pero faltó multiplicar por la masa del satélite.');
+      error('sin-megajoules', resultado * 1e6, 'Bien hallada la energía en joules, pero la diste como si fueran megajoules.');
     } else if (['rapidez-altura', 'periodo-altura', 'rapidez-superficie'].includes(c.tipo)) {
       const radio = c.R + c.h, mu = c.tipo === 'rapidez-superficie' ? c.g0 * c.R ** 2 : c.GM;
       datos.push(c.tipo === 'rapidez-superficie' ? [{ sub: ['g', '0'] }, ' = GM/', R, '²: campo gravitatorio en la superficie.'] : fuente(c), 'r = R + h.', leyV, c.tipo === 'periodo-altura' ? [leyT, '; 1 h = 3600 s; 1 km = 1000 m.'] : '1 km = 1000 m.');
       enunciado = ['Un planeta tiene radio ', valor(c.R / 1000, 'km', 'i'), c.tipo === 'rapidez-superficie' ? ` y campo superficial de ${numero(c.g0)} m/s²` : '', '. Un satélite gira a ', valor(c.h / 1000, 'km', 'i'), ' de altura. ¿Cuál es ', c.tipo === 'periodo-altura' ? 'su período, en horas?' : 'su rapidez circular, en kilómetros por segundo?'];
       agregar(r, radio / 1000, 'km', 'El radio orbital empieza en el centro: sumamos el radio del planeta y la altura.', [numero(c.R / 1000), ' + ', numero(c.h / 1000)], 'i');
-      if (c.tipo === 'rapidez-superficie') agregar(['G·', M], mu, 'm³/s²', 'El campo superficial permite obtener el producto de G por la masa central.', [numero(c.g0), ' × ', { sup: [numero(c.R), '2'] }]);
+      if (c.tipo === 'rapidez-superficie') agregar(['G·', M], mu, 'm³/s²', 'Con el campo en la superficie obtenemos GM: es ese campo por el radio del planeta al cuadrado.', [numero(c.g0), ' × ', { sup: [numero(c.R), '2'] }]);
       if (c.tipo === 'periodo-altura') {
-        agregar(v, rapidez(mu, radio) / 1000, 'km/s', 'La rapidez corresponde al mismo planeta y al radio recién hallado.', [{ raiz: [{ frac: [numero(mu), numero(radio)] }] }, ' ÷ 1000'], 'o');
-        final(periodo(mu, radio) / 3600, 'h', T, 'T', 'd', 'Usamos la rapidez sin redondear para hallar una vuelta y convertir a horas.', ['2π·', r, '/', v, ' ÷ 3600']);
-        error('altura-como-radio', periodo(mu, c.h) / 3600, 'Bien usar el período circular; tomaste la altura como radio orbital.');
-        error('sin-horas', resultado * 3600, 'Bien hallar segundos; faltó expresarlos en horas.');
-        error('sin-dos', resultado / 2, 'Bien usar la rapidez; recorriste media circunferencia.');
-        error('sin-pi', resultado / Math.PI, 'Bien usar radio y rapidez; faltó el factor π.');
+        agregar(v, rapidez(mu, radio) / 1000, 'km/s', 'Calculamos la rapidez con ese radio orbital.', [{ raiz: [{ frac: [numero(mu), numero(radio)] }] }, ' ÷ 1000'], 'o');
+        final(periodo(mu, radio) / 3600, 'h', T, 'T', 'd', 'Dividimos el camino de una vuelta entre la rapidez, sin redondearla, y pasamos los segundos a horas.', ['2π·', r, '/', v, ' ÷ 3600']);
+        error('altura-como-radio', periodo(mu, c.h) / 3600, 'Bien usado el período circular, pero tomaste la altura como radio orbital, que se mide desde el centro.');
+        error('sin-horas', resultado * 3600, 'Bien hallado el tiempo en segundos, pero faltó pasarlo a horas.');
+        error('sin-dos', resultado / 2, 'Bien usada la rapidez, pero recorriste solo media circunferencia.');
+        error('sin-pi', resultado / Math.PI, 'Bien usados el radio y la rapidez, pero faltó multiplicar por π.');
       } else {
-        final(rapidez(mu, radio) / 1000, 'km/s', v, 'v', 'o', 'Aplicamos la condición circular al radio completo y expresamos la rapidez en kilómetros por segundo.',
+        final(rapidez(mu, radio) / 1000, 'km/s', v, 'v', 'o', 'Calculamos la rapidez circular con el radio medido desde el centro y la pasamos a kilómetros por segundo.',
           [{ raiz: [{ frac: [c.tipo === 'rapidez-superficie' ? [numero(c.g0), ' × ', { sup: [numero(c.R), '2'] }] : numero(mu), numero(radio)] }] }, ' ÷ 1000']);
-        error('altura-como-radio', rapidez(mu, c.h) / 1000, 'Bien aplicar la raíz; dividiste por la altura, no por el radio orbital.');
-        error('superficie', rapidez(mu, c.R) / 1000, 'Bien usar el radio del planeta; omitiste la altura de la órbita.');
-        error('sin-conversion', resultado * 1000, 'Bien hallar metros por segundo; faltó convertirlos a kilómetros por segundo.');
-        error('radio-doble', rapidez(mu, 2 * radio) / 1000, 'Bien sumar radio y altura; duplicaste después esa distancia.');
+        error('altura-como-radio', rapidez(mu, c.h) / 1000, 'Bien aplicada la raíz, pero dividiste entre la altura y no entre el radio orbital, que se mide desde el centro.');
+        error('superficie', rapidez(mu, c.R) / 1000, 'Bien usado el radio del planeta, pero olvidaste sumarle la altura de la órbita.');
+        error('sin-conversion', resultado * 1000, 'Bien hallada la rapidez en metros por segundo, pero faltó pasarla a kilómetros por segundo.');
+        error('radio-doble', rapidez(mu, 2 * radio) / 1000, 'Bien sumados el radio y la altura, pero después duplicaste esa distancia.');
       }
     } else if (c.tipo === 'masa-planeta') {
       datos.push(`G ≈ ${numero(c.G)} N·m²/kg².`, leyT, leyV, '1 km = 1000 m.');
       enunciado = ['Una órbita circular tiene radio ', valor(c.r / 1000, 'km', 'i'), ' y período ', valor(c.T, 's', 'd'), '. ¿Cuál es la masa del planeta?'];
       const vel = 2 * Math.PI * c.r / c.T;
-      agregar(v, vel, 'm/s', 'Una vuelta recorre la circunferencia; dividimos esa longitud entre el período.', ['2π × ', numero(c.r), ' ÷ ', numero(c.T)], 'o');
-      final(vel ** 2 * c.r / c.G, 'kg', M, 'M', 'f', 'Despejamos la masa central. Conservamos toda la precisión de la rapidez al sustituir.', [v, '²·', r, '/G']);
-      error('sin-dos-periodo', resultado / 4, 'Bien hallar una rapidez; usar media circunferencia reduce su cuadrado a la cuarta parte.');
-      error('sin-pi-periodo', resultado / Math.PI ** 2, 'Bien despejar la masa; omitiste π en la rapidez y su cuadrado.');
-      error('sin-G', vel ** 2 * c.r, 'Bien hallar el producto GM; faltó dividirlo entre G.');
-      error('masa-doble', resultado * 2, 'Bien despejar la masa; contaste dos veces la atracción del planeta.');
+      agregar(v, vel, 'm/s', 'En una vuelta, el satélite recorre la circunferencia; dividimos ese largo entre el período para hallar la rapidez.', ['2π × ', numero(c.r), ' ÷ ', numero(c.T)], 'o');
+      final(vel ** 2 * c.r / c.G, 'kg', M, 'M', 'f', 'Despejamos la masa del planeta: el cuadrado de la rapidez por el radio, dividido entre G, sin redondear la rapidez.', [v, '²·', r, '/G']);
+      error('sin-dos-periodo', resultado / 4, 'Bien hallada una rapidez, pero usaste media circunferencia; la rapidez sale a la mitad, y su cuadrado, a la cuarta parte.');
+      error('sin-pi-periodo', resultado / Math.PI ** 2, 'Bien despejada la masa, pero olvidaste π en la rapidez, y por eso también en su cuadrado.');
+      error('sin-G', vel ** 2 * c.r, 'Bien hallado el producto GM, pero faltó dividirlo entre G para obtener la masa.');
+      error('masa-doble', resultado * 2, 'Bien despejada la masa, pero después la duplicaste.');
     } else if (c.tipo === 'altura') {
       datos.push(fuente(c), leyV, 'r = R + h.', '1 km = 1000 m.');
       enunciado = ['Un planeta tiene radio ', valor(c.R / 1000, 'km', 'i'), '. Un satélite gira con rapidez ', valor(c.v / 1000, 'km/s', 'o'), '. ¿A qué altura sobre la superficie está?'];
       const radio = c.GM / c.v ** 2;
-      agregar(r, radio / 1000, 'km', 'Despejamos el radio orbital a partir de la rapidez.', [{ frac: [numero(c.GM), { sup: [numero(c.v), '2'] }] }, ' ÷ 1000'], 'i');
-      final((radio - c.R) / 1000, 'km', h, 'h', 'i', 'El radio orbital incluye el radio planetario; lo restamos para obtener la altura.', [r, ' − ', R]);
-      error('sin-restar-R', radio / 1000, 'Bien hallar el radio orbital; lo diste como si fuera la altura.');
-      error('sumar-R', (radio + c.R) / 1000, 'Bien hallar el radio orbital; sumaste el radio planetario en vez de restarlo.');
-      error('signo', -resultado, 'Bien identificar dos radios; invertiste el orden de la resta.');
-      error('sin-conversion', resultado * 1000, 'Bien hallar la diferencia en metros; faltó convertir a kilómetros.');
+      agregar(r, radio / 1000, 'km', 'Con la rapidez despejamos el radio orbital: GM entre el cuadrado de la rapidez.', [{ frac: [numero(c.GM), { sup: [numero(c.v), '2'] }] }, ' ÷ 1000'], 'i');
+      final((radio - c.R) / 1000, 'km', h, 'h', 'i', 'El radio orbital se mide desde el centro e incluye el radio del planeta; lo restamos para obtener la altura.', [r, ' − ', R]);
+      error('sin-restar-R', radio / 1000, 'Bien hallado el radio orbital, pero lo diste como si fuera la altura; falta restarle el radio del planeta.');
+      error('sumar-R', (radio + c.R) / 1000, 'Bien hallado el radio orbital, pero le sumaste el radio del planeta en vez de restarlo.');
+      error('signo', -resultado, 'Bien identificados los dos radios, pero invertiste el orden de la resta.');
+      error('sin-conversion', resultado * 1000, 'Bien hallada la altura en metros, pero faltó pasarla a kilómetros.');
     } else if (c.tipo === 'periodo-desde-otra') {
       datos.push(leyV, leyT, 'Las dos órbitas circulares pertenecen al mismo planeta.', conv);
       enunciado = ['Una órbita de radio ', valor(c.r1 / 1000, 'km', 'i'), ' tiene rapidez ', valor(c.v1 / 1000, 'km/s', 'o'), '. ¿Cuál es el período, en minutos, de otra órbita circular de radio ', valor(c.r2 / 1000, 'km', 'i'), '?'];
       const mu = c.v1 ** 2 * c.r1, vel = rapidez(mu, c.r2);
-      agregar(['G·', M], mu, 'm³/s²', 'La primera órbita determina el producto GM del planeta.', [{ sup: [numero(c.v1), '2'] }, ' × ', numero(c.r1)]);
-      agregar(sub(v, '2'), vel / 1000, 'km/s', 'La segunda rapidez usa el mismo producto GM, sin redondearlo, y el nuevo radio.', [{ raiz: [{ frac: [[{ sup: [numero(c.v1), '2'] }, ' × ', numero(c.r1)], numero(c.r2)] }] }, ' ÷ 1000'], 'o');
-      final(periodo(mu, c.r2) / 60, 'min', sub(T, '2'), 'T_2', 'd', 'Usamos la rapidez de la segunda órbita sin redondearla.', ['2π·', sub(r, '2'), '/', sub(v, '2'), ' ÷ 60']);
-      error('rapidez-igual', 2 * Math.PI * c.r2 / c.v1 / 60, 'Bien cambiar la circunferencia; conservaste indebidamente la rapidez inicial.');
-      error('radio-inicial', 2 * Math.PI * c.r1 / c.v1 / 60, 'Bien calcular una vuelta; respondiste con la órbita inicial.');
-      error('sin-minutos', resultado * 60, 'Bien hallar segundos; faltó expresarlos en minutos.');
-      error('sin-dos', resultado / 2, 'Bien hallar la segunda rapidez; usaste media circunferencia.');
+      agregar(['G·', M], mu, 'm³/s²', 'Con la primera órbita hallamos GM: el cuadrado de la rapidez por el radio.', [{ sup: [numero(c.v1), '2'] }, ' × ', numero(c.r1)]);
+      agregar(sub(v, '2'), vel / 1000, 'km/s', 'La segunda órbita es del mismo planeta: con el mismo GM, sin redondear, y el nuevo radio, hallamos su rapidez.', [{ raiz: [{ frac: [[{ sup: [numero(c.v1), '2'] }, ' × ', numero(c.r1)], numero(c.r2)] }] }, ' ÷ 1000'], 'o');
+      final(periodo(mu, c.r2) / 60, 'min', sub(T, '2'), 'T_2', 'd', 'Dividimos la circunferencia de la segunda órbita entre su rapidez, sin redondearla, y pasamos a minutos.', ['2π·', sub(r, '2'), '/', sub(v, '2'), ' ÷ 60']);
+      error('rapidez-igual', 2 * Math.PI * c.r2 / c.v1 / 60, 'Bien cambiada la circunferencia, pero usaste la rapidez de la primera órbita, y en la segunda la rapidez es otra.');
+      error('radio-inicial', 2 * Math.PI * c.r1 / c.v1 / 60, 'Bien calculada una vuelta, pero respondiste con la primera órbita y no con la segunda.');
+      error('sin-minutos', resultado * 60, 'Bien hallado el tiempo en segundos, pero faltó pasarlo a minutos.');
+      error('sin-dos', resultado / 2, 'Bien hallada la segunda rapidez, pero usaste media circunferencia.');
     } else if (c.tipo === 'cambios') {
       datos.push(leyV, 'Los dos satélites tienen masas despreciables frente a sus planetas.');
-      enunciado = ['La primera rapidez circular es ', valor(c.v1 / 1000, 'km/s', 'o'), '. En otro sistema, la masa planetaria se multiplica por ', q('f', c.kM), ', el radio por ', q('i', c.kr), ' y la masa del satélite por ', q('f', c.km), '. ¿Cuál es la nueva rapidez?'];
+      enunciado = ['La primera rapidez circular es ', valor(c.v1 / 1000, 'km/s', 'o'), '. En otro sistema, la masa del planeta se multiplica por ', q('f', c.kM), ', el radio por ', q('i', c.kr), ' y la masa del satélite por ', q('f', c.km), '. ¿Cuál es la nueva rapidez?'];
       const razon = c.kM / c.kr;
-      agregar([{ frac: [sub(v, '2'), sub(v, '1')] }, '²'], razon, '', 'Al comparar los cuadrados de las rapideces, solo intervienen la masa planetaria y el radio.', [numero(c.kM), ' ÷ ', numero(c.kr)]);
-      final(c.v1 * Math.sqrt(razon) / 1000, 'km/s', sub(v, '2'), 'v_2', 'o', 'Tomamos la raíz de la razón exacta y multiplicamos por la rapidez inicial.', [numero(c.v1 / 1000), ' × ', { raiz: [{ frac: [numero(c.kM), numero(c.kr)] }] }]);
-      error('sin-raiz', c.v1 / 1000 * razon, 'Bien comparar masa central y radio; omitiste la raíz del factor.');
-      error('incluye-satelite', resultado * Math.sqrt(c.km), 'Bien formar la razón; incluiste la masa del satélite, que se cancela.');
-      error('radio-directo', c.v1 / 1000 * Math.sqrt(c.kM * c.kr), 'Bien tomar la raíz; multiplicaste por el radio en lugar de dividir.');
-      error('solo-masa', c.v1 / 1000 * Math.sqrt(c.kM), 'Bien cambiar la masa central; omitiste el cambio de radio.');
-      error('inversa', c.v1 / 1000 / Math.sqrt(razon), 'Bien usar la raíz; invertiste la razón entre las rapideces.');
+      agregar([{ frac: [sub(v, '2'), sub(v, '1')] }, '²'], razon, '', 'Al dividir los cuadrados de las dos rapideces, la masa del satélite se cancela; solo quedan la masa del planeta y el radio.', [numero(c.kM), ' ÷ ', numero(c.kr)]);
+      final(c.v1 * Math.sqrt(razon) / 1000, 'km/s', sub(v, '2'), 'v_2', 'o', 'Sacamos la raíz de esa razón y la multiplicamos por la rapidez inicial.', [numero(c.v1 / 1000), ' × ', { raiz: [{ frac: [numero(c.kM), numero(c.kr)] }] }]);
+      error('sin-raiz', c.v1 / 1000 * razon, 'Bien comparadas la masa del planeta y el radio, pero faltó sacar la raíz del factor.');
+      error('incluye-satelite', resultado * Math.sqrt(c.km), 'Bien formada la razón, pero incluiste la masa del satélite, que se cancela.');
+      error('radio-directo', c.v1 / 1000 * Math.sqrt(c.kM * c.kr), 'Bien sacada la raíz, pero multiplicaste por el factor de radio en lugar de dividir entre él.');
+      error('solo-masa', c.v1 / 1000 * Math.sqrt(c.kM), 'Bien cambiada la masa del planeta, pero olvidaste el cambio de radio.');
+      error('inversa', c.v1 / 1000 / Math.sqrt(razon), 'Bien usada la raíz, pero invertiste la razón entre las rapideces.');
     } else if (c.tipo === 'energia-desde-periodo') {
       datos.push(leyT, [leyE, '; ', leyV], 'El cero de energía potencial gravitatoria está en el infinito.', conv);
       enunciado = ['Un satélite de ', valor(c.m, 'kg', 'f'), ' recorre una órbita circular de radio ', valor(c.r / 1000, 'km', 'i'), ' y período ', valor(c.T, 's', 'd'), '. ¿Qué energía mecánica tendría en otra órbita circular de radio ', valor(c.r2 / 1000, 'km', 'i'), ', en megajoules?'];
       const vel = 2 * Math.PI * c.r / c.T;
-      agregar(v, vel, 'm/s', 'El período y el radio determinan la rapidez circular.', ['2π × ', numero(c.r), ' ÷ ', numero(c.T)], 'o');
-      agregar(['G·', M], vel ** 2 * c.r, 'm³/s²', 'La primera órbita determina GM. Conservamos el producto sin redondear al cambiar de radio.', [v, '²·', r]);
-      final(-0.5 * c.m * vel ** 2 * c.r / c.r2 / 1e6, 'MJ', E, 'E_M', null, 'La segunda energía utiliza el mismo GM y el segundo radio; la expresamos en megajoules.', ['−G·', M, '·', m, '/(2', sub(r, '2'), ') ÷ 10⁶']);
-      error('solo-cinetica', -resultado, 'Bien hallar el módulo; diste la energía cinética positiva.');
-      error('solo-potencial', 2 * resultado, 'Bien mantener el signo; usaste solo la energía potencial.');
-      error('media-vuelta', resultado / 4, 'Bien calcular energía; media circunferencia da la mitad de rapidez y un cuarto de su cuadrado.');
-      error('sin-megajoules', resultado * 1e6, 'Bien calcular joules; faltó convertirlos a megajoules.');
+      agregar(v, vel, 'm/s', 'Con el período y el radio hallamos la rapidez: la circunferencia entre el período.', ['2π × ', numero(c.r), ' ÷ ', numero(c.T)], 'o');
+      agregar(['G·', M], vel ** 2 * c.r, 'm³/s²', 'Con la primera órbita hallamos GM, que sirve también para la segunda; no lo redondeamos.', [v, '²·', r]);
+      final(-0.5 * c.m * vel ** 2 * c.r / c.r2 / 1e6, 'MJ', E, 'E_M', null, 'Calculamos la energía de la segunda órbita con el mismo GM y el segundo radio, y la pasamos a megajoules.', ['−G·', M, '·', m, '/(2', sub(r, '2'), ') ÷ 10⁶']);
+      error('solo-cinetica', -resultado, 'Bien hallado el tamaño, pero diste la energía cinética, que es positiva.');
+      error('solo-potencial', 2 * resultado, 'Bien mantenido el signo, pero usaste solo la energía potencial.');
+      error('media-vuelta', resultado / 4, 'Bien planteada la energía, pero usaste media circunferencia; la rapidez sale a la mitad, y su cuadrado, a la cuarta parte.');
+      error('sin-megajoules', resultado * 1e6, 'Bien calculada la energía en joules, pero faltó pasarla a megajoules.');
     } else if (c.tipo === 'periodo-desde-energia') {
       datos.push(fuente(c), leyE, leyV, leyT, conv);
-      enunciado = ['Un satélite de ', valor(c.m, 'kg', 'f'), ' tiene energía mecánica circular ', `${numero(c.energia / 1e6)} MJ`, ', con cero potencial en el infinito. ¿Cuál es su período en minutos?'];
+      enunciado = ['Un satélite de ', valor(c.m, 'kg', 'f'), ' recorre una órbita circular con energía mecánica de ', `${numero(c.energia / 1e6)} MJ`, ', con el cero de energía potencial en el infinito. ¿Cuál es su período en minutos?'];
       const radio = -c.GM * c.m / (2 * c.energia), vel = rapidez(c.GM, radio);
-      agregar(r, radio / 1000, 'km', 'La energía negativa permite despejar un radio orbital positivo.', [{ frac: [['−', numero(c.GM), ' × ', numero(c.m)], ['2 × ', { par: [numero(c.energia)] }]] }, ' ÷ 1000'], 'i');
-      agregar(v, vel, 'm/s', 'Hallamos la rapidez circular conservando el radio sin redondear.', [{ raiz: [{ frac: [['G·', M], r] }] }], 'o');
-      final(periodo(c.GM, radio) / 60, 'min', T, 'T', 'd', 'La vuelta completa corresponde a ese radio y esa rapidez, conservados sin redondear.', ['2π·', r, '/', v, ' ÷ 60']);
-      error('energia-potencial', periodo(c.GM, radio * 2) / 60, 'Bien despejar un radio; confundiste energía mecánica con potencial y obtuviste el doble.');
-      error('sin-minutos', resultado * 60, 'Bien calcular segundos; faltó expresarlos en minutos.');
-      error('sin-dos', resultado / 2, 'Bien obtener radio y rapidez; recorriste media circunferencia.');
-      error('sin-pi', resultado / Math.PI, 'Bien dividir por la rapidez; omitiste π en la circunferencia.');
+      agregar(r, radio / 1000, 'km', 'Despejamos el radio de la energía de la órbita; como la energía es negativa, el radio sale positivo.', [{ frac: [['−', numero(c.GM), ' × ', numero(c.m)], ['2 × ', { par: [numero(c.energia)] }]] }, ' ÷ 1000'], 'i');
+      agregar(v, vel, 'm/s', 'Con ese radio, sin redondearlo, hallamos la rapidez circular.', [{ raiz: [{ frac: [['G·', M], r] }] }], 'o');
+      final(periodo(c.GM, radio) / 60, 'min', T, 'T', 'd', 'Dividimos la circunferencia entre la rapidez y pasamos los segundos a minutos.', ['2π·', r, '/', v, ' ÷ 60']);
+      error('energia-potencial', periodo(c.GM, radio * 2) / 60, 'Bien despejado un radio, pero tomaste la energía mecánica como si fuera la potencial, y el radio salió el doble.');
+      error('sin-minutos', resultado * 60, 'Bien calculado el tiempo en segundos, pero faltó pasarlo a minutos.');
+      error('sin-dos', resultado / 2, 'Bien obtenidos el radio y la rapidez, pero recorriste solo media circunferencia.');
+      error('sin-pi', resultado / Math.PI, 'Bien dividido entre la rapidez, pero olvidaste π en la circunferencia.');
     } else if (c.tipo === 'altura-desde-periodo') {
       datos.push(leyT, leyV, [{ sub: [r, '2'] }, ' = ', R, ' + ', { sub: [h, '2'] }, '; las dos órbitas pertenecen al mismo planeta.'], conv);
       enunciado = ['Un planeta tiene radio ', valor(c.R / 1000, 'km', 'i'), '. Una órbita circular de radio ', valor(c.r1 / 1000, 'km', 'i'), ' tarda ', valor(c.T1, 's', 'd'), '. ¿Qué altura corresponde a otra órbita circular de rapidez ', valor(c.v2 / 1000, 'km/s', 'o'), '?'];
       const vel1 = 2 * Math.PI * c.r1 / c.T1, mu = vel1 ** 2 * c.r1, radio2 = mu / c.v2 ** 2;
-      agregar(sub(v, '1'), vel1, 'm/s', 'El radio y período iniciales permiten hallar la primera rapidez.', ['2π × ', numero(c.r1), ' ÷ ', numero(c.T1)], 'o');
-      agregar(sub(r, '2'), radio2 / 1000, 'km', 'Ambas órbitas comparten GM. Igualamos los productos de rapidez cuadrada por radio.', [sub(v, '1'), '²·', sub(r, '1'), '/', sub(v, '2'), '² ÷ 1000'], 'i');
-      final((radio2 - c.R) / 1000, 'km', sub(h, '2'), 'h_2', 'i', 'Restamos el radio planetario para pasar de distancia central a altura.', [sub(r, '2'), ' − ', R]);
-      error('sin-restar-R', radio2 / 1000, 'Bien hallar el segundo radio; faltó restar el radio del planeta.');
-      error('sumar-R', (radio2 + c.R) / 1000, 'Bien hallar el segundo radio; sumaste el radio planetario.');
-      error('sin-conversion', resultado * 1000, 'Bien hallar la altura en metros; faltó convertirla a kilómetros.');
-      error('rapidez-lineal', (c.r1 * vel1 / c.v2 - c.R) / 1000, 'Bien comparar órbitas; usaste rapideces sin elevarlas al cuadrado.');
+      agregar(sub(v, '1'), vel1, 'm/s', 'Con el radio y el período de la primera órbita hallamos su rapidez.', ['2π × ', numero(c.r1), ' ÷ ', numero(c.T1)], 'o');
+      agregar(sub(r, '2'), radio2 / 1000, 'km', 'Las dos órbitas tienen el mismo GM, así que el cuadrado de la rapidez por el radio es igual en ambas; despejamos el segundo radio.', [sub(v, '1'), '²·', sub(r, '1'), '/', sub(v, '2'), '² ÷ 1000'], 'i');
+      final((radio2 - c.R) / 1000, 'km', sub(h, '2'), 'h_2', 'i', 'Restamos el radio del planeta para pasar de la distancia al centro a la altura.', [sub(r, '2'), ' − ', R]);
+      error('sin-restar-R', radio2 / 1000, 'Bien hallado el segundo radio, pero faltó restarle el radio del planeta.');
+      error('sumar-R', (radio2 + c.R) / 1000, 'Bien hallado el segundo radio, pero le sumaste el radio del planeta.');
+      error('sin-conversion', resultado * 1000, 'Bien hallada la altura en metros, pero faltó pasarla a kilómetros.');
+      error('rapidez-lineal', (c.r1 * vel1 / c.v2 - c.R) / 1000, 'Bien comparadas las órbitas, pero usaste las rapideces sin elevarlas al cuadrado.');
     } else throw new Error(`Tipo circular desconocido: ${c.tipo}`);
     const aprox = !!c.G || !exacto(resultado), vistos = new Set([textoValor(resultado, unidad, !!c.G)]);
     const distintos = errores.filter(e => {
@@ -1261,11 +1268,11 @@ function construirGr4(Kit) {
     { tipo: 'periodo-desde-energia', nivel: 3, titulo: 'Una energía determina la vuelta', GM: 4.8e14, m: 500, energia: -4e9 },
     { tipo: 'altura-desde-periodo', nivel: 3, titulo: 'La altura de otra órbita', R: 5e6, r1: 10e6, T1: 10000, v2: 4000 },
   ];
-  const errorCorto = { 'rapidez-igual': 'conserva rapidez', 'radio-inicial': 'usa radio inicial', 'sin-minutos': 'omite convertir minutos',
-    'sin-dos': 'usa media vuelta', 'sin-raiz': 'omite raíz', 'incluye-satelite': 'incluye masa del satélite', 'radio-directo': 'multiplica por radio',
-    'solo-masa': 'omite cambiar radio', 'solo-cinetica': 'da energía cinética', 'solo-potencial': 'da energía potencial', 'media-vuelta': 'usa media vuelta',
-    'sin-megajoules': 'omite convertir megajoules', 'energia-potencial': 'confunde las energías', 'sin-pi': 'omite π',
-    'sin-restar-R': 'responde el radio', 'sumar-R': 'suma radio planetario', 'sin-conversion': 'omite convertir kilómetros', 'rapidez-lineal': 'omite elevar rapideces', inversa: 'invierte la razón' };
+  const errorCorto = { 'rapidez-igual': 'conservas la rapidez de la primera órbita', 'radio-inicial': 'usas el radio de la primera órbita', 'sin-minutos': 'no pasas los segundos a minutos',
+    'sin-dos': 'recorres solo media vuelta', 'sin-raiz': 'no sacas la raíz', 'incluye-satelite': 'incluyes la masa del satélite', 'radio-directo': 'multiplicas por el factor de radio',
+    'solo-masa': 'olvidas el cambio de radio', 'solo-cinetica': 'das la energía cinética', 'solo-potencial': 'das solo la energía potencial', 'media-vuelta': 'usas media vuelta para la rapidez',
+    'sin-megajoules': 'no pasas los joules a megajoules', 'energia-potencial': 'confundes la energía mecánica con la potencial', 'sin-pi': 'olvidas π',
+    'sin-restar-R': 'no restas el radio del planeta', 'sumar-R': 'sumas el radio del planeta', 'sin-conversion': 'no pasas los metros a kilómetros', 'rapidez-lineal': 'no elevas las rapideces al cuadrado', inversa: 'inviertes la razón' };
   let letra = 0;
   const ejemplos = casosEjemplo.map(c => {
     const b = caso(c), e = { nivel: c.nivel, titulo: c.titulo, enunciado: b.enunciado, datos: b.datos,
@@ -1275,7 +1282,7 @@ function construirGr4(Kit) {
       e.alternativas = b.errores.slice(0, 4).map(x => x.texto);
       const correcta = letra++;
       e.alternativas.splice(correcta, 0, textoValor(b.resultado, b.unidad, !!c.G));
-      e.solucion.push({ texto: b.errores.slice(0, 4).flatMap((x, i) => [{ negrita: 'ABCDE'[i >= correcta ? i + 1 : i] }, ` ${errorCorto[x.id]}. `]) });
+      e.solucion.push({ texto: b.errores.slice(0, 4).flatMap((x, i) => [{ negrita: 'ABCDE'[i >= correcta ? i + 1 : i] }, ` sale si ${errorCorto[x.id]}. `]) });
     }
     return e;
   });
@@ -1305,13 +1312,13 @@ function construirGr4(Kit) {
     if (b.errores.length < 3) throw new Error(`Faltan alternativas en ${s}`);
     if (resuelto) return { enunciado: b.enunciado, datos: b.datos, dibujo: b.dibujo, respuesta: b.respuesta, verificacion: b.verificacion,
       pasos: [{ tipo: 'pide', texto: 'Identificamos la magnitud pedida y si las distancias parten del centro o de la superficie.' },
-        { tipo: 'regla', texto: 'La gravedad aporta la aceleración centrípeta. El período y la energía deben corresponder al mismo radio y rapidez.' },
+        { tipo: 'regla', texto: 'La gravedad aporta toda la aceleración hacia el centro que necesita el giro. El período y la energía se calculan con el radio y la rapidez de la misma órbita.' },
         ...b.solucion.map(p => ({ tipo: 'cuentas', ...p })),
-        { tipo: 'sentido', texto: 'Comprobamos la unidad pedida y el significado del signo: la energía circular es negativa con el cero en el infinito.' }] };
+        { tipo: 'sentido', texto: 'Comprobamos la unidad pedida y el signo: con el cero en el infinito, la energía de una órbita circular es negativa.' }] };
     return { pregunta: b.enunciado, datos: b.datos, dibujo: b.dibujo, verificacion: b.verificacion,
       opciones: [{ id: 'c', texto: textoValor(b.resultado, b.unidad, !!b.verificacion.G), correcta: true },
         ...b.errores.slice(0, 3).map(e => ({ id: e.id, texto: e.texto, error: e.error, siFuera: e.siFuera }))],
-      solucion: { texto: 'Relacionamos radio, rapidez y período de la misma órbita; conservamos la precisión hasta el resultado.', ecuacion: b.solucion.at(-1).ecuacion } };
+      solucion: { texto: 'Relacionamos el radio, la rapidez y el período de la misma órbita, sin redondear hasta el resultado.', ecuacion: b.solucion.at(-1).ecuacion } };
   }
 
   const juegoGM = 4e14, juegoR = 16e6, gravedad = juegoGM / juegoR ** 2;
@@ -1348,12 +1355,12 @@ function construirGr4(Kit) {
     aprendizaje: 'Relacionas radio, rapidez, período y energía circular cuando la gravedad aporta toda la aceleración centrípeta.',
     actividad: 'Ajustar la rapidez tangente de un satélite y comparar dos aceleraciones.', temas: ['Órbitas circulares'], pieza: 'fis-gravitacion',
     lee: { tarjetas: [
-      { titulo: 'Un objeto que gira', texto: ['Un satélite es un cuerpo que gira alrededor de otro por gravedad. Su trayectoria se llama órbita. Aquí estudiaremos una trayectoria circular alrededor de un planeta ideal.'], dibujo: figuraJuego({ v: 2 }, true) },
-      { titulo: 'Del centro a la trayectoria', texto: ['El radio orbital ', r, ' se mide desde el centro del planeta. La rapidez orbital ', v, ' indica cuánto camino recorre el satélite por segundo. Su velocidad es tangente a la trayectoria.'] },
-      { titulo: 'Dos aceleraciones por comparar', texto: ['Girar exige una aceleración dirigida hacia el centro. El juego compara la necesaria, v²/r, con la que aporta la gravedad, g. Se cumple 1 N/kg = 1 m/s². El período ', T, ' es el tiempo de una vuelta.'] },
+      { titulo: 'Un objeto que gira', texto: ['Un satélite es un cuerpo que gira alrededor de otro atraído por su gravedad, y el camino que recorre se llama órbita. Aquí estudiamos órbitas circulares alrededor de un planeta.'], dibujo: figuraJuego({ v: 2 }, true) },
+      { titulo: 'Del centro a la trayectoria', texto: ['El radio orbital ', r, ' se mide desde el centro del planeta. La rapidez orbital ', v, ' dice cuánto camino recorre el satélite en cada segundo; su velocidad es tangente al círculo, es decir, lo toca sin cruzarlo.'] },
+      { titulo: 'Dos aceleraciones por comparar', texto: ['Para girar en círculo hace falta una aceleración hacia el centro, v²/r. El juego la compara con la que aporta la gravedad, g, que en m/s² vale lo mismo que en N/kg. El período ', T, ' es el tiempo de una vuelta.'] },
     ] },
     juega: {
-      consigna: 'Este planeta ideal atrae a un satélite lanzado en dirección tangente. Elige su rapidez y compara la aceleración necesaria para girar con la gravedad disponible.',
+      consigna: 'Elige la rapidez del satélite, lanzado tangente al círculo, y compara la aceleración que necesita para girar con la que le da la gravedad.',
       voz: 'El reloj avanza la posición solo cuando las dos aceleraciones coinciden.',
       controles: [{ id: 'v', etiqueta: 'Rapidez tangente', opciones: [2, 4, 5, 6].map(x => ({ valor: x, texto: `${x} km/s` })), inicio: 2, color: 'c-o' },
         { id: 't', etiqueta: 'Reloj de la órbita circular', min: 0, max: periodoJuego, paso: 500, inicio: 0, unidad: 's', color: 'c-d', auto: { velocidad: 1000, modo: 'reinicia' } }],
@@ -1373,23 +1380,23 @@ function construirGr4(Kit) {
       datos: ['Las dos órbitas corresponden al mismo planeta.', 'La rapidez inicial es 8 km/s.', 'El nuevo radio es cuatro veces el inicial.', 'La masa del satélite es despreciable frente a la planetaria.'],
       dibujo: figuraPred(), revelar: figuraPred(true),
       opciones: [{ id: 'c', texto: textoValor(predNueva, 'km/s'), correcta: true },
-        { id: 'lineal', texto: textoValor(predErrores.lineal, 'km/s'), error: 'GR4-PRED-LINEAL', siFuera: `Bien esperar una reducción; dividir la rapidez entre cuatro omite la raíz. Ese error da ${textoValor(predErrores.lineal, 'km/s')}.` },
-        { id: 'igual', texto: textoValor(predErrores.igual, 'km/s'), error: 'GR4-PRED-IGUAL', siFuera: `Bien conservar el planeta; conservar también la rapidez ignora el cambio de radio. Así quedan ${textoValor(predErrores.igual, 'km/s')}.` },
-        { id: 'directa', texto: textoValor(predErrores.directa, 'km/s'), error: 'GR4-PRED-DIRECTA', siFuera: `Bien tomar la raíz de cuatro; multiplicar en vez de dividir produce ${textoValor(predErrores.directa, 'km/s')}.` }],
-      coincide: 'Al aumentar el radio, la rapidez circular disminuye. El cambio depende de una raíz, no directamente del radio.',
+        { id: 'lineal', texto: textoValor(predErrores.lineal, 'km/s'), error: 'GR4-PRED-LINEAL', siFuera: `Bien esperada una rapidez menor, pero dividiste entre cuatro sin sacar la raíz. Así sale ${textoValor(predErrores.lineal, 'km/s')}.` },
+        { id: 'igual', texto: textoValor(predErrores.igual, 'km/s'), error: 'GR4-PRED-IGUAL', siFuera: `Bien considerado el mismo planeta, pero la rapidez circular cambia cuando cambia el radio. Así sale ${textoValor(predErrores.igual, 'km/s')}.` },
+        { id: 'directa', texto: textoValor(predErrores.directa, 'km/s'), error: 'GR4-PRED-DIRECTA', siFuera: `Bien sacada la raíz de cuatro, pero multiplicaste por ella en vez de dividir. Así sale ${textoValor(predErrores.directa, 'km/s')}.` }],
+      coincide: 'Al aumentar el radio, la rapidez circular disminuye, pero según la raíz del radio, no en la misma proporción.',
       verificacion: { tipo: 'predice', v1: predV, kr: predK, respuesta: { valor: predNueva, unidad: 'km/s' }, errores: Object.entries(predErrores).map(([id, valor]) => ({ id, valor })) },
     },
     mira: { pieza: 'fis-gravitacion', datos: { ...figuraPred().datos, cortes: [figuraPred().datos, figuraPred(true).datos] }, pasos: [
-      { estado: { corte: 0 }, texto: 'La gravedad aporta la fuerza centrípeta; no son dos fuerzas distintas que se suman.', ecuacion: ['G·', M, '·', m, '/', r, '² = ', m, '·', v, '²/', r] },
-      { estado: { corte: 0 }, texto: 'Cancelamos la masa del satélite y un factor de radio.', ecuacion: leyV },
-      { estado: { corte: 0 }, texto: 'Compartir GM permite comparar los cuadrados de las rapideces mediante los radios.', ecuacion: [sub(v, '2'), '²/', sub(v, '1'), '² = ', sub(r, '1'), '/', sub(r, '2'), ` = 1/${numero(predK)}`] },
-      { estado: { corte: 1 }, texto: 'Tomamos la raíz positiva de la razón y modificamos la rapidez inicial.', ecuacion: [sub(v, '2'), ` = ${numero(predV / 1000)} ÷ √${numero(predK)} = `, valor(predNueva, 'km/s', 'o')] },
-      { estado: { corte: 1 }, texto: 'El período mide una vuelta: circunferencia dividida entre la rapidez.', ecuacion: leyT },
-      { estado: { corte: 1 }, texto: 'Sumar energía cinética y potencial deja la mitad de la potencial.', ecuacion: leyE },
+      { estado: { corte: 0 }, texto: 'La gravedad es la fuerza que lleva al satélite hacia el centro; no hay otra fuerza centrípeta aparte.', ecuacion: ['G·', M, '·', m, '/', r, '² = ', m, '·', v, '²/', r] },
+      { estado: { corte: 0 }, texto: 'La masa del satélite está a los dos lados y se cancela; también se cancela un factor r.', ecuacion: leyV },
+      { estado: { corte: 0 }, texto: 'Como las dos órbitas tienen el mismo GM, el cociente de los cuadrados de las rapideces depende solo de los radios.', ecuacion: [sub(v, '2'), '²/', sub(v, '1'), '² = ', sub(r, '1'), '/', sub(r, '2'), ` = 1/${numero(predK)}`] },
+      { estado: { corte: 1 }, texto: 'Sacamos la raíz positiva: la rapidez inicial se divide entre la raíz de cuatro.', ecuacion: [sub(v, '2'), ` = ${numero(predV / 1000)} ÷ √${numero(predK)} = `, valor(predNueva, 'km/s', 'o')] },
+      { estado: { corte: 1 }, texto: 'El período es el tiempo de una vuelta: el largo de la circunferencia dividido entre la rapidez.', ecuacion: leyT },
+      { estado: { corte: 1 }, texto: 'Al sumar la energía cinética y la potencial de la órbita, queda la mitad de la energía potencial.', ecuacion: leyE },
     ] },
-    regla: { texto: 'La gravedad sostiene la órbita circular cuando aporta toda la aceleración centrípeta. La masa del satélite se cancela; el radio empieza en el centro.',
+    regla: { texto: 'Un satélite sigue una órbita circular cuando la gravedad le da justo la aceleración hacia el centro que necesita para girar. La masa del satélite se cancela, el radio se mide desde el centro y la energía de la órbita es negativa.',
       ecuacion: [v, ' = ', { raiz: [{ frac: [['G·', M], r] }] }, '; ', leyT, '; ', leyE],
-      condicion: 'Planeta esférico fijo; satélite de masa despreciable frente a él, órbita exterior, sin aire ni propulsión. Energía potencial cero en el infinito.',
+      condicion: 'el planeta es esférico y fijo, el satélite tiene masa despreciable frente a él, la órbita es exterior y no hay aire ni propulsión; el cero de energía potencial está en el infinito.',
       voz: 'En la órbita circular, la energía mecánica vale la mitad de la energía potencial.',
       dibujo: figura({ GM: 3e14, r: 12e6, m: 150 }) },
     ejemplos, resuelve: { pieza: 'fis-gravitacion', generar: s => generar(s, true) }, ahoraTu: { pieza: 'fis-gravitacion', generar: s => generar(s, false) },
@@ -1511,23 +1518,23 @@ function construirGr5(Kit) {
       const cerca = c.tipo === 'cercano'; resultado = c.a * (1 + (cerca ? -c.e : c.e)); simbolo = cerca ? rp : ra; simboloTexto = cerca ? 'r_cerca' : 'r_lejos';
       enunciado = ['Una órbita tiene semieje mayor ', val(c.a, 'km', 'i'), ' y excentricidad ', f(c.e), '. ¿Cuál es la separación ', cerca ? 'mínima' : 'máxima', ' entre la sonda y el centro del planeta?'];
       datos.push(geometria, 'Los subíndices cerca y lejos indican el extremo más cercano y el más lejano al planeta.');
-      paso('Elegimos el extremo pedido y usamos el semieje mayor.', [simbolo, ` = ${f(c.a)} · (1 ${cerca ? '−' : '+'} ${f(c.e)})`]); terminar('El resultado es una separación central, no una altura.');
-      error('otro-extremo', c.a * (1 + (cerca ? c.e : -c.e)), 'Bien usar la excentricidad; elegiste el otro extremo.');
-      error('solo-a', c.a, 'Bien reconocer el semieje; lo confundiste con la separación extrema.');
-      error('solo-ae', c.a * c.e, 'Bien multiplicar a por e; falta completar la separación.');
-      error('diametro', resultado * 2, 'Bien escoger el extremo; duplicaste una separación central.');
+      paso('Elegimos el extremo pedido: en el cercano, a·e se resta del semieje; en el lejano, se suma.', [simbolo, ` = ${f(c.a)} · (1 ${cerca ? '−' : '+'} ${f(c.e)})`]); terminar('El resultado se mide desde el centro del planeta, así que no es una altura.');
+      error('otro-extremo', c.a * (1 + (cerca ? c.e : -c.e)), 'Bien usada la excentricidad, pero elegiste el otro extremo de la órbita.');
+      error('solo-a', c.a, 'Bien reconocido el semieje mayor, pero lo diste como si fuera la separación en el extremo.');
+      error('solo-ae', c.a * c.e, 'Bien multiplicado a por e, pero falta restar ese producto del semieje o sumárselo, según el extremo.');
+      error('diametro', resultado * 2, 'Bien escogido el extremo, pero después duplicaste la separación.');
     } else if (['semieje', 'excentricidad'].includes(c.tipo)) {
       const semi = c.tipo === 'semieje'; resultado = semi ? (c.rp + c.ra) / 2 : (c.ra - c.rp) / (c.ra + c.rp);
       simbolo = semi ? a : 'e'; simboloTexto = semi ? 'a' : 'e'; unidad = semi ? 'km' : ''; color = semi ? 'i' : null;
       enunciado = ['Las separaciones mínima y máxima entre la sonda y el centro del planeta son ', val(c.rp, 'km', 'i'), ' y ', val(c.ra, 'km', 'i'), '. ¿Cuál es ', semi ? 'el semieje mayor de la órbita' : 'su excentricidad', '?'];
       datos.push(geometria, 'El diámetro mayor une ambos extremos pasando por el foco.');
-      paso('Sumamos las separaciones extremas para obtener el diámetro mayor.', [q('i', '2a'), ` = ${f(c.rp)} + ${f(c.ra)} = `, val(c.rp + c.ra, 'km', 'i')]);
-      if (!semi) paso('La diferencia entre extremos es dos veces la separación del foco al centro geométrico.', ['e = ', { frac: [`${f(c.ra)} − ${f(c.rp)}`, `${f(c.ra)} + ${f(c.rp)}`] }]);
-      terminar(semi ? 'Dividimos el diámetro entre dos.' : 'La excentricidad no tiene unidades.');
-      error('suma', c.rp + c.ra, 'Bien sumar los extremos; falta dividir según la magnitud pedida.');
-      error('diferencia', semi ? (c.ra - c.rp) / 2 : (c.ra - c.rp) / c.ra, 'Bien identificar los extremos; cambiaste la relación geométrica.');
-      error('solo-lejano', semi ? c.ra : c.rp / c.ra, 'Bien usar el extremo lejano; omitiste la suma requerida.');
-      error('doble', resultado * 2, 'Bien combinar ambos extremos; conservaste un factor dos adicional.');
+      paso('Las dos separaciones extremas juntas forman el diámetro mayor de la elipse, así que las sumamos.', [q('i', '2a'), ` = ${f(c.rp)} + ${f(c.ra)} = `, val(c.rp + c.ra, 'km', 'i')]);
+      if (!semi) paso('La diferencia entre los extremos es el doble de la distancia del foco al centro de la elipse; al dividirla entre el diámetro mayor sale e.', ['e = ', { frac: [`${f(c.ra)} − ${f(c.rp)}`, `${f(c.ra)} + ${f(c.rp)}`] }]);
+      terminar(semi ? 'El semieje mayor es la mitad de ese diámetro.' : 'La excentricidad es un cociente de longitudes, así que no tiene unidades.');
+      error('suma', c.rp + c.ra, 'Bien sumados los extremos, pero falta dividir según lo que se pide.');
+      error('diferencia', semi ? (c.ra - c.rp) / 2 : (c.ra - c.rp) / c.ra, 'Bien identificados los extremos, pero combinaste mal las dos separaciones en la fórmula.');
+      error('solo-lejano', semi ? c.ra : c.rp / c.ra, 'Bien usado el extremo lejano, pero olvidaste combinarlo con el cercano.');
+      error('doble', resultado * 2, 'Bien combinados los dos extremos, pero sobra un factor dos.');
     } else if (['area', 'duracion', 'area-dias'].includes(c.tipo)) {
       const duracion = c.tipo === 'duracion', enDias = c.tipo === 'area-dias' || c.dias, horas = c.T * (enDias ? 24 : 1);
       resultado = duracion ? horas * c.porcentaje / 100 : 100 * c.dt / horas;
@@ -1535,15 +1542,15 @@ function construirGr5(Kit) {
       enunciado = duracion ? ['Una sonda tarda ', val(c.T, enDias ? 'días' : 'h', 'd'), ' en completar su órbita. ¿Cuántas horas tarda en barrer el ', f(c.porcentaje), ' % del área orbital?']
         : ['Una sonda tarda ', val(c.T, c.tipo === 'area-dias' ? 'días' : 'h', 'd'), ' por vuelta. ¿Qué porcentaje del área orbital barre en ', val(c.dt, 'h', 'd'), '?'];
       datos.push(ley2, 'El área se mide desde el foco ocupado por el planeta. Un porcentaje es una fracción de cien.');
-      if (enDias) { datos.push('1 día = 24 h.'); paso('Convertimos el período para comparar tiempos en horas.', [T, ` = ${f(c.T)} · 24 = `, val(horas, 'h', 'd')]); }
-      paso('Usamos la misma fracción para el área barrida y el tiempo transcurrido.', duracion ? [dt, ` = ${f(horas)} · ${f(c.porcentaje)}/100 h`] : [Ab, '/', At, ` = ${f(c.dt)}/${f(horas)}`]);
-      terminar('La relación vale tanto cerca como lejos del planeta.');
-      error('inversa', duracion ? horas * 100 / c.porcentaje : 100 * horas / c.dt, 'Bien comparar las magnitudes; invertiste la fracción.');
-      error('sin-cien', duracion ? horas * c.porcentaje : c.dt / horas, 'Bien formar la razón; faltó convertir el porcentaje.');
-      error('complemento', duracion ? horas - resultado : 100 - resultado, 'Bien calcular la fracción; elegiste el sector restante.');
-      error('doble', resultado * 2, 'Bien relacionar área y tiempo; añadiste un factor dos.');
-      if (c.tipo === 'area-dias') error('sin-dias', 100 * c.dt / c.T, 'Bien dividir tiempos; mezclaste horas con días.');
-      if (duracion && enDias) error('sin-dias', c.T * c.porcentaje / 100, 'Bien usar la fracción; dejaste el período en días.');
+      if (enDias) { datos.push('1 día = 24 h.'); paso('Pasamos el período a horas para comparar tiempos en la misma unidad.', [T, ` = ${f(c.T)} · 24 = `, val(horas, 'h', 'd')]); }
+      paso('Por la segunda ley, la fracción del área barrida es igual a la fracción del período que pasó.', duracion ? [dt, ` = ${f(horas)} · ${f(c.porcentaje)}/100 h`] : [Ab, '/', At, ` = ${f(c.dt)}/${f(horas)}`]);
+      terminar('Hacemos la cuenta. Esta proporción vale en cualquier parte de la órbita, cerca o lejos del planeta.');
+      error('inversa', duracion ? horas * 100 / c.porcentaje : 100 * horas / c.dt, 'Bien comparadas las magnitudes, pero invertiste la fracción.');
+      error('sin-cien', duracion ? horas * c.porcentaje : c.dt / horas, 'Bien formada la razón, pero faltó pasar de fracción a porcentaje, o al revés.');
+      error('complemento', duracion ? horas - resultado : 100 - resultado, 'Bien calculada la fracción, pero elegiste el sector que falta para completar la vuelta.');
+      error('doble', resultado * 2, 'Bien relacionados el área y el tiempo, pero agregaste un factor dos.');
+      if (c.tipo === 'area-dias') error('sin-dias', 100 * c.dt / c.T, 'Bien hecha la división de tiempos, pero mezclaste horas con días.');
+      if (duracion && enDias) error('sin-dias', c.T * c.porcentaje / 100, 'Bien usada la fracción, pero dejaste el período en días, y se piden horas.');
     } else if (['periodo', 'semieje-periodos', 'periodo-extremos', 'periodo-sector', 'sector-semieje'].includes(c.tipo)) {
       unidad = c.uTiempo || 'días'; color = 'd'; simbolo = TB; simboloTexto = 'T_B';
       let aa = c.aA, ab = c.aB, tb = c.TB;
@@ -1551,54 +1558,54 @@ function construirGr5(Kit) {
       if (c.uLong === 'UA') datos.push('UA: unidad astronómica, una distancia fija (1 UA ≈ 150 millones de km).');
       if (c.tipo === 'periodo-extremos') {
         ab = (c.rp + c.ra) / 2; datos.push([aB, ' = (', rp, ' + ', ra, ')/2'], 'En este caso, todas las separaciones se expresan en millones de kilómetros.');
-        enunciado = ['A tiene período ', val(c.TA, unidad, 'd'), ' y semieje ', val(aa, 'millones de km', 'i'), '. B se acerca a ', val(c.rp, 'millones de km', 'i'), ' y se aleja a ', val(c.ra, 'millones de km', 'i'), '. ¿Cuál es el período de B?'];
+        enunciado = ['A tiene período ', val(c.TA, unidad, 'd'), ' y semieje ', val(aa, 'millones de km', 'i'), '. B se acerca hasta ', val(c.rp, 'millones de km', 'i'), ' del centro y se aleja hasta ', val(c.ra, 'millones de km', 'i'), '. ¿Cuál es el período de B?'];
         paso('El semieje de B es la mitad de la suma de sus separaciones extremas.', [aB, ` = (${f(c.rp)} + ${f(c.ra)})/2 = `, val(ab, 'millones de km', 'i')]);
       } else if (c.tipo === 'periodo-sector') {
         datos.push(ley2); enunciado = ['A tiene período ', val(c.TA, unidad, 'd'), '. Sus semiejes son ', val(aa, 'millones de km', 'i'), ' y ', val(ab, 'millones de km', 'i'), '. ¿Cuánto tarda B en barrer el ', f(c.porcentaje), ' % de su área orbital?'];
       } else if (c.tipo === 'sector-semieje') {
         tb = c.dt * 100 / c.porcentaje; datos.push(ley2);
         enunciado = ['A tiene período ', val(c.TA, unidad, 'd'), ' y semieje ', val(aa, 'millones de km', 'i'), '. B barre el ', f(c.porcentaje), ' % de su área en ', val(c.dt, unidad, 'd'), '. ¿Cuál es el semieje mayor de B?'];
-        paso('Reconstruimos el período de B usando la fracción de área y tiempo.', [TB, ` = ${f(c.dt)} · 100/${f(c.porcentaje)} = `, val(tb, unidad, 'd')]);
+        paso('B barre esa fracción del área en ese tiempo, así que su período completo es el tiempo dividido entre la fracción.', [TB, ` = ${f(c.dt)} · 100/${f(c.porcentaje)} = `, val(tb, unidad, 'd')]);
       } else enunciado = c.tipo === 'periodo' ? ['A tiene período ', val(c.TA, unidad, 'd'), ' y semieje ', val(aa, c.uLong || 'millones de km', 'i'), '. B tiene semieje ', val(ab, c.uLong || 'millones de km', 'i'), '. ¿Cuál es el período de B?']
         : ['A tiene período ', val(c.TA, unidad, 'd'), ' y semieje ', val(aa, 'millones de km', 'i'), '. B tarda ', val(tb, unidad, 'd'), ' por vuelta. ¿Cuál es el semieje mayor de B?'];
       if (['semieje-periodos', 'sector-semieje'].includes(c.tipo)) {
         resultado = aa * Math.cbrt((tb / c.TA) ** 2); unidad = 'millones de km'; color = 'i'; simbolo = aB; simboloTexto = 'a_B';
-        paso('Elevamos la razón de períodos al cuadrado y despejamos el semieje con raíz cúbica.', [{ sup: [aB, 3] }, ` = ${f(aa)}³ · (${f(tb)}/${f(c.TA)})²`]);
-        error('lineal', aa * tb / c.TA, 'Bien comparar períodos; trataste la relación como lineal.');
-        error('sin-raiz', aa * (tb / c.TA) ** 2, 'Bien elevar la razón al cuadrado; omitiste la raíz cúbica.');
-        error('inversa', aa * Math.cbrt((c.TA / tb) ** 2), 'Bien usar potencias; invertiste la razón de períodos.');
-        error('raiz-cuadrada', aa * Math.sqrt(tb / c.TA), 'Bien buscar un semieje; usaste una raíz cuadrada simple.');
+        paso('Por la tercera ley, el cubo del semieje de B es el de A por la razón de períodos al cuadrado; luego sacamos la raíz cúbica.', [{ sup: [aB, 3] }, ` = ${f(aa)}³ · (${f(tb)}/${f(c.TA)})²`]);
+        error('lineal', aa * tb / c.TA, 'Bien comparados los períodos, pero usaste una relación lineal, y la tercera ley usa cuadrados y cubos.');
+        error('sin-raiz', aa * (tb / c.TA) ** 2, 'Bien elevada la razón al cuadrado, pero faltó sacar la raíz cúbica.');
+        error('inversa', aa * Math.cbrt((c.TA / tb) ** 2), 'Bien usadas las potencias, pero invertiste la razón de períodos.');
+        error('raiz-cuadrada', aa * Math.sqrt(tb / c.TA), 'Bien buscado el semieje, pero sacaste la raíz cuadrada de la razón, y la ley pide la raíz cúbica de su cuadrado.');
       } else {
         tb = period(c.TA, aa, ab); resultado = c.tipo === 'periodo-sector' ? tb * c.porcentaje / 100 : tb;
-        paso('Comparamos cubos de semiejes y tomamos la raíz positiva para el período.', [TB, ` = ${f(c.TA)} · √((${f(ab)}/${f(aa)})³)`, exacto(tb) ? ' = ' : ' ≈ ', val(tb, unidad, 'd')]);
-        if (c.tipo === 'periodo-sector') { simbolo = dt; simboloTexto = 'Δt'; paso('La fracción de área determina qué parte del período transcurre.', [dt, ` = ${f(tb)} · ${f(c.porcentaje)}/100`, exacto(resultado) ? ' = ' : ' ≈ ', val(resultado, unidad, 'd')]); }
+        paso('Por la tercera ley, elevamos al cubo la razón de semiejes, sacamos la raíz cuadrada y multiplicamos por el período de A.', [TB, ` = ${f(c.TA)} · √((${f(ab)}/${f(aa)})³)`, exacto(tb) ? ' = ' : ' ≈ ', val(tb, unidad, 'd')]);
+        if (c.tipo === 'periodo-sector') { simbolo = dt; simboloTexto = 'Δt'; paso('Por la segunda ley, barrer esa fracción del área toma la misma fracción del período.', [dt, ` = ${f(tb)} · ${f(c.porcentaje)}/100`, exacto(resultado) ? ' = ' : ' ≈ ', val(resultado, unidad, 'd')]); }
         const k = ab / aa, factorSector = c.tipo === 'periodo-sector' ? c.porcentaje / 100 : 1;
-        error('lineal', c.TA * k * factorSector, 'Bien comparar semiejes; aplicaste una relación lineal.');
-        error('raiz-simple', c.TA * Math.sqrt(k) * factorSector, 'Bien tomar una raíz; omitiste el cubo de la razón.');
-        error('cuadrado', c.TA * k * k * factorSector, 'Bien comparar las órbitas; elevaste la razón al cuadrado.');
-        error('inversa', c.TA * Math.sqrt((1 / k) ** 3) * factorSector, 'Bien usar cubo y raíz; invertiste los semiejes.');
-        if (c.tipo === 'periodo-extremos') error('radio-instantaneo', period(c.TA, aa, c.ra), 'Bien usar la tercera ley; tomaste la separación máxima como semieje.');
+        error('lineal', c.TA * k * factorSector, 'Bien comparados los semiejes, pero usaste una relación lineal, y la tercera ley usa cuadrados y cubos.');
+        error('raiz-simple', c.TA * Math.sqrt(k) * factorSector, 'Bien sacada una raíz, pero olvidaste elevar al cubo la razón de semiejes.');
+        error('cuadrado', c.TA * k * k * factorSector, 'Bien comparadas las órbitas, pero elevaste la razón de semiejes al cuadrado; la ley pide su cubo y después la raíz.');
+        error('inversa', c.TA * Math.sqrt((1 / k) ** 3) * factorSector, 'Bien usados el cubo y la raíz, pero invertiste la razón de semiejes.');
+        if (c.tipo === 'periodo-extremos') error('radio-instantaneo', period(c.TA, aa, c.ra), 'Bien usada la tercera ley, pero tomaste la separación máxima como si fuera el semieje.');
       }
-      if (c.tipo !== 'periodo-sector') terminar('La comparación usa la misma fuente central y unidades compatibles.');
+      if (c.tipo !== 'periodo-sector') terminar('Hacemos la cuenta. La comparación vale porque las dos órbitas giran alrededor del mismo cuerpo central.');
     } else if (['rapidez', 'rapidez-alturas'].includes(c.tipo)) {
       const rrP = c.tipo === 'rapidez-alturas' ? c.R + c.hp : c.rp, rrA = c.tipo === 'rapidez-alturas' ? c.R + c.ha : c.ra;
       resultado = c.vp * rrP / rrA; unidad = 'km/s'; color = 'o'; simbolo = va; simboloTexto = 'v_lejos';
-      datos.push(extremos, 'p indica el punto más cercano y a el más lejano. Solo allí la velocidad es perpendicular al radio.');
+      datos.push(extremos, 'Los subíndices cerca y lejos marcan los extremos de la órbita. Solo allí la velocidad es perpendicular al radio.');
       if (c.tipo === 'rapidez-alturas') {
         datos.push([r, ' = ', R, ' + ', h]);
-        enunciado = ['Un planeta tiene radio ', val(c.R, 'km', 'i'), '. Una sonda pasa a alturas extremas de ', val(c.hp, 'km', 'i'), ' y ', val(c.ha, 'km', 'i'), '. Cerca lleva ', val(c.vp, 'km/s', 'o'), '. ¿Qué rapidez lleva lejos?'];
-        paso('Convertimos las alturas en separaciones entre centros.', [rp, ` = ${f(rrP)} km; `, ra, ` = ${f(rrA)} km`]);
-      } else enunciado = ['Una sonda tiene separaciones extremas de ', val(c.rp, 'km', 'i'), ' y ', val(c.ra, 'km', 'i'), '. En el punto más cercano lleva ', val(c.vp, 'km/s', 'o'), '. ¿Cuál es su rapidez en el punto más lejano?'];
-      paso('En los extremos, áreas iguales por tiempo exigen conservar el producto de separación y rapidez.', [va, ` = ${f(c.vp)} · ${f(rrP)}/${f(rrA)}`]); terminar('La rapidez disminuye al pasar del extremo cercano al lejano.');
-      error('inversa', c.vp * rrA / rrP, 'Bien usar ambos extremos; invertiste las separaciones.');
-      error('constante', c.vp, 'Bien conservar el dato; confundiste período fijo con rapidez constante.');
-      error('raiz', c.vp * Math.sqrt(rrP / rrA), 'Bien comparar radios; aplicaste una raíz de órbita circular.');
-      error('cuadrado', c.vp * (rrP / rrA) ** 2, 'Bien formar la razón; la elevaste al cuadrado.');
-      if (c.tipo === 'rapidez-alturas') error('solo-alturas', c.vp * c.hp / c.ha, 'Bien identificar alturas; faltó sumar el radio planetario.');
+        enunciado = ['Un planeta tiene radio ', val(c.R, 'km', 'i'), '. Una sonda pasa a alturas extremas de ', val(c.hp, 'km', 'i'), ' y ', val(c.ha, 'km', 'i'), '. En el punto más cercano lleva ', val(c.vp, 'km/s', 'o'), '. ¿Qué rapidez lleva en el más lejano?'];
+        paso('Sumamos el radio del planeta a cada altura para medir desde el centro.', [rp, ` = ${f(rrP)} km; `, ra, ` = ${f(rrA)} km`]);
+      } else enunciado = ['La separación entre una sonda y el centro del planeta varía entre ', val(c.rp, 'km', 'i'), ' y ', val(c.ra, 'km', 'i'), '. En el punto más cercano lleva ', val(c.vp, 'km/s', 'o'), '. ¿Cuál es su rapidez en el punto más lejano?'];
+      paso('Como se barren áreas iguales en tiempos iguales, en los extremos la separación por la rapidez vale lo mismo cerca y lejos.', [va, ` = ${f(c.vp)} · ${f(rrP)}/${f(rrA)}`]); terminar('Comprobamos el sentido: lejos del planeta, la sonda va más lenta.');
+      error('inversa', c.vp * rrA / rrP, 'Bien usados los dos extremos, pero invertiste la razón de separaciones.');
+      error('constante', c.vp, 'Bien conservado el dato, pero en una elipse la rapidez no es constante: es menor lejos del planeta.');
+      error('raiz', c.vp * Math.sqrt(rrP / rrA), 'Bien comparadas las separaciones, pero usaste la raíz de una órbita circular, y esta órbita es una elipse.');
+      error('cuadrado', c.vp * (rrP / rrA) ** 2, 'Bien formada la razón, pero la elevaste al cuadrado.');
+      if (c.tipo === 'rapidez-alturas') error('solo-alturas', c.vp * c.hp / c.ha, 'Bien identificadas las alturas, pero faltó sumarles el radio del planeta para medir desde el centro.');
     } else throw new Error(`Caso Kepler desconocido: ${c.tipo}`);
     const vistos = new Set([textoValor(resultado, unidad)]);
     const err = errores.filter(e => { const t = textoValor(e.valor, unidad); if (!Number.isFinite(e.valor) || vistos.has(t)) return false; vistos.add(t); return true; })
-      .map(e => ({ ...e, texto: textoValor(e.valor, unidad), error: `GR5-${e.id.toUpperCase()}`, siFuera: `${e.causa} Sale ${textoValor(e.valor, unidad)}.` }));
+      .map(e => ({ ...e, texto: textoValor(e.valor, unidad), error: `GR5-${e.id.toUpperCase()}`, siFuera: `${e.causa} Así sale ${textoValor(e.valor, unidad)}.` }));
     return { enunciado, datos, solucion, resultado, unidad, color, simboloTexto, respuesta: ecuacion(simbolo, resultado, unidad, color), errores: err,
       dibujo: figura(c), verificacion: { ...c, respuesta: { valor: resultado, unidad, aproximado: !exacto(resultado) }, errores: err.map(e => ({ id: e.id, valor: e.valor })) } };
   }
@@ -1615,7 +1622,7 @@ function construirGr5(Kit) {
     { tipo: 'semieje-periodos', nivel: 2, titulo: 'El semieje a partir del período', TA: 5, TB: 40, aA: 6 },
     { tipo: 'rapidez', nivel: 2, titulo: 'La rapidez en el extremo lejano', rp: 9000, ra: 27000, vp: 12 },
     { tipo: 'periodo-extremos', nivel: 3, titulo: 'Los extremos no son el semieje', TA: 6, aA: 2, rp: 4, ra: 12 },
-    { tipo: 'rapidez-alturas', nivel: 3, titulo: 'Del suelo a la separación central', R: 3000, hp: 2000, ha: 12000, vp: 9 },
+    { tipo: 'rapidez-alturas', nivel: 3, titulo: 'De la altura al centro', R: 3000, hp: 2000, ha: 12000, vp: 9 },
     { tipo: 'periodo-sector', nivel: 3, titulo: 'Comparar órbitas y medir un sector', TA: 12, aA: 5, aB: 20, porcentaje: 25 },
     { tipo: 'sector-semieje', nivel: 3, titulo: 'Reconstruir la órbita con un sector', TA: 4, aA: 3, dt: 8, porcentaje: 25 },
     { tipo: 'periodo-extremos', nivel: 3, titulo: 'Una órbita interior de comparación', TA: 54, aA: 18, rp: 5, ra: 11 },
@@ -1628,10 +1635,11 @@ function construirGr5(Kit) {
       if (z.errores.length < 4) throw new Error('Faltan distractores Kepler.');
       const acierto = posicion++, seleccion = z.errores.slice(0, 4);
       e.alternativas = seleccion.map(x => x.texto); e.alternativas.splice(acierto, 0, textoValor(z.resultado, z.unidad));
-      const motivos = { lineal: 'es lineal', 'raiz-simple': 'omite el cubo', cuadrado: 'eleva al cuadrado', inversa: 'invierte la razón',
-        constante: 'supone rapidez constante', raiz: 'usa raíz circular', 'sin-raiz': 'omite la raíz cúbica', 'raiz-cuadrada': 'usa raíz cuadrada' };
+      const motivos = { lineal: 'usas una relación lineal', 'raiz-simple': 'olvidas el cubo', cuadrado: 'elevas la razón al cuadrado', inversa: 'inviertes la razón',
+        constante: 'supones la rapidez constante', raiz: 'usas la raíz de la órbita circular', 'sin-raiz': 'olvidas la raíz cúbica', 'raiz-cuadrada': 'usas una raíz cuadrada',
+        'radio-instantaneo': 'tomas la separación máxima como semieje', 'solo-alturas': 'olvidas sumar el radio del planeta' };
       // Auditoría (26 nov): A y B son los cuerpos de estos ejemplos; las alternativas se explican por su valor.
-      e.solucion.push({ texto: seleccion.flatMap(er => [{ negrita: er.texto.replace(/^≈ /, '') }, ` ${motivos[er.id]}. `]) });
+      e.solucion.push({ texto: seleccion.flatMap(er => [{ negrita: er.texto.replace(/^≈ /, '') }, ` sale si ${motivos[er.id]}. `]) });
     }
     return e;
   });
@@ -1655,22 +1663,22 @@ function construirGr5(Kit) {
   function generar(s, resuelto) {
     const z = caso(entrada(s, resuelto));
     if (resuelto) return { enunciado: z.enunciado, datos: z.datos, dibujo: z.dibujo, respuesta: z.respuesta, verificacion: z.verificacion,
-      pasos: [{ tipo: 'pide', texto: 'Identificamos la magnitud pedida y sus unidades.' }, { tipo: 'regla', texto: 'Elegimos la ley de áreas, la geometría o la comparación de períodos según los datos.' },
+      pasos: [{ tipo: 'pide', texto: 'Identificamos la magnitud pedida y sus unidades.' }, { tipo: 'regla', texto: 'Según los datos, usamos la forma de la elipse, la ley de las áreas o la comparación de períodos.' },
         ...z.solucion.map(x => ({ tipo: 'cuentas', ...x }))] };
     if (z.errores.length < 3) throw new Error('Faltan opciones Kepler.');
     return { pregunta: z.enunciado, datos: z.datos, dibujo: z.dibujo, verificacion: z.verificacion,
       opciones: [{ id: 'c', texto: textoValor(z.resultado, z.unidad), correcta: true }, ...z.errores.slice(0, 3).map(e => ({ id: e.id, texto: e.texto, error: e.error, siFuera: e.siFuera }))],
-      solucion: { texto: 'Medimos separaciones desde el foco y usamos la misma fuente central. El semieje describe toda la órbita.', ecuacion: z.solucion.at(-1).ecuacion } };
+      solucion: { texto: 'Medimos las separaciones desde el planeta, que está en un foco, y recordamos que el semieje describe toda la órbita.', ecuacion: z.solucion.at(-1).ecuacion } };
   }
   const predDatos = { tipo: 'periodo', circulares: true, TA: 3, aA: 2, aB: 8, uTiempo: 'años', uLong: 'UA' }, pred = caso(predDatos);
   const idea = {
     id: 'leyes-de-kepler', titulo: 'Leyes de Kepler', pregunta: '¿Cómo describimos una órbita que se acerca y se aleja del planeta?',
-    aprendizaje: 'Relacionas forma, área barrida y período de órbitas alrededor de la misma fuente dominante.',
+    aprendizaje: 'Relacionas la forma, el área barrida y el período de órbitas alrededor del mismo astro central.',
     actividad: 'Mover una sonda en una elipse y comparar el área barrida durante distintos intervalos.', temas: ['Leyes de Kepler'], pieza: 'fis-gravitacion',
     lee: { tarjetas: [
-      { titulo: 'La órbita no siempre es circular', texto: 'Una elipse es una curva cerrada con dos puntos especiales llamados focos. La suma de distancias a ellos es constante. En este modelo gravitatorio, el planeta ocupa un foco; no está en el centro geométrico.', dibujo: juegoFigura({ inicio: 0, duracion: 1, u: 0.5 }, false) },
-      { titulo: 'Una medida de toda la órbita', texto: ['El semieje mayor ', a, ' es la mitad del diámetro más largo; ', b, ' corresponde al más corto. La excentricidad e describe cuánto se aparta del círculo. La separación ', r, ' al planeta cambia durante el recorrido; ', a, ' permanece igual.'] },
-      { titulo: 'Un reloj y una región', texto: ['La línea que une planeta y sonda barre un área al moverse. El período ', T, ' es el tiempo de una vuelta. En el juego eliges un intervalo ', dt, ' y el lugar donde comienza; observa la región que queda pintada.'] },
+      { titulo: 'La órbita no siempre es circular', texto: 'Una elipse es una curva cerrada con dos puntos especiales, los focos: desde cualquier punto de la curva, la suma de las distancias a los dos focos es la misma. El planeta está en un foco, no en el centro de la elipse.', dibujo: juegoFigura({ inicio: 0, duracion: 1, u: 0.5 }, false) },
+      { titulo: 'Una medida de toda la órbita', texto: ['El semieje mayor ', a, ' es la mitad del diámetro más largo de la elipse, y ', b, ', la mitad del más corto. La excentricidad e dice cuánto se aparta la elipse de un círculo. Durante la vuelta, la separación ', r, ' al planeta cambia, pero ', a, ' no.'] },
+      { titulo: 'Un reloj y una región', texto: ['Al moverse la sonda, la línea que la une con el planeta barre un área. El período ', T, ' es el tiempo de una vuelta. En el juego eliges un intervalo ', dt, ' y dónde empieza, y miras la región que queda pintada.'] },
     ] },
     juega: { consigna: 'Elige cuánto dura el intervalo y dónde comienza. Reproduce el movimiento y compara el sector barrido con toda la elipse.',
       voz: 'Sigue la sonda y la región pintada; el planeta permanece en un foco.',
@@ -1678,7 +1686,7 @@ function construirGr5(Kit) {
         { id: 'inicio', etiqueta: 'Lugar de inicio', opciones: [{ valor: 0, texto: 'Extremo cercano' }, { valor: 5, texto: 'Tramo inferior' }, { valor: 10, texto: 'Extremo lejano' }, { valor: 15, texto: 'Tramo superior' }], inicio: 0 },
         { id: 'u', etiqueta: 'Avance dentro del intervalo (0: al empezar; 1: al terminar)', min: 0, max: 1, paso: 0.25, inicio: 0, unidad: '', decimales: 2, auto: { velocidad: 0.25, modo: 'repite' } }],
       mision: { texto: 'Haz que el sector cubra la quinta parte del área orbital.', logrado: c => Math.abs(sector(c.inicio, c.duracion, 4).fraccion - 0.2) < 1e-12,
-        testigo: [{ inicio: 0, duracion: 4, u: 0.5 }], bien: 'El sector ocupa la fracción pedida en cualquier lugar de inicio.' },
+        testigo: [{ inicio: 0, duracion: 4, u: 0.5 }], bien: 'Coincide: el sector cubre la quinta parte del área, empiece donde empiece.' },
       dibujo: c => juegoFigura(c), lectura: c => `En ${f(c.duracion)} h barre ${f(c.duracion / base.periodoHoras * 100)} % del área.`,
       leyenda: [{ s: a, t: 'semieje mayor de la elipse, en kilómetros' }, { s: R, t: 'radio del planeta, en kilómetros' }, { s: T, t: 'tiempo de una vuelta, en horas' }, { s: 'e', t: 'excentricidad, sin unidades' }], minimo: 2 },
     predice: { pregunta: 'Dos cuerpos describen órbitas circulares alrededor de la misma estrella. ¿Cuál será el período de B?',
@@ -1688,13 +1696,13 @@ function construirGr5(Kit) {
       opciones: [{ id: 'c', texto: textoValor(pred.resultado, 'años'), correcta: true }, ...pred.errores.slice(0, 3).map(e => ({ id: e.id, texto: e.texto, error: e.error, siFuera: e.siFuera }))],
       coincide: 'El período no aumenta en la misma proporción que el semieje: intervienen un cubo y una raíz.', verificacion: pred.verificacion },
     mira: { pieza: 'fis-gravitacion', datos: { ...figura(predDatos).datos, cortes: [figura(predDatos).datos, figura({ ...predDatos, resultado: pred.resultado, simboloTexto: 'T_B', unidad: 'años', color: 'd' }, true).datos] },
-      pasos: [{ estado: { corte: 0 }, texto: 'La primera ley sitúa la estrella en un foco de cada elipse.', ecuacion: [a, ': tamaño fijo de la elipse; ', r, ': separación que cambia'] },
-        { estado: { corte: 0 }, texto: 'La segunda relaciona áreas barridas con tiempos dentro de una misma órbita.', ecuacion: ley2 },
-        { estado: { corte: 0 }, texto: 'La comparación de períodos se extiende a elipses usando su semieje mayor.', ecuacion: ley3 },
-        { estado: { corte: 1 }, texto: 'Despejamos el período positivo; un semieje cuádruple no produce un período cuádruple.', ecuacion: [TB, ' = 3 · √((8/2)³) = ', val(pred.resultado, 'años', 'd')] }] },
+      pasos: [{ estado: { corte: 0 }, texto: 'Primera ley: cada órbita es una elipse con la estrella en uno de sus focos.', ecuacion: [a, ': tamaño fijo de la elipse; ', r, ': separación que cambia'] },
+        { estado: { corte: 0 }, texto: 'Segunda ley: en una misma órbita, la fracción de área barrida es igual a la fracción del período.', ecuacion: ley2 },
+        { estado: { corte: 0 }, texto: 'Tercera ley: en dos órbitas del mismo astro, los cuadrados de los períodos van como los cubos de los semiejes.', ecuacion: ley3 },
+        { estado: { corte: 1 }, texto: 'Despejamos el período de B: con un semieje cuatro veces mayor, el período no se multiplica por cuatro.', ecuacion: [TB, ' = 3 · √((8/2)³) = ', val(pred.resultado, 'años', 'd')] }] },
     // Auditoría (26 nov): «Así se resuelve» y «Ahora tú» piden los extremos con a y e; la regla no los decía.
-    regla: { texto: 'El astro ocupa un foco y la separación cambia entre los dos extremos. Áreas iguales en tiempos iguales: la rapidez es mayor cerca. Para comparar períodos, usa semiejes mayores.',
-      ecuacion: [...ley3, '; ', rp, ' = ', a, ' · (1 − e); ', ra, ' = ', a, ' · (1 + e)'], condicion: 'Fuente dominante fija, masas que giran despreciables y solo gravedad. En los extremos, separación por rapidez vale lo mismo cerca y lejos.',
+    regla: { texto: 'El astro está en un foco y la separación cambia entre los dos extremos. La sonda barre áreas iguales en tiempos iguales, así que su rapidez es mayor cerca del astro. Los períodos se comparan con los semiejes mayores.',
+      ecuacion: [...ley3, '; ', rp, ' = ', a, ' · (1 − e); ', ra, ' = ', a, ' · (1 + e)'], condicion: 'hay un solo astro central fijo, con masas que giran despreciables frente a él y solo gravedad; en los extremos, la separación por la rapidez es igual cerca y lejos.',
       voz: 'El semieje pertenece a toda la elipse; la separación al foco cambia durante la vuelta.',
       dibujo: juegoFigura({ inicio: 10, duracion: 2, u: 0.5 }) },
     ejemplos, resuelve: { pieza: 'fis-gravitacion', generar: s => generar(s, true) }, ahoraTu: { pieza: 'fis-gravitacion', generar: s => generar(s, false) },
@@ -1707,7 +1715,7 @@ function construirGr5(Kit) {
   ];
   const letras = { a: 'semieje mayor de la órbita elíptica', b: 'semieje menor de la órbita elíptica', e: 'excentricidad, sin unidades', r: 'separación entre centros', R: 'radio del planeta', h: 'altura sobre la superficie',
     T: 'período orbital', t: 'tiempo', Δt: 'duración del intervalo', a_A: 'semieje mayor de la órbita A', a_B: 'semieje mayor de la órbita B', T_A: 'período de A', T_B: 'período de B',
-    r_cerca: 'separación central mínima, en el extremo cercano', r_lejos: 'separación central máxima, en el extremo lejano', v: 'rapidez', v_cerca: 'rapidez en el extremo cercano', v_lejos: 'rapidez en el extremo lejano', h_cerca: 'altura en el extremo cercano', h_lejos: 'altura en el extremo lejano',
+    r_cerca: 'distancia mínima al centro, en el extremo cercano', r_lejos: 'distancia máxima al centro, en el extremo lejano', v: 'rapidez', v_cerca: 'rapidez en el extremo cercano', v_lejos: 'rapidez en el extremo lejano', h_cerca: 'altura en el extremo cercano', h_lejos: 'altura en el extremo lejano',
     S: 'área', S_barrida: 'área barrida desde el foco', S_total: 'área total de la elipse', M: 'masa de la fuente dominante', m: 'masa de la sonda' };
   return { idea, glosario, letras };
 }
@@ -1740,7 +1748,7 @@ function construirGr6(Kit) {
   const leyEP = [EP, ' = −', { frac: [['GM · ', m], r] }], leyEC = [EC, ' = ', { frac: [[m, ' · ', { sup: [v, 2] }], 2] }];
   const leyEnergia = [EM, ' = ', EC, ' + ', EP, '; ', sub('E', 'M,inicial'), ' = ', sub('E', 'M,final')];
   const leyEscape = [ve, ' = ', { raiz: [{ frac: ['2 · GM', r] }] }];
-  const condiciones = 'Salida radial exterior hacia afuera, fuente fija y masa de sonda despreciable. Sin aire ni empuje posterior; cero potencial en el infinito.';
+  const condiciones = 'Sale desde fuera, en línea recta hacia afuera. Planeta fijo, sonda de masa despreciable, sin aire ni empuje; cero en el infinito.';
 
   function figura(c, revelar = false) {
     const notas = [];
@@ -1789,7 +1797,7 @@ function construirGr6(Kit) {
   function caso(c) {
     let resultado, unidad = 'km/s', color = 'o', simbolo = ve, simboloTexto = 'v_{esc}', enunciado;
     const rr = radio(c), datos = [condiciones, '1 km = 1000 m; 1 km/s = 1000 m/s.'], solucion = [], errores = [];
-    if (c.GM != null) datos.push(`GM = ${numero(c.GM)} m³/s²: producto de G por la masa fuente.`);
+    if (c.GM != null) datos.push(`GM = ${numero(c.GM)} m³/s²: G por la masa del planeta.`);
     datos.push(leyEscape);
     const error = (id, valor, causa) => errores.push({ id, valor, causa });
     const eq = (s, x, u = unidad, col = color) => [s, exacto(x) ? ' = ' : ' ≈ ', cantidad(x, u, col)];
@@ -1798,57 +1806,57 @@ function construirGr6(Kit) {
       enunciado = c.tipo === 'altura'
         ? ['Una sonda sale desde ', cantidad(c.h / 1000, 'km', 'i'), ' de altura sobre un planeta de radio ', cantidad(c.R / 1000, 'km', 'i'), '. ¿Qué rapidez mínima necesita para no regresar?']
         : ['Una sonda parte a ', cantidad(rr / 1000, 'km', 'i'), ' del centro del planeta. ¿Qué rapidez inicial mínima permite alejarse sin regresar?'];
-      if (c.tipo === 'altura') { datos.push([r, ' = ', R, ' + ', h]); solucion.push({ texto: 'La fórmula necesita la separación desde el centro.', ecuacion: [r, ` = ${numero(c.R / 1000)} + ${numero(c.h / 1000)} = `, cantidad(rr / 1000, 'km', 'i')] }); }
-      solucion.push({ texto: 'Calculamos el umbral energético con la separación en metros.', ecuacion: [ve, ' = ', { raiz: [{ frac: [`2 · (${numero(c.GM)})`, numero(rr)] }] }, ' m/s'] });
-      solucion.push({ texto: 'Convertimos la rapidez a kilómetros por segundo.', ecuacion: eq(ve, resultado) });
-      error('sin-dos', resultado / Math.SQRT2, 'Bien usar GM y radio; omitiste el factor dos.');
-      error('dos-fuera', resultado * Math.SQRT2, 'Bien usar la raíz; pusiste el dos fuera de ella.');
-      error('sin-km', resultado * 1000, 'Bien hallar metros por segundo; los presentaste como kilómetros por segundo.');
-      error('sin-gravedad', 0, 'Bien reconocer una salida exterior; supusiste que allí no hay gravedad.');
-      if (c.tipo === 'altura') error('desde-superficie', escape(c.GM, c.h) / 1000, 'Bien usar la altura; la confundiste con la separación central.');
+      if (c.tipo === 'altura') { datos.push([r, ' = ', R, ' + ', h]); solucion.push({ texto: 'La fórmula usa la distancia desde el centro, así que sumamos el radio y la altura.', ecuacion: [r, ` = ${numero(c.R / 1000)} + ${numero(c.h / 1000)} = `, cantidad(rr / 1000, 'km', 'i')] }); }
+      solucion.push({ texto: 'Calculamos la rapidez de escape con la distancia en metros.', ecuacion: [ve, ' = ', { raiz: [{ frac: [`2 · (${numero(c.GM)})`, numero(rr)] }] }, ' m/s'] });
+      solucion.push({ texto: 'Pasamos la rapidez a kilómetros por segundo.', ecuacion: eq(ve, resultado) });
+      error('sin-dos', resultado / Math.SQRT2, 'Bien usados GM y la distancia, pero olvidaste el factor dos dentro de la raíz.');
+      error('dos-fuera', resultado * Math.SQRT2, 'Bien sacada la raíz, pero dejaste el dos fuera de ella, y va dentro.');
+      error('sin-km', resultado * 1000, 'Bien hallada la rapidez en metros por segundo, pero la diste como si fueran kilómetros por segundo.');
+      error('sin-gravedad', 0, 'Bien reconocida la salida desde fuera del planeta, pero allí también actúa la gravedad.');
+      if (c.tipo === 'altura') error('desde-superficie', escape(c.GM, c.h) / 1000, 'Bien usada la altura, pero la tomaste como distancia al centro, y falta sumarle el radio.');
     } else if (c.tipo === 'circular') {
       resultado = Math.SQRT2 * c.vc / 1000;
-      enunciado = ['La rapidez circular a cierta separación central es ', cantidad(c.vc / 1000, 'km/s'), '. ¿Cuál es la rapidez mínima de escape desde esa misma separación?'];
+      enunciado = ['La rapidez circular a cierta distancia del centro es ', cantidad(c.vc / 1000, 'km/s'), '. ¿Cuál es la rapidez mínima de escape desde esa misma distancia?'];
       datos.push([vc, ' = ', { raiz: [{ frac: ['GM', r] }] }]);
-      solucion.push({ texto: 'Comparamos las dos expresiones a la misma separación; solo cambia el factor dos.', ecuacion: [ve, ' = ', { raiz: [2] }, ' · ', vc] });
+      solucion.push({ texto: 'A la misma distancia, las dos fórmulas solo se diferencian en el factor dos dentro de la raíz.', ecuacion: [ve, ' = ', { raiz: [2] }, ' · ', vc] });
       solucion.push({ texto: 'Multiplicamos la rapidez circular por la raíz de dos.', ecuacion: eq(ve, resultado) });
-      error('igual-circular', c.vc / 1000, 'Bien mantener la separación; confundiste circular con escape.');
-      error('doble-circular', 2 * c.vc / 1000, 'Bien buscar un valor mayor; duplicaste fuera de la raíz.');
-      error('divide-raiz', c.vc / Math.SQRT2 / 1000, 'Bien usar la raíz de dos; dividiste en vez de multiplicar.');
-      error('cero', 0, 'Bien distinguir el lanzamiento; supusiste que la gravedad desaparece.');
+      error('igual-circular', c.vc / 1000, 'Bien mantenida la misma distancia, pero diste la rapidez circular, y la de escape es mayor.');
+      error('doble-circular', 2 * c.vc / 1000, 'Bien buscado un valor mayor, pero multiplicaste por dos fuera de la raíz.');
+      error('divide-raiz', c.vc / Math.SQRT2 / 1000, 'Bien usada la raíz de dos, pero dividiste en vez de multiplicar.');
+      error('cero', 0, 'Bien distinguido el lanzamiento, pero la gravedad sigue actuando, así que hace falta rapidez para escapar.');
     } else if (['razon', 'otra-masa', 'dos-planetas'].includes(c.tipo)) {
       if (c.tipo === 'razon') {
         resultado = c.vRef * Math.sqrt(c.kM / c.kr) / 1000;
-        enunciado = ['La rapidez de escape inicial es ', cantidad(c.vRef / 1000, 'km/s'), '. La masa fuente cambia por ', numero(c.kM), ' y la separación de salida por ', numero(c.kr), '. ¿Cuál es la nueva rapidez de escape?'];
+        enunciado = ['La rapidez de escape inicial es ', cantidad(c.vRef / 1000, 'km/s'), '. La masa del planeta se multiplica por ', numero(c.kM), ' y la distancia de salida al centro, por ', numero(c.kr), '. ¿Cuál es la nueva rapidez de escape?'];
         datos.push('Cada factor multiplica la magnitud inicial correspondiente; ambas salidas cumplen las mismas condiciones.');
-        solucion.push({ texto: 'Comparamos las masas fuente y las separaciones dentro de la misma raíz.', ecuacion: [sub(v, 'esc,nueva'), ' = ', sub(v, 'esc,ref'), ' · ', { raiz: [{ frac: [numero(c.kM), numero(c.kr)] }] }] });
-        error('lineal', c.vRef * c.kM / c.kr / 1000, 'Bien formar el cociente; omitiste la raíz.');
-        error('directa-radio', c.vRef * Math.sqrt(c.kM * c.kr) / 1000, 'Bien considerar la masa; multiplicaste por la raíz del factor de separación.');
-        error('sin-radio', c.vRef * Math.sqrt(c.kM) / 1000, 'Bien considerar la masa fuente; omitiste el factor de separación.');
-        error('sin-masa', c.vRef / Math.sqrt(c.kr) / 1000, 'Bien incluir la separación; omitiste la masa fuente.');
-        error('sin-cambios', c.vRef / 1000, 'Bien leer la referencia; no aplicaste los cambios.');
-        error('signo', -resultado, 'Bien hallar el tamaño; una rapidez no es negativa.');
+        solucion.push({ texto: 'Los factores de masa y de distancia quedan dentro de la misma raíz: la masa multiplica y la distancia divide.', ecuacion: [sub(v, 'esc,nueva'), ' = ', sub(v, 'esc,ref'), ' · ', { raiz: [{ frac: [numero(c.kM), numero(c.kr)] }] }] });
+        error('lineal', c.vRef * c.kM / c.kr / 1000, 'Bien formado el cociente, pero faltó sacar la raíz.');
+        error('directa-radio', c.vRef * Math.sqrt(c.kM * c.kr) / 1000, 'Bien considerada la masa, pero multiplicaste por la raíz del factor de distancia en vez de dividir.');
+        error('sin-radio', c.vRef * Math.sqrt(c.kM) / 1000, 'Bien considerada la masa del planeta, pero olvidaste el cambio de distancia.');
+        error('sin-masa', c.vRef / Math.sqrt(c.kr) / 1000, 'Bien incluida la distancia, pero olvidaste el cambio de masa del planeta.');
+        error('sin-cambios', c.vRef / 1000, 'Bien leída la referencia, pero no aplicaste los cambios.');
+        error('signo', -resultado, 'Bien hallado el tamaño, pero una rapidez nunca es negativa.');
       } else if (c.tipo === 'otra-masa') {
         resultado = c.vRef / 1000;
         enunciado = ['Una sonda necesita ', cantidad(c.vRef / 1000, 'km/s'), ' para escapar desde cierta posición. Otra sonda tiene ', numero(c.km), ' veces su masa. ¿Qué rapidez mínima necesita desde el mismo lugar?'];
         datos.push([EC, ' = ', { frac: [[m, ' · ', { sup: [v, 2] }], 2] }, '; ', EP, ' = −GM · ', m, ' / ', r]);
-        solucion.push({ texto: 'La masa de la sonda aparece en ambas energías y se cancela al imponer energía total cero.', ecuacion: eq(ve, resultado) });
-        error('masa-lineal', resultado * c.km, 'Bien distinguir las sondas; multiplicaste por su cambio de masa.');
-        error('masa-raiz', resultado * Math.sqrt(c.km), 'Bien usar una raíz; incluiste la masa de la sonda.');
-        error('masa-inversa', resultado / c.km, 'Bien comparar masas; dividiste la rapidez por ese factor.');
-        error('cero', 0, 'Bien distinguir ambas sondas; supusiste que la segunda no siente gravedad.');
+        solucion.push({ texto: 'La masa de la sonda está en las dos energías y se cancela al pedir que la energía total sea cero.', ecuacion: eq(ve, resultado) });
+        error('masa-lineal', resultado * c.km, 'Bien distinguidas las sondas, pero multiplicaste por su cambio de masa, y la masa de la sonda se cancela.');
+        error('masa-raiz', resultado * Math.sqrt(c.km), 'Bien usada una raíz, pero metiste en ella la masa de la sonda, que se cancela.');
+        error('masa-inversa', resultado / c.km, 'Bien comparadas las masas, pero dividiste la rapidez entre ese factor, que no interviene.');
+        error('cero', 0, 'Bien distinguidas las sondas, pero la segunda también siente la gravedad del planeta.');
       } else {
         resultado = c.vRef * Math.sqrt(c.kg * c.kR) / 1000;
-        enunciado = ['Un planeta tiene escape superficial ', cantidad(c.vRef / 1000, 'km/s'), '. Otro tiene ', numero(c.kg), ' veces su campo superficial y ', numero(c.kR), ' veces su radio. ¿Cuál es su escape superficial?'];
+        enunciado = ['Desde la superficie de un planeta, la rapidez de escape es ', cantidad(c.vRef / 1000, 'km/s'), '. Otro planeta tiene ', numero(c.kg), ' veces su campo superficial y ', numero(c.kR), ' veces su radio. ¿Cuál es la rapidez de escape desde su superficie?'];
         datos.push([sub('g', '0'), ' = GM / ', { sup: [R, 2] }, '; la salida desde la superficie tiene ', r, ' = ', R]);
-        solucion.push({ texto: 'Despejamos GM con el campo superficial y lo sustituimos en la condición de escape.', ecuacion: [ve, ' = ', { raiz: [['2 · ', sub('g', '0'), ' · ', R]] }] });
-        solucion.push({ texto: 'Los factores de campo y radio quedan multiplicándose dentro de la raíz.', ecuacion: [sub(v, 'esc,nueva'), ' = ', sub(v, 'esc,ref'), ' · ', { raiz: [`${numero(c.kg)} · ${numero(c.kR)}`] }] });
-        error('radio-inverso', c.vRef * Math.sqrt(c.kg / c.kR) / 1000, 'Bien incluir el campo; dividiste por el radio.');
-        error('lineal', c.vRef * c.kg * c.kR / 1000, 'Bien combinar ambos factores; omitiste la raíz.');
-        error('solo-campo', c.vRef * Math.sqrt(c.kg) / 1000, 'Bien incluir el campo; omitiste el radio.');
-        error('solo-radio', c.vRef * Math.sqrt(c.kR) / 1000, 'Bien incluir el radio; omitiste el campo.');
+        solucion.push({ texto: 'Con el campo de la superficie, GM es ese campo por el radio al cuadrado; lo reemplazamos en la rapidez de escape.', ecuacion: [ve, ' = ', { raiz: [['2 · ', sub('g', '0'), ' · ', R]] }] });
+        solucion.push({ texto: 'Los factores de campo y de radio quedan multiplicándose dentro de la raíz.', ecuacion: [sub(v, 'esc,nueva'), ' = ', sub(v, 'esc,ref'), ' · ', { raiz: [`${numero(c.kg)} · ${numero(c.kR)}`] }] });
+        error('radio-inverso', c.vRef * Math.sqrt(c.kg / c.kR) / 1000, 'Bien incluido el campo, pero dividiste entre el factor de radio en vez de multiplicar.');
+        error('lineal', c.vRef * c.kg * c.kR / 1000, 'Bien combinados los dos factores, pero faltó sacar la raíz.');
+        error('solo-campo', c.vRef * Math.sqrt(c.kg) / 1000, 'Bien incluido el campo, pero olvidaste el cambio de radio.');
+        error('solo-radio', c.vRef * Math.sqrt(c.kR) / 1000, 'Bien incluido el radio, pero olvidaste el cambio de campo.');
       }
-      if (c.tipo !== 'otra-masa') solucion.push({ texto: 'Evaluamos el factor sin redondear los pasos intermedios.', ecuacion: eq(ve, resultado) });
+      if (c.tipo !== 'otra-masa') solucion.push({ texto: 'Calculamos la nueva rapidez sin redondear los pasos intermedios.', ecuacion: eq(ve, resultado) });
     } else if (['residual', 'residual-altura', 'rapidez-finita'].includes(c.tipo)) {
       const limite2 = c.v0 ** 2 - 2 * c.GM / rr;
       if (limite2 <= 0) throw new Error('La rapidez residual de este caso debe ser positiva.');
@@ -1856,21 +1864,21 @@ function construirGr6(Kit) {
       resultado = Math.sqrt(final2) / 1000; simbolo = c.tipo === 'rapidez-finita' ? sub(v, 'final') : vi; simboloTexto = c.tipo === 'rapidez-finita' ? 'v_{final}' : 'v_{inf}';
       if (c.tipo === 'residual-altura') enunciado = ['Una sonda parte con ', cantidad(c.v0 / 1000, 'km/s'), ' desde ', cantidad(c.h / 1000, 'km', 'i'), ' de altura. El radio planetario es ', cantidad(c.R / 1000, 'km', 'i'), '. ¿A qué rapidez tiende muy lejos?'];
       else if (c.tipo === 'rapidez-finita') enunciado = ['Una sonda sale con ', cantidad(c.v0 / 1000, 'km/s'), ' desde ', cantidad(rr / 1000, 'km', 'i'), ' del centro. ¿Qué rapidez tiene al alcanzar ', cantidad(c.rFinal / 1000, 'km', 'i'), ' del centro?'];
-      else enunciado = ['Una sonda parte a ', cantidad(rr / 1000, 'km', 'i'), ' del centro con ', cantidad(c.v0 / 1000, 'km/s'), '. ¿A qué rapidez tiende cuando la separación crece sin límite?'];
+      else enunciado = ['Una sonda parte a ', cantidad(rr / 1000, 'km', 'i'), ' del centro con ', cantidad(c.v0 / 1000, 'km/s'), '. ¿A qué rapidez tiende cuando se aleja sin límite?'];
       datos.pop(); datos.push(leyEP, [leyEC, '; ', leyEnergia]);
       if (c.tipo === 'residual-altura') datos.push([r, ' = ', R, ' + ', h]);
       else datos.push('Cuando la separación crece sin límite, la energía potencial tiende a cero.');
-      if (c.tipo === 'residual-altura') solucion.push({ texto: 'Sumamos radio y altura para ubicar el punto de salida.', ecuacion: [sub(r, '0'), ` = ${numero(c.R / 1000)} + ${numero(c.h / 1000)} = `, cantidad(rr / 1000, 'km', 'i')] });
-      solucion.push({ texto: c.tipo === 'rapidez-finita' ? 'Conservamos la energía entre dos separaciones finitas.' : 'Conservamos la energía; el potencial tiende a cero al alejarnos sin límite.', ecuacion: [sub('E', 'M,inicial'), ' = ', sub('E', 'M,final')] });
-      solucion.push({ texto: 'La masa de la sonda se cancela. Despejamos la raíz positiva de la rapidez.', ecuacion: eq(simbolo, resultado) });
-      error('resta-rapideces', c.v0 / 1000 - escape(c.GM, rr) / 1000, 'Bien comparar con escape; restaste rapideces en vez de energías.');
-      error('sin-frenado', c.v0 / 1000, 'Bien usar el inicio; omitiste la disminución de energía cinética.');
-      error('solo-escape', escape(c.GM, rr) / 1000, 'Bien hallar el umbral; lo confundiste con la rapidez pedida.');
-      error('signo', -resultado, 'Bien hallar la raíz; una rapidez no es negativa.');
-      if (c.tipo === 'rapidez-finita') error('infinito-antes', Math.sqrt(limite2) / 1000, 'Bien usar energía; trataste la posición final como infinitamente lejana.');
+      if (c.tipo === 'residual-altura') solucion.push({ texto: 'Sumamos el radio y la altura para tener la distancia de salida al centro.', ecuacion: [sub(r, '0'), ` = ${numero(c.R / 1000)} + ${numero(c.h / 1000)} = `, cantidad(rr / 1000, 'km', 'i')] });
+      solucion.push({ texto: c.tipo === 'rapidez-finita' ? 'Sin otras fuerzas, la energía mecánica al salir es igual a la de la posición final.' : 'La energía mecánica se conserva, y muy lejos la energía potencial es casi cero: solo queda la cinética.', ecuacion: [sub('E', 'M,inicial'), ' = ', sub('E', 'M,final')] });
+      solucion.push({ texto: 'La masa de la sonda se cancela; despejamos la rapidez y tomamos la raíz positiva.', ecuacion: eq(simbolo, resultado) });
+      error('resta-rapideces', c.v0 / 1000 - escape(c.GM, rr) / 1000, 'Bien comparada con el escape, pero restaste rapideces, y lo que se resta son energías.');
+      error('sin-frenado', c.v0 / 1000, 'Bien usada la rapidez inicial, pero olvidaste que la sonda pierde energía cinética al alejarse.');
+      error('solo-escape', escape(c.GM, rr) / 1000, 'Bien hallada la rapidez de escape, pero esa no es la rapidez que se pide.');
+      error('signo', -resultado, 'Bien sacada la raíz, pero una rapidez nunca es negativa.');
+      if (c.tipo === 'rapidez-finita') error('infinito-antes', Math.sqrt(limite2) / 1000, 'Bien usada la energía, pero trataste la posición final como si estuviera infinitamente lejos.');
       if (c.tipo === 'residual-altura') {
         const mal = c.v0 ** 2 - 2 * c.GM / c.h;
-        if (mal >= 0) error('solo-altura', Math.sqrt(mal) / 1000, 'Bien incluir la altura; la usaste como separación central.');
+        if (mal >= 0) error('solo-altura', Math.sqrt(mal) / 1000, 'Bien incluida la altura, pero la usaste como distancia al centro, y falta sumarle el radio.');
       }
     } else if (['retorno', 'altura-retorno'].includes(c.tipo)) {
       const EporMasa = c.v0 ** 2 / 2 - c.GM / rr;
@@ -1879,34 +1887,34 @@ function construirGr6(Kit) {
       resultado = (maximo - (c.tipo === 'altura-retorno' ? c.R : 0)) / 1000; unidad = 'km'; color = 'i'; simbolo = c.tipo === 'altura-retorno' ? sub(h, 'max') : sub(r, 'max'); simboloTexto = c.tipo === 'altura-retorno' ? 'h_{max}' : 'r_{max}';
       enunciado = c.tipo === 'altura-retorno'
         ? ['Una sonda sale a ', cantidad(c.v0 / 1000, 'km/s'), ' desde altura ', cantidad(c.h / 1000, 'km', 'i'), ' sobre un planeta de radio ', cantidad(c.R / 1000, 'km', 'i'), '. ¿Cuál es su altura máxima?']
-        : ['Una sonda sale a ', cantidad(c.v0 / 1000, 'km/s'), ' desde ', cantidad(rr / 1000, 'km', 'i'), ' del centro. ¿A qué separación central se detiene antes de regresar?'];
+        : ['Una sonda sale a ', cantidad(c.v0 / 1000, 'km/s'), ' desde ', cantidad(rr / 1000, 'km', 'i'), ' del centro. ¿A qué distancia del centro se detiene antes de regresar?'];
       datos.pop(); datos.push(leyEP, [leyEC, '; ', leyEnergia], c.tipo === 'altura-retorno' ? ['En el retorno, ', v, ' = 0; ', sub(r, '0'), ' = ', R, ' + ', h, ' y ', sub(h, 'max'), ' = ', sub(r, 'max'), ' − ', R, '.'] : 'En el punto de retorno, la rapidez es cero.');
-      solucion.push({ texto: 'La energía inicial es negativa y se conserva hasta detenerse.', ecuacion: [sub('E', 'C,inicial'), ' + ', sub('E', 'PG,inicial'), ' = ', sub('E', 'PG,retorno')] });
-      solucion.push({ texto: 'La energía cinética final es cero; despejamos la separación máxima desde el centro.', ecuacion: [sub(r, 'max'), ' = ', { frac: ['GM', ['GM/', sub(r, '0'), ' − ', { sup: [v0, 2] }, '/2']] }] });
-      solucion.push({ texto: c.tipo === 'altura-retorno' ? 'Restamos el radio planetario para expresar la altura sobre la superficie.' : 'Expresamos la separación central en kilómetros.', ecuacion: eq(simbolo, resultado) });
-      if (c.tipo === 'altura-retorno') error('radio-como-altura', maximo / 1000, 'Bien hallar la separación máxima; la presentaste como altura.');
-      error('desde-salida', (maximo - rr) / 1000, 'Bien hallar el máximo; mediste desde la salida, no desde la referencia pedida.');
-      error('sin-movimiento', (rr - (c.tipo === 'altura-retorno' ? c.R : 0)) / 1000, 'Bien ubicar el inicio; omitiste la subida posterior.');
-      error('signo', -resultado, 'Bien despejar el máximo; cambiaste el signo de la distancia.');
-      error('sin-km', resultado * 1000, 'Bien hallar metros; los presentaste como kilómetros.');
+      solucion.push({ texto: 'La energía mecánica inicial es negativa y se conserva hasta que la sonda se detiene.', ecuacion: [sub('E', 'C,inicial'), ' + ', sub('E', 'PG,inicial'), ' = ', sub('E', 'PG,retorno')] });
+      solucion.push({ texto: 'Al detenerse, la energía cinética es cero; despejamos la distancia máxima al centro.', ecuacion: [sub(r, 'max'), ' = ', { frac: ['GM', ['GM/', sub(r, '0'), ' − ', { sup: [v0, 2] }, '/2']] }] });
+      solucion.push({ texto: c.tipo === 'altura-retorno' ? 'Restamos el radio del planeta para obtener la altura sobre la superficie.' : 'Pasamos la distancia al centro a kilómetros.', ecuacion: eq(simbolo, resultado) });
+      if (c.tipo === 'altura-retorno') error('radio-como-altura', maximo / 1000, 'Bien hallada la distancia máxima al centro, pero la diste como altura; falta restarle el radio.');
+      error('desde-salida', (maximo - rr) / 1000, 'Bien hallado el punto más alto, pero mediste desde el punto de salida y no desde donde se pide.');
+      error('sin-movimiento', (rr - (c.tipo === 'altura-retorno' ? c.R : 0)) / 1000, 'Bien ubicado el punto de salida, pero olvidaste que la sonda sigue subiendo después.');
+      error('signo', -resultado, 'Bien despejado el máximo, pero le cambiaste el signo a la distancia.');
+      error('sin-km', resultado * 1000, 'Bien hallada la distancia en metros, pero la diste como si fueran kilómetros.');
     } else if (['radio', 'radio-altura'].includes(c.tipo)) {
       const distancia = 2 * c.GM / c.vesc ** 2;
       resultado = (distancia - (c.tipo === 'radio-altura' ? c.R : 0)) / 1000; unidad = 'km'; color = 'i'; simbolo = c.tipo === 'radio-altura' ? h : r; simboloTexto = c.tipo === 'radio-altura' ? 'h' : 'r';
       enunciado = c.tipo === 'radio-altura'
         ? ['Un planeta tiene radio ', cantidad(c.R / 1000, 'km', 'i'), '. ¿A qué altura la rapidez de escape vale ', cantidad(c.vesc / 1000, 'km/s'), '?']
-        : ['¿A qué separación del centro de este planeta la rapidez de escape es ', cantidad(c.vesc / 1000, 'km/s'), '?'];
+        : ['¿A qué distancia del centro de este planeta la rapidez de escape es ', cantidad(c.vesc / 1000, 'km/s'), '?'];
       if (c.tipo === 'radio-altura') datos.push([r, ' = ', R, ' + ', h]);
-      solucion.push({ texto: 'Elevamos al cuadrado y despejamos la separación central.', ecuacion: [r, ' = ', { frac: ['2 · GM', { sup: [ve, 2] }] }] });
-      solucion.push({ texto: c.tipo === 'radio-altura' ? 'Restamos el radio planetario y convertimos la altura a kilómetros.' : 'Convertimos la distancia del centro a kilómetros.', ecuacion: eq(simbolo, resultado) });
-      error('sin-dos', (distancia / 2 - (c.tipo === 'radio-altura' ? c.R : 0)) / 1000, 'Bien despejar la separación; omitiste el factor dos.');
-      error('sin-cuadrado', (2 * c.GM / c.vesc - (c.tipo === 'radio-altura' ? c.R : 0)) / 1000, 'Bien reunir los datos; no elevaste la rapidez al cuadrado.');
-      error('sin-km', resultado * 1000, 'Bien hallar metros; los presentaste como kilómetros.');
-      error('signo', -resultado, 'Bien hallar el tamaño; diste una distancia negativa.');
-      if (c.tipo === 'radio-altura') error('radio-como-altura', distancia / 1000, 'Bien hallar la separación; omitiste restar el radio planetario.');
+      solucion.push({ texto: 'Elevamos al cuadrado la fórmula de escape y despejamos la distancia al centro.', ecuacion: [r, ' = ', { frac: ['2 · GM', { sup: [ve, 2] }] }] });
+      solucion.push({ texto: c.tipo === 'radio-altura' ? 'Restamos el radio del planeta y pasamos la altura a kilómetros.' : 'Pasamos la distancia al centro a kilómetros.', ecuacion: eq(simbolo, resultado) });
+      error('sin-dos', (distancia / 2 - (c.tipo === 'radio-altura' ? c.R : 0)) / 1000, 'Bien despejada la distancia, pero olvidaste el factor dos.');
+      error('sin-cuadrado', (2 * c.GM / c.vesc - (c.tipo === 'radio-altura' ? c.R : 0)) / 1000, 'Bien reunidos los datos, pero no elevaste la rapidez al cuadrado.');
+      error('sin-km', resultado * 1000, 'Bien hallada la distancia en metros, pero la diste como si fueran kilómetros.');
+      error('signo', -resultado, 'Bien hallado el tamaño, pero una distancia nunca es negativa.');
+      if (c.tipo === 'radio-altura') error('radio-como-altura', distancia / 1000, 'Bien hallada la distancia al centro, pero faltó restarle el radio del planeta.');
     } else throw new Error(`Tipo de escape desconocido: ${c.tipo}`);
     const vistos = new Set([opcion(resultado, unidad)]);
     const err = errores.filter(e => { const t = opcion(e.valor, unidad); if (!Number.isFinite(e.valor) || vistos.has(t)) return false; vistos.add(t); return true; })
-      .map(e => ({ ...e, texto: opcion(e.valor, unidad), error: `GR6-${e.id.toUpperCase()}`, siFuera: `${e.causa} Sale ${opcion(e.valor, unidad)}.` }));
+      .map(e => ({ ...e, texto: opcion(e.valor, unidad), error: `GR6-${e.id.toUpperCase()}`, siFuera: `${e.causa} Así sale ${opcion(e.valor, unidad)}.` }));
     return { enunciado, datos, solucion, respuesta: eq(simbolo, resultado), resultado, unidad, color, simboloTexto, errores: err,
       dibujo: figura({ ...c, resultado, unidad, color, simboloTexto }),
       verificacion: { ...c, respuesta: { valor: resultado, unidad, aproximado: !exacto(resultado) }, errores: err.map(e => ({ id: e.id, valor: e.valor })) } };
@@ -1929,15 +1937,16 @@ function construirGr6(Kit) {
     { tipo: 'radio-altura', nivel: 3, titulo: 'Ubicar una salida posible', GM: 9.6e14, R: 6e6, vesc: 8000 },
   ];
   let letra = 0;
-  const causasCortas = { 'desde-salida': 'mide desde la salida', 'sin-movimiento': 'omite la subida', signo: 'invierte el signo', 'sin-km': 'omite convertir metros',
-    'radio-como-altura': 'confunde separación con altura', 'resta-rapideces': 'resta rapideces', 'sin-frenado': 'mantiene la rapidez inicial', 'solo-escape': 'da el umbral',
-    'radio-inverso': 'divide por el radio', lineal: 'omite la raíz', 'solo-campo': 'omite el radio', 'solo-radio': 'omite el campo', 'sin-dos': 'omite el dos', 'sin-cuadrado': 'omite cuadrar la rapidez' };
+  const causasCortas = { 'desde-salida': 'mides desde el punto de salida', 'sin-movimiento': 'olvidas la subida', signo: 'cambias el signo', 'sin-km': 'no pasas los metros a kilómetros',
+    'radio-como-altura': 'confundes la distancia al centro con la altura', 'resta-rapideces': 'restas rapideces', 'sin-frenado': 'mantienes la rapidez inicial', 'solo-escape': 'das la rapidez de escape',
+    'radio-inverso': 'divides entre el radio', lineal: 'no sacas la raíz', 'solo-campo': 'olvidas el radio', 'solo-radio': 'olvidas el campo', 'sin-dos': 'olvidas el dos', 'sin-cuadrado': 'no elevas la rapidez al cuadrado',
+    'solo-altura': 'tomas la altura como distancia al centro' };
   const ejemplos = fijos.map(c => {
     const b = caso(c), e = { nivel: c.nivel, titulo: c.titulo, enunciado: b.enunciado, datos: b.datos, figura: b.dibujo, solucion: b.solucion.slice(), respuesta: b.respuesta, verificacion: b.verificacion };
     if (c.nivel === 3) {
       const err = b.errores.slice(0, 4); if (err.length < 4) throw new Error('Faltan errores de examen: ' + c.tipo);
       e.alternativas = err.map(x => x.texto); e.alternativas.splice(letra++, 0, opcion(b.resultado, b.unidad));
-      e.solucion.push({ texto: err.map(x => `${numero(x.valor)}: ${causasCortas[x.id]}.`).join(' ') });
+      e.solucion.push({ texto: err.map(x => `${numero(x.valor)} sale si ${causasCortas[x.id]}.`).join(' ') });
     }
     return e;
   });
@@ -1967,12 +1976,12 @@ function construirGr6(Kit) {
   function generar(s, resuelto) {
     const b = caso(entrada(s, resuelto)); if (b.errores.length < 3) throw new Error('Faltan opciones de escape: ' + s);
     if (resuelto) return { enunciado: b.enunciado, datos: b.datos, dibujo: b.dibujo, respuesta: b.respuesta, verificacion: b.verificacion,
-      pasos: [{ tipo: 'pide', texto: 'Identificamos si se pide un umbral, una rapidez o la posición de retorno.' },
-        { tipo: 'regla', texto: 'Conservamos la energía y distinguimos altura de separación desde el centro.' }, ...b.solucion.map(x => ({ tipo: 'cuentas', ...x })),
-        { tipo: 'sentido', texto: 'Las rapideces son no negativas. El retorno solo ocurre con energía inicial negativa en esta salida radial.' }] };
+      pasos: [{ tipo: 'pide', texto: 'Identificamos qué se pide: la rapidez mínima de escape, otra rapidez o el punto donde la sonda regresa.' },
+        { tipo: 'regla', texto: 'Trabajamos con la energía mecánica, cinética más potencial, y distinguimos la altura de la distancia al centro.' }, ...b.solucion.map(x => ({ tipo: 'cuentas', ...x })),
+        { tipo: 'sentido', texto: 'Una rapidez nunca es negativa, y la sonda solo regresa si su energía mecánica inicial es negativa.' }] };
     return { pregunta: b.enunciado, datos: b.datos, dibujo: b.dibujo, verificacion: b.verificacion,
       opciones: [{ id: 'c', texto: opcion(b.resultado, b.unidad), correcta: true }, ...b.errores.slice(0, 3).map(x => ({ id: x.id, texto: x.texto, error: x.error, siFuera: x.siFuera }))],
-      solucion: { texto: 'Aplicamos la condición energética a la separación central, manteniendo las unidades y la referencia.', ecuacion: b.solucion.at(-1).ecuacion } };
+      solucion: { texto: 'Usamos la conservación de la energía con la distancia al centro, el cero en el infinito y las unidades del SI.', ecuacion: b.solucion.at(-1).ecuacion } };
   }
   const p = { tipo: 'razon', vRef: 10000, kM: 1, kr: 4 }, pc = caso(p);
   const erroresPred = ['sin-radio', 'lineal', 'directa-radio'].map(id => pc.errores.find(e => e.id === id));
@@ -1981,35 +1990,35 @@ function construirGr6(Kit) {
     aprendizaje: 'Hallas el umbral energético de una salida radial hacia afuera, sin aire ni propulsión posterior.',
     actividad: 'Comparar lanzamientos radiales desde la misma posición con distintas rapideces iniciales.', temas: ['Rapidez de escape'], pieza: 'fis-gravitacion',
     lee: { tarjetas: [
-      { titulo: 'Una salida hacia afuera', texto: 'La sonda parte de un punto exterior y se aleja siguiendo una recta que pasa por el centro. Después del impulso inicial solo actúa la gravedad. El modelo no incluye aire ni motores encendidos durante el recorrido.', dibujo: juegoFigura(8, false) },
-      { titulo: 'Dos resultados posibles', texto: 'La rapidez de escape es el umbral inicial para alejarse sin regresar. Si la sonda se detiene y vuelve, alcanza un punto de retorno. Compararemos los lanzamientos desde el mismo lugar.' },
-      { titulo: 'Lo que significa muy lejos', texto: ['La rapidez residual límite, ', vi, ', es el valor al que tiende la rapidez cuando la separación crece sin límite. No describe llegar al infinito en un tiempo finito. La energía mecánica se escribe ', EM, '.'] },
+      { titulo: 'Una salida hacia afuera', texto: 'La sonda parte desde fuera del planeta y se aleja por una recta que pasa por su centro. Después del impulso inicial solo actúa la gravedad: no hay aire ni motores encendidos en el camino.', dibujo: juegoFigura(8, false) },
+      { titulo: 'Dos resultados posibles', texto: 'La rapidez de escape es la rapidez inicial mínima para alejarse sin regresar. Con menos rapidez, la sonda se detiene en un punto de retorno y vuelve. Compararemos lanzamientos desde el mismo lugar.' },
+      { titulo: 'Lo que significa muy lejos', texto: ['Si la sonda escapa, su rapidez se acerca a un valor fijo mientras se aleja: es la rapidez residual límite, ', vi, '. No significa que llegue al infinito en algún momento. La energía mecánica, cinética más potencial, se escribe ', EM, '.'] },
     ] },
     juega: {
-      consigna: 'Lanza la misma sonda radialmente hacia afuera desde un punto exterior. Compara qué ocurre al cambiar su rapidez inicial.', voz: 'La energía inicial permite decidir si habrá retorno, sin seguir toda la trayectoria.',
+      consigna: 'Lanza la sonda hacia afuera, en línea recta desde el centro, y compara qué pasa al cambiar su rapidez inicial.', voz: 'Con la energía inicial ya sabes si regresa, sin seguir todo el viaje.',
       controles: [{ id: 'vKm', etiqueta: 'Rapidez inicial', color: 'c-o', opciones: [6, 8, 9, 10, 11].map(valor => ({ valor, texto: `${fmt(valor)} km/s` })), inicio: 6 }],
       mision: { texto: 'Busca la menor rapidez que permite alejarse sin regresar.', logrado: a => {
         const E = energia(4e14, 100, 8e6, a.vKm * 1000); return E >= 0 && [6, 8, 9, 10, 11].filter(x => x < a.vKm).every(x => energia(4e14, 100, 8e6, x * 1000) < 0);
-      }, testigo: [{ vKm: 10 }], bien: 'Es el menor lanzamiento del control que no presenta retorno.' },
+      }, testigo: [{ vKm: 10 }], bien: 'Coincide: es la menor rapidez del control con la que la sonda no regresa.' },
       dibujo: a => juegoFigura(a.vKm), lectura: a => {
         const E = energia(4e14, 100, 8e6, a.vKm * 1000);
-        return E < 0 ? 'Su energía es negativa: se detiene y regresa.' : E === 0 ? 'Está en el umbral: se aleja sin límite.' : 'Supera el umbral: conserva rapidez residual positiva.';
+        return E < 0 ? 'Su energía es negativa: se detiene y regresa.' : E === 0 ? 'Está en el umbral: se aleja sin límite.' : 'Supera el umbral: le queda una rapidez residual positiva.';
       },
-      leyenda: [{ s: v0, t: 'rapidez inicial, en kilómetros por segundo' }, { s: sub(r, '0'), t: 'separación inicial desde el centro' }, { s: m, t: 'masa de la sonda, en kilogramos' }, { s: EM, t: 'energía mecánica, en gigajoules' }, { s: 'GM', t: 'producto de G por la masa fuente' }], minimo: 2,
+      leyenda: [{ s: v0, t: 'rapidez inicial, en kilómetros por segundo' }, { s: sub(r, '0'), t: 'distancia inicial al centro' }, { s: m, t: 'masa de la sonda, en kilogramos' }, { s: EM, t: 'energía mecánica, en gigajoules' }, { s: 'GM', t: 'G por la masa del planeta' }], minimo: 2,
     },
     predice: {
       pregunta: 'La salida cambia de lugar. ¿Qué rapidez mínima permite escapar desde la nueva posición?',
-      datos: ['Desde la superficie de un planeta de radio R, la rapidez de escape es 10 km/s.', 'La nueva separación central es cuatro veces R, alrededor de la misma fuente.', 'Ambas salidas son radiales hacia afuera, sin aire ni empuje posterior.'], dibujo: figura(p), revelar: figura({ ...p, resultado: pc.resultado, unidad: 'km/s', simboloTexto: 'v_{esc}' }, true),
+      datos: ['Desde la superficie de un planeta de radio R, la rapidez de escape es 10 km/s.', 'La nueva salida está a cuatro veces R del centro del mismo planeta.', 'Ambas salidas son radiales hacia afuera, sin aire ni empuje posterior.'], dibujo: figura(p), revelar: figura({ ...p, resultado: pc.resultado, unidad: 'km/s', simboloTexto: 'v_{esc}' }, true),
       opciones: [{ id: 'c', texto: opcion(pc.resultado, 'km/s'), correcta: true }, ...erroresPred.map(e => ({ id: e.id, texto: e.texto, error: e.error, siFuera: e.siFuera }))],
-      coincide: 'La separación aparece dentro de la raíz; cambiarla no produce una relación inversa lineal.', verificacion: pc.verificacion,
+      coincide: 'La distancia está dentro de la raíz, así que cuadruplicarla no divide la rapidez entre cuatro.', verificacion: pc.verificacion,
     },
     mira: { pieza: 'fis-gravitacion', datos: { ...figura(p).datos, cortes: [figura(p).datos, figura({ ...p, resultado: pc.resultado, unidad: 'km/s', simboloTexto: 'v_{esc}' }, true).datos] },
-      pasos: [{ estado: { corte: 0 }, texto: 'En el umbral, la energía mecánica es cero.', ecuacion: [EC, ' + ', EP, ' = 0'] },
+      pasos: [{ estado: { corte: 0 }, texto: 'En el umbral, la energía mecánica es cero: la cinética compensa justo la potencial.', ecuacion: [EC, ' + ', EP, ' = 0'] },
         { estado: { corte: 0 }, texto: 'Despejamos la rapidez; la masa de la sonda se cancela.', ecuacion: leyEscape },
-        { estado: { corte: 0 }, texto: 'Comparamos dos salidas alrededor de la misma fuente.', ecuacion: [sub(v, 'esc,nueva'), ' = ', sub(v, 'esc,ref'), ' / ', { raiz: [p.kr] }] },
-        { estado: { corte: 1 }, texto: 'Evaluamos la raíz de la razón entre separaciones.', ecuacion: [sub(v, 'esc,nueva'), ` = ${numero(p.vRef / 1000)} / ${numero(Math.sqrt(p.kr))} = `, cantidad(pc.resultado, 'km/s')] }] },
-    regla: { texto: 'En una salida radial, la energía mecánica decide si la sonda regresa. Con energía cero está en el umbral; con más, se aleja y le queda rapidez; con menos, regresa.', ecuacion: leyEscape,
-      condicion: 'Fuente fija, sonda de masa despreciable, salida exterior hacia afuera, sin aire ni empuje posterior; cero potencial en el infinito.',
+        { estado: { corte: 0 }, texto: 'Comparamos dos salidas del mismo planeta; solo cambia la distancia al centro.', ecuacion: [sub(v, 'esc,nueva'), ' = ', sub(v, 'esc,ref'), ' / ', { raiz: [p.kr] }] },
+        { estado: { corte: 1 }, texto: 'La distancia es cuatro veces mayor, así que la rapidez de escape se divide entre la raíz de cuatro.', ecuacion: [sub(v, 'esc,nueva'), ` = ${numero(p.vRef / 1000)} / ${numero(Math.sqrt(p.kr))} = `, cantidad(pc.resultado, 'km/s')] }] },
+    regla: { texto: 'En una salida en línea recta hacia afuera, la energía mecánica decide si la sonda regresa: si es negativa, regresa; si es cero, está en el umbral; si es positiva, se aleja y le queda rapidez.', ecuacion: leyEscape,
+      condicion: 'el planeta está fijo, la sonda tiene masa despreciable, parte desde fuera del planeta y se aleja en línea recta, sin aire ni empuje después; el cero de energía potencial está en el infinito.',
       voz: 'En el umbral, la rapidez tiende a cero al crecer la separación sin límite.', dibujo: figura({ tipo: 'umbral', GM: 3e14, r: 1.2e7 }) },
     ejemplos, resuelve: { pieza: 'fis-gravitacion', generar: s => generar(s, true) }, ahoraTu: { pieza: 'fis-gravitacion', generar: s => generar(s, false) },
   };
