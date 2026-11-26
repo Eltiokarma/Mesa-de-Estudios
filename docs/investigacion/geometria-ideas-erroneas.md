@@ -402,3 +402,21 @@ piloto. Los de la bisectriz van con el prefijo GE-PIE (pie de la bisectriz) porq
 | GE-CEV1, GE-CEV2 | En Menelao reparte CA como si E estuviera adentro; usa −1 con largos sin signo | Idea 6 (Ceva y Menelao) |
 | GE-CEV3 a GE-CEV6 | Escribe una razón al revés; suma tramos en vez de multiplicar razones; supone CE = EA (o da CA); olvida una de las tres razones | Idea 6 |
 | GE-CEV7, GE-CEV8 | Da CE donde se pide EA; con E fuera, suma o resta CA del lado que no es | Idea 6 |
+
+## Puntos notables (26 nov)
+
+Códigos de `contenido/teoria/geometria/puntos-notables.js` y de la práctica `geo-puntos-notables` (etapa 9,
+`docs/etapa9/propuesta-geometria.md`). La investigación de la etapa 9 (`docs/investigacion/etapa9/geometria.puntos-notables.md`,
+§3) documenta dos errores en estudios originales, sin medir en postulantes peruanos: **D-EXT** (cambia una altura exterior
+por una interior; Gutiérrez y Jaime, 1996) y **D-COIN** (cree que los cuatro centros coinciden en todo isósceles; Smith,
+2017). **Todos los demás son hipótesis** sacadas del temario, de las preguntas de San Marcos clasificadas en la unidad y de
+la práctica de academia; se confirman con la medición del piloto.
+
+| Código | Hipótesis (lo que hace el alumno) | Dónde aparece |
+| --- | --- | --- |
+| GE-PN2 a GE-PN8 | Pone G en la mitad de la mediana; invierte el 2 : 1; parte en 3 : 1; da la mediana entera o AG sin GM; reparte las áreas en mitades o cuartos; toma dos tercios de la hipotenusa; da x en vez del tramo | Idea 1 (baricentro); prueba del curso (pn-01) |
+| GE-CC1 a GE-CC10 | Da el diámetro como R; promedia catetos; usa tercios; copia el inscrito como central; usa la relación de otro centro; da OBC por BOC; pone O dentro o en el punto medio del lado mayor sin ángulo recto; cree que O puede estar en un vértice o que no existe | Idea 2 (circuncentro) |
+| GE-IN1 a GE-IN8 | Cree que la inscrita toca en el punto medio; resta un lado vecino; da s entero; usa el perímetro en S = r · s; da el circunradio; olvida el ÷ 2 del área; suma tangentes de otro lado; da la altura o media base | Idea 3 (incentro); prueba del curso (pn-02) |
+| GE-OR1 a GE-OR10 | Copia A como BHC; usa la relación de otro centro; da el complemento o el suplemento equivocado; toma BH por bisectriz; pone H dentro o en el vértice obtuso; suma cuadrados en Pitágoras; pasa mal de BHC a BIC | Idea 4 (ortocentro), con D-EXT en la predicción |
+| GE-EX1 a GE-EX9 | Usa s − a (inscrita) por s; da el perímetro; da BT por AT; usa 90° + A/2 o A/2; resta A entero; no pasa de BIC a BEC; cuenta 2, 6 o infinitas circunferencias | Idea 5 (excentro) |
+| GE-EU1 a GE-EU9 | Pone G en la mitad de OH; invierte el 1 : 2; da OH por un tramo; parte en cuartos; da R como radio de nueve puntos; usa tercios; elige el centro por el nombre; toma la hipotenusa por OH; cambia H u O por I en la recta de Euler | Idea 6 (Euler), con D-COIN en la predicción |

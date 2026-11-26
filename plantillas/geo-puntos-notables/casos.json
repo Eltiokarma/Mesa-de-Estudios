@@ -1,0 +1,272 @@
+{
+  "plantilla": "geo-puntos-notables",
+  "tolerancia": 0.000001,
+  "nota": "enunciado = lo que lee el alumno (enunciado y pregunta, con espacios normales); esperado.valor es el número y esperado.texto, la alternativa correcta que ve el alumno.",
+  "verificacion": "Script aparte (26 nov 2026, python3 -I, en el scratchpad de la sesión, fuera del repo: e9-geometria/verificar_casos.py), que no usa el generador ni el núcleo: resuelve cada problema leyendo solo el enunciado, con coordenadas (baricentro, circuncentro, incentro, ortocentro y excentro como puntos del plano, los pies y las tangentes como proyecciones), midiendo ángulos en un triángulo armado con los ángulos dados o probando valores (el lado desde las tangentes, BIC desde BHC, BEC con su ecuación). Las 24 dieron lo mismo.",
+  "casos": [
+    {
+      "semilla": 100,
+      "opciones": {
+        "tipo": "ag"
+      },
+      "enunciado": "En el triángulo ABC, la mediana AM mide 6 cm y G es el baricentro. ¿Cuánto mide AG?",
+      "esperado": {
+        "valor": 4,
+        "texto": "4 cm"
+      }
+    },
+    {
+      "semilla": 101,
+      "opciones": {
+        "tipo": "am"
+      },
+      "enunciado": "En el triángulo ABC, G es el baricentro y está sobre la mediana AM. GM = 4 cm. ¿Cuánto mide AM?",
+      "esperado": {
+        "valor": 12,
+        "texto": "12 cm"
+      }
+    },
+    {
+      "semilla": 102,
+      "opciones": {
+        "tipo": "area"
+      },
+      "enunciado": "El triángulo ABC tiene 54 cm² de área, G es su baricentro y M es el punto medio de BC. ¿Cuál es el área del triángulo BGM?",
+      "esperado": {
+        "valor": 9,
+        "texto": "9 cm²"
+      }
+    },
+    {
+      "semilla": 103,
+      "opciones": {
+        "tipo": "hip"
+      },
+      "enunciado": "Un triángulo ABC es rectángulo en B, con catetos AB = 27 cm y BC = 36 cm. G es el baricentro. ¿Cuánto mide BG?",
+      "esperado": {
+        "valor": 15,
+        "texto": "15 cm"
+      }
+    },
+    {
+      "semilla": 104,
+      "opciones": {
+        "tipo": "rrect"
+      },
+      "enunciado": "Un triángulo rectángulo tiene catetos de 3 cm y 4 cm. ¿Cuánto mide su circunradio?",
+      "esperado": {
+        "valor": 2.5,
+        "texto": "2,5 cm"
+      }
+    },
+    {
+      "semilla": 105,
+      "opciones": {
+        "tipo": "boc"
+      },
+      "enunciado": "En el triángulo acutángulo ABC, m∠A = 58° y O es el circuncentro. ¿Cuánto mide el ángulo BOC?",
+      "esperado": {
+        "valor": 116,
+        "texto": "116°"
+      }
+    },
+    {
+      "semilla": 106,
+      "opciones": {
+        "tipo": "obc"
+      },
+      "enunciado": "En el triángulo acutángulo ABC, m∠A = 42° y O es el circuncentro. ¿Cuánto mide el ángulo OBC?",
+      "esperado": {
+        "valor": 48,
+        "texto": "48°"
+      }
+    },
+    {
+      "semilla": 107,
+      "opciones": {
+        "tipo": "treinta"
+      },
+      "enunciado": "En el triángulo acutángulo ABC, m∠A = 30° y BC = 26 cm. ¿Cuánto mide su circunradio?",
+      "esperado": {
+        "valor": 26,
+        "texto": "26 cm"
+      }
+    },
+    {
+      "semilla": 108,
+      "opciones": {
+        "tipo": "tan"
+      },
+      "enunciado": "En el triángulo ABC, AB = 13 cm, AC = 9 cm y BC = 10 cm. La inscrita toca AB en F. ¿Cuánto mide AF?",
+      "esperado": {
+        "valor": 6,
+        "texto": "6 cm"
+      }
+    },
+    {
+      "semilla": 109,
+      "opciones": {
+        "tipo": "inradio"
+      },
+      "enunciado": "Un triángulo rectángulo tiene catetos de 14 cm y 48 cm, e hipotenusa de 50 cm. ¿Cuánto mide el radio de su inscrita?",
+      "esperado": {
+        "valor": 6,
+        "texto": "6 cm"
+      }
+    },
+    {
+      "semilla": 110,
+      "opciones": {
+        "tipo": "lado"
+      },
+      "enunciado": "La inscrita del triángulo ABC toca BC en D, AB en F y AC en K. BD = 2 cm, DC = 5 cm y AB = 9 cm. ¿Cuánto mide AC?",
+      "esperado": {
+        "valor": 12,
+        "texto": "12 cm"
+      }
+    },
+    {
+      "semilla": 111,
+      "opciones": {
+        "tipo": "banderin"
+      },
+      "enunciado": "Un banderín isósceles tiene AB = AC = 5 cm y BC = 6 cm. ¿Cuánto mide el radio de su circunferencia inscrita?",
+      "esperado": {
+        "valor": 1.5,
+        "texto": "1,5 cm"
+      }
+    },
+    {
+      "semilla": 112,
+      "opciones": {
+        "tipo": "bhc"
+      },
+      "enunciado": "En el triángulo acutángulo ABC, m∠A = 82° y H es el ortocentro. ¿Cuánto mide el ángulo BHC?",
+      "esperado": {
+        "valor": 98,
+        "texto": "98°"
+      }
+    },
+    {
+      "semilla": 113,
+      "opciones": {
+        "tipo": "hbc"
+      },
+      "enunciado": "En el triángulo acutángulo ABC, m∠C = 58° y H es el ortocentro. ¿Cuánto mide el ángulo HBC?",
+      "esperado": {
+        "valor": 32,
+        "texto": "32°"
+      }
+    },
+    {
+      "semilla": 114,
+      "opciones": {
+        "tipo": "ap"
+      },
+      "enunciado": "En el triángulo ABC, H es el ortocentro y la recta AH corta BC en P. AB = 50 cm, BP = 14 cm y PC = 24 cm. ¿Cuánto mide AP?",
+      "esperado": {
+        "valor": 48,
+        "texto": "48 cm"
+      }
+    },
+    {
+      "semilla": 115,
+      "opciones": {
+        "tipo": "bic"
+      },
+      "enunciado": "En el triángulo acutángulo ABC, H es el ortocentro e I el incentro, y m∠BHC = 106°. ¿Cuánto mide el ángulo BIC?",
+      "esperado": {
+        "valor": 127,
+        "texto": "127°"
+      }
+    },
+    {
+      "semilla": 116,
+      "opciones": {
+        "tipo": "at"
+      },
+      "enunciado": "En el triángulo ABC, AB = 15 cm, AC = 10 cm y BC = 7 cm. La exinscrita relativa a BC toca la prolongación de AB en T. ¿Cuánto mide AT?",
+      "esperado": {
+        "valor": 16,
+        "texto": "16 cm"
+      }
+    },
+    {
+      "semilla": 117,
+      "opciones": {
+        "tipo": "bt"
+      },
+      "enunciado": "En el triángulo ABC, AB = 13 cm, AC = 6 cm y BC = 11 cm. La exinscrita relativa a BC toca la prolongación de AB en T. ¿Cuánto mide BT?",
+      "esperado": {
+        "valor": 2,
+        "texto": "2 cm"
+      }
+    },
+    {
+      "semilla": 118,
+      "opciones": {
+        "tipo": "bec"
+      },
+      "enunciado": "En el triángulo ABC, m∠A = 94° y E es el excentro relativo a BC. ¿Cuánto mide el ángulo BEC?",
+      "esperado": {
+        "valor": 43,
+        "texto": "43°"
+      }
+    },
+    {
+      "semilla": 119,
+      "opciones": {
+        "tipo": "becx"
+      },
+      "enunciado": "En el triángulo ABC, E es el excentro relativo a BC, y el ángulo BEC mide 60° más que el ángulo A. ¿Cuánto mide el ángulo BEC?",
+      "esperado": {
+        "valor": 80,
+        "texto": "80°"
+      }
+    },
+    {
+      "semilla": 120,
+      "opciones": {
+        "tipo": "gh"
+      },
+      "enunciado": "En la recta de Euler de un triángulo, OG = 14 cm. ¿Cuánto mide GH?",
+      "esperado": {
+        "valor": 28,
+        "texto": "28 cm"
+      }
+    },
+    {
+      "semilla": 121,
+      "opciones": {
+        "tipo": "og"
+      },
+      "enunciado": "En la recta de Euler de un triángulo, OH = 27 cm. ¿Cuánto mide OG?",
+      "esperado": {
+        "valor": 9,
+        "texto": "9 cm"
+      }
+    },
+    {
+      "semilla": 122,
+      "opciones": {
+        "tipo": "nueve"
+      },
+      "enunciado": "El circunradio de un triángulo mide 32 cm. ¿Cuánto mide el radio de su circunferencia de nueve puntos?",
+      "esperado": {
+        "valor": 16,
+        "texto": "16 cm"
+      }
+    },
+    {
+      "semilla": 123,
+      "opciones": {
+        "tipo": "rect"
+      },
+      "enunciado": "Un triángulo es rectángulo en B, con catetos de 15 cm y 36 cm. G es el baricentro y H el ortocentro. ¿Cuánto mide GH?",
+      "esperado": {
+        "valor": 13,
+        "texto": "13 cm"
+      }
+    }
+  ]
+}

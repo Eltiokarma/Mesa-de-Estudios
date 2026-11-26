@@ -1,0 +1,87 @@
+{
+  "titulo": "Puntos notables del triángulo: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En el triángulo ABC, la mediana AM mide 42 cm y G es el baricentro. ¿Cuánto mide AG? Datos: El baricentro G parte cada mediana en 2 : 1 desde el vértice: AG = 2 · GM. Alternativas: A) 21 cm   B) 14 cm   C) 31,5 cm   D) 28 cm   E) 42 cm",
+      "respuesta": "D) 28 cm",
+      "pasos": [
+        "AM tiene tres partes iguales de 42 ÷ 3 = 14 cm, y AG toma dos de ellas.",
+        "AG = 28 cm."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un triángulo rectángulo tiene catetos de 21 cm y 72 cm. ¿Cuánto mide su circunradio? Datos: Pitágoras: en un triángulo rectángulo, cateto² + cateto² = hipotenusa². En un triángulo rectángulo, el circuncentro es el punto medio de la hipotenusa. Alternativas: A) 36 cm   B) 37,5 cm   C) 75 cm   D) 46,5 cm   E) 25 cm",
+      "respuesta": "B) 37,5 cm",
+      "pasos": [
+        "Con Pitágoras, la hipotenusa cumple 441 + 5184 = 5625, así que mide 75 cm.",
+        "R = 75 ÷ 2 = 37,5 cm."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "En el triángulo ABC, AB = 11 cm, AC = 10 cm y BC = 13 cm. La inscrita toca AB en F. ¿Cuánto mide AF? Datos: Semiperímetro: s = (a + b + c) ÷ 2, la mitad del perímetro. Desde A, las dos tangentes a la inscrita miden s − a, con a = BC y s el semiperímetro. Alternativas: A) 4 cm   B) 6,5 cm   C) 7 cm   D) 17 cm   E) 5,5 cm",
+      "respuesta": "A) 4 cm",
+      "pasos": [
+        "El semiperímetro es s = 34 ÷ 2 = 17.",
+        "La tangente desde A es s menos BC: AF = 17 − 13 = 4 cm."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En el triángulo acutángulo ABC, m∠C = 53° y H es el ortocentro. ¿Cuánto mide el ángulo HBC? Datos: El ortocentro H es el corte de las alturas: cada altura es perpendicular a la recta del lado opuesto. Los tres ángulos de un triángulo suman 180°. Alternativas: A) 37°   B) 53°   C) 127°   D) 26,5°   E) 143°",
+      "respuesta": "A) 37°",
+      "pasos": [
+        "BH va sobre la altura desde B, perpendicular a AC, así que HBC y C suman 90°.",
+        "m∠HBC = 90° − 53° = 37°."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En el triángulo ABC, AB = 9 cm, AC = 15 cm y BC = 12 cm. La exinscrita relativa a BC toca la prolongación de AB en T. ¿Cuánto mide BT? Datos: Semiperímetro: s = (a + b + c) ÷ 2, la mitad del perímetro. La exinscrita relativa a BC toca la prolongación de AB en T, y AT = s, el semiperímetro. Alternativas: A) 3 cm   B) 9 cm   C) 12 cm   D) 6 cm   E) 18 cm",
+      "respuesta": "B) 9 cm",
+      "pasos": [
+        "AT = s = 18, y como B está entre A y T, BT = AT − AB.",
+        "BT = 18 − 9 = 9 cm."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En la recta de Euler de un triángulo, OH = 15 cm. ¿Cuánto mide OG? Datos: Recta de Euler: O, G y H están en una recta, con G entre O y H y GH = 2 · OG. Alternativas: A) 3,75 cm   B) 7,5 cm   C) 5 cm   D) 15 cm   E) 10 cm",
+      "respuesta": "C) 5 cm",
+      "pasos": [
+        "OH tiene tres partes iguales: una es OG.",
+        "OG = 15 ÷ 3 = 5 cm."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En el triángulo acutángulo ABC, m∠A = 30° y BC = 16 cm. ¿Cuánto mide su circunradio? Datos: Un ángulo central mide el doble del inscrito que abarca el mismo arco. El circuncentro O es el corte de las mediatrices: OA = OB = OC = R, el circunradio. En un triángulo isósceles, los dos ángulos de la base miden igual. Los tres ángulos de un triángulo suman 180°. Alternativas: A) 32 cm   B) 16 cm   C) 24 cm   D) 10,67 cm   E) 8 cm",
+      "respuesta": "B) 16 cm",
+      "pasos": [
+        "m∠BOC = 2 · 30° = 60° y OB = OC, así que el triángulo BOC es equilátero.",
+        "R mide lo mismo que BC: R = 16 cm."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En el triángulo ABC, E es el excentro relativo a BC, y el ángulo BEC mide 12° más que el ángulo A. ¿Cuánto mide el ángulo BEC? Datos: Las bisectrices exteriores de B y C se cortan en E con m∠BEC = 90° − m∠A ÷ 2. Alternativas: A) 52°   B) 64°   C) 78°   D) 116°   E) 26°",
+      "respuesta": "B) 64°",
+      "pasos": [
+        "Si m∠A = x, entonces 90° − x ÷ 2 = x + 12°, así que x = 52°.",
+        "m∠BEC = 52° + 12° = 64°."
+      ]
+    }
+  ]
+}

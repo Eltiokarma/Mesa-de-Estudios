@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["geometria.relaciones-metricas"],
       "nivel": "básico",
       "enunciado": "Dos lados de un triángulo miden 5 cm y 9 cm. Si el tercer lado mide un número entero de centímetros, ¿cuántos valores puede tener?",
       "respuesta": "9 valores (de 5 cm a 13 cm).",
@@ -16,6 +17,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["geometria.puntos-notables"],
       "nivel": "básico",
       "enunciado": "En un triángulo ABC el ángulo A mide 70°. ¿Cuánto mide el ángulo que forman las bisectrices interiores de B y C? ¿Y el que forman las bisectrices exteriores de B y C?",
       "respuesta": "125° y 55°.",
@@ -28,6 +30,7 @@
     },
     {
       "id": "p3",
+      "unidades": ["geometria.relaciones-metricas"],
       "nivel": "intermedio",
       "enunciado": "Un triángulo tiene dos lados de 8 m y 15 m, y el ángulo que forman es obtuso. Si el tercer lado es entero, ¿qué valores puede tener?",
       "respuesta": "18, 19, 20, 21 y 22 m (5 valores).",
@@ -41,6 +44,7 @@
     },
     {
       "id": "p4",
+      "unidades": ["geometria.relaciones-metricas"],
       "nivel": "intermedio",
       "enunciado": "Un terreno tiene forma de cuadrilátero ABCD con AB = 6 m, BC = 9 m, CD = 12 m y DA = 4 m. La diagonal AC mide un número entero de metros. ¿Cuántos valores puede tener?",
       "respuesta": "6 valores (de 9 m a 14 m).",
@@ -53,6 +57,7 @@
     },
     {
       "id": "p5",
+      "unidades": ["geometria.puntos-notables"],
       "nivel": "intermedio",
       "enunciado": "En un triángulo acutángulo ABC, H es el ortocentro e I el incentro. Si el ángulo BHC mide 130°, ¿cuánto mide el ángulo BIC?",
       "respuesta": "115°.",
@@ -65,6 +70,7 @@
     },
     {
       "id": "p6",
+      "unidades": ["geometria.relaciones-metricas"],
       "nivel": "avanzado",
       "enunciado": "Dentro de un triángulo ABC con AB = 10 cm hay un punto P tal que PA = 5 cm y PB = 7 cm. Si el perímetro de ABC es entero, ¿cuál es el menor valor que puede tener?",
       "respuesta": "23 cm.",
@@ -77,6 +83,7 @@
     },
     {
       "id": "p7",
+      "unidades": ["geometria.puntos-notables"],
       "nivel": "avanzado",
       "enunciado": "En el triángulo ABC, el ángulo A mide 53° y el ángulo C mide 37°. La altura BH mide 72 cm. Las bisectrices de A y de C cortan a BH en P y Q. ¿Cuánto mide PQ? (Usa tan 37° = 3/4 y tan 53° = 4/3.)",
       "respuesta": "5 cm.",
@@ -90,6 +97,7 @@
     },
     {
       "id": "p8",
+      "unidades": ["geometria.puntos-notables"],
       "nivel": "avanzado",
       "enunciado": "Un triángulo ABC está inscrito en una circunferencia. La bisectriz de A pasa por el incentro I y corta a la circunferencia en M. Si AI = 6 cm e IM = 4 cm, ¿a qué distancia de A está el excentro relativo a BC?",
       "respuesta": "14 cm.",

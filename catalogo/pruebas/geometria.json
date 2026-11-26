@@ -253,7 +253,13 @@
     "GE-THA4": {"respaldo": "hipotesis", "describe": "En Thales reparte el total por la mitad en vez de en la razón de los tramos"},
     "GE-THA5": {"respaldo": "hipotesis", "describe": "Hace bien el reparto, pero da el otro tramo"},
     "GE-PIE1": {"respaldo": "hipotesis", "describe": "Pone el tramo largo junto al lado corto: empareja cada tramo con el lado de enfrente"},
-    "GE-PIE3": {"respaldo": "hipotesis", "describe": "Da una sola parte del reparto en vez de las partes del tramo pedido"}
+    "GE-PIE3": {"respaldo": "hipotesis", "describe": "Da una sola parte del reparto en vez de las partes del tramo pedido"},
+    "GE-PN2": {"respaldo": "hipotesis", "describe": "Pone el baricentro en la mitad de la mediana"},
+    "GE-PN3": {"respaldo": "hipotesis", "describe": "Invierte el 2 : 1: da el tramo corto, el que llega al lado"},
+    "GE-PN4": {"respaldo": "hipotesis", "describe": "Parte la mediana en 3 : 1, por las tres medianas"},
+    "GE-IN1": {"respaldo": "hipotesis", "describe": "Cree que la inscrita toca cada lado en su punto medio"},
+    "GE-IN2": {"respaldo": "hipotesis", "describe": "Resta del semiperímetro un lado vecino en vez del opuesto"},
+    "GE-IN3": {"respaldo": "hipotesis", "describe": "Da el semiperímetro entero como tangente"}
   },
   "pares": [
     {
@@ -2040,6 +2046,134 @@
             "texto": "12,5 m",
             "valor": 12.5,
             "error": "GE8"
+          }
+        ]
+      }
+    },
+    {
+      "par": "pn-01",
+      "plantilla": "geo-puntos-notables",
+      "unidad": "geometria.puntos-notables",
+      "mide": "El baricentro parte cada mediana en 2 : 1 desde el vértice (AG = 2/3 de AM), no por la mitad",
+      "A": {
+        "enunciado": "En el triángulo ABC, la mediana AM mide 21 cm y G es el baricentro. ¿Cuánto mide AG?",
+        "datos": {
+          "AM": 21
+        },
+        "opciones": [
+          {
+            "texto": "10,5 cm",
+            "valor": 10.5,
+            "error": "GE-PN2"
+          },
+          {
+            "texto": "14 cm",
+            "valor": 14,
+            "correcta": true
+          },
+          {
+            "texto": "7 cm",
+            "valor": 7,
+            "error": "GE-PN3"
+          },
+          {
+            "texto": "15,75 cm",
+            "valor": 15.75,
+            "error": "GE-PN4"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una cartulina triangular se sostiene sobre la punta de un lápiz puesta en su baricentro G. La mediana AM mide 18 cm. ¿A qué distancia de A está la punta?",
+        "datos": {
+          "AM": 18
+        },
+        "opciones": [
+          {
+            "texto": "12 cm",
+            "valor": 12,
+            "correcta": true
+          },
+          {
+            "texto": "9 cm",
+            "valor": 9,
+            "error": "GE-PN2"
+          },
+          {
+            "texto": "13,5 cm",
+            "valor": 13.5,
+            "error": "GE-PN4"
+          },
+          {
+            "texto": "6 cm",
+            "valor": 6,
+            "error": "GE-PN3"
+          }
+        ]
+      }
+    },
+    {
+      "par": "pn-02",
+      "plantilla": "geo-puntos-notables",
+      "unidad": "geometria.puntos-notables",
+      "mide": "Desde un vértice, la tangente a la inscrita mide el semiperímetro menos el lado opuesto (s − a), no la mitad de un lado",
+      "A": {
+        "enunciado": "En el triángulo ABC, AB = 8 cm, AC = 9 cm y BC = 11 cm. La circunferencia inscrita toca AB en F. ¿Cuánto mide AF?",
+        "datos": {
+          "AB": 8,
+          "AC": 9,
+          "BC": 11
+        },
+        "opciones": [
+          {
+            "texto": "4 cm",
+            "valor": 4,
+            "error": "GE-IN1"
+          },
+          {
+            "texto": "5 cm",
+            "valor": 5,
+            "error": "GE-IN2"
+          },
+          {
+            "texto": "3 cm",
+            "valor": 3,
+            "correcta": true
+          },
+          {
+            "texto": "14 cm",
+            "valor": 14,
+            "error": "GE-IN3"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un parque triangular tiene lados AB = 10 m, AC = 12 m y BC = 14 m. Su pileta redonda toca los tres lados, y toca AB en F. ¿Cuánto mide AF?",
+        "datos": {
+          "AB": 10,
+          "AC": 12,
+          "BC": 14
+        },
+        "opciones": [
+          {
+            "texto": "6 m",
+            "valor": 6,
+            "error": "GE-IN2"
+          },
+          {
+            "texto": "18 m",
+            "valor": 18,
+            "error": "GE-IN3"
+          },
+          {
+            "texto": "5 m",
+            "valor": 5,
+            "error": "GE-IN1"
+          },
+          {
+            "texto": "4 m",
+            "valor": 4,
+            "correcta": true
           }
         ]
       }

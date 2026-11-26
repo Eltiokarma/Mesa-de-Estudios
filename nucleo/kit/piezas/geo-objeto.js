@@ -1889,8 +1889,94 @@
     return angs;
   }
 
+  // ---------- Puntos notables (26 nov, etapa 9; bloque propio) ----------
+  // Objetos (dibujos de prueba) bajo una figura de geo-figura que arma la teoría: la cartulina sobre la punta de un lápiz,
+  // las casas con su tanque, el parque con su pileta, los pueblos unidos por carreteras y las avenidas con su glorieta.
+  // Afirmación: la cartulina, el parque y el terreno de los pueblos son el triángulo; las casas y los pueblos, sus
+  // vértices; las carreteras y las avenidas, las rectas de sus lados (de borde a borde); la pileta y la glorieta, sus
+  // circunferencias. Fidelidad: todo va a escala de geo-figura; el objeto solo se pone debajo, y lo que dibuja encima de
+  // la figura (casas, tanque, lápiz) es obstáculo para los rótulos.
+  //   { objeto: 'notable', tipo: 'carton' | 'casas' | 'parque' | 'pueblos' | 'avenidas' | 'examen', figura: <geo-figura>,
+  //     lamina: [id, id, id],     (carton, parque) el contorno relleno (la cartulina o el pasto del parque)
+  //     sombra: [dx, dy],         (carton) la sombra de la cartulina, corrida en px hacia donde se cae ([0, 0]: plana)
+  //     lapiz: id,                (carton) la punta del lápiz bajo ese punto; el lápiz se ve inclinado hacia abajo
+  //     casas: [id, …],           (casas, pueblos) una casita en cada punto (en pueblos, dos juntas)
+  //     tanque: id,               (casas) el tanque de agua, visto desde arriba, en ese punto
+  //     franjas: [[id, id], …],   (pueblos, avenidas, parque) una franja clara a lo largo de esa recta (de borde a borde en
+  //                               pueblos y avenidas; solo el tramo en parque: la vereda)
+  //     agua: [{ centro: id | [x, y], r }] }   (parque, avenidas) el agua de la pileta o de la glorieta: un relleno tenue
+  //   y lo común: llaves, ladosRot, libres (comunes).
+  function notable(d) {
+    const f0 = d.figura || { puntos: [] }, tipo = d.tipo || 'examen';
+    const ALT = { carton: 'Una cartulina triangular sobre la punta de un lápiz, vista desde arriba.', casas: 'Tres casas y un tanque de agua, vistos desde arriba.',
+      parque: 'Un parque triangular con su pileta redonda.', pueblos: 'Tres pueblos unidos por tres carreteras rectas.', avenidas: 'Un parque entre tres avenidas largas, con una glorieta afuera.', examen: 'Una figura de geometría.' };
+    const fig = Object.assign({}, f0, { alt: f0.alt || d.alt || ALT[tipo] || ALT.examen, puntos: f0.puntos || [] });
+    const S = (g, r) => g.S(r);
+    const deBorde = (p, q, alto) => {
+      const u = [q[0] - p[0], q[1] - p[1]]; let t0 = -Infinity, t1 = Infinity;
+      for (const [k, hi] of [[0, W], [1, alto]]) {
+        if (Math.abs(u[k]) < 1e-12) continue;
+        let a = (6 - p[k]) / u[k], b = (hi - 6 - p[k]) / u[k]; if (a > b) [a, b] = [b, a];
+        t0 = Math.max(t0, a); t1 = Math.min(t1, b);
+      }
+      return t0 < t1 ? [[p[0] + u[0] * t0, p[1] + u[1] * t0], [p[0] + u[0] * t1, p[1] + u[1] * t1]] : null;
+    };
+    const franja = (g, [a, b], ancho, op, largo) => {
+      const p = S(g, a), q = S(g, b); if (!p || !q) return '';
+      const z = largo ? deBorde(p, q, g.alto) : [p, q]; if (!z) return '';
+      return `<path d="${rutaPx(z, false)}" fill="none" stroke="currentColor" stroke-opacity="${op}" stroke-width="${ancho}" stroke-linecap="${largo ? 'butt' : 'round'}"/>`;
+    };
+    const centroPx = (g, c) => (typeof c === 'string' ? S(g, c) : g.S(c));
+    const radioPx = (g, c, r) => { const p = centroPx(g, c), q = g.S(typeof c === 'string' ? [fig.puntos.find(x => x.id === c).x + r, fig.puntos.find(x => x.id === c).y] : [c[0] + r, c[1]]); return p && q ? Math.abs(q[0] - p[0]) : 0; };
+    // Una casita vista desde arriba: el techo a dos aguas (un cuadrado con su cumbrera), de lado t px, junto al punto.
+    const casa = (c, t) => `<g data-objeto="casa" data-prueba="si"><rect x="${n(c[0] - t / 2)}" y="${n(c[1] - t / 2)}" width="${n(t)}" height="${n(t)}" rx="1.5" fill="var(--card)" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.3"/>`
+      + `<line x1="${n(c[0] - t / 2)}" y1="${n(c[1])}" x2="${n(c[0] + t / 2)}" y2="${n(c[1])}" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.1"/></g>`;
+    const cajaCasa = (c, t) => [[c[0] - t / 2, c[1] - t / 2], [c[0] + t / 2, c[1] - t / 2], [c[0] + t / 2, c[1] + t / 2], [c[0] - t / 2, c[1] + t / 2]];
+    // Dónde va cada casita: sobre su vértice (la casa es el vértice; su letra va afuera). En pueblos, dos casitas juntas.
+    const centroFig = g => { const ps = ['A', 'B', 'C'].map(id => S(g, id)).filter(Boolean); return ps.length ? [ps.reduce((s, p) => s + p[0], 0) / ps.length, ps.reduce((s, p) => s + p[1], 0) / ps.length] : [W / 2, g.alto / 2]; };
+    const lugarCasa = (g, id, k = 0) => { const p = S(g, id); if (!p) return null; const c = centroFig(g), u = [p[0] - c[0], p[1] - c[1]], L = Math.hypot(...u) || 1;
+      const e = [u[0] / L, u[1] / L], o = [-e[1], e[0]]; return [p[0] + o[0] * k, p[1] + o[1] * k]; };
+    const casasDe = g => (d.casas || []).flatMap(id => (tipo === 'pueblos' ? [lugarCasa(g, id, -6), lugarCasa(g, id, 6)] : [lugarCasa(g, id)])).filter(Boolean);
+    const TC = tipo === 'pueblos' ? 8 : 11;
+    // El lápiz: de la punta (bajo el punto) sale hacia abajo y a la derecha, como visto desde arriba y un poco de lado.
+    const lapizDe = g => { const p = d.lapiz ? S(g, d.lapiz) : null; return p ? { p, cola: [p[0] + 30, p[1] + 34] } : null; };
+    const deco = (g, corte) => {
+      let s = '';
+      if (tipo === 'parque' || tipo === 'avenidas' || tipo === 'pueblos' || tipo === 'casas') s += `<rect x="8" y="8" width="${W - 16}" height="${n(g.alto - 16)}" rx="6" fill="currentColor" fill-opacity="0.035"/>`;
+      for (const c of d.franjas || []) s += franja(g, c, tipo === 'parque' ? 9 : 16, tipo === 'parque' ? 0.1 : 0.08, tipo !== 'parque');
+      const lam = (d.lamina || []).map(id => S(g, id));
+      if (lam.length >= 3 && lam.every(Boolean)) {
+        if (tipo === 'carton') {
+          const [dx, dy] = d.sombra || [0, 0], k = Math.hypot(dx, dy) > 0.1 ? 1 : 0.6;
+          s += `<path data-objeto="sombra" d="${rutaPx(lam.map(q => [q[0] + dx + 2, q[1] + dy + 2]))}" fill="currentColor" fill-opacity="${n(0.16 * k)}"/>`;
+          s += `<path data-objeto="cartulina" data-prueba="si" d="${rutaPx(lam)}" fill="var(--card)" stroke="currentColor" stroke-opacity="0.25" stroke-width="3" stroke-linejoin="round"/>`
+            + `<path d="${rutaPx(lam)}" fill="currentColor" fill-opacity="0.07"/>`;
+          // El lápiz queda debajo de la cartulina: se ve en punteado, como a través del papel.
+          const z = lapizDe(g);
+          if (z) s += `<g data-objeto="lapiz" data-prueba="si"><path d="${rutaPx([[z.p[0], z.p[1]], [z.cola[0] - 4, z.cola[1] + 4], [z.cola[0] + 4, z.cola[1] - 4]])}" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.2" stroke-dasharray="3 2" stroke-linejoin="round"/></g>`;
+        } else s += `<path data-objeto="${tipo === 'parque' ? 'pasto' : 'terreno'}" data-prueba="si" d="${rutaPx(lam)}" fill="currentColor" fill-opacity="0.08"/>`;
+      }
+      for (const a of d.agua || []) { const c = centroPx(g, a.centro), r = radioPx(g, a.centro, a.r); if (c && r > 0) s += `<circle data-objeto="agua" data-prueba="si" cx="${n(c[0])}" cy="${n(c[1])}" r="${n(r)}" fill="currentColor" fill-opacity="0.12"/>`; }
+      for (const c of casasDe(g)) s += casa(c, TC);
+      if (d.tanque) { const p = S(g, d.tanque); if (p) s += `<g data-objeto="tanque" data-prueba="si"><circle cx="${n(p[0])}" cy="${n(p[1])}" r="8" fill="var(--card)" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.4"/><circle cx="${n(p[0])}" cy="${n(p[1])}" r="4" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="1"/></g>`; }
+      void corte;
+      return s;
+    };
+    const extra = () => ({ svg: '', lineas: [], cajas: [] });
+    const extraCon = g => {
+      const lineas = [];
+      for (const c of casasDe(g)) lineas.push(...bordes(cajaCasa(c, TC)));
+      if (d.tanque) { const p = S(g, d.tanque); if (p) lineas.push(...bordes(circuloPs(p, 8))); }
+      const z = tipo === 'carton' ? lapizDe(g) : null; if (z) lineas.push([z.p, z.cola]);
+      return { svg: '', lineas, cajas: [] };
+    };
+    void extra;
+    return { fig, deco, extra: extraCon, ids: fig.puntos.map(q => q.id) };
+  }
+
   const ESCENAS = { reloj, tranquera, rieles, pasaje, cartulina, tijeral, plaza, compas, lampara, caserio, parque, armazon, parcela, redondo, semejante,
     angulos: d => ({ fig: d.figura || { puntos: [] }, ls: g => (d.ls || []).map(l => g.S(l.p)), encima: g => (d.ls || []).map(l => { const q = g.S(l.p); return rotuloL(q[0], q[1], l.k); }).join('') }) };
+  ESCENAS.notable = notable;   // Puntos notables (etapa 9, bloque propio)
   // manija: el id del punto que el juego arrastra; su letra se aleja 8 px más (la manija, de radio 13, la tapaba).
   const escena = d => {
     const e = ESCENAS[d.objeto](d);

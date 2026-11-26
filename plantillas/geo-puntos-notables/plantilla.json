@@ -1,0 +1,19 @@
+{
+  "id": "geo-puntos-notables",
+  "titulo": "Puntos notables del triángulo",
+  "formato": "predicciones",
+  "unidades": [
+    "geometria.puntos-notables"
+  ],
+  "temas": [
+    "Baricentro, incentro, circuncentro, ortocentro y excentro",
+    "Propiedades de los puntos notables",
+    "Recta y circunferencia de Euler"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

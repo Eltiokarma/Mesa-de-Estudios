@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["geometria.triangulos"],
       "nivel": "básico",
       "enunciado": "Un terreno triangular tiene un lado BC de 10 m junto a la pista. El vértice A está a 6 m de la recta de la pista, pero el punto de la pista más cercano a A queda 3 m más allá de B, fuera del lado BC. ¿Cuál es el área del terreno?",
       "respuesta": "30 m².",
@@ -16,6 +17,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["geometria.areas-poligonales"],
       "nivel": "básico",
       "enunciado": "Los vértices de un triángulo son B(1, 1), C(7, 1) y A(9, 5). a) ¿Dónde cae el pie de la altura trazada desde A sobre la recta BC? b) ¿Cuál es el área del triángulo?",
       "respuesta": "a) En (9, 1), fuera del lado BC, sobre su prolongación más allá de C. b) 12.",
@@ -29,6 +31,7 @@
     },
     {
       "id": "p3",
+      "unidades": ["geometria.relaciones-metricas"],
       "nivel": "básico",
       "enunciado": "Una rampa tiene forma de triángulo rectángulo con catetos de 9 dm y 12 dm. ¿Cuánto mide la hipotenusa y cuánto la altura relativa a la hipotenusa (trazada desde el vértice del ángulo recto)?",
       "respuesta": "Hipotenusa 15 dm; altura 7,2 dm.",
@@ -42,6 +45,7 @@
     },
     {
       "id": "p4",
+      "unidades": ["geometria.relaciones-metricas"],
       "nivel": "intermedio",
       "enunciado": "En un triángulo rectángulo, la altura relativa a la hipotenusa la divide en dos segmentos de 2 cm y 8 cm. Halla la altura, los dos catetos y el área.",
       "respuesta": "Altura 4 cm; catetos 2√5 cm y 4√5 cm; área 20 cm².",
@@ -55,6 +59,7 @@
     },
     {
       "id": "p5",
+      "unidades": ["geometria.relaciones-metricas"],
       "nivel": "intermedio",
       "enunciado": "En el triángulo ABC, AB = 9, AC = 6 y BC = 10. La bisectriz del ángulo A corta a BC en D. ¿Cuánto miden BD y DC?",
       "respuesta": "BD = 6 y DC = 4.",
@@ -67,6 +72,7 @@
     },
     {
       "id": "p6",
+      "unidades": ["geometria.relaciones-metricas"],
       "nivel": "intermedio",
       "enunciado": "Los lados de un triángulo miden AB = 7, AC = 9 y BC = 8. ¿Cuánto mide la mediana trazada desde A?",
       "respuesta": "7.",
@@ -79,6 +85,7 @@
     },
     {
       "id": "p7",
+      "unidades": ["geometria.areas-poligonales"],
       "nivel": "intermedio",
       "enunciado": "Un triángulo tiene base BC = 6 y área 15. El vértice A se mueve por una recta paralela a BC, hasta que el triángulo queda muy inclinado, con el ángulo en B obtuso. ¿Cuánto mide su altura y cuál es su nueva área?",
       "respuesta": "La altura sigue en 5 y el área sigue en 15.",
@@ -91,6 +98,7 @@
     },
     {
       "id": "p8",
+      "unidades": ["geometria.puntos-notables"],
       "nivel": "avanzado",
       "enunciado": "Los vértices de un triángulo son A(−2, 4), B(0, 0) y C(6, 0). a) ¿Qué tipo de triángulo es según sus ángulos? b) ¿Cuál es su área? c) ¿Dónde está el ortocentro (el punto donde se cortan las rectas que contienen las tres alturas)?",
       "respuesta": "a) Obtusángulo, con el ángulo obtuso en B. b) 12. c) En (−2, −4), fuera del triángulo.",
@@ -104,6 +112,7 @@
     },
     {
       "id": "p9",
+      "unidades": ["geometria.relaciones-metricas"],
       "nivel": "avanzado",
       "enunciado": "En un triángulo rectángulo, la hipotenusa mide 25 y uno de los catetos mide 15. Halla las proyecciones de los catetos sobre la hipotenusa, la altura relativa a la hipotenusa y el otro cateto.",
       "respuesta": "Proyecciones 9 y 16; altura 12; otro cateto 20.",
@@ -117,6 +126,7 @@
     },
     {
       "id": "p10",
+      "unidades": ["geometria.triangulos"],
       "nivel": "básico",
       "enunciado": "Un triángulo isósceles tiene AB = AC = 13 y BC = 10. ¿Cuánto miden la altura, la mediana y la bisectriz trazadas desde A? ¿Cuál es el área?",
       "respuesta": "Las tres miden 12; el área es 60.",

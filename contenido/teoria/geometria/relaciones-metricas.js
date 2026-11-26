@@ -848,8 +848,7 @@
       { termino: 'teorema de Stewart', formas: ['teorema de Stewart', 'Stewart'],
         def: 'Da el largo de una ceviana con los tres lados y los dos tramos en que parte su lado.',
         ejemplo: 'b = 7, c = 5, a = 8 y D en el medio: d² = 21.', ver: ['ceviana'] },
-      { termino: 'semiperímetro', simbolo: 's', formas: ['semiperímetro', 'semiperímetros'],
-        def: 'La mitad de la suma de los tres lados de un triángulo.', ejemplo: 'Lados 13, 14 y 15: s = 42/2 = 21.', ver: ['fórmula de Herón'] },
+      // «semiperímetro» se define en Puntos notables (etapa 9, 26 nov): un término por curso.
       { termino: 'fórmula de Herón', formas: ['fórmula de Herón', 'Herón'],
         def: 'Calcula el área de un triángulo solo con sus tres lados, sin conocer ninguna altura.',
         ejemplo: 'Lados 13, 14 y 15: s = 21 y área √(21 · 8 · 7 · 6) = 84.', ver: ['semiperímetro'] },

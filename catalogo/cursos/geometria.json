@@ -129,8 +129,8 @@
       "universidades": {"uni": {"semanas": [6, 7]}, "unmsm": {"temas": [7]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "requiere": ["geometria.congruencia", "geometria.circunferencia"],
-      "plantillas": ["triangulo-estira", "geo-triangulos-notables", "geo-proporcionalidad"],
+      "requiere": ["geometria.circunferencia", "geometria.proporcionalidad-y-semejanza"],
+      "plantillas": ["geo-puntos-notables", "triangulo-estira", "geo-triangulos-notables", "geo-proporcionalidad"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
