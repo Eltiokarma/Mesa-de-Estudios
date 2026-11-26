@@ -10,7 +10,7 @@
       "respuesta": "B) −10 kg·m/s",
       "pasos": [
         "Multiplica la masa por la componente de velocidad. p_x = 2,5 · (−4) = −10 kg·m/s.",
-        "El signo conserva el sentido del movimiento."
+        "El signo de p_x indica el sentido del movimiento."
       ]
     },
     {
@@ -38,7 +38,7 @@
       "enunciado": "Dos carritos A y B se mueven sobre la misma recta. A está a la izquierda de B. m_A = 2 kg, v_A,i = 5 m/s; m_B = 3 kg, v_B,i = −1 m/s. Su choque frontal es elástico y el impulso externo horizontal es despreciable. ¿Cuál es la componente de velocidad final del carrito A? Datos: En la recta, una componente positiva apunta a la derecha y una negativa a la izquierda. Para el sistema: P_f,x = P_i,x + I_ext,x; P_x es la suma de m · v_x de sus cuerpos. En un choque frontal elástico aislado se conserva P_x y la rapidez de separación iguala a la de acercamiento. Alternativas: A) 2,2 m/s   B) −2,2 m/s   C) 3,8 m/s   D) 1,4 m/s   E) −1 m/s",
       "respuesta": "B) −2,2 m/s",
       "pasos": [
-        "Combina P_f,x = P_i,x con v_B,f − v_A,f = v_A,i − v_B,i.",
+        "Junta dos ecuaciones: P_f,x = P_i,x y, por ser elástico, v_B,f − v_A,f = v_A,i − v_B,i.",
         "Al resolver las dos ecuaciones: v_A,f = −2,2 m/s y v_B,f = 3,8 m/s."
       ]
     },
@@ -59,7 +59,7 @@
       "respuesta": "D) 2,4 m",
       "pasos": [
         "Suma los tres productos m · x: 24 kg·m. La masa total es 10 kg.",
-        "Divide el numerador entre la masa total: x_CM = 2,4 m."
+        "Divide esa suma entre la masa total: x_CM = 2,4 m."
       ]
     },
     {
@@ -78,8 +78,8 @@
       "enunciado": "Dos carritos A y B se mueven sobre la misma recta. A está a la izquierda de B. m_A = 2 kg, v_A,i = 6 m/s; m_B = 1 kg, v_B,i = 0 m/s. Se unen en un choque breve sin impulso externo horizontal apreciable. Justo después suben por una rampa lisa hasta detenerse; desprecia el aire. ¿Qué altura ganan desde el nivel donde terminó el choque? Datos: En la recta, una componente positiva apunta a la derecha y una negativa a la izquierda. Para el sistema: P_f,x = P_i,x + I_ext,x; P_x es la suma de m · v_x de sus cuerpos. Energía cinética: E_C = m · v² / 2. La energía transformada en el choque es E_C,inicial − E_C,final. Después del choque, en una subida lisa: E_C = E_PG = m_total · g · h. g = 10 m/s². Alternativas: A) 0,8 m   B) 1,6 m   C) 0,4 m   D) 0,2 m   E) 1,2 m",
       "respuesta": "A) 0,8 m",
       "pasos": [
-        "Separa los intervalos. En el choque conserva P_x: v_f,x = 4 m/s.",
-        "En la subida, transforma la energía cinética posterior en E_PG.",
+        "Separa los dos tramos. En el choque se conserva P_x, y los carritos salen unidos con v_f,x = 4 m/s.",
+        "En la subida, la energía cinética que queda después del choque se convierte en energía potencial.",
         "La masa total se cancela y h = 16 / 20 = 0,8 m."
       ]
     }

@@ -35,6 +35,27 @@
     }
     return ops.slice(0, 4);
   }
+  // Redacción (26 nov): el molde «Bien A; B.» de cada error se lee como oración, «Bien A, pero B. Así sale X.», y la
+  // última línea de un ejemplo de examen dice de qué error sale cada alternativa en una sola oración.
+  const siFue = (frase, valor) => { const m = /^Bien ([^;]+); (.+)\.$/.exec(frase); return m ? `Bien ${m[1]}, pero ${m[2]}. Así sale ${valor}.` : `${frase} Así sale ${valor}.`; };
+  const causaDe = frase => { const m = /^Bien [^;]+; (.+)\.$/.exec(frase); return m ? m[1] : frase.replace(/\.$/, ''); };
+  function lasOtras(items) {
+    const t = items.map(x => `${x.n} si ${x.c}`), y = t.some(z => / y /.test(z)) ? ', y ' : ' y ';
+    return `Las otras salen de un error: ${t.slice(0, -1).join(', ')}${y}${t[t.length - 1]}.`;
+  }
+  // Causas cortas de los ejemplos de examen, para el molde «X si …» (la versión larga vive en el siFuera).
+  const IC_CORTO = { rectangulo: 'usaste el rectángulo completo', 'sin-masa': 'no dividiste entre la masa', 'sin-inicial': 'olvidaste la velocidad inicial',
+    'resta-impulso': 'restaste el cambio', 'solo-primero': 'contaste solo el primer pulso', 'solo-segundo': 'contaste solo el segundo pulso',
+    modulos: 'sumaste sin los signos', signo: 'invertiste el signo', 'suma-velocidades': 'sumaste las velocidades', 'solo-final': 'usaste solo la velocidad final',
+    'sistema:solo-final': 'usaste solo el total final', 'doble-masa': 'contaste dos veces la masa', inversa: 'invertiste el cociente',
+    doble: 'duplicaste la duración', 'sistema:doble': 'duplicaste la diferencia', 'aporte-doble': 'restaste dos veces lo conocido',
+    'masa-doble': 'usaste el doble de su masa', 'sin-b': 'olvidaste el aporte de B', 'sin-dividir': 'no dividiste entre su masa',
+    misma: 'copiaste la velocidad de A', 'suma-conocido': 'sumaste en vez de restar', 'total-cero': 'supusiste un total inicial nulo',
+    'suma-estados': 'sumaste los dos totales' };
+  const CT_CORTO = { 'media-simple': 'no ponderaste por las masas', 'sin-origen': 'olvidaste la posición inicial', 'sin-tiempo': 'usaste un solo segundo',
+    signo: 'invertiste el signo', 'sin-divisor': 'no dividiste entre la masa total', 'masa-faltante:sin-divisor': 'no dividiste entre la distancia de B',
+    'masa-intercambiada': 'intercambiaste las masas', 'razon-inversa': 'invertiste el cociente', 'sin-distancias': 'igualaste las dos masas',
+    'sin-restar': 'mediste desde el origen', 'doble-masa': 'duplicaste la masa total' };
   // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la figura y mover la convierte en valores
   // con la inversa lineal de la escala de la pieza; el lector ajusta cada valor al paso y al rango de su control.
   const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
@@ -111,7 +132,7 @@
     let m = c.m, vx = c.vx, px = c.px, resultado, unidad = cmPS, color = 'i', simbolo = cmPX;
     let enunciado, solucion = [], errores = [], filas;
     const datos = cmDatos.slice();
-    const add = (id, valor, frase) => errores.push({ id, valor: cmRed(valor), error: `CM-${id.toUpperCase()}`, siFuera: `${frase} Así sale ${cmFmt(valor)} ${unidad}.` });
+    const add = (id, valor, frase) => errores.push({ id, valor: cmRed(valor), error: `CM-${id.toUpperCase()}`, siFuera: siFue(frase, `${cmFmt(valor)} ${unidad}`) });
     const tipo = c.tipo;
     if (['gramos', 'modulo'].includes(tipo)) { m = c.g / 1000; datos.push('1 kg = 1000 g.'); }
     if (['kmh', 'carga', 'modulo'].includes(tipo)) { vx = cmRed(c.kmh / 3.6); datos.push('1 km = 1000 m; 1 h = 3600 s.'); }
@@ -122,8 +143,8 @@
       resultado = cmRed(vx * factor); unidad = factor === 1 ? cmMS : 'km/h'; color = 'o'; simbolo = cmVX;
       if (factor !== 1) datos.push('1 km = 1000 m; 1 h = 3600 s.');
       enunciado = ['Un carrito de laboratorio de ', cmQ('f', `${cmFmt(m)} kg`), ' tiene ', cmPX, ' = ', cmQ('i', `${cmFmt(px)} kg·m/s`), '. ¿Cuál es su componente de velocidad ', cmVX, ` en ${unidad}?`];
-      solucion.push({ texto: 'Despejamos la velocidad: la cantidad de movimiento se divide entre la masa.', ecuacion: [cmVX, ` = ${cmN(px)} ÷ ${cmFmt(m)} = `, cmQ('o', `${cmFmt(vx)} m/s`)] });
-      if (factor !== 1) solucion.push({ texto: 'Convertimos metros por segundo a kilómetros por hora.', ecuacion: [cmVX, ` = ${cmN(vx)} · 3600 ÷ 1000 = `, cmQ('o', `${cmFmt(resultado)} km/h`)] });
+      solucion.push({ texto: 'Despejamos la velocidad: dividimos la cantidad de movimiento entre la masa.', ecuacion: [cmVX, ` = ${cmN(px)} ÷ ${cmFmt(m)} = `, cmQ('o', `${cmFmt(vx)} m/s`)] });
+      if (factor !== 1) solucion.push({ texto: 'Como piden km/h, pasamos el resultado de metros por segundo a kilómetros por hora.', ecuacion: [cmVX, ` = ${cmN(vx)} · 3600 ÷ 1000 = `, cmQ('o', `${cmFmt(resultado)} km/h`)] });
       filas = [{ nombre: 'Carrito', m, vx: null, px, dadoP: true }];
       add('producto', px * m * factor, 'Bien usar la masa; multiplicaste en vez de dividir.');
       add('signo', -resultado, 'Bien el módulo; invertiste el sentido.');
@@ -132,10 +153,10 @@
     } else if (tipo === 'masa') {
       m = px / vx; resultado = cmRed(m); unidad = 'kg'; color = 'f'; simbolo = cmM;
       enunciado = ['Un carrito tiene ', cmPX, ' = ', cmQ('i', `${cmFmt(px)} kg·m/s`), ' y ', cmVX, ' = ', cmQ('o', `${cmFmt(vx)} m/s`), '. ¿Cuál es su masa total?'];
-      solucion.push({ texto: 'La masa se obtiene dividiendo la componente de cantidad de movimiento entre la componente de velocidad.', ecuacion: [cmM, ` = ${cmN(px)} ÷ ${cmN(vx)} = `, cmQ('f', `${cmFmt(m)} kg`)] });
+      solucion.push({ texto: 'Despejamos la masa: dividimos la cantidad de movimiento entre la velocidad.', ecuacion: [cmM, ` = ${cmN(px)} ÷ ${cmN(vx)} = `, cmQ('f', `${cmFmt(m)} kg`)] });
       filas = [{ nombre: 'Carrito', m: null, vx, px, dadoP: true }];
       add('producto', px * vx, 'Bien usar la velocidad; multiplicaste en vez de dividir.');
-      add('signo', -m, 'Bien el cociente; añadiste un signo negativo a la masa.');
+      add('signo', -m, 'Bien el cociente; le pusiste un signo negativo a la masa, que siempre es positiva.');
       add('cuadrado', px / (vx * vx), 'Bien dividir; elevaste la velocidad al cuadrado.');
       add('sin-velocidad', Math.abs(px), 'Bien tomar el módulo; falta dividir entre la rapidez.');
     } else if (tipo === 'igualar') {
@@ -144,24 +165,24 @@
       datos.push('A y B nombran los carritos; sus masas totales son m_A y m_B.');
       if (factor !== 1) datos.push('1 km = 1000 m; 1 h = 3600 s.');
       enunciado = ['El carrito A tiene ', cmQ('f', `${cmFmt(c.ma)} kg`), ' y ', cmVX, ' = ', cmQ('o', `${cmFmt(c.va)} m/s`), '. B tiene ', cmQ('f', `${cmFmt(c.mb)} kg`), '. ¿Qué componente de velocidad necesita B, ', `en ${unidad}, para tener igual cantidad de movimiento vectorial?`];
-      solucion.push({ texto: 'Primero calculamos la componente de cantidad de movimiento de A.', ecuacion: [cmSub(cmP, 'A,x'), ` = ${cmFmt(c.ma)} · ${cmN(c.va)} = `, cmQ('i', `${cmFmt(pa)} kg·m/s`)] });
-      solucion.push({ texto: 'B debe tener esa misma componente; dividimos entre su masa.', ecuacion: [cmSub(cmV, 'B,x'), ` = ${cmN(pa)} ÷ ${cmFmt(c.mb)} = `, cmQ('o', `${cmFmt(vb)} m/s`)] });
-      if (factor !== 1) solucion.push({ texto: 'Expresamos el resultado en la unidad pedida.', ecuacion: [cmSub(cmV, 'B,x'), ` = ${cmN(vb)} · 3600 ÷ 1000 = `, cmQ('o', `${cmFmt(resultado)} km/h`)] });
+      solucion.push({ texto: 'Primero calculamos la cantidad de movimiento de A.', ecuacion: [cmSub(cmP, 'A,x'), ` = ${cmFmt(c.ma)} · ${cmN(c.va)} = `, cmQ('i', `${cmFmt(pa)} kg·m/s`)] });
+      solucion.push({ texto: 'B debe tener esa misma cantidad de movimiento, con su signo, así que la dividimos entre la masa de B.', ecuacion: [cmSub(cmV, 'B,x'), ` = ${cmN(pa)} ÷ ${cmFmt(c.mb)} = `, cmQ('o', `${cmFmt(vb)} m/s`)] });
+      if (factor !== 1) solucion.push({ texto: 'Como piden km/h, pasamos el resultado de metros por segundo a kilómetros por hora.', ecuacion: [cmSub(cmV, 'B,x'), ` = ${cmN(vb)} · 3600 ÷ 1000 = `, cmQ('o', `${cmFmt(resultado)} km/h`)] });
       filas = [{ nombre: 'A', ...cmPar(c.ma, c.va) }, { nombre: 'B', m: c.mb, vx: null }];
-      add('misma', c.va * factor, 'Bien conservar el sentido; copiaste la velocidad con masas distintas.');
+      add('misma', c.va * factor, 'Bien conservar el sentido; copiaste la velocidad de A aunque las masas son distintas.');
       add('inversa', c.va * c.mb / c.ma * factor, 'Bien comparar masas; invertiste su razón.');
-      add('signo', -resultado, 'Bien el módulo; el vector necesita también el mismo sentido.');
-      add('sin-dividir', c.ma * c.va * factor, 'Bien hallar la cantidad de movimiento; falta dividir entre la masa de B.');
+      add('signo', -resultado, 'Bien el módulo; el vector también necesita el mismo sentido que el de A.');
+      add('sin-dividir', c.ma * c.va * factor, 'Bien hallar la cantidad de movimiento de A; falta dividir entre la masa de B.');
       if (factor !== 1) add('sin-convertir', vb, 'Bien la velocidad en m/s; falta convertir a km/h.');
     } else {
       px = cmRed(m * vx); resultado = tipo === 'modulo' ? Math.abs(px) : px;
       if (tipo === 'modulo') simbolo = cmP;
       if (tipo === 'carga') enunciado = ['Un carrito vacío de ', cmQ('f', `${cmFmt(c.mc)} kg`), ' transporta ', cmQ('f', `${cmFmt(c.ml)} kg`), ' de carga con ', cmVX, ' = ', cmQ('o', `${cmFmt(c.kmh)} km/h`), '. ¿Cuál es ', cmPX, ' del conjunto?'];
       else enunciado = ['Un carrito de laboratorio tiene una masa total de ', cmQ('f', `${cmFmt(c.g == null ? m : c.g)} ${c.g == null ? 'kg' : 'g'}`), ' y ', cmVX, ' = ', cmQ('o', `${cmFmt(c.kmh == null ? vx : c.kmh)} ${c.kmh == null ? 'm/s' : 'km/h'}`), '. ¿Cuál es ', tipo === 'modulo' ? ['el módulo ', cmP] : ['su componente ', cmPX], '?'];
-      if (tipo === 'carga') solucion.push({ texto: 'La masa total incluye el carrito y la carga.', ecuacion: [cmM, ` = ${cmFmt(c.mc)} + ${cmFmt(c.ml)} = `, cmQ('f', `${cmFmt(m)} kg`)] });
-      if (c.g != null) solucion.push({ texto: 'Expresamos la masa en kilogramos.', ecuacion: [cmM, ` = ${cmFmt(c.g)} ÷ 1000 = `, cmQ('f', `${cmFmt(m)} kg`)] });
-      if (c.kmh != null) solucion.push({ texto: 'Convertimos kilómetros por hora a metros por segundo, manteniendo el signo.', ecuacion: [cmVX, ` = ${cmN(c.kmh)} · 1000 ÷ 3600 = `, cmQ('o', `${cmFmt(vx)} m/s`)] });
-      solucion.push({ texto: tipo === 'modulo' ? 'El módulo usa la rapidez, sin signo: no cambia por ir hacia la izquierda.' : 'Multiplicamos la masa por la componente de velocidad. El signo indica el sentido.',
+      if (tipo === 'carga') solucion.push({ texto: 'La masa total es la del carrito más la de su carga.', ecuacion: [cmM, ` = ${cmFmt(c.mc)} + ${cmFmt(c.ml)} = `, cmQ('f', `${cmFmt(m)} kg`)] });
+      if (c.g != null) solucion.push({ texto: 'Primero pasamos la masa de gramos a kilogramos.', ecuacion: [cmM, ` = ${cmFmt(c.g)} ÷ 1000 = `, cmQ('f', `${cmFmt(m)} kg`)] });
+      if (c.kmh != null) solucion.push({ texto: 'Pasamos la velocidad de kilómetros por hora a metros por segundo; el signo no cambia.', ecuacion: [cmVX, ` = ${cmN(c.kmh)} · 1000 ÷ 3600 = `, cmQ('o', `${cmFmt(vx)} m/s`)] });
+      solucion.push({ texto: tipo === 'modulo' ? 'El módulo usa la rapidez, sin signo, así que no cambia porque el carrito vaya hacia la izquierda.' : 'Multiplicamos la masa por la componente de velocidad, y el resultado conserva su signo.',
         ecuacion: [simbolo, ` = ${cmFmt(m)} · ${cmN(tipo === 'modulo' ? Math.abs(vx) : vx)} = `, cmQ('i', `${cmFmt(resultado)} kg·m/s`)] });
       filas = [{ nombre: 'Carrito', m: c.g == null && tipo !== 'carga' ? m : null, vx: c.kmh == null ? vx : null }];
       // En ejemplos con conversiones, la figura no adelanta sus resultados: rótulos originales se agregan abajo.
@@ -174,7 +195,7 @@
       if (tipo === 'modulo') add('sin-gramos', c.g * Math.abs(vx), 'Bien convertir la velocidad; falta convertir gramos a kilogramos.');
       add('signo', tipo === 'modulo' ? px : -px, tipo === 'modulo' ? 'Bien la componente; el módulo no lleva signo.' : 'Bien el módulo; invertiste el sentido.');
       add('sin-masa', tipo === 'modulo' ? Math.abs(vx) : vx, 'Bien leer la velocidad; falta multiplicar por la masa.');
-      add('suma', m + (tipo === 'modulo' ? Math.abs(vx) : vx), 'Bien elegir los datos; sumaste sus números en vez de multiplicarlos.');
+      add('suma', m + (tipo === 'modulo' ? Math.abs(vx) : vx), 'Bien elegir los datos; sumaste la masa y la velocidad en vez de multiplicarlas.');
       add('cuadrado', m * vx * vx, 'Bien usar masa y velocidad; elevaste la velocidad al cuadrado.');
       add('doble', 2 * px, 'Bien multiplicar; contaste dos veces la masa.');
     }
@@ -215,15 +236,15 @@
   function erroresExamenCantidad(c) {
     if (c.tipo === 'carga') {
       const m = c.mc + c.ml, u = c.kmh / 3.6;
-      return [{ valor: c.ml * u, causa: 'omite el carrito' }, { valor: c.mc * u, causa: 'omite la carga' }, { valor: m * c.kmh, causa: 'no convierte km/h' }, c.kmh < 0 ? { valor: Math.abs(m * u), causa: 'borra el signo' } : { valor: m, causa: 'omite la velocidad' }];
+      return [{ valor: c.ml * u, causa: 'omitiste el carrito' }, { valor: c.mc * u, causa: 'omitiste la carga' }, { valor: m * c.kmh, causa: 'no convertiste los km/h' }, c.kmh < 0 ? { valor: Math.abs(m * u), causa: 'borraste el signo' } : { valor: m, causa: 'omitiste la velocidad' }];
     }
     if (c.tipo === 'modulo') {
       const m = c.g / 1000, u = c.kmh / 3.6;
-      return [{ valor: m * u, causa: 'confunde módulo y componente' }, { valor: m * Math.abs(c.kmh), causa: 'no convierte km/h' }, { valor: c.g * Math.abs(u), causa: 'no convierte gramos' }, { valor: Math.abs(u), causa: 'omite la masa' }];
+      return [{ valor: m * u, causa: 'diste la componente' }, { valor: m * Math.abs(c.kmh), causa: 'no convertiste los km/h' }, { valor: c.g * Math.abs(u), causa: 'no convertiste los gramos' }, { valor: Math.abs(u), causa: 'omitiste la masa' }];
     }
     const u = c.ma * c.va / c.mb;
-    if (c.salidaKmh) return [{ valor: u, causa: 'no convierte a km/h' }, { valor: c.va * 3.6, causa: 'copia la velocidad inicial' }, { valor: c.ma * c.va * 3.6, causa: 'omite dividir entre masa' }, { valor: c.va * c.mb / c.ma * 3.6, causa: 'invierte la razón' }];
-    return [{ valor: Math.abs(u), causa: 'borra el signo' }, { valor: c.va, causa: 'copia la velocidad inicial' }, { valor: c.va * c.mb / c.ma, causa: 'invierte la razón' }, { valor: c.ma * c.va, causa: 'omite dividir entre masa' }];
+    if (c.salidaKmh) return [{ valor: u, causa: 'no pasaste a km/h' }, { valor: c.va * 3.6, causa: 'copiaste la velocidad de A' }, { valor: c.ma * c.va * 3.6, causa: 'no dividiste entre la masa de B' }, { valor: c.va * c.mb / c.ma * 3.6, causa: 'invertiste la razón de las masas' }];
+    return [{ valor: Math.abs(u), causa: 'borraste el signo' }, { valor: c.va, causa: 'copiaste la velocidad de A' }, { valor: c.va * c.mb / c.ma, causa: 'invertiste la razón de las masas' }, { valor: c.ma * c.va, causa: 'no dividiste entre la masa de B' }];
   }
   const EJEMPLOS_CANTIDAD = CASOS_EJEMPLOS_CANTIDAD.map(c => {
     const b = cantidadCaso(c);
@@ -233,7 +254,7 @@
       valores.splice(c.posicionCorrecta, 0, b.resultado);
       e.alternativas = valores.map(x => `${cmFmt(x)} ${b.unidad}`);
       if (new Set(e.alternativas).size !== 5) throw new Error(`Alternativas repetidas: ${c.titulo}`);
-      e.solucion.push({ texto: errores.map(x => `${cmFmt(x.valor)}: ${x.causa}.`).join(' ') });
+      e.solucion.push({ texto: lasOtras(errores.map(x => ({ n: cmFmt(x.valor), c: x.causa }))) });
     }
     return e;
   });
@@ -258,10 +279,10 @@
     if (resuelto) return {
       enunciado: b.enunciado, datos: b.datos, dibujo: b.dibujo, respuesta: b.respuesta, verificacion: c,
       pasos: [
-        { tipo: 'pide', texto: 'Piden una magnitud del carrito, con su unidad y el signo cuando corresponde.' },
-        { tipo: 'regla', texto: 'La cantidad de movimiento es masa por velocidad; al despejar mantenemos el sentido del eje.', ecuacion: [cmPX, ' = ', cmM, ' · ', cmVX] },
+        { tipo: 'pide', texto: 'Piden una magnitud del carrito con su unidad y, si es una componente, también con su signo.' },
+        { tipo: 'regla', texto: 'La cantidad de movimiento es la masa por la velocidad. Si despejamos otra magnitud, conservamos el signo que da el eje.', ecuacion: [cmPX, ' = ', cmM, ' · ', cmVX] },
         ...b.solucion.map(paso => ({ tipo: 'cuentas', ...paso })),
-        { tipo: 'sentido', texto: ['El signo ubica el sentido sobre el eje. La masa y el módulo de la cantidad de movimiento son no negativos.'] },
+        { tipo: 'sentido', texto: ['El signo dice hacia dónde apunta la componente. La masa y el módulo nunca son negativos, así que no llevan signo.'] },
       ],
     };
     const ult = b.solucion[b.solucion.length - 1];
@@ -274,7 +295,7 @@
     if (c.tipo === 'modulo') cuenta = [cmP, ` = (${cmFmt(c.g)} ÷ 1000) · (${cmFmt(Math.abs(c.kmh))} ÷ 3,6) = `, fin];
     return { pregunta: b.enunciado, datos: b.datos, dibujo: b.dibujo, verificacion: c,
       opciones: [{ id: 'c', texto: `${cmFmt(b.resultado)} ${b.unidad}`, correcta: true }, ...b.errores.slice(0, 3).map(e => ({ id: e.id, texto: `${cmFmt(e.valor)} ${b.unidad}`, error: e.error, siFuera: e.siFuera }))],
-      solucion: { texto: 'Convertimos las unidades y usamos masa por velocidad. Para hallar una velocidad, despejamos antes de convertir el resultado.', ecuacion: cuenta },
+      solucion: { texto: 'Usamos la masa en kilogramos y la velocidad en metros por segundo. Si piden la velocidad en km/h, primero la despejamos y al final la convertimos.', ecuacion: cuenta },
     };
   }
   const cmReferencia = cmPar(2, 3), cmPredicho = cmPar(4, -1.5);
@@ -286,15 +307,15 @@
     actividad: 'Comparar dos carritos y ajustar la masa y la rapidez del segundo.',
     temas: ['Cantidad de movimiento'], pieza: 'fis-estatica',
     lee: { tarjetas: [
-      { titulo: 'Carrito y carga', texto: ['Estos son carritos de laboratorio. La masa ', cmM, ' incluye el carrito y su carga. Los números son datos de un ensayo ideal, vistos desde el suelo.'],
+      { titulo: 'Carrito y carga', texto: ['Estos carritos de laboratorio ruedan por una pista recta. Su masa ', cmM, ' incluye el carrito y la carga que lleva, y sus velocidades se miden desde el suelo, en un ensayo ideal.'],
         dibujo: cmFigura([{ nombre: 'A', m: 2, vx: 3 }, { nombre: 'B', m: 1, vx: 1 }]) },
-      { titulo: 'Rapidez y sentido', texto: ['La velocidad lleva una flecha: ', cmVec(cmV), '. En esta pista usamos su componente ', cmVX, ': positiva hacia la derecha y negativa hacia la izquierda. La rapidez es su módulo, sin signo.'] },
-      { titulo: 'Otra forma de describir movimiento', texto: ['La cantidad de movimiento se escribe ', cmVec(cmP), '. La medimos en kilogramos metro por segundo (kg·m/s). En el juego compararás su indicador al cambiar la masa y la rapidez.'] },
+      { titulo: 'Rapidez y sentido', texto: ['La velocidad ', cmVec(cmV), ' tiene tamaño y sentido, por eso se dibuja con una flecha. En esta pista basta un número con signo, su componente horizontal ', cmVX, ': es positiva hacia la derecha y negativa hacia la izquierda. La rapidez es ese número sin el signo.'] },
+      { titulo: 'Otra forma de describir movimiento', texto: ['La cantidad de movimiento se escribe ', cmVec(cmP), ' y se mide en kilogramos metro por segundo (kg·m/s). En el juego verás cómo cambia su indicador cuando cambias la masa y la rapidez de un carrito.'] },
     ] },
     ejemplos: EJEMPLOS_CANTIDAD,
     juega: {
       consigna: 'Dos carritos avanzan por pistas paralelas. A mantiene su masa y rapidez; tú eliges las de B.',
-      voz: 'Prueba distintas masas y rapideces. Los indicadores cambian junto al carrito.',
+      voz: 'Prueba distintas masas y rapideces: el indicador de cada carrito cambia a su lado.',
       controles: [
         { id: 'mB', etiqueta: 'Masa total de B', color: 'c-f', min: 1, max: 4, paso: 1, inicio: 1, unidad: 'kg', decimales: 0 },
         { id: 'vB', etiqueta: 'Rapidez de B hacia la derecha', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 1, unidad: 'm/s', decimales: 0 },
@@ -321,11 +342,11 @@
       revelar: cmFigura([{ nombre: 'A', ...cmReferencia }, { nombre: 'B', ...cmPredicho }], true),
       opciones: [
         { id: 'c', texto: cmPredTexto(cmPredicho.px), correcta: true },
-        { id: 'ignora-sentido', texto: cmPredTexto(-cmPredicho.px), error: 'CM-VECTOR', siFuera: 'Bien el módulo; mantuviste el sentido de A, pero B se mueve hacia la izquierda.' },
-        { id: 'solo-masa', texto: cmPredTexto(-2 * cmReferencia.px), error: 'CM-MASA', siFuera: `Bien duplicar la masa; ignoraste la menor rapidez. Así obtienes ${cmFmt(2 * cmReferencia.px)} kg·m/s.` },
-        { id: 'solo-rapidez', texto: cmPredTexto(-cmReferencia.px / 2), error: 'CM-RAPIDEZ', siFuera: `Bien reducir la rapidez; ignoraste la mayor masa. Así obtienes ${cmFmt(cmReferencia.px / 2)} kg·m/s.` },
+        { id: 'ignora-sentido', texto: cmPredTexto(-cmPredicho.px), error: 'CM-VECTOR', siFuera: 'Bien el módulo, pero le diste a B el sentido de A. B va hacia la izquierda, así que su componente es negativa.' },
+        { id: 'solo-masa', texto: cmPredTexto(-2 * cmReferencia.px), error: 'CM-MASA', siFuera: `Bien duplicar la masa, pero olvidaste que la rapidez se reduce a la mitad. Así sale ${cmFmt(2 * cmReferencia.px)} kg·m/s.` },
+        { id: 'solo-rapidez', texto: cmPredTexto(-cmReferencia.px / 2), error: 'CM-RAPIDEZ', siFuera: `Bien reducir la rapidez a la mitad, pero olvidaste que la masa se duplica. Así sale ${cmFmt(cmReferencia.px / 2)} kg·m/s.` },
       ],
-      coincide: 'Los módulos coinciden, pero los sentidos son opuestos. Las cantidades de movimiento vectoriales son distintas.',
+      coincide: 'A y B tienen el mismo módulo, 6 kg·m/s, pero sentidos opuestos, así que como vectores son distintas.',
     },
     mira: {
       pieza: 'fis-estatica',
@@ -335,17 +356,17 @@
         cmFigura([{ nombre: 'A', ...cmReferencia }, { nombre: 'B', ...cmPredicho }], true).datos,
       ], alt: 'Dos carritos con sentidos de movimiento opuestos.' },
       pasos: [
-        { estado: { corte: 0 }, texto: 'Elegimos derecha positiva: la velocidad de B lleva signo negativo.', ecuacion: [cmSub(cmV, 'B,x'), ' = −1,5 m/s'] },
-        { estado: { corte: 1 }, texto: 'Multiplicamos masa por velocidad para describir el movimiento de A.', ecuacion: [cmSub(cmP, 'A,x'), ` = 2 · 3 = ${cmFmt(cmReferencia.px)} kg·m/s`] },
-        { estado: { corte: 2 }, texto: 'Para B, la masa es positiva y la velocidad negativa.', ecuacion: [cmSub(cmP, 'B,x'), ` = 4 · (−1,5) = ${cmFmt(cmPredicho.px)} kg·m/s`] },
-        { estado: { corte: 2 }, texto: 'Igual tamaño no significa igual vector: aquí los sentidos son opuestos.', ecuacion: [cmP, ` = |${cmFmt(cmPredicho.px)}| = ${cmFmt(Math.abs(cmPredicho.px))} kg·m/s`] },
+        { estado: { corte: 0 }, texto: 'Elegimos la derecha como positiva, así que la velocidad de B, que va a la izquierda, lleva signo negativo.', ecuacion: [cmSub(cmV, 'B,x'), ' = −1,5 m/s'] },
+        { estado: { corte: 1 }, texto: 'La cantidad de movimiento de A es su masa por su velocidad.', ecuacion: [cmSub(cmP, 'A,x'), ` = 2 · 3 = ${cmFmt(cmReferencia.px)} kg·m/s`] },
+        { estado: { corte: 2 }, texto: 'Para B hacemos lo mismo: la masa es positiva y la velocidad negativa, así que el producto sale negativo.', ecuacion: [cmSub(cmP, 'B,x'), ` = 4 · (−1,5) = ${cmFmt(cmPredicho.px)} kg·m/s`] },
+        { estado: { corte: 2 }, texto: 'Los dos módulos son iguales, pero eso no hace iguales a los vectores: aquí apuntan en sentidos opuestos.', ecuacion: [cmP, ` = |${cmFmt(cmPredicho.px)}| = ${cmFmt(Math.abs(cmPredicho.px))} kg·m/s`] },
       ],
     },
     regla: {
-      texto: 'Multiplica la masa total por la velocidad. En una recta, la componente conserva el signo; el módulo no. Puedes despejar masa o velocidad, usando unidades compatibles.',
+      texto: 'La cantidad de movimiento es la masa total por la velocidad. En una recta, su componente lleva el signo de la velocidad, y su módulo es ese valor sin signo. De esa fórmula se despeja la masa o la velocidad, en kilogramos y m/s.',
       ecuacion: [cmVec(cmP), ' = ', cmM, ' · ', cmVec(cmV)],
-      condicion: 'La masa es positiva; pₓ = m·vₓ y p = |pₓ|. Todas las velocidades se miden desde el mismo observador.',
-      voz: 'Primero identifica el cuerpo completo, las unidades y el sentido del movimiento.',
+      condicion: 'todas las velocidades se miden desde el mismo observador; en la pista, pₓ = m·vₓ y el módulo es p = |pₓ|, porque la masa siempre es positiva.',
+      voz: 'Antes de multiplicar, mira qué cuerpo es, en qué unidades está y hacia dónde va.',
       dibujo: cmFigura([{ nombre: 'Carrito', ...cmPar(3, -2) }], true),
     },
     resuelve: { pieza: 'fis-estatica', generar: s => cmGenerar(s + 1, true) },
@@ -372,7 +393,7 @@
   // Herramientas, no el atajo del caso (auditoría, 26 nov): el área con signo y las dos áreas entre las que se elige.
   const icAreas = [[icIX, ' = área con signo bajo la gráfica de ', icF, ' frente a t.'], 'Área de un rectángulo: base · altura. Área de un triángulo: base · altura ÷ 2.'];
   function icError(lista, id, valor, causa, unidad) {
-    lista.push({ id, valor: icRed(valor), error: `IC-${id.toUpperCase()}`, siFuera: `${causa} Así sale ${icFmt(valor)} ${unidad}.` });
+    lista.push({ id, valor: icRed(valor), error: `IC-${id.toUpperCase()}`, siFuera: siFue(causa, `${icFmt(valor)} ${unidad}`), causa: causaDe(causa) });
   }
   function icErroresUnicos(caso) {
     const vistos = new Set([icFmt(caso.resultado)]);
@@ -439,10 +460,10 @@
     if (tipo === 'rect' || tipo === 'tri') {
       enunciado = [`La fuerza neta sobre una pelota tiene un pulso ${tri ? 'triangular, con pico de' : 'rectangular de'} `, icValor(c.F, 'N', 'h'), ' durante ', icValor(dt, 's', 'd'), '. ¿Cuál es su impulso horizontal?'];
       datos.push(...icAreas);
-      solucion.push({ texto: tri ? 'El área triangular es la mitad del rectángulo de igual base y altura.' : 'El área del rectángulo es fuerza por duración; conservamos el signo.', ecuacion: [icIX, ` = ${icN(c.F)} · ${icFmt(dt)}${tri ? ' ÷ 2' : ''} = `, icValor(I, unidad, color)] });
+      solucion.push({ texto: tri ? 'El impulso es el área del triángulo, que es la mitad del rectángulo con la misma base y altura.' : 'El impulso es el área del rectángulo: la fuerza por la duración, con el signo de la fuerza.', ecuacion: [icIX, ` = ${icN(c.F)} · ${icFmt(dt)}${tri ? ' ÷ 2' : ''} = `, icValor(I, unidad, color)] });
       add('signo', -I, 'Bien el área; invertiste su signo.');
-      add('sin-tiempo', c.F, 'Bien leer la fuerza; falta considerar la duración.');
-      add('divide-tiempo', c.F / dt, 'Bien usar ambos datos; dividiste entre la duración.');
+      add('sin-tiempo', c.F, 'Bien leer la fuerza; falta multiplicarla por la duración.');
+      add('divide-tiempo', c.F / dt, 'Bien usar ambos datos; dividiste la fuerza entre la duración.');
       add('doble', 2 * I, tri ? 'Bien la base y la altura; tomaste todo el rectángulo.' : 'Bien el producto; contaste dos pulsos iguales.');
       add('mitad', I / 2, tri ? 'Bien reconocer el triángulo; dividiste entre dos otra vez.' : 'Bien el área; tomaste la mitad de un rectángulo.');
     } else if (tipo === 'cambio' || tipo === 'fuerza' || tipo === 'fuerza-ms') {
@@ -451,44 +472,44 @@
       else resultado = I;
       enunciado = ['Una pelota de ', icValor(c.g == null ? m : c.g, c.g == null ? 'kg' : 'g', 'f'), ' pasa de ', icValor(vi, 'm/s', 'o'), ' a ', icValor(vf, 'm/s', 'o'),
         tipo === 'cambio' ? '. ¿Cuál es el impulso neto horizontal?' : [' en ', icValor(c.ms == null ? dt : c.ms, c.ms == null ? 's' : 'ms', 'd'), '. ¿Cuál es la fuerza neta media horizontal?']];
-      if (c.g != null || c.ms != null) { datos.push('1 kg = 1000 g; 1 s = 1000 ms.'); solucion.push({ texto: 'Convertimos la masa a kilogramos y la duración a segundos.', ecuacion: [icM, ` = ${icFmt(c.g)} ÷ 1000 = ${icFmt(m)} kg; Δt = ${icFmt(c.ms)} ÷ 1000 = ${icFmt(dt)} s`] }); }
-      solucion.push({ texto: 'Restamos velocidad final menos inicial, incluyendo los signos.', ecuacion: [icIX, ` = ${icFmt(m)} · (${icN(vf)} − ${icN(vi)}) = `, icValor(I, 'N·s', 'i')] });
-      if (tipo !== 'cambio') solucion.push({ texto: 'La fuerza media produce ese impulso durante todo el intervalo.', ecuacion: [icFM, ` = ${icN(I)} ÷ ${icFmt(dt)} = `, icValor(resultado, unidad, color)] });
+      if (c.g != null || c.ms != null) { datos.push('1 kg = 1000 g; 1 s = 1000 ms.'); solucion.push({ texto: 'Primero pasamos la masa a kilogramos y la duración a segundos.', ecuacion: [icM, ` = ${icFmt(c.g)} ÷ 1000 = ${icFmt(m)} kg; Δt = ${icFmt(c.ms)} ÷ 1000 = ${icFmt(dt)} s`] }); }
+      solucion.push({ texto: 'El impulso es la masa por el cambio de velocidad: la final menos la inicial, cada una con su signo.', ecuacion: [icIX, ` = ${icFmt(m)} · (${icN(vf)} − ${icN(vi)}) = `, icValor(I, 'N·s', 'i')] });
+      if (tipo !== 'cambio') solucion.push({ texto: 'La fuerza media es la que da ese impulso en todo el intervalo, así que dividimos el impulso entre la duración.', ecuacion: [icFM, ` = ${icN(I)} ÷ ${icFmt(dt)} = `, icValor(resultado, unidad, color)] });
       const divisor = tipo === 'cambio' ? 1 : dt;
       add('signo', -resultado, 'Bien restar las velocidades; cambiaste el orden.');
-      add('sin-masa', delta / divisor, 'Bien el cambio de velocidad; falta la masa.');
+      add('sin-masa', delta / divisor, 'Bien el cambio de velocidad; falta multiplicarlo por la masa.');
       add('suma-velocidades', m * (vf + vi) / divisor, 'Bien usar ambos estados; sumaste sus velocidades.');
       add('solo-final', m * vf / divisor, 'Bien usar el estado final; olvidaste el inicial.');
-      add('doble-masa', 2 * resultado, 'Bien el procedimiento; contaste dos veces la masa.');
+      add('doble-masa', 2 * resultado, 'Bien el planteamiento; contaste dos veces la masa.');
       if (tipo !== 'cambio') { add('sin-duracion', I, 'Bien hallar el impulso; falta dividir entre la duración.'); add('multiplica-duracion', I * dt, 'Bien hallar el impulso; multiplicaste por la duración.'); }
     } else if (tipo === 'final' || tipo === 'tramos') {
       resultado = vi + I / m; unidad = 'm/s'; color = 'o'; simbolo = icSub(icV, 'f,x');
       if (tipo === 'tramos') {
         enunciado = ['Una pelota de ', icValor(m, 'kg', 'f'), ' llega con ', icValor(vi, 'm/s', 'o'), '. Recibe ', icValor(c.F1, 'N', 'h'), ' durante ', icValor(c.dt1, 's', 'd'), ' y luego ', icValor(c.F2, 'N', 'h'), ' durante ', icValor(c.dt2, 's', 'd'), '. ¿Cuál es su velocidad final horizontal?'];
         datos.push('Cada fuerza neta es constante en su tramo; los impulsos se suman con signo.');
-        solucion.push({ texto: 'Sumamos los impulsos de los dos tramos, con sus signos.', ecuacion: [icIX, ` = ${icN(c.F1)} · ${icFmt(c.dt1)} + ${icN(c.F2)} · ${icFmt(c.dt2)} = `, icValor(I, 'N·s', 'i')] });
-        add('solo-primero', vi + c.F1 * c.dt1 / m, 'Bien calcular el primer pulso; falta el segundo.');
-        add('solo-segundo', vi + c.F2 * c.dt2 / m, 'Bien calcular el segundo pulso; falta el primero.');
-        add('modulos', vi + (Math.abs(c.F1 * c.dt1) + Math.abs(c.F2 * c.dt2)) / m, 'Bien las áreas; sumaste módulos sin sus signos.');
+        solucion.push({ texto: 'El impulso total es la suma de las áreas de los dos tramos, cada una con su signo.', ecuacion: [icIX, ` = ${icN(c.F1)} · ${icFmt(c.dt1)} + ${icN(c.F2)} · ${icFmt(c.dt2)} = `, icValor(I, 'N·s', 'i')] });
+        add('solo-primero', vi + c.F1 * c.dt1 / m, 'Bien calcular el primer pulso; falta sumar el segundo pulso.');
+        add('solo-segundo', vi + c.F2 * c.dt2 / m, 'Bien calcular el segundo pulso; falta sumar el primer pulso.');
+        add('modulos', vi + (Math.abs(c.F1 * c.dt1) + Math.abs(c.F2 * c.dt2)) / m, 'Bien las áreas; las sumaste sin sus signos.');
       } else {
         enunciado = ['Una pelota de ', icValor(m, 'kg', 'f'), ' llega con ', icValor(vi, 'm/s', 'o'), `. La fuerza neta forma un pulso ${tri ? 'triangular' : 'rectangular'} de `, icValor(c.F, 'N', 'h'), ' y ', icValor(dt, 's', 'd'), '. ¿Cuál es su velocidad final horizontal?'];
         datos.push(...icAreas);
-        solucion.push({ texto: 'Calculamos el impulso como el área con signo del pulso.', ecuacion: [icIX, ` = ${icN(c.F)} · ${icFmt(dt)}${tri ? ' ÷ 2' : ''} = `, icValor(I, 'N·s', 'i')] });
+        solucion.push({ texto: 'El impulso es el área del pulso, con el signo de la fuerza.', ecuacion: [icIX, ` = ${icN(c.F)} · ${icFmt(dt)}${tri ? ' ÷ 2' : ''} = `, icValor(I, 'N·s', 'i')] });
         if (tri) add('rectangulo', vi + 2 * I / m, 'Bien la fuerza máxima; tomaste el rectángulo completo.');
       }
       solucion.push({ texto: 'Dividimos el impulso entre la masa y lo sumamos a la velocidad inicial.', ecuacion: [simbolo, ` = ${icN(vi)} + ${icN(I)} ÷ ${icFmt(m)} = `, icValor(resultado, unidad, color)] });
-      add('sin-masa', vi + I, 'Bien incluir la velocidad inicial; falta dividir el impulso entre masa.');
-      add('sin-inicial', I / m, 'Bien hallar el cambio; falta la velocidad inicial.');
-      add('resta-impulso', vi - I / m, 'Bien dividir entre masa; restaste el cambio en vez de sumarlo.');
-      add('doble-impulso', vi + 2 * I / m, 'Bien el procedimiento; contaste dos veces el impulso.');
+      add('sin-masa', vi + I, 'Bien incluir la velocidad inicial; falta dividir el impulso entre la masa.');
+      add('sin-inicial', I / m, 'Bien hallar el cambio de velocidad; falta sumarle la velocidad inicial.');
+      add('resta-impulso', vi - I / m, 'Bien dividir entre la masa; restaste el cambio en vez de sumarlo.');
+      add('doble-impulso', vi + 2 * I / m, 'Bien el planteamiento; contaste dos veces el impulso.');
     } else if (tipo === 'tiempo' || tipo === 'tiempo-tri') {
       I = m * delta; resultado = I / c.F * (tri ? 2 : 1); unidad = 's'; color = 'd'; simbolo = icDT;
       enunciado = ['Una pelota de ', icValor(m, 'kg', 'f'), ' pasa de ', icValor(vi, 'm/s', 'o'), ' a ', icValor(vf, 'm/s', 'o'), ` con un pulso ${tri ? 'triangular' : 'rectangular'} de `, icValor(c.F, 'N', 'h'), '. ¿Cuánto dura el pulso?'];
       datos.push(...icAreas);
-      solucion.push({ texto: 'El impulso necesario sale de los estados inicial y final.', ecuacion: [icIX, ` = ${icFmt(m)} · (${icN(vf)} − ${icN(vi)}) = `, icValor(I, 'N·s', 'i')] });
-      solucion.push({ texto: tri ? 'La mitad de fuerza máxima por duración debe dar ese impulso.' : 'Despejamos la duración del producto fuerza por tiempo.', ecuacion: [icDT, ` = ${tri ? '2 · ' : ''}${icN(I)} ÷ ${icN(c.F)} = `, icValor(resultado, unidad, color)] });
+      solucion.push({ texto: 'El impulso que hace falta sale de la velocidad inicial y la final.', ecuacion: [icIX, ` = ${icFmt(m)} · (${icN(vf)} − ${icN(vi)}) = `, icValor(I, 'N·s', 'i')] });
+      solucion.push({ texto: tri ? 'En un pulso triangular, la mitad de la fuerza máxima por la duración debe dar ese impulso.' : 'Como el impulso es la fuerza por la duración, despejamos la duración.', ecuacion: [icDT, ` = ${tri ? '2 · ' : ''}${icN(I)} ÷ ${icN(c.F)} = `, icValor(resultado, unidad, color)] });
       add('signo', -resultado, 'Bien el tamaño; una duración no puede ser negativa.');
-      add('sin-masa', delta / c.F * (tri ? 2 : 1), 'Bien el cambio de velocidad; falta multiplicar por masa.');
+      add('sin-masa', delta / c.F * (tri ? 2 : 1), 'Bien el cambio de velocidad; falta multiplicar por la masa.');
       add('inversa', c.F / I, 'Bien usar fuerza e impulso; invertiste el cociente.');
       add('doble', 2 * resultado, 'Bien despejar; duplicaste otra vez la duración.');
       add('mitad', resultado / 2, tri ? 'Bien usar el área; olvidaste que el pulso es triangular.' : 'Bien despejar; redujiste a la mitad un pulso rectangular.');
@@ -540,11 +561,11 @@
     if (tipo === 'total') {
       resultado = pi; unidad = 'kg·m/s'; color = 'i'; simbolo = icPT;
       enunciado = [...masas, 'En el mismo instante, sus velocidades horizontales son ', icValor(ua, 'm/s', 'o'), ' y ', icValor(ub, 'm/s', 'o'), '. ¿Cuál es la cantidad de movimiento horizontal total?'];
-      solucion.push({ texto: 'Calculamos cada componente y las sumamos con sus signos.', ecuacion: [icPT, ` = ${icFmt(ma)} · ${icN(ua)} + ${icFmt(mb)} · ${icN(ub)} = `, icValor(resultado, unidad, color)] });
-      add('modulos', Math.abs(ma * ua) + Math.abs(mb * ub), 'Bien las masas; sumaste módulos en vez de componentes.');
-      add('sin-masas', ua + ub, 'Bien los sentidos; sumaste velocidades sin las masas.');
-      add('solo-a', ma * ua, 'Bien calcular A; falta la contribución de B.');
-      add('solo-b', mb * ub, 'Bien calcular B; falta la contribución de A.');
+      solucion.push({ texto: 'Calculamos la cantidad de movimiento de cada carrito y las sumamos con sus signos.', ecuacion: [icPT, ` = ${icFmt(ma)} · ${icN(ua)} + ${icFmt(mb)} · ${icN(ub)} = `, icValor(resultado, unidad, color)] });
+      add('modulos', Math.abs(ma * ua) + Math.abs(mb * ub), 'Bien las masas; sumaste las cantidades de movimiento sin sus signos.');
+      add('sin-masas', ua + ub, 'Bien los sentidos; sumaste las velocidades sin multiplicarlas por las masas.');
+      add('solo-a', ma * ua, 'Bien calcular lo que aporta A; falta sumar lo que aporta B.');
+      add('solo-b', mb * ub, 'Bien calcular lo que aporta B; falta sumar lo que aporta A.');
       add('signo', -pi, 'Bien los productos; invertiste el sentido del total.');
       add('masas-cruzadas', ma * ub + mb * ua, 'Bien usar dos masas; cambiaste sus velocidades de cuerpo.');
     } else if (tipo === 'diagnostico' || tipo === 'fuerza-sistema') {
@@ -555,15 +576,15 @@
       enunciado = [...masas, 'Antes: ', icValor(ua, 'm/s', 'o'), ' y ', icValor(ub, 'm/s', 'o'), '; después: ', icValor(va, 'm/s', 'o'), ' y ', icValor(c.vB, 'm/s', 'o'), ', respectivamente. ',
         tipo === 'diagnostico' ? '¿Cuál fue el impulso externo horizontal sobre el sistema?' : ['El cambio dura ', icValor(c.dt, 's', 'd'), '. ¿Cuál fue la fuerza externa media horizontal?']];
       if (tipo === 'fuerza-sistema') datos.push([icIE, ' = F_ext,media,x · Δt.']);
-      solucion.push({ texto: 'Calculamos la suma al inicio y al final para los mismos cuerpos.', ecuacion: [`P_i,x = ${icFmt(ma)} · ${icN(ua)} + ${icFmt(mb)} · ${icN(ub)} = ${icFmt(pi)} kg·m/s; P_f,x = ${icFmt(ma)} · ${icN(va)} + ${icFmt(mb)} · ${icN(c.vB)} = ${icFmt(pf)} kg·m/s`] });
-      solucion.push({ texto: 'La diferencia entre los totales es el impulso externo, no el de un solo carrito.', ecuacion: [icIE, ` = ${icN(pf)} − ${icN(pi)} = ${icFmt(pf - pi)} N·s`] });
-      if (tipo === 'fuerza-sistema') solucion.push({ texto: 'Dividimos el impulso externo entre la duración.', ecuacion: [simbolo, ` = ${icN(pf - pi)} ÷ ${icFmt(c.dt)} = `, icValor(resultado, unidad, color)] });
+      solucion.push({ texto: 'Calculamos el total al inicio y al final, con los mismos carritos.', ecuacion: [`P_i,x = ${icFmt(ma)} · ${icN(ua)} + ${icFmt(mb)} · ${icN(ub)} = ${icFmt(pi)} kg·m/s; P_f,x = ${icFmt(ma)} · ${icN(va)} + ${icFmt(mb)} · ${icN(c.vB)} = ${icFmt(pf)} kg·m/s`] });
+      solucion.push({ texto: 'El impulso externo es el total final menos el inicial, y vale para el sistema, no para un carrito.', ecuacion: [icIE, ` = ${icN(pf)} − ${icN(pi)} = ${icFmt(pf - pi)} N·s`] });
+      if (tipo === 'fuerza-sistema') solucion.push({ texto: 'La fuerza externa media es ese impulso dividido entre la duración.', ecuacion: [simbolo, ` = ${icN(pf - pi)} ÷ ${icFmt(c.dt)} = `, icValor(resultado, unidad, color)] });
       const d = tipo === 'diagnostico' ? 1 : c.dt;
-      add('signo', -resultado, 'Bien comparar estados; restaste inicial menos final.');
+      add('signo', -resultado, 'Bien comparar los dos estados; restaste el total inicial menos el final.');
       add('solo-final', pf / d, 'Bien hallar el total final; falta restar el inicial.');
-      add('solo-a', ma * (va - ua) / d, 'Bien el cambio de A; falta el de B.');
+      add('solo-a', ma * (va - ua) / d, 'Bien el cambio de A; falta sumar el cambio de B.');
       add('suma-estados', (pf + pi) / d, 'Bien los totales; sumaste en vez de restar.');
-      add('doble', 2 * resultado, 'Bien el balance; contaste dos veces su diferencia.');
+      add('doble', 2 * resultado, 'Bien comparar los totales; contaste dos veces su diferencia.');
     } else {
       const esTres = tipo === 'tres', aporte = ma * va + (esTres ? mb * c.vB : 0), divisor = esTres ? c.mC : mb;
       resultado = (pi + ie - aporte) / divisor;
@@ -579,24 +600,24 @@
         enunciado = [...masas, 'Antes llevan ', icValor(c.uA, c.enKmh ? 'km/h' : 'm/s', 'o'), ' y ', icValor(c.uB, c.enKmh ? 'km/h' : 'm/s', 'o'), '. Después, A lleva ', icValor(c.vA, c.enKmh ? 'km/h' : 'm/s', 'o'), '. ',
           c.Fext != null ? ['La fuerza externa neta es ', icValor(c.Fext, 'N', 'h'), ' durante ', icValor(c.dt, 's', 'd'), '. '] : c.Iext != null ? ['El impulso externo es ', icValor(c.Iext, 'N·s', 'i'), '. '] : 'El impulso externo horizontal es despreciable. ', '¿Qué velocidad horizontal final tiene B?'];
       }
-      if (c.gA != null) { datos.push('1 kg = 1000 g.'); solucion.push({ texto: 'Expresamos la masa de A en kilogramos.', ecuacion: [`m_A = ${icFmt(c.gA)} ÷ 1000 = ${icFmt(ma)} kg`] }); }
-      if (c.enKmh) { datos.push('1 km = 1000 m; 1 h = 3600 s.'); solucion.push({ texto: 'Convertimos las tres velocidades dadas a metros por segundo.', ecuacion: [`u_A,x = ${icN(c.uA)} ÷ 3,6 = ${icFmt(ua)} m/s; u_B,x = ${icN(c.uB)} ÷ 3,6 = ${icFmt(ub)} m/s; v_A,x = ${icN(c.vA)} ÷ 3,6 = ${icFmt(va)} m/s`] }); }
+      if (c.gA != null) { datos.push('1 kg = 1000 g.'); solucion.push({ texto: 'Primero pasamos la masa de A de gramos a kilogramos.', ecuacion: [`m_A = ${icFmt(c.gA)} ÷ 1000 = ${icFmt(ma)} kg`] }); }
+      if (c.enKmh) { datos.push('1 km = 1000 m; 1 h = 3600 s.'); solucion.push({ texto: 'Primero pasamos las tres velocidades dadas de km/h a metros por segundo.', ecuacion: [`u_A,x = ${icN(c.uA)} ÷ 3,6 = ${icFmt(ua)} m/s; u_B,x = ${icN(c.uB)} ÷ 3,6 = ${icFmt(ub)} m/s; v_A,x = ${icN(c.vA)} ÷ 3,6 = ${icFmt(va)} m/s`] }); }
       if (c.Fext != null) datos.push('La fuerza externa neta es constante: I_ext,x = F_ext,x · Δt.');
       const cuentaI = `${icFmt(ma)} · ${icN(ua)} + ${icFmt(mb)} · ${icN(ub)}${esTres ? ` + ${icFmt(c.mC)} · ${icN(c.uC)}` : ''}`;
-      if (ie === 0) solucion.push({ texto: 'Sumamos las cantidades de movimiento antes del cambio. Sin impulso externo apreciable, el total final es el mismo.', ecuacion: [`P_f,x = P_i,x = ${cuentaI} = ${icFmt(pi)} kg·m/s`] });
-      else solucion.push({ texto: 'Sumamos las cantidades de movimiento antes del cambio.', ecuacion: [`P_i,x = ${cuentaI} = ${icFmt(pi)} kg·m/s`] },
+      if (ie === 0) solucion.push({ texto: 'Sumamos las cantidades de movimiento de antes. Como no llega impulso desde fuera, el total final es el mismo.', ecuacion: [`P_f,x = P_i,x = ${cuentaI} = ${icFmt(pi)} kg·m/s`] });
+      else solucion.push({ texto: 'Sumamos las cantidades de movimiento de antes.', ecuacion: [`P_i,x = ${cuentaI} = ${icFmt(pi)} kg·m/s`] },
         { texto: 'Sumamos al total inicial el impulso externo que entra al sistema.', ecuacion: [`P_f,x = ${icN(pi)} + ${icN(ie)} = ${icFmt(pi + ie)} kg·m/s`] });
       const cuentaAporte = esTres ? `(${icFmt(ma)} · ${icN(va)} + ${icFmt(mb)} · ${icN(c.vB)})` : `${icFmt(ma)} · ${icN(va)}`;
-      solucion.push({ texto: esTres ? 'Al total final le restamos lo que aportan A y B después, y dividimos entre la masa de C.' : 'Al total final le restamos lo que aporta A después, y dividimos entre la masa de B.', ecuacion: [simbolo, ` = (${icN(pi + ie)} − ${cuentaAporte}) ÷ ${icFmt(divisor)} = `, icValor(resultado, unidad, color)] });
+      solucion.push({ texto: esTres ? 'Al total final le restamos lo que aportan A y B después; lo que queda lo aporta C, así que lo dividimos entre su masa.' : 'Al total final le restamos lo que aporta A después; lo que queda lo aporta B, así que lo dividimos entre su masa.', ecuacion: [simbolo, ` = (${icN(pi + ie)} − ${cuentaAporte}) ÷ ${icFmt(divisor)} = `, icValor(resultado, unidad, color)] });
       add('signo', -resultado, 'Bien el tamaño; invertiste el sentido de la velocidad.');
-      add('sin-dividir', pi + ie - aporte, 'Bien hallar la componente pendiente; falta dividir entre masa.');
-      add('suma-conocido', (pi + ie + aporte) / divisor, 'Bien el total; sumaste la contribución conocida en vez de restarla.');
-      add('misma', va, 'Bien leer la velocidad de A; no tiene que repetirse en el otro cuerpo.');
-      add('sin-externo', (pi - aporte) / divisor, 'Bien el balance interno; omitiste el impulso externo.');
-      add('total-cero', -aporte / divisor, 'Bien compensar; supusiste que el total inicial siempre es cero.');
-      add('aporte-doble', (pi + ie - 2 * aporte) / divisor, 'Bien el total; restaste dos veces la contribución conocida.');
+      add('sin-dividir', pi + ie - aporte, 'Bien hallar la cantidad de movimiento que debe aportar; olvidaste dividir entre su masa.');
+      add('suma-conocido', (pi + ie + aporte) / divisor, 'Bien el total; sumaste el aporte conocido en vez de restarlo.');
+      add('misma', va, 'Bien leer la velocidad de A; copiaste esa misma velocidad en el otro carrito.');
+      add('sin-externo', (pi - aporte) / divisor, 'Bien sumar los carritos; omitiste el impulso externo.');
+      add('total-cero', -aporte / divisor, 'Bien restar lo que ya se conoce; supusiste que el total inicial siempre es cero.');
+      add('aporte-doble', (pi + ie - 2 * aporte) / divisor, 'Bien el total; restaste dos veces el aporte conocido.');
       add('masa-doble', resultado / 2, 'Bien despejar; contaste dos veces la masa del cuerpo buscado.');
-      if (esTres) add('sin-b', (pi - ma * va) / divisor, 'Bien la contribución de A; falta la de B.');
+      if (esTres) add('sin-b', (pi - ma * va) / divisor, 'Bien el aporte de A; falta sumar el aporte de B.');
     }
     resultado = icRed(resultado);
     const dibujo = icSistemaFigura({ ...c, dadoVB: tipo === 'diagnostico' || tipo === 'fuerza-sistema' });
@@ -649,7 +670,7 @@
         if (errores.length !== 4) throw new Error('Faltan errores distintos: ' + c.titulo);
         const opciones = errores.map(x => `${icFmt(x.valor)} ${b.unidad}`);
         opciones.splice(letra++, 0, `${icFmt(b.resultado)} ${b.unidad}`); e.alternativas = opciones;
-        e.solucion.push({ texto: errores.map(x => `${icFmt(x.valor)}: ${x.siFuera.split(' Así sale ')[0].replace(/^Bien [^;]+; /, '')}`).join(' ') });
+        e.solucion.push({ texto: lasOtras(errores.map(x => ({ n: icFmt(x.valor), c: IC_CORTO[`${b.verificacion.familia}:${x.id}`] || IC_CORTO[x.id] || x.causa }))) });
       }
       return e;
     });
@@ -685,14 +706,14 @@
   }
   function icResuelve(b) {
     return { enunciado: b.enunciado, datos: b.datos, dibujo: b.dibujo, respuesta: b.respuesta, verificacion: b.verificacion,
-      pasos: [{ tipo: 'pide', texto: b.verificacion.familia === 'impulso' ? 'Identificamos la magnitud que se pide y el cuerpo al que pertenece.' : 'Identificamos la magnitud que se pide y el sistema al que pertenece.' },
-        { tipo: 'regla', texto: b.verificacion.familia === 'impulso' ? 'El impulso neto es el cambio de cantidad de movimiento.' : 'La suma del sistema cambia según el impulso que recibe desde fuera.' },
+      pasos: [{ tipo: 'pide', texto: b.verificacion.familia === 'impulso' ? 'Vemos qué magnitud piden y de qué cuerpo es.' : 'Vemos qué magnitud piden y qué cuerpos forman el sistema.' },
+        { tipo: 'regla', texto: b.verificacion.familia === 'impulso' ? 'El impulso neto es igual al cambio de la cantidad de movimiento del cuerpo.' : 'La cantidad de movimiento total solo cambia por el impulso que llega desde fuera del sistema.' },
         ...b.solucion.map(s => ({ tipo: 'cuentas', ...s })),
-        { tipo: 'sentido', texto: b.unidad === 's' ? 'La duración es positiva; el signo del impulso lo da la fuerza.' : 'El signo indica el sentido horizontal. No sustituimos una componente por su módulo.' }] };
+        { tipo: 'sentido', texto: b.unidad === 's' ? 'La duración es positiva; el signo del impulso lo da la fuerza.' : 'El signo indica el sentido en la horizontal, así que la respuesta lo conserva y no se reemplaza por el módulo.' }] };
   }
   function icAhora(b) {
     return { pregunta: b.enunciado, datos: b.datos, dibujo: b.dibujo, opciones: icOpciones(b), verificacion: b.verificacion,
-      solucion: { texto: 'El balance usa los signos y las unidades del mismo eje.', ecuacion: [icCuentaDirecta(b.verificacion), ' = ', icValor(b.resultado, b.unidad, b.color)] } };
+      solucion: { texto: 'Planteamos el balance con todas las velocidades y fuerzas en el mismo eje, cada una con su signo, y en kilogramos, metros y segundos.', ecuacion: [icCuentaDirecta(b.verificacion), ' = ', icValor(b.resultado, b.unidad, b.color)] } };
   }
   // La solución breve conserva todos los datos originales, incluidas las conversiones.
   function icCuentaDirecta(c) {
@@ -824,7 +845,7 @@
     let resultado, unidad = 'm/s', color = 'o', simbolo = crS(crV, 'f'), enunciado, dibujo;
     let datos = [], motivo;
     const agrega = (id, valor, frase) => {
-      if (Number.isFinite(valor)) errores.push({ id, valor, error: `CH-${id.toUpperCase()}`, siFuera: `${frase} Sale ${crValor(valor, unidad)}.` });
+      if (Number.isFinite(valor)) errores.push({ id, valor, error: `CH-${id.toUpperCase()}`, siFuera: siFue(frase, crValor(valor, unidad)), causa: causaDe(frase) });
     };
     const eq = (texto, ecuacion) => pasos.push({ texto, ecuacion });
     if (['union', 'perdida', 'subida', 'frenado'].includes(c.tipo)) {
@@ -832,44 +853,44 @@
       datos = [crCond, crDatosP, 'A y B son los carritos; i indica antes y f después del choque.'];
       const entrada = ['A, de ', crQ('f', `${crF(c.a)} kg`), ', llega con ', crQ('o', `${crF(c.u)} m/s`), '; B, de ', crQ('f', `${crF(c.b)} kg`), ', con ', crQ('o', `${crF(c.w)} m/s`), '. Quedan unidos. '];
       dibujo = crCarros(c, { extra: c.tipo === 'subida' ? 'Luego suben por una rampa lisa.' : c.tipo === 'frenado' ? 'Frenan en una pista horizontal rugosa.' : 'Los acoples quedan unidos.' });
-      eq('La cantidad de movimiento total fija la velocidad conjunta.', crIgual(crS(crV, 'f'), `(${nP}) ÷ ${crF(q.M)}`, q.V, 'm/s'));
+      eq('Los carritos salen unidos: la cantidad de movimiento total dividida entre la masa de los dos da su velocidad.', crIgual(crS(crV, 'f'), `(${nP}) ÷ ${crF(q.M)}`, q.V, 'm/s'));
       if (c.tipo === 'union') {
         resultado = q.V; enunciado = [...entrada, '¿Cuál es su velocidad conjunta?'];
         motivo = 'El signo indica el sentido; ambos carritos comparten esta velocidad.';
-        agrega('sin-b', c.a * c.u / q.M, 'Bien sumar masas; omitiste el movimiento de B.');
-        agrega('rapideces', (c.a * Math.abs(c.u) + c.b * Math.abs(c.w)) / q.M, 'Bien ponderar masas; sumaste rapideces sin sentidos.');
-        agrega('solo-masa-a', q.P / c.a, 'Bien sumar cantidades de movimiento; dividiste entre una sola masa.');
-        agrega('promedio', (c.u + c.w) / 2, 'Bien considerar ambas velocidades; calculaste su promedio simple.');
-        agrega('sin-dividir', q.P, 'Bien sumar cantidades de movimiento; falta dividir entre la masa total.');
+        agrega('sin-b', c.a * c.u / q.M, 'Bien sumar las masas; omitiste el movimiento de B.');
+        agrega('rapideces', (c.a * Math.abs(c.u) + c.b * Math.abs(c.w)) / q.M, 'Bien usar las masas; sumaste las rapideces sin sus signos.');
+        agrega('solo-masa-a', q.P / c.a, 'Bien sumar las cantidades de movimiento; dividiste entre una sola masa.');
+        agrega('promedio', (c.u + c.w) / 2, 'Bien considerar ambas velocidades; las promediaste sin tener en cuenta las masas.');
+        agrega('sin-dividir', q.P, 'Bien sumar las cantidades de movimiento; falta dividir entre la masa total.');
         agrega('signo', -q.V, 'Bien el módulo; invertiste el sentido final.');
-        agrega('doble-masa', q.P / (2 * q.M), 'Bien sumar masas; duplicaste el divisor.');
+        agrega('doble-masa', q.P / (2 * q.M), 'Bien sumar las masas; dividiste entre el doble de la masa total.');
       } else if (c.tipo === 'perdida') {
         resultado = q.perdida; unidad = 'J'; color = 'tinta'; simbolo = 'E_transformada';
         enunciado = [...entrada, '¿Cuánta energía cinética se transforma durante el choque?'];
         datos.push(crDatosK);
-        eq('Sumamos las energías cinéticas anteriores al choque.', crIgual(crS(crEC, 'i'), `½·${crF(c.a)}·${crN(c.u)}² + ½·${crF(c.b)}·${crN(c.w)}²`, q.Ki, 'J', 'tinta'));
-        eq('La energía que falta ya no es energía cinética del conjunto.', crIgual(simbolo, `${crF(q.Ki)} − ½·${crF(q.M)}·${crN(q.V)}²`, resultado, 'J', 'tinta', !crExacto(q.V)));
+        eq('Sumamos las energías cinéticas de los dos carritos antes del choque.', crIgual(crS(crEC, 'i'), `½·${crF(c.a)}·${crN(c.u)}² + ½·${crF(c.b)}·${crN(c.w)}²`, q.Ki, 'J', 'tinta'));
+        eq('Le restamos la energía cinética de los carritos unidos; esa diferencia es la que se transformó.', crIgual(simbolo, `${crF(q.Ki)} − ½·${crF(q.M)}·${crN(q.V)}²`, resultado, 'J', 'tinta', !crExacto(q.V)));
         motivo = 'La cantidad de movimiento se conserva; parte de la energía cinética cambia de forma.';
         agrega('energia-inicial', q.Ki, 'Bien hallar la energía inicial; no restaste la final.');
-        agrega('energia-final', q.Kf, 'Bien hallar la energía final; preguntan por la transformada.');
+        agrega('energia-final', q.Kf, 'Bien hallar la energía final; piden la energía transformada, no la que queda.');
         agrega('resta-invertida', -q.perdida, 'Bien comparar energías; invertiste la resta.');
-        agrega('masa-total-relativa', q.M * (c.u - c.w) ** 2 / 2, 'Bien usar la rapidez relativa; usaste toda la masa.');
-        agrega('solo-a-relativa', c.a * (c.u - c.w) ** 2 / 2, 'Bien usar la rapidez relativa; omitiste la masa receptora.');
+        agrega('masa-total-relativa', q.M * (c.u - c.w) ** 2 / 2, 'Bien usar la rapidez relativa; la multiplicaste por la masa de los dos carritos.');
+        agrega('solo-a-relativa', c.a * (c.u - c.w) ** 2 / 2, 'Bien usar la rapidez relativa; la multiplicaste solo por la masa de A.');
       } else {
         const g = 10, factor = c.tipo === 'frenado' ? c.mu : 1;
         resultado = q.V * q.V / (2 * g * factor); unidad = 'm'; color = 'tinta'; simbolo = c.tipo === 'subida' ? 'h' : 'd';
         enunciado = [...entrada, c.tipo === 'subida' ? 'Luego ascienden sin rozamiento. ¿Qué altura máxima alcanzan?' : `Luego frenan con μ = ${crF(c.mu)}. ¿Qué distancia recorren hasta detenerse?`];
         datos.push(c.tipo === 'frenado' ? 'g = 10 m/s² (aproximación). Con ruedas bloqueadas, los carritos deslizan sobre una pista horizontal.' : 'g = 10 m/s² (aproximación del ejercicio).');
         datos.push(c.tipo === 'subida' ? '½·M·v_f² = M·g·h, después del choque; M es la masa conjunta.' : '½·M·v_f² = μ·M·g·d; M es la masa conjunta y μ, el coeficiente de rozamiento cinético.');
-        eq(c.tipo === 'subida' ? 'Después del choque, la energía cinética se transforma en energía potencial.' : 'Después del choque, el rozamiento retira la energía cinética restante.',
+        eq(c.tipo === 'subida' ? 'Después del choque, la energía cinética de los carritos unidos se convierte en energía potencial al subir.' : 'Después del choque, el rozamiento quita la energía cinética que les queda hasta detenerlos.',
           crIgual(simbolo, `${crN(q.V)}² ÷ (2·${crF(g)}${factor !== 1 ? `·${crF(factor)}` : ''})`, resultado, 'm', 'tinta', !crExacto(q.V)));
         motivo = 'Se separan dos intervalos: el impacto y el movimiento posterior.';
-        agrega('velocidad-llegada', c.u * c.u / (2 * g * factor), 'Bien usar energía después; conservaste la velocidad de llegada.');
-        agrega('sin-mitad', q.V * q.V / (g * factor), 'Bien elevar la velocidad; omitiste el factor dos.');
+        agrega('velocidad-llegada', c.u * c.u / (2 * g * factor), 'Bien usar la energía después del choque; tomaste la velocidad de A antes de unirse.');
+        agrega('sin-mitad', q.V * q.V / (g * factor), 'Bien elevar la velocidad al cuadrado; olvidaste dividir entre dos.');
         agrega('sin-cuadrado', Math.abs(q.V) / (2 * g * factor), 'Bien usar la velocidad conjunta; faltó elevarla al cuadrado.');
-        agrega('energia-antes', q.Ki / (q.M * g * factor), 'Bien convertir energía; conservaste la energía cinética durante la adhesión.');
-        agrega('masa-extra', q.V * q.V / (2 * q.M * g * factor), 'Bien incluir ambas masas; faltó cancelarlas en la ecuación.');
-        if (factor !== 1) agrega('sin-roce', q.V * q.V / (2 * g), 'Bien separar el impacto; omitiste el coeficiente de rozamiento.');
+        agrega('energia-antes', q.Ki / (q.M * g * factor), 'Bien pasar a la energía final; supusiste que la unión no transforma energía cinética.');
+        agrega('masa-extra', q.V * q.V / (2 * q.M * g * factor), 'Bien incluir ambas masas; olvidaste que se cancelan a los dos lados.');
+        if (factor !== 1) agrega('sin-roce', q.V * q.V / (2 * g), 'Bien separar el choque del frenado; omitiste el coeficiente de rozamiento.');
       }
     } else if (['elastico-a', 'elastico-b', 'restitucion-a', 'restitucion-b'].includes(c.tipo)) {
       const esE = c.tipo.startsWith('elastico'), e = esE ? 1 : c.e, q = crImpacto(c, e), esA = c.tipo.endsWith('-a');
@@ -879,32 +900,32 @@
       datos = [crCond, 'A está a la izquierda de B; i indica antes y f después.',
         'm_A·v_A,i + m_B·v_B,i = m_A·v_A,f + m_B·v_B,f.',
         esE ? 'Choque elástico frontal: v_B,f − v_A,f = v_A,i − v_B,i.' : crDatosE];
-      eq('La cantidad de movimiento total se conserva en el choque.', crIgual(crS(crP, 'total,x'), `${crF(c.a)}·${crN(c.u)} + ${crF(c.b)}·${crN(c.w)}`, q.P, 'kg·m/s', 'i'));
-      eq(esE ? 'En el choque elástico, se separan con la rapidez relativa con que se acercaban.' : 'La separación final es e veces el acercamiento inicial.', crIgual([crS(crV, 'B,f'), ' − ', crS(crV, 'A,f')], `${esE ? '' : `${crF(e)}·`}(${crN(c.u)} − ${crN(c.w)})`, q.r, 'm/s'));
+      eq('Primero, la cantidad de movimiento total antes del choque, que es la misma después.', crIgual(crS(crP, 'total,x'), `${crF(c.a)}·${crN(c.u)} + ${crF(c.b)}·${crN(c.w)}`, q.P, 'kg·m/s', 'i'));
+      eq(esE ? 'En un choque elástico, se separan tan rápido como se acercaban.' : 'Se separan e veces tan rápido como se acercaban.', crIgual([crS(crV, 'B,f'), ' − ', crS(crV, 'A,f')], `${esE ? '' : `${crF(e)}·`}(${crN(c.u)} − ${crN(c.w)})`, q.r, 'm/s'));
       const expr = esA ? `(${crF(q.P)} − ${crF(c.b)}·${crF(q.r)}) ÷ ${crF(q.M)}` : `(${crF(q.P)} + ${crF(c.a)}·${crF(q.r)}) ÷ ${crF(q.M)}`;
       eq(esA ? `Reemplazamos v_B,f = v_A,f + ${crF(q.r)} en ${crF(q.P)} = ${crF(c.a)}·v_A,f + ${crF(c.b)}·v_B,f y despejamos v_A,f.`
         : `Reemplazamos v_A,f = v_B,f − ${crF(q.r)} en ${crF(q.P)} = ${crF(c.a)}·v_A,f + ${crF(c.b)}·v_B,f y despejamos v_B,f.`, crIgual(simbolo, expr, resultado, unidad));
       motivo = 'La solución corresponde a cuerpos que se separan después de acercarse.';
       const union = q.P / q.M;
-      agrega('adhesion', union, 'Bien conservar cantidad de movimiento; impusiste una velocidad común.');
-      agrega('intercambio', esA ? q.vb : q.va, 'Bien hallar ambas salidas; intercambiaste los cuerpos.');
-      agrega('sin-interaccion', esA ? c.u : c.w, 'Bien conservar el total; elegiste la solución sin interacción.');
-      agrega('piso-fijo', esA ? -e * c.u : e * c.u, 'Bien usar el rebote; trataste al otro carrito como piso fijo.');
+      agrega('adhesion', union, 'Bien conservar la cantidad de movimiento; supusiste que los carritos quedan unidos.');
+      agrega('intercambio', esA ? q.vb : q.va, 'Bien hallar ambas salidas; diste la velocidad del otro carrito.');
+      agrega('sin-interaccion', esA ? c.u : c.w, 'Bien conservar el total; dejaste la velocidad que tenía antes del choque.');
+      agrega('piso-fijo', esA ? -e * c.u : e * c.u, 'Bien usar el rebote; multiplicaste e por la llegada de A, como si el otro carrito fuera un piso fijo.');
       agrega('signo-final', -resultado, 'Bien el módulo; invertiste el sentido final.');
-      if (!esE) agrega('elasticidad', esA ? crImpacto(c, 1).va : crImpacto(c, 1).vb, 'Bien conservar cantidad de movimiento; supusiste elasticidad perfecta.');
-      else agrega('media-separacion', esA ? (q.P - c.b * q.r / 2) / q.M : (q.P + c.a * q.r / 2) / q.M, 'Bien usar la separación; redujiste su rapidez a la mitad.');
+      if (!esE) agrega('elasticidad', esA ? crImpacto(c, 1).va : crImpacto(c, 1).vb, 'Bien conservar la cantidad de movimiento; supusiste un choque elástico, con e = 1.');
+      else agrega('media-separacion', esA ? (q.P - c.b * q.r / 2) / q.M : (q.P + c.a * q.r / 2) / q.M, 'Bien usar la separación; tomaste solo la mitad de su rapidez.');
     } else if (c.tipo === 'e-relativo') {
       resultado = (c.vb - c.va) / (c.u - c.w); unidad = ''; color = 'tinta'; simbolo = crE;
       enunciado = [`Antes del choque, A lleva ${crF(c.u)} m/s y B ${crF(c.w)} m/s. Después, llevan ${crF(c.va)} m/s y ${crF(c.vb)} m/s, respectivamente. ¿Cuál es el coeficiente de restitución?`];
       datos = ['A está a la izquierda de B; derecha positiva. i indica antes y f después.', crDatosE];
       dibujo = crCarros({ a: c.a || 1, b: c.b || 2, u: c.u, w: c.w }, { extra: `Después: A ${crF(c.va)}; B ${crF(c.vb)} m/s.` });
-      eq('Restamos velocidades del mismo observador antes de formar el cociente.', crIgual(crE, `(${crN(c.vb)} − ${crN(c.va)}) ÷ (${crN(c.u)} − ${crN(c.w)})`, resultado, '', 'tinta'));
+      eq('Restamos las velocidades para saber cuán rápido se separan y cuán rápido se acercaban, y dividimos.', crIgual(crE, `(${crN(c.vb)} − ${crN(c.va)}) ÷ (${crN(c.u)} − ${crN(c.w)})`, resultado, '', 'tinta'));
       motivo = 'El cociente no tiene unidad y corresponde a un impacto pasivo.';
-      agrega('velocidad-sola', c.vb / c.u, 'Bien formar un cociente; usaste velocidades de cuerpos distintos.');
-      agrega('otro-cuerpo', Math.abs(c.va / c.u), 'Bien comparar antes y después; omitiste el movimiento de B.');
+      agrega('velocidad-sola', c.vb / c.u, 'Bien formar un cociente; dividiste la velocidad final de B entre la inicial de A, sin restar.');
+      agrega('otro-cuerpo', Math.abs(c.va / c.u), 'Bien comparar antes y después; dividiste solo las velocidades de A y dejaste fuera a B.');
       agrega('inversa', 1 / resultado, 'Bien hallar las rapideces relativas; invertiste el cociente.');
-      agrega('suma-llegadas', (c.vb - c.va) / (c.u + c.w), 'Bien hallar la separación; sumaste las velocidades de llegada.');
-      agrega('orden-resta', -resultado, 'Bien hallar los módulos; invertiste solo una resta.');
+      agrega('suma-llegadas', (c.vb - c.va) / (c.u + c.w), 'Bien hallar la separación; sumaste las velocidades de llegada en vez de restarlas.');
+      agrega('orden-resta', -resultado, 'Bien hallar las dos diferencias; restaste una de ellas en el orden contrario.');
     } else if (c.tipo === 'salida-pared') {
       resultado = c.e * c.U; simbolo = 'v_rebote';
       enunciado = [`Una pelota llega perpendicularmente a una pared fija con rapidez ${crF(c.U)} m/s. El impacto tiene e = ${crF(c.e)}. ¿Con qué rapidez se separa?`];
@@ -912,13 +933,13 @@
       dibujo = crPelota(1, null, { e: c.e });
       // La figura específica muestra pared vertical y no alturas que el ejercicio no usa.
       dibujo = { pieza: 'fis-estatica', datos: { alto: 170, paredes: [{ x: 286, y0: 35, y1: 140 }], objetos: [{ tipo: 'pelota', x: 212, y: 110, r: 12 }], flechas: [{ de: [190, 65], ang: 0, largo: 70, color: 'o' }], textos: [{ x: 12, y: 22, texto: `Llegada: ${crF(c.U)} m/s`, color: 'o' }, { x: 12, y: 48, texto: `e = ${crF(c.e)}` }, { x: 12, y: 150, texto: 'Rapidez de rebote: ?' }], alt: `Pelota que llega a una pared fija con rapidez ${crF(c.U)} m/s. Rapidez de rebote por hallar.` }, estado: {} };
-      eq('Con la pared fija, la rapidez relativa coincide con la de la pelota.', crIgual(simbolo, `${crF(c.e)}·${crF(c.U)}`, resultado, unidad));
+      eq('Como la pared no se mueve, basta multiplicar e por la rapidez de llegada de la pelota.', crIgual(simbolo, `${crF(c.e)}·${crF(c.U)}`, resultado, unidad));
       motivo = 'La pelota sale en sentido contrario; se pregunta por la rapidez, sin signo.';
-      agrega('complemento', (1 - c.e) * c.U, 'Bien usar la llegada; multiplicaste por el complemento de e.');
+      agrega('complemento', (1 - c.e) * c.U, 'Bien usar la llegada; la multiplicaste por 1 − e en vez de por e.');
       agrega('inversa-e', c.U / c.e, 'Bien usar el coeficiente; dividiste en vez de multiplicar.');
-      agrega('e-cuadrado', c.e * c.e * c.U, 'Bien usar restitución; elevaste el coeficiente al cuadrado.');
-      agrega('sin-restitucion', c.U, 'Bien identificar la llegada; supusiste un rebote perfectamente elástico.');
-      agrega('suma-e', (1 + c.e) * c.U, 'Bien usar e; sumaste llegada y salida.');
+      agrega('e-cuadrado', c.e * c.e * c.U, 'Bien usar e; lo elevaste al cuadrado, y eso solo se hace con alturas.');
+      agrega('sin-restitucion', c.U, 'Bien identificar la llegada; supusiste un rebote sin pérdida, con e = 1.');
+      agrega('suma-e', (1 + c.e) * c.U, 'Bien usar e; sumaste la llegada y la salida.');
     } else if (['altura', 'e-altura', 'rebote-tiempo'].includes(c.tipo)) {
       const g = 10, e = c.tipo === 'e-altura' ? Math.sqrt(c.h / c.H) : c.e;
       const U = Math.sqrt(2 * g * c.H), Vr = e * U, h = e * e * c.H;
@@ -929,39 +950,39 @@
         enunciado = [`Una pelota cae desde ${crF(c.H)} m y rebota hasta ${crF(c.h)} m. ¿Cuál es el coeficiente de restitución con ese piso?`];
         datos.push('h = e²·H.');
         dibujo = crPelota(c.H, c.h, { revelar: true });
-        eq('La razón de alturas es el cuadrado del coeficiente.', crIgual(crE, `√(${crF(c.h)} ÷ ${crF(c.H)})`, resultado, '', 'tinta'));
+        eq('La altura de rebote entre la de caída es e², así que e es la raíz de ese cociente.', crIgual(crE, `√(${crF(c.h)} ÷ ${crF(c.H)})`, resultado, '', 'tinta'));
         motivo = 'Para pasar de alturas a rapideces se necesita la raíz cuadrada.';
         agrega('sin-raiz', c.h / c.H, 'Bien dividir alturas; omitiste la raíz cuadrada.');
-        agrega('alturas-invertidas', c.H / c.h, 'Bien comparar alturas; invertiste el cociente y omitiste la raíz.');
-        agrega('raiz-invertida', Math.sqrt(c.H / c.h), 'Bien usar raíz; invertiste la razón de alturas.');
-        agrega('fraccion-perdida', 1 - c.h / c.H, 'Bien comparar alturas; calculaste la fracción de energía transformada.');
-        agrega('complemento-e', 1 - resultado, 'Bien hallar la raíz; tomaste el complemento del coeficiente.');
+        agrega('alturas-invertidas', c.H / c.h, 'Bien comparar alturas; invertiste el cociente y no sacaste la raíz.');
+        agrega('raiz-invertida', Math.sqrt(c.H / c.h), 'Bien sacar la raíz; dividiste la altura de caída entre la de rebote.');
+        agrega('fraccion-perdida', 1 - c.h / c.H, 'Bien comparar alturas; calculaste qué fracción de la energía se transformó.');
+        agrega('complemento-e', 1 - resultado, 'Bien sacar la raíz; luego calculaste 1 − e en vez de e.');
       } else if (c.tipo === 'altura') {
         resultado = h; unidad = 'm'; color = 'tinta'; simbolo = crH;
         enunciado = [`Una pelota cae desde ${crF(c.H)} m sobre un piso con e = ${crF(c.e)}. ¿Qué altura máxima alcanza después del primer rebote?`];
         datos.push('h = e²·H.');
-        eq('La altura depende del cuadrado de la rapidez de rebote.', crIgual(crH, `${crF(e)}²·${crF(c.H)}`, resultado, 'm', 'tinta'));
+        eq('La altura depende del cuadrado de la rapidez, así que el rebote llega a e² veces la altura de caída.', crIgual(crH, `${crF(e)}²·${crF(c.H)}`, resultado, 'm', 'tinta'));
         motivo = 'Este vínculo entre alturas requiere el mismo piso fijo y ninguna resistencia del aire.';
         agrega('e-lineal', e * c.H, 'Bien usar el coeficiente; faltó elevarlo al cuadrado.');
         agrega('altura-inversa', c.H / (e * e), 'Bien elevar e; dividiste en vez de multiplicar.');
-        agrega('altura-perdida', (1 - e * e) * c.H, 'Bien comparar alturas; calculaste cuánto disminuye la altura.');
-        agrega('complemento-altura', (1 - e) * c.H, 'Bien usar H; usaste el complemento lineal de e.');
-        agrega('doble-altura', 2 * e * e * c.H, 'Bien elevar e; conservaste un factor dos que se cancela.');
+        agrega('altura-perdida', (1 - e * e) * c.H, 'Bien comparar alturas; calculaste cuánto baja la altura, no hasta dónde sube.');
+        agrega('complemento-altura', (1 - e) * c.H, 'Bien usar H; lo multiplicaste por 1 − e en vez de por e².');
+        agrega('doble-altura', 2 * e * e * c.H, 'Bien elevar e al cuadrado; dejaste un factor 2 que se cancela.');
       } else {
         resultado = 2 * Vr / g; unidad = 's'; color = 'd'; simbolo = 't_vuelo';
         enunciado = [`Una pelota cae desde ${crF(c.H)} m y rebota con e = ${crF(c.e)}. Desde que se separa del piso, ¿cuánto demora en volver a tocarlo?`];
         dibujo.datos.textos[1].texto = 't_vuelo = ?';
         dibujo.datos.alt = `Pelota que cae desde el reposo a ${crF(c.H)} m sobre un piso fijo, con coeficiente de restitución ${crF(c.e)}. El tiempo de vuelo desde el primer rebote hasta el siguiente contacto está por hallar. Dibujo sin escala.`;
         datos.push('v_llegada² = 2·g·H; v_rebote = e·v_llegada.', 't_vuelo = 2·v_rebote/g.');
-        eq('La caída determina la rapidez con que la pelota llega al piso.', crIgual('v_llegada', `√(2·${g}·${crF(c.H)})`, U, 'm/s'));
-        eq('El impacto fija la rapidez con que inicia el nuevo vuelo.', crIgual('v_rebote', `${crF(e)}·${crF(U)}`, Vr, 'm/s', 'o', !crExacto(U)));
-        eq('Subir y bajar hasta el mismo nivel requiere dos veces el tiempo de ascenso.', crIgual(simbolo, `2·${crF(Vr)} ÷ ${g}`, resultado, 's', 'd', !crExacto(Vr)));
+        eq('La caída da la rapidez con que la pelota llega al piso.', crIgual('v_llegada', `√(2·${g}·${crF(c.H)})`, U, 'm/s'));
+        eq('En el impacto, la rapidez de salida es e veces la de llegada.', crIgual('v_rebote', `${crF(e)}·${crF(U)}`, Vr, 'm/s', 'o', !crExacto(U)));
+        eq('El vuelo dura el doble que la subida, porque bajar al mismo nivel tarda lo mismo que subir.', crIgual(simbolo, `2·${crF(Vr)} ÷ ${g}`, resultado, 's', 'd', !crExacto(Vr)));
         motivo = 'El intervalo empieza al separarse del piso; no incluye la caída inicial.';
         agrega('solo-subida', Vr / g, 'Bien calcular el ascenso; falta sumar el descenso.');
-        agrega('caida-inicial', U / g, 'Bien usar caída libre; calculaste el intervalo anterior al impacto.');
-        agrega('tiempo-con-e2', 2 * e * e * U / g, 'Bien usar restitución; aplicaste e al cuadrado al tiempo.');
-        agrega('sin-perdida', 2 * U / g, 'Bien contar ida y vuelta; omitiste el efecto del impacto.');
-        agrega('dos-gravedades', 2 * Vr / (g * g), 'Bien formar el tiempo; dividiste dos veces entre g.');
+        agrega('caida-inicial', U / g, 'Bien usar la caída libre; calculaste el tiempo de la caída, antes del impacto.');
+        agrega('tiempo-con-e2', 2 * e * e * U / g, 'Bien usar e; multiplicaste el tiempo por e², que solo vale para alturas.');
+        agrega('sin-perdida', 2 * U / g, 'Bien contar la subida y la bajada; olvidaste que el impacto reduce la rapidez.');
+        agrega('dos-gravedades', 2 * Vr / (g * g), 'Bien plantear el tiempo; dividiste dos veces entre g.');
       }
     } else throw new Error(`Tipo de choque desconocido: ${c.tipo}`);
     const vistos = new Set([crValor(resultado, unidad)]), distintos = [];
@@ -979,18 +1000,21 @@
       if (q.errores.length < 4) throw new Error(`Faltan alternativas distintas: ${c.tipo}/${i}`);
       const vals = q.errores.slice(0, 4).map(e => sinAprox(e.texto)); vals.splice(i - 10, 0, sinAprox(crValor(q.resultado, q.unidad)));
       out.alternativas = vals;
-      solucion.push({ texto: 'Las demás: ' + q.errores.slice(0, 4).map(e => `${crValor(e.valor)} (${crErrorCorto[e.id]})`).join('; ') + '.' });
+      solucion.push({ texto: lasOtras(q.errores.slice(0, 4).map(e => ({ n: crValor(e.valor), c: crErrorCorto[e.id] || e.causa }))) });
     }
     return out;
   }
   const crErrorCorto = {
-    'velocidad-llegada': 'velocidad anterior', 'sin-mitad': 'omite el dos', 'sin-cuadrado': 'omite el cuadrado', 'energia-antes': 'conserva energía durante adhesión',
-    'masa-extra': 'masa sin cancelar', 'sin-roce': 'omite rozamiento', 'energia-inicial': 'solo energía inicial', 'energia-final': 'solo energía final',
-    'resta-invertida': 'resta invertida', 'masa-total-relativa': 'usa masa total', 'solo-a-relativa': 'solo masa de A',
-    'solo-subida': 'solo el ascenso', 'caida-inicial': 'caída anterior', 'tiempo-con-e2': 'tiempo con e²', 'sin-perdida': 'omite el impacto',
-    'dos-gravedades': 'divide dos veces', adhesion: 'supone unión', intercambio: 'intercambia cuerpos', 'sin-interaccion': 'omite la interacción',
-    'piso-fijo': 'multiplica e por la llegada de A, como si el otro carrito fuera un piso fijo', 'signo-final': 'sentido invertido', elasticidad: 'supone elasticidad perfecta', 'media-separacion': 'reduce separación',
+    'velocidad-llegada': 'usaste la velocidad de antes', 'sin-mitad': 'olvidaste dividir entre dos', 'sin-cuadrado': 'no elevaste al cuadrado',
+    'energia-antes': 'conservaste la energía cinética', 'masa-extra': 'no cancelaste la masa', 'sin-roce': 'omitiste el rozamiento',
+    'energia-inicial': 'diste la energía inicial', 'energia-final': 'diste la energía final', 'resta-invertida': 'invertiste la resta',
+    'masa-total-relativa': 'usaste la masa de los dos', 'solo-a-relativa': 'usaste solo la masa de A', 'solo-subida': 'contaste solo la subida',
+    'caida-inicial': 'calculaste la caída', 'tiempo-con-e2': 'usaste e² en el tiempo', 'sin-perdida': 'olvidaste el impacto',
+    'dos-gravedades': 'dividiste dos veces entre g', adhesion: 'supusiste que quedan unidos', intercambio: 'diste la del otro carrito',
+    'sin-interaccion': 'no cambiaste la velocidad', 'piso-fijo': 'trataste al otro carrito como piso fijo', 'signo-final': 'invertiste el sentido',
+    elasticidad: 'supusiste e = 1', 'media-separacion': 'tomaste la mitad de la separación',
   };
+
   const crEjChoquesDatos = [
     { tipo: 'union', a: 1, b: 3, u: 8, w: 0, titulo: 'Un receptor quieto' },
     { tipo: 'union', a: 2, b: 4, u: 5, w: 2, titulo: 'Llegan por el mismo sentido' },
@@ -1060,33 +1084,33 @@
       : q.tipo === 'rebote-tiempo' ? 'Piden el tiempo desde la salida del piso hasta el siguiente contacto.'
       : q.tipo === 'altura' ? 'Piden la altura máxima del primer rebote.'
       : ['e-altura', 'e-relativo'].includes(q.tipo) ? 'Piden el coeficiente de restitución, que no tiene unidad.'
-      : q.tipo === 'salida-pared' ? 'Piden la rapidez con que la pelota abandona la pared.'
-      : 'Piden la componente horizontal de la velocidad final indicada.';
+      : q.tipo === 'salida-pared' ? 'Piden la rapidez con que la pelota se separa de la pared.'
+      : 'Piden la velocidad final, con su signo, del carrito que indica el enunciado.';
     const regla = ['union', 'perdida', 'subida', 'frenado'].includes(q.tipo)
-      ? 'Durante la unión conservamos cantidad de movimiento. La energía se compara por separado, en el intervalo correspondiente.'
+      ? 'En el choque se conserva la cantidad de movimiento. La energía se analiza aparte, en el tramo que pide el enunciado.'
       : q.tipo.includes('elastico') || q.tipo.startsWith('restitucion-')
-        ? 'Usamos conservación de cantidad de movimiento y la relación entre las velocidades relativas.'
-        : q.tipo === 'rebote-tiempo' ? 'Separamos caída, impacto y nuevo vuelo. El coeficiente relaciona las rapideces en el contacto.'
-          : q.tipo === 'e-altura' || q.tipo === 'altura' ? 'La altura depende del cuadrado de la rapidez; el piso permanece fijo.'
-            : 'Comparamos la rapidez relativa de salida con la de llegada.';
+        ? 'Usamos dos ecuaciones: la conservación de la cantidad de movimiento y la que relaciona cuán rápido se separan con cuán rápido se acercaban.'
+        : q.tipo === 'rebote-tiempo' ? 'Separamos tres tramos: la caída, el impacto y el nuevo vuelo. En el impacto, e relaciona la rapidez de salida con la de llegada.'
+          : q.tipo === 'e-altura' || q.tipo === 'altura' ? 'Con el piso fijo, la altura depende del cuadrado de la rapidez, así que el rebote se compara con e².'
+            : 'Con la pared fija, comparamos la rapidez de salida de la pelota con la de llegada.';
     return { enunciado: q.enunciado, datos: q.datos, dibujo: q.dibujo, verificacion: q.verificacion,
       pasos: [{ tipo: 'pide', texto: pide },
         { tipo: 'regla', texto: regla },
         ...q.pasos.map(p => ({ tipo: 'cuentas', ...p })),
-        { tipo: 'sentido', texto: 'La respuesta corresponde al intervalo y al cuerpo que pregunta el enunciado.' }], respuesta: q.respuesta };
+        { tipo: 'sentido', texto: 'Revisamos que la respuesta sea del cuerpo y del tramo que pide el enunciado.' }], respuesta: q.respuesta };
   }
   function crAhora(idea, semilla) {
     const q = crEntrada(idea, semilla, false);
     let explicacion = q.pasos[0].texto;
     if (['perdida', 'subida', 'frenado'].includes(q.tipo)) {
       const u = crUnion(q);
-      explicacion = `Por conservación, la velocidad conjunta es ${crValor(u.V, 'm/s')}. Después aplicamos el balance de energía.`;
+      explicacion = `Por conservación de la cantidad de movimiento, los carritos unidos salen a ${crValor(u.V, 'm/s')}; con esa velocidad hacemos el balance de energía.`;
     } else if (q.tipo.includes('elastico') || q.tipo.startsWith('restitucion-')) {
       const r = crImpacto(q, q.tipo.startsWith('elastico') ? 1 : q.e);
-      explicacion = `Cantidad total: ${crValor(r.P, 'kg·m/s')}; separación relativa: ${crValor(r.r, 'm/s')}. Despejamos la velocidad pedida.`;
+      explicacion = `La cantidad de movimiento total es ${crValor(r.P, 'kg·m/s')} y los carritos se separan a ${crValor(r.r, 'm/s')}; con esas dos ecuaciones despejamos la velocidad pedida.`;
     } else if (q.tipo === 'rebote-tiempo') {
       const U = Math.sqrt(20 * q.H);
-      explicacion = `Llega con ${crValor(U, 'm/s')} y sale con ${crValor(q.e * U, 'm/s')}. Contamos ascenso y descenso.`;
+      explicacion = `La pelota llega al piso con ${crValor(U, 'm/s')} y sale con ${crValor(q.e * U, 'm/s')}; el vuelo dura la subida más la bajada.`;
     }
     return { pregunta: q.enunciado, datos: q.datos, dibujo: q.dibujo, verificacion: q.verificacion,
       opciones: [{ id: 'c', texto: sinAprox(crValor(q.resultado, q.unidad)), correcta: true }, ...q.errores.slice(0, 3).map(e => ({ id: e.id, texto: sinAprox(e.texto), error: e.error, siFuera: e.siFuera }))],
@@ -1167,7 +1191,7 @@
     const x = c.posiciones && c.posiciones.map(x => x == null ? null : x / (c.unidadX === 'cm' ? 100 : 1));
     const v = c.velocidades, total = ctSuma(m), solucion = [], errores = [];
     let resultado, simbolo = ctX, unidad = 'm', color = 'tinta', pregunta;
-    const add = (id, valor, texto) => errores.push({ id, valor, error: `CENTRO-${id.toUpperCase()}`, siFuera: `Bien ${texto} Sale ${ctValor(valor, unidad)}.` });
+    const add = (id, valor, texto) => errores.push({ id, valor, error: `CENTRO-${id.toUpperCase()}`, siFuera: siFue(`Bien ${texto}`, ctValor(valor, unidad)), causa: causaDe(`Bien ${texto}`) });
     const datos = c.masas.map((z, i) => {
       const nom = ['A', 'B', 'C'][i];
       return [`${nom}: `, ctSub(ctM, nom), ` = ${z == null ? '?' : ctFmt(z)} ${c.unidadM || 'kg'}`,
@@ -1180,61 +1204,61 @@
       resultado = ctPonderado(m, v); unidad = 'm/s'; color = 'o'; simbolo = ctV;
       pregunta = `A tiene ${ctFmt(c.masas[0])} ${c.unidadM || 'kg'} y B, ${ctFmt(c.masas[1])} ${c.unidadM || 'kg'}. Con las velocidades indicadas, ¿cuál es la componente de velocidad de su centro de masa?`;
       datos.push(eqVel);
-      solucion.push({ texto: 'Cada velocidad participa según su masa. Dividimos la suma de cantidades de movimiento entre la masa total.', ecuacion: [ctV, ' = ', ctFraccion(m, v), ctAprox(resultado), ctQ('o', ctFmt(resultado) + ' m/s')] });
+      solucion.push({ texto: 'Cada velocidad cuenta según su masa: sumamos las cantidades de movimiento y dividimos entre la masa total.', ecuacion: [ctV, ' = ', ctFraccion(m, v), ctAprox(resultado), ctQ('o', ctFmt(resultado) + ' m/s')] });
       add('media-simple', ctSuma(v) / m.length, 'usar todas las velocidades; las promediaste sin considerar las masas.');
       add('sin-divisor', ctSuma(m.map((z, i) => z * v[i])), 'sumar las cantidades de movimiento; omitiste dividir entre la masa total.');
       add('doble-masa', resultado / 2, 'ponderar las velocidades; contaste dos veces la masa total.');
-      add('signo', -resultado, 'usar el módulo; invertiste el sentido.');
-      add('masa-intercambiada', ctPonderado(m.slice().reverse(), v), 'ponderar; intercambiaste las masas de los carritos.');
+      add('signo', -resultado, 'el valor; invertiste el sentido.');
+      add('masa-intercambiada', ctPonderado(m.slice().reverse(), v), 'ponderar; intercambiaste las masas de los dos carritos.');
     } else if (c.tipo === 'masa-faltante') {
       resultado = m[0] * (c.objetivo - x[0]) / (x[1] - c.objetivo); unidad = 'kg'; color = 'f'; simbolo = ctSub(ctM, 'B');
       pregunta = `A tiene ${ctFmt(c.masas[0])} ${c.unidadM || 'kg'}. El centro de masa de ambos carritos está en ${ctFmt(c.objetivo)} m. ¿Qué masa tiene B?`;
       datos.push([ctX, ` = ${ctFmt(c.objetivo)} m; derecha positiva.`], eqPos);
-      solucion.push({ texto: 'Igualamos los aportes a ambos lados del centro de masa y despejamos la masa desconocida.', ecuacion: [ctSub(ctM, 'B'), ' = ', { frac: [`${ctFmt(m[0])} · (${ctFmt(c.objetivo)} − ${ctSigno(x[0])})`, `${ctFmt(x[1])} − ${ctFmt(c.objetivo)}`] }, ctAprox(resultado), ctQ('f', ctFmt(resultado) + ' kg')] });
+      solucion.push({ texto: 'Medimos cada carrito desde el centro de masa: la masa por la distancia a un lado iguala a la del otro lado, y de ahí despejamos la masa de B.', ecuacion: [ctSub(ctM, 'B'), ' = ', { frac: [`${ctFmt(m[0])} · (${ctFmt(c.objetivo)} − ${ctSigno(x[0])})`, `${ctFmt(x[1])} − ${ctFmt(c.objetivo)}`] }, ctAprox(resultado), ctQ('f', ctFmt(resultado) + ' kg')] });
       add('razon-inversa', m[0] * (x[1] - c.objetivo) / (c.objetivo - x[0]), 'comparar las distancias; invertiste su cociente.');
-      add('sin-distancias', m[0], 'identificar dos cuerpos; supusiste masas iguales sin comprobar las distancias.');
-      add('sin-restar', m[0] * c.objetivo / x[1], 'usar posiciones; omitiste las distancias respecto al centro de masa.');
-      add('sin-divisor', m[0] * (c.objetivo - x[0]), 'calcular el numerador; omitiste dividir entre la distancia de B.');
+      add('sin-distancias', m[0], 'reconocer los dos carritos; supusiste que B tiene la misma masa que A.');
+      add('sin-restar', m[0] * c.objetivo / x[1], 'usar las posiciones; las mediste desde el origen y no desde el centro de masa.');
+      add('sin-divisor', m[0] * (c.objetivo - x[0]), 'calcular el aporte de A; olvidaste dividir entre la distancia de B al centro.');
       add('doble-masa', resultado * 2, 'plantear la proporción; contaste dos veces la masa de A.');
     } else if (c.tipo === 'posicion-faltante') {
       resultado = (total * c.objetivo - m[0] * x[0]) / m[1]; simbolo = ctSub('x', 'B');
       pregunta = `A tiene ${ctFmt(c.masas[0])} kg y B, ${ctFmt(c.masas[1])} kg. Su centro de masa está en ${ctFmt(c.objetivo)} m. ¿En qué posición debe estar B?`;
       datos.push([ctX, ` = ${ctFmt(c.objetivo)} m; derecha positiva.`], eqPos);
-      solucion.push({ texto: 'Multiplicamos por la masa total, restamos el aporte de A y dividimos entre la masa de B.', ecuacion: [simbolo, ' = ', { frac: [`(${ctFmt(m[0])} + ${ctFmt(m[1])}) · ${ctSigno(c.objetivo)} − ${ctFmt(m[0])} · ${ctSigno(x[0])}`, ctFmt(m[1])] }, ctAprox(resultado), ctQ('tinta', ctFmt(resultado) + ' m')] });
-      add('media-simple', 2 * c.objetivo - x[0], 'usar la posición central; supusiste masas iguales.');
+      solucion.push({ texto: 'Multiplicamos la posición del centro por la masa total, restamos el aporte de A y lo que queda lo dividimos entre la masa de B.', ecuacion: [simbolo, ' = ', { frac: [`(${ctFmt(m[0])} + ${ctFmt(m[1])}) · ${ctSigno(c.objetivo)} − ${ctFmt(m[0])} · ${ctSigno(x[0])}`, ctFmt(m[1])] }, ctAprox(resultado), ctQ('tinta', ctFmt(resultado) + ' m')] });
+      add('media-simple', 2 * c.objetivo - x[0], 'usar el centro de masa; supusiste que las masas son iguales.');
       add('sin-restar', total * c.objetivo / m[1], 'multiplicar por la masa total; omitiste restar el aporte de A.');
       add('sin-divisor', total * c.objetivo - m[0] * x[0], 'restar el aporte de A; omitiste dividir entre la masa de B.');
       add('masa-intercambiada', (total * c.objetivo - m[1] * x[0]) / m[0], 'despejar una posición; intercambiaste las masas.');
-      add('signo', -resultado, 'hallar la distancia; invertiste el sentido de la posición.');
+      add('signo', -resultado, 'el valor; invertiste el signo de la posición.');
     } else if (c.tipo === 'evolucion') {
       const xc = ctPonderado(m, x), vc = ctPonderado(m, v);
       resultado = xc + vc * c.tiempo;
       pregunta = `La fuerza externa horizontal neta sobre ${m.length === 3 ? 'tres' : 'dos'} carritos es nula durante todo el intervalo; A tiene ${ctFmt(c.masas[0])} kg. ¿Dónde estará su centro de masa después de ${ctFmt(c.tiempo)} s?`;
       datos.push(eqPos, eqVel);
       datos.push([ctSub('x', 'CM(t)'), ' = ', ctSub('x', 'CM(0)'), ' + ', ctV, '·t; derecha positiva.']);
-      solucion.push({ texto: 'Primero ubicamos el centro de masa al comenzar el intervalo.', ecuacion: [ctSub('x', 'CM(0)'), ' = ', ctFraccion(m, x), ctAprox(xc), ctQ('tinta', ctFmt(xc) + ' m')] });
-      solucion.push({ texto: 'Luego obtenemos su velocidad. La fuerza externa neta nula la mantiene constante durante el intervalo.', ecuacion: [ctV, ' = ', ctFraccion(m, v), ctAprox(vc), ctQ('o', ctFmt(vc) + ' m/s')] });
-      solucion.push({ texto: 'Sumamos a la posición inicial el avance durante el tiempo dado; calculamos sin redondear los valores intermedios.', ecuacion: [ctSub('x', 'CM(t)'), ' = ', ctSub('x', 'CM(0)'), ' + ', ctV, ` · ${ctFmt(c.tiempo)}`, ctAprox(resultado), ctQ('tinta', ctFmt(resultado) + ' m')] });
+      solucion.push({ texto: 'Primero ubicamos el centro de masa al empezar el intervalo.', ecuacion: [ctSub('x', 'CM(0)'), ' = ', ctFraccion(m, x), ctAprox(xc), ctQ('tinta', ctFmt(xc) + ' m')] });
+      solucion.push({ texto: 'Luego hallamos su velocidad, que no cambia durante el intervalo porque la fuerza externa neta es nula.', ecuacion: [ctV, ' = ', ctFraccion(m, v), ctAprox(vc), ctQ('o', ctFmt(vc) + ' m/s')] });
+      solucion.push({ texto: 'A la posición inicial le sumamos lo que avanza en el tiempo dado, sin redondear los valores intermedios.', ecuacion: [ctSub('x', 'CM(t)'), ' = ', ctSub('x', 'CM(0)'), ' + ', ctV, ` · ${ctFmt(c.tiempo)}`, ctAprox(resultado), ctQ('tinta', ctFmt(resultado) + ' m')] });
       add('media-simple', ctSuma(x) / m.length + ctSuma(v) / m.length * c.tiempo, 'incluir posición y tiempo; promediaste sin ponderar por las masas.');
       add('sin-origen', vc * c.tiempo, 'calcular el avance; omitiste sumar la posición inicial.');
       add('sin-tiempo', xc + vc, 'sumar posición y avance; usaste un segundo en vez del intervalo dado.');
       add('signo', xc - vc * c.tiempo, 'calcular el avance; cambiaste su signo.');
-      add('sin-divisor', xc + ctSuma(m.map((z, i) => z * v[i])) * c.tiempo, 'sumar las cantidades de movimiento; faltó dividir para hallar la velocidad.');
+      add('sin-divisor', xc + ctSuma(m.map((z, i) => z * v[i])) * c.tiempo, 'sumar las cantidades de movimiento; faltó dividir entre la masa total para hallar la velocidad.');
     } else {
       resultado = ctPonderado(m, x);
       pregunta = `${m.length === 3 ? 'Tres' : 'Dos'} carritos ocupan las posiciones indicadas; A tiene ${ctFmt(c.masas[0])} ${c.unidadM || 'kg'} y B, ${ctFmt(c.masas[1])} ${c.unidadM || 'kg'}. ¿Dónde está su centro de masa, en metros?`;
       datos.push(eqPos);
-      solucion.push({ texto: x.includes(0) ? 'Multiplicamos cada posición por su masa y dividimos la suma entre toda la masa, incluida la situada en el origen.' : 'Multiplicamos cada posición por su masa y dividimos la suma entre toda la masa.', ecuacion: [ctX, ' = ', ctFraccion(m, x), ctAprox(resultado), ctQ('tinta', ctFmt(resultado) + ' m')] });
+      solucion.push({ texto: x.includes(0) ? 'Multiplicamos cada posición por su masa y dividimos la suma entre toda la masa, también la del carrito que está en el origen.' : 'Multiplicamos cada posición por su masa y dividimos la suma entre toda la masa.', ecuacion: [ctX, ' = ', ctFraccion(m, x), ctAprox(resultado), ctQ('tinta', ctFmt(resultado) + ' m')] });
       add('media-simple', ctSuma(x) / m.length, 'usar todas las posiciones; las promediaste sin considerar las masas.');
       add('sin-divisor', ctSuma(m.map((z, i) => z * x[i])), 'sumar los productos; omitiste dividir entre la masa total.');
       add('doble-masa', resultado / 2, 'sumar los productos; contaste dos veces la masa total.');
       add('masa-intercambiada', ctPonderado(m.slice().reverse(), x), 'ponderar las posiciones; intercambiaste las masas de los extremos.');
       add('sin-origen', ctSuma(m.map((z, i) => z * x[i])) / ctSuma(m.filter((_, i) => x[i] !== 0)), 'sumar los productos; quitaste del denominador la masa situada en el origen.');
-      add('signo', -resultado, 'hallar la distancia; invertiste el sentido de la posición.');
+      add('signo', -resultado, 'el valor; invertiste el signo de la posición.');
     }
     if (c.unidadM === 'g' || c.unidadX === 'cm') {
       datos.push(c.unidadM === 'g' && c.unidadX === 'cm' ? '1 kg = 1000 g; 1 m = 100 cm.' : c.unidadM === 'g' ? '1 kg = 1000 g.' : '1 m = 100 cm.');
-      solucion.unshift({ texto: 'Convertimos las medidas antes de sustituir; todas las posiciones usan el mismo origen.', ecuacion: [
+      solucion.unshift({ texto: 'Antes de reemplazar, pasamos las medidas a kilogramos y metros; todas las posiciones parten del mismo origen.', ecuacion: [
         c.unidadM === 'g' ? m.map((z, i) => `${ctFmt(c.masas[i])} g = ${ctFmt(z)} kg`).join('; ') : '',
         c.unidadM === 'g' && c.unidadX === 'cm' ? '; ' : '',
         c.unidadX === 'cm' ? x.filter(z => z != null).map((z, i) => `${ctFmt(c.posiciones[i])} cm = ${ctFmt(z)} m`).join('; ') : '',
@@ -1279,7 +1303,7 @@
       const causas = { 'media-simple': 'ignora las masas', 'sin-origen': 'omite la posición inicial', 'sin-tiempo': 'supone un segundo',
         signo: 'invierte el sentido', 'sin-divisor': 'omite la división', 'doble-masa': 'duplica la masa total',
         'masa-intercambiada': 'intercambia las masas', 'razon-inversa': 'invierte el cociente', 'sin-distancias': 'iguala ambas masas', 'sin-restar': 'omite una resta' };
-      e.solucion.push({ texto: errores.map(x => `${ctValor(x.valor, b.unidad)} ${causas[x.id]}.`).join(' ') });
+      e.solucion.push({ texto: lasOtras(errores.map(x => ({ n: ctValor(x.valor, b.unidad), c: CT_CORTO[`${c.tipo}:${x.id}`] || CT_CORTO[x.id] || x.causa }))) });
     }
     return e;
   });
@@ -1304,14 +1328,14 @@
     if (!b || b.errores.length < 3) throw new Error('Centro de masa: faltan alternativas distintas.');
     if (resuelto) return { enunciado: b.pregunta, datos: b.datos, dibujo: b.dibujo, respuesta: b.respuesta, verificacion: c,
       pasos: [
-        { tipo: 'pide', texto: { velocidad: 'Piden la velocidad del centro de masa, con su signo.', 'masa-faltante': 'Piden la masa de B que deja el centro de masa en la marca dada.', 'posicion-faltante': 'Piden dónde debe estar B para que el centro de masa quede en la marca dada.', evolucion: 'Piden dónde estará el centro de masa después del tiempo dado.' }[c.tipo] || 'Piden la posición del centro de masa, con el origen y el sentido del eje.' },
-        { tipo: 'regla', texto: 'El promedio ponderado usa la masa de cada carrito. Toda la masa participa en el denominador.' },
+        { tipo: 'pide', texto: { velocidad: 'Piden la velocidad del centro de masa, con su signo.', 'masa-faltante': 'Piden la masa de B que deja el centro de masa en la marca dada.', 'posicion-faltante': 'Piden dónde debe estar B para que el centro de masa quede en la marca dada.', evolucion: 'Piden dónde estará el centro de masa después del tiempo dado.' }[c.tipo] || 'Piden la posición del centro de masa, medida desde el origen y con su signo.' },
+        { tipo: 'regla', texto: 'En el promedio ponderado, cada dato se multiplica por la masa de su carrito, y abajo va la masa de todos.' },
         ...b.solucion.map(p => ({ tipo: 'cuentas', ...p })),
-        { tipo: 'sentido', texto: c.tipo === 'masa-faltante' ? 'La masa hallada es positiva y sitúa el centro entre los dos carritos.' : c.tipo === 'velocidad' ? 'El signo de la velocidad indica el sentido del movimiento sobre el eje.' : 'Una posición puede ser negativa; el signo indica su lado respecto al origen.' },
+        { tipo: 'sentido', texto: c.tipo === 'masa-faltante' ? 'La masa hallada es positiva y deja el centro de masa entre los dos carritos.' : c.tipo === 'velocidad' ? 'El signo de la velocidad indica el sentido del movimiento sobre el eje.' : 'Una posición puede ser negativa: el signo dice de qué lado del origen está.' },
       ] };
     const textoSolucion = c.tipo === 'evolucion'
-      ? `La posición inicial${ctAprox(ctPonderado(c.masas, c.posiciones))}${ctFmt(ctPonderado(c.masas, c.posiciones))} m; la velocidad${ctAprox(ctPonderado(c.masas, c.velocidades))}${ctFmt(ctPonderado(c.masas, c.velocidades))} m/s. Sumamos el avance.`
-      : 'Ponderamos cada dato por su masa y usamos el mismo origen. Después despejamos o aplicamos el intervalo pedido.';
+      ? `El centro de masa empieza en ${ctExacto(ctPonderado(c.masas, c.posiciones)) ? '' : 'unos '}${ctFmt(ctPonderado(c.masas, c.posiciones))} m y se mueve a ${ctExacto(ctPonderado(c.masas, c.velocidades)) ? '' : 'unos '}${ctFmt(ctPonderado(c.masas, c.velocidades))} m/s; a esa posición le sumamos lo que avanza en el tiempo dado.`
+      : 'Multiplicamos cada dato por la masa de su carrito, todo desde el mismo origen, y dividimos o despejamos según lo que piden.';
     return { pregunta: b.pregunta, datos: b.datos, dibujo: b.dibujo, verificacion: c,
       opciones: [{ id: 'c', texto: sinAprox(ctValor(b.resultado, b.unidad)), correcta: true }, ...b.errores.slice(0, 3).map(e => ({ id: e.id, texto: sinAprox(ctValor(e.valor, b.unidad)), error: e.error, siFuera: e.siFuera }))],
       solucion: { texto: textoSolucion, ecuacion: b.solucion[b.solucion.length - 1].ecuacion } };
@@ -1327,14 +1351,14 @@
       actividad: 'Aplicar una fuerza durante un intervalo fijo y observar cómo termina una pelota.',
       temas: ['Impulso'], pieza: 'fis-estatica',
       lee: { tarjetas: [
-        { titulo: 'Una pelota en una guía', texto: ['Una pelota se mueve por una guía horizontal. Un dispositivo le aplica una fuerza neta durante medio segundo. Podemos cambiar esa fuerza y observar cómo termina el movimiento. Son datos didácticos de un ensayo ideal.'], dibujo: icImpJuego({ F: -2, t: 0 }) },
-        { titulo: 'Mientras actúa la fuerza', texto: ['El impulso ', icVec(icI), ' describe la acción de una fuerza durante un intervalo. Es vectorial y se mide en newtons segundo (N·s). Aquí seguimos su componente horizontal ', icIX, ', con derecha positiva.'] },
-        { titulo: 'Fuerza media y fuerza máxima', texto: ['Una fuerza puede variar durante el contacto. Su fuerza media ', icFM, ' representa el efecto de todo el intervalo. No tiene por qué ser su valor máximo. La duración se escribe ', icDT, ', en segundos.'] },
+        { titulo: 'Una pelota en una guía', texto: ['Una pelota rueda por una guía horizontal y, durante medio segundo, un dispositivo la empuja con una fuerza neta. Tú eliges esa fuerza y miras cómo termina moviéndose la pelota en este ensayo ideal.'], dibujo: icImpJuego({ F: -2, t: 0 }) },
+        { titulo: 'Mientras actúa la fuerza', texto: ['El impulso ', icVec(icI), ' mide cuánto actúa una fuerza mientras dura el empuje. Tiene sentido, como la fuerza, y se mide en newtons segundo (N·s). Aquí seguimos su componente horizontal ', icIX, ', positiva hacia la derecha.'] },
+        { titulo: 'Fuerza media y fuerza máxima', texto: ['Durante un contacto, la fuerza puede subir y bajar. Su fuerza media ', icFM, ' es la fuerza constante que tendría el mismo efecto en todo el intervalo, y casi nunca coincide con la máxima. La duración se escribe ', icDT, ', en segundos.'] },
       ] },
       ejemplos: icImpEjemplos,
       juega: {
         consigna: 'La pelota de 0,5 kg llega a 4 m/s hacia la derecha. El dispositivo aplica la fuerza elegida durante 0,5 s.',
-        voz: 'El dispositivo puede frenar la pelota y luego impulsarla hacia el otro lado.',
+        voz: 'Si empuja fuerte, el dispositivo frena la pelota y luego la lanza hacia el otro lado.',
         controles: [
           { id: 'F', etiqueta: 'Fuerza neta horizontal (negativa: hacia la izquierda)', color: 'c-h', min: -8, max: -2, paso: 1, inicio: -2, unidad: 'N', decimales: 0 },
           { id: 't', etiqueta: 'Tiempo t del pulso; se repite', color: 'c-d', min: 0, max: 0.5, paso: 0.025, inicio: 0, unidad: 's', decimales: 3, auto: { velocidad: 0.125, modo: 'repite' } },
@@ -1355,26 +1379,26 @@
         revelar: icImpFigura({ tipo: 'rect', m: 0.5, vi: 8, vf: 0, F: icImpPredFB, dt: 0.4 }),
         opciones: [
           { id: 'c', texto: `${icFmt(icImpPredFB)} N`, correcta: true },
-          { id: 'mismo-tiempo', texto: `${icFmt(icImpPredFA)} N`, error: 'IC-PRED-TIEMPO', siFuera: `Bien el cambio de movimiento; usaste 0,2 s. Así sale ${icFmt(icImpPredFA)} N.` },
-          { id: 'doble-fuerza', texto: `${icFmt(2 * icImpPredFA)} N`, error: 'IC-PRED-DOBLE', siFuera: `Bien reconocer el doble de tiempo; duplicaste la fuerza de A. Así sale ${icFmt(2 * icImpPredFA)} N.` },
-          { id: 'signo', texto: `${icFmt(-icImpPredFB)} N`, error: 'IC-PRED-SIGNO', siFuera: `Bien el módulo; invertiste el sentido de la fuerza. Así sale ${icFmt(-icImpPredFB)} N.` },
+          { id: 'mismo-tiempo', texto: `${icFmt(icImpPredFA)} N`, error: 'IC-PRED-TIEMPO', siFuera: `Bien el impulso, pero lo dividiste entre 0,2 s, que es el tiempo de A. Así sale ${icFmt(icImpPredFA)} N.` },
+          { id: 'doble-fuerza', texto: `${icFmt(2 * icImpPredFA)} N`, error: 'IC-PRED-DOBLE', siFuera: `Bien notar que B tarda el doble, pero duplicaste la fuerza: con más tiempo, la fuerza media es menor. Así sale ${icFmt(2 * icImpPredFA)} N.` },
+          { id: 'signo', texto: `${icFmt(-icImpPredFB)} N`, error: 'IC-PRED-SIGNO', siFuera: `Bien el módulo, pero invertiste el sentido: para frenar una pelota que va a la derecha, la fuerza apunta a la izquierda. Así sale ${icFmt(-icImpPredFB)} N.` },
         ],
-        coincide: 'B necesita la mitad del módulo de fuerza media. El impulso es el mismo porque ambas pelotas tienen iguales estados inicial y final.',
+        coincide: 'Las dos pelotas empiezan y terminan igual, así que reciben el mismo impulso; como B tarda el doble, le basta la mitad de fuerza media.',
       },
       mira: {
         pieza: 'fis-estatica', datos: { alto: 240, cortes: [icImpMira(0), icImpMira(1), icImpMira(2)], alt: 'Una pelota se detiene; se comparan dos duraciones y sus fuerzas medias.' },
         pasos: [
-          { estado: { corte: 0 }, texto: 'Las dos pelotas tienen el mismo cambio de cantidad de movimiento.', ecuacion: [icIX, ` = 0,5 · (0 − 8) = ${icFmt(icImpPredI)} N·s`] },
-          { estado: { corte: 1 }, texto: 'En A, dividimos ese impulso entre dos décimas de segundo.', ecuacion: [icSub(icQ('h', 'F'), 'media,A,x'), ` = ${icN(icImpPredI)} ÷ 0,2 = ${icFmt(icImpPredFA)} N`] },
-          { estado: { corte: 2 }, texto: 'B reparte el mismo impulso durante un intervalo doble.', ecuacion: [icSub(icQ('h', 'F'), 'media,B,x'), ` = ${icN(icImpPredI)} ÷ 0,4 = ${icFmt(icImpPredFB)} N`] },
-          { estado: { corte: 2 }, texto: 'El signo indica izquierda. Comparamos fuerzas medias, sin asegurar nada sobre sus máximos.' },
+          { estado: { corte: 0 }, texto: 'Las dos pelotas empiezan y terminan igual, así que tienen el mismo cambio de cantidad de movimiento.', ecuacion: [icIX, ` = 0,5 · (0 − 8) = ${icFmt(icImpPredI)} N·s`] },
+          { estado: { corte: 1 }, texto: 'La fuerza media de A sale de dividir ese impulso entre los 0,2 s que tarda.', ecuacion: [icSub(icQ('h', 'F'), 'media,A,x'), ` = ${icN(icImpPredI)} ÷ 0,2 = ${icFmt(icImpPredFA)} N`] },
+          { estado: { corte: 2 }, texto: 'B recibe el mismo impulso repartido en 0,4 s, el doble de tiempo, así que su fuerza media es la mitad.', ecuacion: [icSub(icQ('h', 'F'), 'media,B,x'), ` = ${icN(icImpPredI)} ÷ 0,4 = ${icFmt(icImpPredFB)} N`] },
+          { estado: { corte: 2 }, texto: 'El signo negativo indica que las fuerzas apuntan a la izquierda. Comparamos fuerzas medias; sus máximos pueden ser otros.' },
         ],
       },
       regla: {
-        texto: 'El impulso de la fuerza neta es el cambio de cantidad de movimiento. También es el área con signo bajo la gráfica de fuerza frente al tiempo.',
+        texto: 'El impulso de la fuerza neta es igual al cambio de la cantidad de movimiento. También es el área bajo la gráfica de la fuerza frente al tiempo, contada con signo, y es igual a la fuerza media por la duración.',
         ecuacion: [icIX, ' = Δ', icSub(icP, 'x'), ' = ', icM, ' · (', icSub(icV, 'f,x'), ' − ', icSub(icV, 'i,x'), ') = ', icFM, ' · ', icDT],
-        condicion: 'La masa es constante. El área bajo el eje es negativa. Solo una fuerza constante coincide siempre con su fuerza media.',
-        voz: 'El cambio usa velocidad final menos inicial. Un rebote puede cambiar el sentido.',
+        condicion: 'la masa no cambia; el área bajo el eje del tiempo cuenta como negativa, y solo una fuerza constante es igual a su fuerza media en todo momento.',
+        voz: 'El cambio es la velocidad final menos la inicial, y en un rebote cambia el signo.',
         dibujo: icImpFigura({ tipo: 'tri', F: 8, dt: 0.5 }),
       },
       resuelve: { pieza: 'fis-estatica', generar: s => icResuelve(icImpGenerar(s + 1, true)) },
@@ -1387,14 +1411,14 @@
       actividad: 'Liberar dos carritos mediante un resorte y observar cada movimiento y la suma del sistema.',
       temas: ['Conservación de la cantidad de movimiento'], pieza: 'fis-estatica',
       lee: { tarjetas: [
-        { titulo: 'Elegir qué queda dentro', texto: ['Los dos carritos y el resorte forman nuestro sistema. El resorte tiene masa despreciable. La línea punteada marca el grupo que vamos a estudiar; no es una pared ni ejerce fuerza.'], dibujo: icSistemaFigura({ mA: 2, mB: 2, uA: 0, uB: 0, resorte: true }) },
-        { titulo: 'Fuerzas dentro y fuera', texto: ['La fuerza que el resorte ejerce sobre un carrito es interna a este sistema. Una mano que empujara desde fuera produciría una fuerza externa. Clasificar una fuerza depende del grupo que elegimos.'] },
-        { titulo: 'Una suma con signos', texto: ['La cantidad de movimiento total, en la horizontal, se escribe ', icPT, '. Es la suma de las componentes de todos los cuerpos incluidos. El impulso externo horizontal se escribe ', icIE, '. En la guía, la derecha es positiva.'] },
+        { titulo: 'Elegir qué queda dentro', texto: ['Los dos carritos y el resorte, cuya masa despreciamos, forman nuestro sistema: el grupo de cuerpos que vamos a estudiar juntos. La línea punteada lo encierra, pero no es una pared ni ejerce fuerza.'], dibujo: icSistemaFigura({ mA: 2, mB: 2, uA: 0, uB: 0, resorte: true }) },
+        { titulo: 'Fuerzas dentro y fuera', texto: ['La fuerza que el resorte ejerce sobre un carrito es interna, porque los dos están dentro del sistema. Una mano que empujara desde fuera ejercería una fuerza externa. Que una fuerza sea interna o externa depende del grupo que elegimos.'] },
+        { titulo: 'Una suma con signos', texto: ['La cantidad de movimiento total en la horizontal, ', icPT, ', es la suma de las componentes de todos los cuerpos del sistema, cada una con su signo. El impulso que llega desde fuera se escribe ', icIE, '. En la guía, la derecha es positiva.'] },
       ] },
       ejemplos: icSisEjemplos,
       juega: {
         consigna: 'Dos carritos iguales parten del reposo. Cambia la compresión del resorte y observa cómo salen al liberarlo en una guía sin fricción.',
-        voz: 'El resorte tiene masa despreciable. El impulso externo horizontal es despreciable.',
+        voz: 'Despreciamos la masa del resorte y todo empuje horizontal que venga de fuera.',
         controles: [
           { id: 'c', etiqueta: 'Compresión c del resorte', min: 0.1, max: 0.3, paso: 0.1, inicio: 0.1, unidad: 'm', decimales: 1 },
           { id: 't', etiqueta: 'Tiempo t después de la separación', color: 'c-d', min: 0, max: 1, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.25, modo: 'repite' } },
@@ -1415,25 +1439,25 @@
         revelar: icSistemaFigura({ mA: 1, mB: 3, uA: 0, uB: 0, vA: -3, vB: icSisPredVB, resorte: true }, true),
         opciones: [
           { id: 'c', texto: `${icFmt(icSisPredVB)} m/s`, correcta: true },
-          { id: 'misma-rapidez', texto: '3 m/s', error: 'IC-PRED-IGUALES', siFuera: 'Bien usar sentidos opuestos; copiaste la rapidez de A sin considerar la masa de B.' },
-          { id: 'signo', texto: `${icFmt(-icSisPredVB)} m/s`, error: 'IC-PRED-SENTIDO', siFuera: 'Bien el módulo; pusiste ambos movimientos hacia la izquierda. Así el total ya no sería cero.' },
-          { id: 'proporcional', texto: '9 m/s', error: 'IC-PRED-PROPORCIONAL', siFuera: 'Bien comparar masas; multiplicaste 3 por 3 en vez de dividir. Así sale 9 m/s.' },
+          { id: 'misma-rapidez', texto: '3 m/s', error: 'IC-PRED-IGUALES', siFuera: 'Bien usar sentidos opuestos, pero copiaste la rapidez de A sin tener en cuenta que B tiene el triple de masa.' },
+          { id: 'signo', texto: `${icFmt(-icSisPredVB)} m/s`, error: 'IC-PRED-SENTIDO', siFuera: 'Bien el módulo, pero pusiste a los dos carritos hacia la izquierda, y así el total ya no sería cero.' },
+          { id: 'proporcional', texto: '9 m/s', error: 'IC-PRED-PROPORCIONAL', siFuera: 'Bien comparar las masas, pero multiplicaste 3 por 3 en vez de dividir. Así sale 9 m/s.' },
         ],
-        coincide: 'B sale más despacio hacia la derecha. Sus 3 kg compensan el movimiento de A, de menor masa, hacia la izquierda.',
+        coincide: 'B sale hacia la derecha y más despacio que A: con sus 3 kg, compensa el movimiento de A, que tiene menos masa.',
       },
       mira: {
         pieza: 'fis-estatica', datos: { alto: 380, cortes: [icSistemaFigura({ mA: 1, mB: 3, uA: 0, uB: 0, vA: -3, resorte: true }).datos, icSistemaFigura({ mA: 1, mB: 3, uA: 0, uB: 0, vA: -3, vB: icSisPredVB, resorte: true }, true).datos], alt: 'Dos carritos parten del reposo y se separan con masas diferentes.' },
         pasos: [
-          { estado: { corte: 0 }, texto: 'Al inicio, todos los cuerpos del sistema están en reposo.', ecuacion: [icSub(icQ('i', 'P'), 'i,x'), ' = 1 · 0 + 3 · 0 = 0 kg·m/s'] },
-          { estado: { corte: 0 }, texto: 'El impulso externo despreciable mantiene el mismo total entre los dos estados.', ecuacion: [icSub(icQ('i', 'P'), 'f,x'), ' − ', icSub(icQ('i', 'P'), 'i,x'), ' = 0'] },
-          { estado: { corte: 1 }, texto: 'A aporta una componente negativa. B debe aportar igual magnitud con signo positivo.', ecuacion: ['0 = 1 · (−3) + 3 · ', icSub(icV, 'B,x')] },
-          { estado: { corte: 1 }, texto: 'Dividimos la contribución que falta entre la masa de B.', ecuacion: [icSub(icV, 'B,x'), ` = (0 − (−3)) ÷ 3 = ${icFmt(icSisPredVB)} m/s`] },
+          { estado: { corte: 0 }, texto: 'Al inicio, los dos carritos están en reposo, así que el total vale cero.', ecuacion: [icSub(icQ('i', 'P'), 'i,x'), ' = 1 · 0 + 3 · 0 = 0 kg·m/s'] },
+          { estado: { corte: 0 }, texto: 'Como no llega impulso desde fuera, el total después del empujón es el mismo que antes.', ecuacion: [icSub(icQ('i', 'P'), 'f,x'), ' − ', icSub(icQ('i', 'P'), 'i,x'), ' = 0'] },
+          { estado: { corte: 1 }, texto: 'A aporta una cantidad negativa, así que B debe aportar la misma cantidad con signo positivo.', ecuacion: ['0 = 1 · (−3) + 3 · ', icSub(icV, 'B,x')] },
+          { estado: { corte: 1 }, texto: 'Para hallar la velocidad de B, dividimos lo que B debe aportar entre su masa.', ecuacion: [icSub(icV, 'B,x'), ` = (0 − (−3)) ÷ 3 = ${icFmt(icSisPredVB)} m/s`] },
         ],
       },
       regla: {
-        texto: 'Suma las cantidades de movimiento de los mismos cuerpos antes y después. El impulso externo cambia esa suma. Sin impulso externo neto, el total se conserva entre ambos estados.',
+        texto: 'Suma las cantidades de movimiento de los mismos cuerpos antes y después. Esa suma solo cambia por el impulso que llega desde fuera; si ese impulso es nulo, el total se conserva.',
         ecuacion: [icSub(icQ('i', 'P'), 'f,x'), ' − ', icSub(icQ('i', 'P'), 'i,x'), ' = ', icIE],
-        condicion: 'El sistema es el mismo en ambos estados. Las fuerzas internas se cancelan en la suma, no en cada cuerpo por separado.',
+        condicion: 'el sistema tiene los mismos cuerpos antes y después; las fuerzas internas se cancelan en la suma, pero no en cada cuerpo por separado.',
         voz: 'Conservar el total no obliga a conservar la velocidad ni la cantidad de movimiento de cada cuerpo.',
         dibujo: icSistemaFigura({ mA: 2, mB: 4, uA: 0, uB: 0, vA: -4, vB: 2, resorte: true }, true),
       },
@@ -1447,21 +1471,21 @@
       actividad: 'Cambiar la llegada y la masa receptora de dos carritos con acoples.',
       temas: ['Choques elásticos e inelásticos'], pieza: 'fis-estatica',
       lee: { tarjetas: [
-        { titulo: 'Dos carritos con acoples', texto: 'Estos carritos llevan acoples que quedan unidos al encontrarse. Comparamos los instantes inmediatamente anterior y posterior al impacto. Las velocidades horizontales son componentes con signo; la derecha es positiva.', dibujo: crCarros({ a: 2, b: 2, u: 3, w: 0 }) },
-        { titulo: 'Dos balances diferentes', texto: 'Ya sabemos sumar cantidades de movimiento. También podemos comparar la energía cinética total antes y después. Observa ambos balances en el mismo ensayo.' },
-        { titulo: 'El entorno del ensayo', texto: 'El rozamiento horizontal y el impulso externo son despreciables durante el contacto. El modelo representa un choque perfectamente inelástico: los carritos permanecen unidos.' },
+        { titulo: 'Dos carritos con acoples', texto: 'Estos carritos llevan acoples, así que quedan unidos cuando se encuentran. Comparamos el instante justo antes del choque con el instante justo después, y cada velocidad lleva su signo: positiva hacia la derecha.', dibujo: crCarros({ a: 2, b: 2, u: 3, w: 0 }) },
+        { titulo: 'Dos balances diferentes', texto: 'Ya sabes sumar cantidades de movimiento. En un choque también conviene comparar la energía cinética total de antes con la de después, así que en el juego verás los dos balances del mismo ensayo.' },
+        { titulo: 'El entorno del ensayo', texto: 'Durante el contacto despreciamos el rozamiento y todo impulso externo. Un choque en el que los cuerpos quedan unidos se llama perfectamente inelástico, y es el que estudiamos aquí.' },
       ] },
       ejemplos: crEjChoques,
       juega: {
         consigna: 'Un carrito de 2 kg alcanza a otro quieto y queda unido a él. Elige la llegada y la masa receptora.',
-        voz: 'Compara la velocidad conjunta y la energía cinética antes y después.',
+        voz: 'Compara la velocidad de los carritos unidos y la energía cinética de antes y después.',
         controles: [
           { id: 'u', etiqueta: 'Velocidad de llegada de A', color: 'c-o', min: 2, max: 6, paso: 1, inicio: 3, unidad: 'm/s', decimales: 0 },
           { id: 'b', etiqueta: 'Masa del carrito B', color: 'c-f', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
           { id: 't', etiqueta: 'Avance de la animación', min: 0, max: 1, paso: 0.05, inicio: 0, decimales: 2, auto: { velocidad: 0.2, modo: 'repite' } },
         ],
         mision: { texto: 'Consigue que los carritos unidos avancen a 3 m/s.', logrado: s => Math.abs(crUnion({ a: 2, b: s.b, u: s.u, w: 0 }).V - 3) < 1e-9,
-          testigo: [{ b: 2, u: 6, t: 0.5 }], bien: 'La velocidad conjunta alcanzó la marca. Compara ahora las energías del mismo ensayo.' },
+          testigo: [{ b: 2, u: 6, t: 0.5 }], bien: 'Ya avanzan a 3 m/s. Compara la energía cinética de antes con la de después.' },
         dibujo: crJuegoUnion,
         lectura: s => { const q = crUnion({ a: 2, b: s.b, u: s.u, w: 0 }); return ['Velocidad conjunta: ', crQ('o', crValor(q.V, 'm/s')), '. La energía cinética disminuye.']; },
         leyenda: [{ s: crM, t: 'masa de cada carrito' }, { s: [crS(crV, 'A,i'), ' y ', crS(crV, 'f')], t: 'componentes horizontales antes y después' },
@@ -1470,16 +1494,16 @@
       predice: (() => {
         const c = { a: 2, b: 4, u: 6, w: -1.5 }, q = crUnion(c);
         const mal = [
-          { id: 'rapideces', valor: (c.a * c.u + c.b * Math.abs(c.w)) / q.M, error: 'CH-RAPIDECES', siFuera: `Bien sumar aportes; trataste la llegada izquierda como positiva. Sale ${crF((c.a * c.u + c.b * Math.abs(c.w)) / q.M)} m/s.` },
-          { id: 'sin-b', valor: c.a * c.u / q.M, error: 'CH-SIN-B', siFuera: `Bien sumar masas; omitiste el movimiento del receptor. Sale ${crF(c.a * c.u / q.M)} m/s.` },
+          { id: 'rapideces', valor: (c.a * c.u + c.b * Math.abs(c.w)) / q.M, error: 'CH-RAPIDECES', siFuera: `Bien sumar los aportes, pero tomaste como positiva la velocidad de B, que va hacia la izquierda. Así sale ${crF((c.a * c.u + c.b * Math.abs(c.w)) / q.M)} m/s.` },
+          { id: 'sin-b', valor: c.a * c.u / q.M, error: 'CH-SIN-B', siFuera: `Bien sumar las masas, pero dejaste fuera el movimiento de B. Así sale ${crF(c.a * c.u / q.M)} m/s.` },
           // Antes «energia» (≈ 3,674 m/s): era la única opción con «≈» y se descartaba por su forma (lector en frío, 26 nov).
-          { id: 'promedio', valor: (c.u + c.w) / 2, error: 'CH-PROMEDIO', siFuera: `Bien usar las dos velocidades con su signo; las promediaste sin tener en cuenta las masas. Sale ${crF((c.u + c.w) / 2)} m/s.` },
+          { id: 'promedio', valor: (c.u + c.w) / 2, error: 'CH-PROMEDIO', siFuera: `Bien usar las dos velocidades con su signo, pero las promediaste sin tener en cuenta las masas. Así sale ${crF((c.u + c.w) / 2)} m/s.` },
         ];
         return { pregunta: 'Ahora B viene hacia A. Después de unirse, ¿qué velocidad horizontal tiene el conjunto?',
           datos: ['A: 2 kg y 6 m/s hacia la derecha.', 'B: 4 kg y 1,5 m/s hacia la izquierda.', 'Impulso externo horizontal despreciable; derecha positiva.'], dibujo: crCarros(c),
           revelar: crCarros(c, { despues: true, unido: true, va: q.V, extra: `E_C: ${crF(q.Ki)} J antes; ${crF(q.Kf)} J después.` }),
           opciones: [{ id: 'c', texto: crValor(q.V, 'm/s'), correcta: true }, ...mal.map(x => ({ ...x, texto: crValor(x.valor, 'm/s') }))],
-          coincide: 'La llegada de B aporta cantidad de movimiento negativa. El conjunto avanza más lento y transforma energía cinética.' };
+          coincide: 'B llega con cantidad de movimiento negativa, así que el conjunto avanza más lento, y parte de la energía cinética se transforma.' };
       })(),
       mira: {
         pieza: 'fis-estatica', datos: { alto: 210, cortes: [
@@ -1489,17 +1513,17 @@
           { ...crCarros({ a: 2, b: 4, u: 6, w: -1.5 }, { despues: true, unido: true, va: 1, extra: 'Energía transformada: 37,5 J.' }).datos, alto: 210 },
         ] },
         pasos: [
-          { estado: { corte: 0 }, texto: 'Los aportes tienen signos contrarios; primero se suman.', ecuacion: crIgual(crS(crP, 'total,x'), '2·6 + 4·(−1,5)', crUnion({ a: 2, b: 4, u: 6, w: -1.5 }).P, 'kg·m/s', 'i') },
-          { estado: { corte: 1 }, texto: 'Después, toda la masa comparte una velocidad.', ecuacion: crIgual(crS(crV, 'f'), '6 ÷ (2 + 4)', crUnion({ a: 2, b: 4, u: 6, w: -1.5 }).V, 'm/s') },
-          { estado: { corte: 2 }, texto: 'La energía cinética restante se calcula después del impacto.', ecuacion: crIgual(crS(crEC, 'f'), '½·6·1²', crUnion({ a: 2, b: 4, u: 6, w: -1.5 }).Kf, 'J', 'tinta') },
-          { estado: { corte: 3 }, texto: 'La diferencia cambia a otras formas de energía.', ecuacion: crIgual('E_transformada', '40,5 − 3', crUnion({ a: 2, b: 4, u: 6, w: -1.5 }).perdida, 'J', 'tinta') },
+          { estado: { corte: 0 }, texto: 'Los aportes de A y B tienen signos contrarios; primero los sumamos con su signo.', ecuacion: crIgual(crS(crP, 'total,x'), '2·6 + 4·(−1,5)', crUnion({ a: 2, b: 4, u: 6, w: -1.5 }).P, 'kg·m/s', 'i') },
+          { estado: { corte: 1 }, texto: 'Después del choque, los dos carritos se mueven juntos, con una sola velocidad para toda la masa.', ecuacion: crIgual(crS(crV, 'f'), '6 ÷ (2 + 4)', crUnion({ a: 2, b: 4, u: 6, w: -1.5 }).V, 'm/s') },
+          { estado: { corte: 2 }, texto: 'Con esa velocidad calculamos la energía cinética que queda justo después del choque.', ecuacion: crIgual(crS(crEC, 'f'), '½·6·1²', crUnion({ a: 2, b: 4, u: 6, w: -1.5 }).Kf, 'J', 'tinta') },
+          { estado: { corte: 3 }, texto: 'La energía cinética que falta no desaparece: se transforma en deformación, calor y sonido.', ecuacion: crIgual('E_transformada', '40,5 − 3', crUnion({ a: 2, b: 4, u: 6, w: -1.5 }).perdida, 'J', 'tinta') },
         ],
       },
       regla: {
-        texto: 'Conserva cantidad de movimiento durante el impacto. Un choque elástico conserva también energía cinética; una adhesión no. Separa el impacto de una subida o un frenado posterior.',
+        texto: 'En el choque se conserva la cantidad de movimiento total. Un choque elástico también conserva la energía cinética; uno en que los cuerpos quedan unidos, no. Si después hay una subida o un frenado, se calcula aparte.',
         ecuacion: [crS(crP, 'total,i'), ' = ', crS(crP, 'total,f')],
-        condicion: 'Impulso externo despreciable durante el contacto. En un choque elástico frontal, se separan con la rapidez relativa con que se acercaban.',
-        voz: 'Decide primero qué intervalo analizas y qué tipo de choque representa.',
+        condicion: 'el impulso externo es despreciable durante el contacto; en un choque elástico de frente, los cuerpos se separan tan rápido como se acercaban.',
+        voz: 'Decide primero qué intervalo miras: el choque o lo que pasa después.',
         dibujo: crCarros({ a: 2, b: 4, u: 6, w: -1.5 }, { despues: true, unido: true, va: 1, extra: 'Cantidad total: 6 kg·m/s.' }),
       },
       resuelve: { pieza: 'fis-estatica', generar: s => crResuelve(4, s + 1) },
@@ -1512,20 +1536,20 @@
       actividad: 'Elegir un coeficiente y observar el rebote de una pelota sobre un piso fijo.',
       temas: ['Coeficiente de restitución'], pieza: 'fis-estatica',
       lee: { tarjetas: [
-        { titulo: 'La pelota y el piso', texto: 'Una pelota cae desde el reposo. El piso permanece fijo y despreciamos la resistencia del aire. Medimos las alturas de su centro desde el nivel donde toca el piso.', dibujo: crPelota(4, null, { e: 0.5 }) },
-        { titulo: 'Una cifra para el impacto', texto: 'El coeficiente de restitución, e, es la rapidez con que los cuerpos se separan tras el contacto dividida entre la rapidez con que se acercaban. Con el piso fijo: salida de la pelota entre llegada. No tiene unidad; va de 0 a 1.' },
-        { titulo: 'Antes y después del contacto', texto: 'Observa la llegada y la salida sobre la línea del impacto. Compara las velocidades de ambos cuerpos desde un mismo observador.' },
+        { titulo: 'La pelota y el piso', texto: 'Una pelota se suelta desde el reposo y cae sobre un piso que no se mueve; despreciamos la resistencia del aire. Las alturas se miden desde el centro de la pelota en el momento en que toca el piso.', dibujo: crPelota(4, null, { e: 0.5 }) },
+        { titulo: 'Una cifra para el impacto', texto: 'El coeficiente de restitución, e, es la rapidez con que dos cuerpos se separan dividida entre la rapidez con que se acercaban. Con el piso fijo, es la rapidez de salida entre la de llegada. No tiene unidad y va de 0 a 1.' },
+        { titulo: 'Antes y después del contacto', texto: 'Mira la llegada y la salida a lo largo de la línea del impacto, la dirección en que se empujan los cuerpos. Las velocidades de los dos se miden desde un mismo observador.' },
       ] },
       ejemplos: crEjRest,
       juega: {
-        consigna: 'La pelota cae desde 4 m sobre un piso fijo. Elige el coeficiente y observa su vuelo después del rebote.',
-        voz: 'Compara la altura de caída con la alcanzada después del contacto.',
+        consigna: 'La pelota cae desde 4 m sobre un piso fijo. Elige el coeficiente de restitución y observa cuánto sube después del rebote.',
+        voz: 'Compara la altura desde la que cae con la altura a la que vuelve a subir.',
         controles: [
           { id: 'e', etiqueta: 'Coeficiente de restitución', opciones: [{ valor: 0.25, texto: '0,25' }, { valor: 0.5, texto: '0,5' }, { valor: 0.75, texto: '0,75' }, { valor: 1, texto: '1' }], inicio: 0.5 },
           { id: 't', etiqueta: 'Avance del vuelo después del rebote', min: 0, max: 1, paso: 0.05, inicio: 0, decimales: 2, auto: { velocidad: 0.2, modo: 'repite' } },
         ],
         mision: { texto: 'Haz que la pelota alcance una altura de 2,25 m.', logrado: s => Math.abs(4 * s.e * s.e - 2.25) < 1e-9,
-          testigo: [{ e: 0.75, t: 0.5 }], bien: 'La altura del rebote llegó a la marca. Compárala con la caída inicial.' },
+          testigo: [{ e: 0.75, t: 0.5 }], bien: 'El rebote llegó a la marca. Compara esa altura con la de la caída.' },
         dibujo: s => crPelota(4, 4 * s.e * s.e, { e: s.e, revelar: true, rebota: true, reloj: s.t }),
         lectura: s => `Altura inicial: 4 m; después alcanza ${crF(4 * s.e * s.e)} m.`,
         leyenda: [{ s: 'H', t: 'altura inicial sobre el contacto' }, { s: 'h', t: 'altura máxima después del rebote' }, { s: 'e', t: 'coeficiente de restitución, sin unidad' }], minimo: 2,
@@ -1538,11 +1562,11 @@
           revelar: crCarros(c, { despues: true, va: c.va, vb: c.vb, extra: `Coeficiente: ${crF(e)}.` }),
           opciones: [
             { id: 'c', texto: crValor(e), correcta: true },
-            { id: 'velocidad-sola', texto: crValor(c.vb / c.u), error: 'CH-VELOCIDAD-SOLA', siFuera: `Bien formar un cociente; dividiste velocidades aisladas. Sale ${crValor(c.vb / c.u)}.` },
-            { id: 'otro-cuerpo', texto: crValor(c.va / c.u), error: 'CH-OTRO-CUERPO', siFuera: `Bien comparar antes y después; omitiste al receptor. Sale ${crValor(c.va / c.u)}.` },
-            { id: 'inversa', texto: crValor(1 / e), error: 'CH-INVERSA', siFuera: `Bien hallar las rapideces relativas; invertiste el cociente. Sale ${crValor(1 / e)}.` },
+            { id: 'velocidad-sola', texto: crValor(c.vb / c.u), error: 'CH-VELOCIDAD-SOLA', siFuera: `Bien formar un cociente, pero dividiste la velocidad final de B entre la inicial de A, sin restar. Así sale ${crValor(c.vb / c.u)}.` },
+            { id: 'otro-cuerpo', texto: crValor(c.va / c.u), error: 'CH-OTRO-CUERPO', siFuera: `Bien comparar antes y después, pero dividiste solo las velocidades de A y dejaste fuera a B. Así sale ${crValor(c.va / c.u)}.` },
+            { id: 'inversa', texto: crValor(1 / e), error: 'CH-INVERSA', siFuera: `Bien hallar cuán rápido se acercan y se separan, pero dividiste al revés. Así sale ${crValor(1 / e)}.` },
           ],
-          coincide: 'Los carritos se acercaban a 10 − 5 = 5 m/s y se separan a 9,5 − 5,5 = 4 m/s. Su cociente es 0,8: no se dividen velocidades sueltas.' };
+          coincide: 'Los carritos se acercaban a 10 − 5 = 5 m/s y se separan a 9,5 − 5,5 = 4 m/s, así que e = 4 ÷ 5 = 0,8. Se dividen esas diferencias, no velocidades sueltas.' };
       })(),
       mira: {
         pieza: 'fis-estatica', datos: { alto: 236, cortes: [
@@ -1552,17 +1576,17 @@
           { ...crPelota(3, 0.75, { e: 0.5, revelar: true }).datos, alto: 236 },
         ] },
         pasos: [
-          { estado: { corte: 0 }, texto: 'A alcanza a B: restamos sus velocidades para medir cuán rápido se acercan.', ecuacion: ['v_acercamiento = 10 − 5 = ', crQ('o', '5 m/s')] },
-          { estado: { corte: 1 }, texto: 'Después del impacto, B va adelante: restamos en el orden de la separación.', ecuacion: ['v_separacion = 9,5 − 5,5 = ', crQ('o', '4 m/s')] },
-          { estado: { corte: 2 }, texto: 'El cociente usa esas dos rapideces relativas, no la velocidad suelta de un carrito.', ecuacion: ['e = 4 ÷ 5 = 0,8'] },
-          { estado: { corte: 3 }, texto: 'Con piso fijo, la razón de alturas depende del cuadrado de e.', ecuacion: ['h/H = e²'] },
+          { estado: { corte: 0 }, texto: 'A alcanza a B, así que restamos sus velocidades para saber cuán rápido se acercan.', ecuacion: ['v_acercamiento = 10 − 5 = ', crQ('o', '5 m/s')] },
+          { estado: { corte: 1 }, texto: 'Después del choque, B va adelante: restamos la velocidad de B menos la de A para saber cuán rápido se separan.', ecuacion: ['v_separacion = 9,5 − 5,5 = ', crQ('o', '4 m/s')] },
+          { estado: { corte: 2 }, texto: 'El coeficiente divide esas dos diferencias, no la velocidad suelta de un carrito.', ecuacion: ['e = 4 ÷ 5 = 0,8'] },
+          { estado: { corte: 3 }, texto: 'Con un piso fijo, la altura de rebote entre la de caída es el cuadrado de e.', ecuacion: ['h/H = e²'] },
         ],
       },
       regla: {
-        texto: 'Divide la rapidez de separación entre la de acercamiento. Con la conservación de la cantidad de movimiento, da ambas velocidades finales. Con piso fijo y sin aire, h = e²·H.',
+        texto: 'El coeficiente e divide la rapidez con que los cuerpos se separan entre la rapidez con que se acercaban. Con la conservación de la cantidad de movimiento, da las dos velocidades finales. Con piso fijo y sin aire, la pelota sube hasta h = e²·H.',
         ecuacion: crDatosE,
-        condicion: 'Choque frontal, sin empuje externo, entre cuerpos que se acercaban. Para alturas: caída desde el reposo, piso fijo, sin aire.',
-        voz: 'Con otro cuerpo móvil, resta velocidades del mismo observador antes de dividir.',
+        condicion: 'el choque es de frente, sin empuje externo, entre cuerpos que se acercaban; para las alturas, además, la pelota cae desde el reposo sobre un piso fijo y sin aire.',
+        voz: 'Si el otro cuerpo también se mueve, resta las velocidades antes de dividir.',
         dibujo: crCarros({ a: 1, b: 1, u: 10, w: 5 }, { despues: true, va: 5.5, vb: 9.5, extra: 'Acercamiento: 5 m/s. Separación: 4 m/s.' }),
       },
       resuelve: { pieza: 'fis-estatica', generar: s => crResuelve(5, s + 1) },
@@ -1575,19 +1599,19 @@
     actividad: 'Cambiar la masa y la posición de un carrito para ubicar un punto del conjunto.',
     temas: ['Centro de masa'], pieza: 'fis-estatica',
     lee: { tarjetas: [
-      { titulo: 'Dos carritos, una referencia', texto: 'Cada carrito tiene su masa concentrada en el punto que marca su posición. El origen es la misma marca para los dos; derecha es el sentido positivo.', dibujo: ctFigura({ masas: [2, 1], posiciones: [0, 2] }) },
-      { titulo: 'Un punto del conjunto', texto: ['El centro de masa es un punto asociado al reparto de masa; no hace falta colocar un objeto allí. Su posición horizontal se representa por ', ctX, '.'] },
-      { titulo: 'Un promedio con participación distinta', texto: 'Un promedio ponderado permite que cada posición participe según su masa. Mueve B y cambia su carga; observa dónde queda la marca CM.' },
+      { titulo: 'Dos carritos, una referencia', texto: 'Imaginamos la masa de cada carrito concentrada en el punto que marca su posición. Las dos posiciones se miden desde el mismo origen, y la derecha es el sentido positivo.', dibujo: ctFigura({ masas: [2, 1], posiciones: [0, 2] }) },
+      { titulo: 'Un punto del conjunto', texto: ['El centro de masa es un punto que resume cómo está repartida la masa del conjunto, y puede caer donde no hay ningún carrito. Su posición horizontal se escribe ', ctX, '.'] },
+      { titulo: 'Un promedio con participación distinta', texto: 'Para ubicarlo se usa un promedio ponderado: cada posición cuenta más cuanto más masa tiene su carrito. En el juego, mueve B, cambia su carga y mira dónde queda la marca CM.' },
     ] },
     juega: {
       consigna: 'Dos carritos ocupan una pista. Cambia la carga y la posición de B para acercar la marca CM al objetivo.',
-      voz: 'Observa qué cambia al mover B y qué cambia al agregar masa.',
+      voz: 'Fíjate en qué cambia cuando mueves B y en qué cambia cuando le agregas masa.',
       controles: [
         { id: 'mB', etiqueta: 'Masa de B', min: 1, max: 4, paso: 1, inicio: 1, unidad: 'kg', decimales: 0, color: 'c-f' },
         { id: 'xB', etiqueta: 'Posición de B', min: 2, max: 6, paso: 1, inicio: 2, unidad: 'm', decimales: 0 },
       ],
       mision: { texto: 'Coloca el centro de masa en la marca de 4 m.', logrado: a => Math.abs(a.mB * a.xB / (2 + a.mB) - 4) < 1e-10,
-        testigo: [{ mB: 4, xB: 6 }], bien: 'La marca CM coincide con el objetivo de la pista.' },
+        testigo: [{ mB: 4, xB: 6 }], bien: 'La marca CM quedó justo en el objetivo de la pista.' },
       dibujo: ctEscenaJuego,
       lectura: a => [ctX, ctAprox(a.mB * a.xB / (2 + a.mB)), ctQ('tinta', `${ctFmt(a.mB * a.xB / (2 + a.mB))} m`), ': queda entre ambos carritos.'],
       leyenda: [
@@ -1604,25 +1628,25 @@
       revelar: ctFigura({ ...ctPred, resultado: ctPredVelocidad, simbolo: 'v_CM,x', unidad: 'm/s', color: 'o' }, true),
       opciones: [
         { id: 'c', texto: `${ctFmt(ctPredVelocidad)} m/s hacia la derecha`, correcta: true },
-        { id: 'reposo', texto: '0 m/s: queda en reposo', error: 'CENTRO-REPOSO', siFuera: 'Bien reconocer fuerzas internas; borraste el movimiento inicial del conjunto. Así obtuviste 0 m/s.' },
-        { id: 'suma-velocidades', texto: `${ctFmt(ctSuma(ctPred.velocidades))} m/s hacia la derecha`, error: 'CENTRO-SUMA-VELOCIDADES', siFuera: `Bien considerar ambos carritos; sumaste sus velocidades. Eso da ${ctFmt(ctSuma(ctPred.velocidades))} m/s.` },
-        { id: 'doble-masa', texto: `${ctFmt(ctPredVelocidad / 2)} m/s hacia la derecha`, error: 'CENTRO-DOBLE-MASA', siFuera: `Bien ponderar; dividiste entre el doble de la masa total. Eso da ${ctFmt(ctPredVelocidad / 2)} m/s.` },
+        { id: 'reposo', texto: '0 m/s: queda en reposo', error: 'CENTRO-REPOSO', siFuera: 'Bien ver que el resorte ejerce fuerzas internas, pero borraste el movimiento que el conjunto ya tenía. Así sale 0 m/s.' },
+        { id: 'suma-velocidades', texto: `${ctFmt(ctSuma(ctPred.velocidades))} m/s hacia la derecha`, error: 'CENTRO-SUMA-VELOCIDADES', siFuera: `Bien considerar los dos carritos, pero sumaste sus velocidades. Así sale ${ctFmt(ctSuma(ctPred.velocidades))} m/s.` },
+        { id: 'doble-masa', texto: `${ctFmt(ctPredVelocidad / 2)} m/s hacia la derecha`, error: 'CENTRO-DOBLE-MASA', siFuera: `Bien ponderar, pero dividiste entre el doble de la masa total. Así sale ${ctFmt(ctPredVelocidad / 2)} m/s.` },
       ],
-      coincide: 'El resorte cambia las velocidades individuales. La cantidad de movimiento total y la masa total conservan sus valores.',
+      coincide: 'El resorte cambia la velocidad de cada carrito, pero no la cantidad de movimiento total ni la masa total, así que el centro sigue a 3 m/s.',
     },
     mira: { pieza: 'fis-estatica', datos: { alto: 302, cortes: [ctFigura(ctPred).datos, ctFigura({ ...ctPred, resultado: ctPredVelocidad, simbolo: 'v_CM,x', unidad: 'm/s', color: 'o' }, true).datos], alt: 'Los dos carritos avanzaban hacia la derecha antes de separarse.' },
       pasos: [
-        { estado: { corte: 0 }, texto: 'Incluimos la masa de los dos carritos.', ecuacion: [ctMt, ` = 2 + 4 = ${ctFmt(ctSuma(ctPred.masas))} kg`] },
-        { estado: { corte: 0 }, texto: 'Sumamos sus cantidades de movimiento con el mismo sentido positivo.', ecuacion: [ctSub(ctQ('i', 'P'), 'total,x'), ` = 2 · 3 + 4 · 3 = ${ctFmt(ctSuma(ctPred.masas) * ctPredVelocidad)} kg·m/s`] },
-        { estado: { corte: 1 }, texto: 'El total, dividido entre la masa total, da la velocidad del centro.', ecuacion: [ctV, ' = ', { frac: [ctFmt(ctSuma(ctPred.masas) * ctPredVelocidad), ctFmt(ctSuma(ctPred.masas))] }, ` = ${ctFmt(ctPredVelocidad)} m/s`] },
-        { estado: { corte: 1 }, texto: 'Sin fuerza externa neta, separar los carritos no cambia esta velocidad.', ecuacion: [ctV, ` = ${ctFmt(ctPredVelocidad)} m/s`] },
+        { estado: { corte: 0 }, texto: 'La masa total es la suma de las masas de los dos carritos.', ecuacion: [ctMt, ` = 2 + 4 = ${ctFmt(ctSuma(ctPred.masas))} kg`] },
+        { estado: { corte: 0 }, texto: 'Sumamos sus cantidades de movimiento, con la derecha como positiva.', ecuacion: [ctSub(ctQ('i', 'P'), 'total,x'), ` = 2 · 3 + 4 · 3 = ${ctFmt(ctSuma(ctPred.masas) * ctPredVelocidad)} kg·m/s`] },
+        { estado: { corte: 1 }, texto: 'La cantidad de movimiento total dividida entre la masa total da la velocidad del centro de masa.', ecuacion: [ctV, ' = ', { frac: [ctFmt(ctSuma(ctPred.masas) * ctPredVelocidad), ctFmt(ctSuma(ctPred.masas))] }, ` = ${ctFmt(ctPredVelocidad)} m/s`] },
+        { estado: { corte: 1 }, texto: 'Como no hay fuerza externa neta, separar los carritos no cambia esa velocidad.', ecuacion: [ctV, ` = ${ctFmt(ctPredVelocidad)} m/s`] },
       ],
     },
     regla: {
-      texto: 'Pondera posiciones y velocidades por sus masas. Divide entre la masa total. Sin fuerza externa neta, el centro mantiene su velocidad.',
+      texto: 'Multiplica cada posición o velocidad por la masa de su carrito, suma esos productos y divide entre la masa total. Si no hay fuerza externa neta, el centro de masa mantiene su velocidad.',
       ecuacion: [ctX, ' = ', { frac: [[ctSub(ctM, 'A'), '·', ctSub('x', 'A'), ' + ', ctSub(ctM, 'B'), '·', ctSub('x', 'B')], [ctSub(ctM, 'A'), ' + ', ctSub(ctM, 'B')]] }],
-      condicion: 'Masas constantes y positivas; mismo origen. Para tres cuerpos se agrega el tercer producto y su masa.',
-      voz: 'La masa situada en el origen también forma parte del denominador.',
+      condicion: 'las masas no cambian y todas las posiciones se miden desde el mismo origen; con tres carritos, se suma también el tercer producto y su masa.',
+      voz: 'Un carrito en el origen aporta cero arriba, pero su masa sí va abajo.',
       dibujo: { pieza: 'fis-estatica', datos: { alto: 184, textos: [
         { x: 12, y: 26, texto: 'v_CM,x = P_total,x / m_total', tam: 14 },
         { x: 12, y: 52, texto: 'P_total,x: cantidad de movimiento total', color: 'i', tam: 11 },
@@ -1715,7 +1739,7 @@
     "simbolo": "p⃗",
     "medida": "kg·m/s",
     "def": "Magnitud vectorial que permite comparar el movimiento de cuerpos considerando su masa y su velocidad.",
-    "simple": "Una forma de describir el movimiento teniendo en cuenta lo que se mueve.",
+    "simple": "Es masa por velocidad: un camión lento puede llevar tanta como una moto rápida.",
     "ejemplos": [
       "Se estudia en carritos con distintas cargas.",
       "Se registra para una pelota que viaja por el aire.",
@@ -1759,7 +1783,7 @@
     "medida": "N",
     "idea": "impulso",
     "simple": "Una fuerza que representa el efecto de todo el intervalo.",
-    "def": "Fuerza constante equivalente al efecto acumulado durante un intervalo; no indica por sí sola el mayor valor alcanzado.",
+    "def": "Fuerza constante que daría el mismo impulso en el mismo intervalo; casi nunca es el valor más alto alcanzado.",
     "ejemplos": [
       "Una fuerza constante de 6 N tiene fuerza media de 6 N.",
       "Durante un golpe, la fuerza puede crecer y después disminuir.",
@@ -1859,7 +1883,7 @@
       "choques elásticos",
       "elásticamente"
     ],
-    "simple": "Un impacto ideal que permite comparar la energía cinética total.",
+    "simple": "Un choque ideal en el que no se pierde energía cinética.",
     "def": "Choque ideal en el que la energía cinética total conserva su valor entre los instantes anterior y posterior.",
     "ejemplos": [
       "Se estudian dos carritos con topes elásticos ideales.",
@@ -1870,7 +1894,7 @@
   {
     "termino": "coeficiente de restitución",
     "simbolo": "e",
-    "simple": "Una cifra para describir la llegada y la salida del contacto.",
+    "simple": "Cuánto rebota algo: 1 si sale tan rápido como llegó; 0 si no rebota.",
     "def": "Número que compara las rapideces relativas de separación y acercamiento a lo largo de la línea del impacto.",
     "ejemplos": [
       "Se registra para una pelota y un piso fijo.",
@@ -1898,7 +1922,7 @@
       "línea del impacto"
     ],
     "simple": "La dirección donde se compara la llegada con la salida.",
-    "def": "Dirección normal al contacto sobre la que se relacionan las velocidades en el modelo de impacto frontal.",
+    "def": "Dirección perpendicular a la superficie de contacto; sobre ella se comparan las velocidades en un choque de frente.",
     "ejemplos": [
       "Una pelota llega perpendicularmente a una pared.",
       "Dos carritos chocan sobre una misma pista recta.",
