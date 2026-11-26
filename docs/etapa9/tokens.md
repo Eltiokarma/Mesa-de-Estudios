@@ -14,3 +14,4 @@ contra los límites semanales de los planes.
 | fisica.gravitacion | auditoría y correcciones (cierre) | 449 177 | 46 min 30 s | 239 herramientas |
 | razonamiento-verbal.cohesion-y-coherencia | escritura (fases 1 a 5) | 637 023 | 60 min | 141 herramientas |
 | trigonometria.reduccion-al-primer-cuadrante | escritura (fases 1 a 5) | 603 398 | 61 min 35 s | 190 herramientas |
+| aritmetica.potenciacion-y-radicacion | escritura (fases 1 a 5) | 645 744 | 71 min 45 s | 199 herramientas |
