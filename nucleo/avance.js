@@ -115,6 +115,11 @@
       if (sinHuella(est, r.u, { marca: r.p, ideas: r.cambian })) cambio = true;
       if (r.e && conservaEstudio(est, { de: r.u, a: r.u, estudiada: { marca: r.e, fecha: '2026-11-19', ideas: r.antes } })) cambio = true;
     }
+    // 26 nov (etapa 11, Oscilaciones): las cinco ideas antiguas conservan sus ids con otra Predice;
+    // ciclo-y-amplitud es nueva. Se conserva el estudio anterior, sin regalar la idea nueva ni tocar el historial.
+    if (sinHuella(est, 'fisica.oscilaciones', { marca: 'prediccionOSC', ideas: ['aceleracion-al-centro', 'graficas-mas', 'periodo-resorte', 'pendulo', 'energia-mas'] })) cambio = true;
+    if (conservaEstudio(est, { de: 'fisica.oscilaciones', a: 'fisica.oscilaciones', estudiada: { marca: 'estudiadaOSC', fecha: '2026-11-26',
+      ideas: ['aceleracion-al-centro', 'graficas-mas', 'periodo-resorte', 'pendulo', 'energia-mas'] } })) cambio = true;
     return cambio;
   }
   const REHECHAS_E6 = [

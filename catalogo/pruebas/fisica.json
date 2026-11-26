@@ -12,7 +12,8 @@
     "docs/investigacion/optica-ideas-erroneas.md",
     "docs/investigacion/optica-espejos-esfericos.md",
     "docs/investigacion/ondas-electromagneticas-ideas-erroneas.md",
-    "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
+    "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md",
+    "docs/etapa11/errores-fisica.md"
   ],
   "errores": {
     "G2-altura-entre-tiempo": {
@@ -410,6 +411,30 @@
     "CE-SIN-RAIZ": {
       "respaldo": "hipotesis",
       "describe": "Da v² en vez de v: no saca la raíz"
+    },
+    "OS11-R-SIN-MASA": {
+      "respaldo": "hipotesis",
+      "describe": "Omite el cambio de masa y conserva el período inicial"
+    },
+    "OS11-R-LINEAL": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica el período por la razón de masas, sin sacar su raíz"
+    },
+    "OS11-R-INVERSA": {
+      "respaldo": "hipotesis",
+      "describe": "Divide el período por la razón de masas en vez de usar su raíz"
+    },
+    "OS11-P-SIN-RAIZ": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica la duración por la razón longitud/gravedad sin sacar la raíz"
+    },
+    "OS11-P-INVIERTE-G": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica por la raíz del factor de gravedad en vez de dividir"
+    },
+    "OS11-P-SIN-LONGITUD": {
+      "respaldo": "hipotesis",
+      "describe": "Considera el cambio de gravedad y omite el de longitud"
     }
   },
   "pares": [
@@ -2605,6 +2630,146 @@
             "texto": "5,8 m/s",
             "valor": 5.809,
             "error": "RZ-NMG-normal-igual-peso"
+          }
+        ]
+      }
+    },
+    {
+      "par": "osc-01",
+      "plantilla": "fis-oscilaciones",
+      "unidad": "fisica.oscilaciones",
+      "nombreUnidad": "Movimiento armónico simple",
+      "mide": "Calibrar un resorte con su alargamiento de equilibrio y hallar el período al reemplazar la masa",
+      "A": {
+        "enunciado": "Un resorte ideal vertical de masa despreciable se alarga 0,1 m al sostener 0,2 kg en equilibrio. Se reemplaza esa masa por 0,8 kg y se la hace oscilar verticalmente sin rozamiento, dentro del régimen elástico. Con g = 10 m/s², ¿cuál es el período alrededor del nuevo equilibrio?",
+        "datos": {
+          "m1": 0.2,
+          "e1": 0.1,
+          "m2": 0.8,
+          "g": 10
+        },
+        "opciones": [
+          {
+            "texto": "0,2π s",
+            "valor": 0.6283185307179586,
+            "error": "OS11-R-SIN-MASA"
+          },
+          {
+            "texto": "0,8π s",
+            "valor": 2.5132741228718345,
+            "error": "OS11-R-LINEAL"
+          },
+          {
+            "texto": "0,4π s",
+            "valor": 1.2566370614359172,
+            "correcta": true
+          },
+          {
+            "texto": "0,05π s",
+            "valor": 0.15707963267948966,
+            "error": "OS11-R-INVERSA"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un resorte ideal vertical de masa despreciable se alarga 0,4 m al sostener 0,5 kg en equilibrio. Se reemplaza esa masa por 0,125 kg y se la hace oscilar verticalmente sin rozamiento, dentro del régimen elástico. Con g = 10 m/s², ¿cuál es el período alrededor del nuevo equilibrio?",
+        "datos": {
+          "m1": 0.5,
+          "e1": 0.4,
+          "m2": 0.125,
+          "g": 10
+        },
+        "opciones": [
+          {
+            "texto": "0,4π s",
+            "valor": 1.2566370614359172,
+            "error": "OS11-R-SIN-MASA"
+          },
+          {
+            "texto": "0,2π s",
+            "valor": 0.6283185307179586,
+            "correcta": true
+          },
+          {
+            "texto": "0,1π s",
+            "valor": 0.3141592653589793,
+            "error": "OS11-R-LINEAL"
+          },
+          {
+            "texto": "1,6π s",
+            "valor": 5.026548245743669,
+            "error": "OS11-R-INVERSA"
+          }
+        ]
+      }
+    },
+    {
+      "par": "osc-02",
+      "plantilla": "fis-oscilaciones",
+      "unidad": "fisica.oscilaciones",
+      "nombreUnidad": "Movimiento armónico simple",
+      "mide": "Obtener el período de ciclos completos y comparar longitud y gravedad para calcular otra duración",
+      "A": {
+        "enunciado": "Un péndulo de masa puntual e hilo inextensible de masa despreciable completa 10 ciclos en 20 s. Se multiplica su longitud por 9 y se lleva a un lugar donde la gravedad es 4 veces la inicial. Sin rozamiento y con inclinaciones de hasta 8°, ¿cuánto duran 15 ciclos según el modelo de ángulo pequeño?",
+        "datos": {
+          "N1": 10,
+          "dt1": 20,
+          "N2": 15,
+          "kL": 9,
+          "kG": 4
+        },
+        "opciones": [
+          {
+            "texto": "45 s",
+            "valor": 45,
+            "correcta": true
+          },
+          {
+            "texto": "67,5 s",
+            "valor": 67.5,
+            "error": "OS11-P-SIN-RAIZ"
+          },
+          {
+            "texto": "180 s",
+            "valor": 180,
+            "error": "OS11-P-INVIERTE-G"
+          },
+          {
+            "texto": "15 s",
+            "valor": 15,
+            "error": "OS11-P-SIN-LONGITUD"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un péndulo de masa puntual e hilo inextensible de masa despreciable completa 10 ciclos en 30 s. Se multiplica su longitud por 4 y se lleva a un lugar donde la gravedad es 9 veces la inicial. Sin rozamiento y con inclinaciones de hasta 8°, ¿cuánto duran 12 ciclos según el modelo de ángulo pequeño?",
+        "datos": {
+          "N1": 10,
+          "dt1": 30,
+          "N2": 12,
+          "kL": 4,
+          "kG": 9
+        },
+        "opciones": [
+          {
+            "texto": "16 s",
+            "valor": 16,
+            "error": "OS11-P-SIN-RAIZ"
+          },
+          {
+            "texto": "216 s",
+            "valor": 216,
+            "error": "OS11-P-INVIERTE-G"
+          },
+          {
+            "texto": "12 s",
+            "valor": 12,
+            "error": "OS11-P-SIN-LONGITUD"
+          },
+          {
+            "texto": "24 s",
+            "valor": 24,
+            "correcta": true
           }
         ]
       }
