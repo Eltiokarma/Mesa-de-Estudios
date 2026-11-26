@@ -34,3 +34,4 @@ contra los límites semanales de los planes.
 | quimica.tabla-periodica | redactor, unidad ya cerrada | 308 148 | 42 min | 64 herramientas |
 | razonamiento-matematico.arreglos-numericos | redactor (Escribidor Escribano) | 390 313 | 38 min | 64 herramientas |
 | geometria.puntos-notables | redactor (Escribidor Escribano) | 375 618 | 43 min | 67 herramientas |
+| quimica.estructura-atomica | redactor, unidad ya cerrada | 487 368 | 46 min | 101 herramientas |
