@@ -18,3 +18,4 @@ contra los límites semanales de los planes.
 | algebra.binomio-de-newton | escritura (fases 1 a 5) | 621 818 | 78 min | 184 herramientas |
 | quimica.reacciones-y-balance | escritura (fases 1 a 5) | 764 713 | 78 min 20 s | 240 herramientas |
 | geometria.puntos-notables | escritura (fases 1 a 5) | 708 600 | 80 min | 232 herramientas |
+| razonamiento-verbal.cohesion-y-coherencia | redactor (Escribidor Escribano) | 303 487 | 13 min | 45 herramientas |
