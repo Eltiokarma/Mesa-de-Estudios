@@ -221,7 +221,7 @@
        "encuentro": "Encuentros y alcances",
        "velocidad-relativa": "Velocidad relativa"
       },
-      "terminos": 22
+      "terminos": 23
      }
     },
     {
@@ -274,7 +274,7 @@
        "caida-reposo": "Caída libre desde el reposo",
        "caida-libre": "Lanzamiento vertical"
       },
-      "terminos": 37
+      "terminos": 38
      }
     },
     {
@@ -432,7 +432,7 @@
        "torque-y-brazo": "Torque: fuerza por brazo",
        "cuerpo-rigido": "Equilibrio del cuerpo rígido"
       },
-      "terminos": 39
+      "terminos": 40
      }
     },
     {
@@ -484,7 +484,7 @@
        "ascensor-y-marcos": "Peso aparente en el ascensor",
        "centripeta-es-resultante": "Dinámica circular"
       },
-      "terminos": 48
+      "terminos": 53
      }
     },
     {
@@ -588,7 +588,7 @@
        "energia-y-rozamiento": "Energía con rozamiento",
        "potencia-y-eficiencia": "Potencia y eficiencia"
       },
-      "terminos": 52
+      "terminos": 57
      }
     },
     {

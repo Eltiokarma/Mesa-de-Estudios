@@ -60,3 +60,14 @@ contra los límites semanales de los planes.
 | quimica.nomenclatura-inorganica | redactor, unidad ya cerrada | 424 039 | 25 min | 81 herramientas |
 | geometria.puntos-notables | auditoría y correcciones (cierre) | 430 839 | 63 min 45 s | 176 herramientas |
 | quimica (tanda 2, 4 unidades) | verificación de notas del redactor | 316 366 | 19 min | 106 herramientas |
+| fisica.magnitudes-y-vectores | redactor (encargo «explica»), unidad ya cerrada | 375 706 | 18 min 25 s | 60 herramientas |
+| fisica.vectores | redactor («explica»), unidad ya cerrada | 345 698 | 18 min 45 s | 84 herramientas |
+| fisica.movimiento-rectilineo | redactor («explica»), unidad ya cerrada | 382 324 | 22 min 24 s | 82 herramientas |
+| fisica.mruv-y-caida-libre | redactor («explica»), unidad ya cerrada | 449 895 | 22 min 32 s | 78 herramientas |
+| fisica.movimiento-parabolico-y-circular | redactor («explica»), unidad ya cerrada | 378 919 | 29 min | 75 herramientas |
+| fisica.movimiento-circular | redactor («explica»), unidad ya cerrada | 376 562 | 18 min | 71 herramientas |
+| fisica.trabajo-y-energia | redactor («explica»), unidad ya cerrada | 385 598 | 20 min | 81 herramientas |
+| fisica.estatica | redactor («explica»), unidad ya cerrada | 479 843 | 27 min | 77 herramientas |
+| fisica.dinamica | redactor («explica»), unidad ya cerrada | 429 046 | 30 min | 109 herramientas |
+| fisica (tanda 1, 5 unidades) | verificación de notas del redactor | 460 535 | 24 min 41 s | 153 herramientas |
+| fisica (tanda 2, 4 unidades) | verificación de notas del redactor | 271 018 | 14 min 44 s | 86 herramientas |
