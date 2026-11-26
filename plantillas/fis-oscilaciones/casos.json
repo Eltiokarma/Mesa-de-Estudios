@@ -1,0 +1,440 @@
+{
+  "plantilla": "fis-oscilaciones",
+  "nota": "Veinte referencias reproducibles: dieciocho familias, la otra conexión de resortes y otro estado físico en los cuartos de ciclo.",
+  "verificacion": "Cálculo independiente desde entrada: eventos RK4, bisección, áreas de fuerza y balances. No se leyó respuesta.valor, alternativas ni formateadores de producción. El detalle del cálculo está en oraculo.test.js.",
+  "casos": [
+    {
+      "semilla": 0,
+      "opciones": {
+        "tipo": "extremos-amplitud"
+      },
+      "entrada": {
+        "idea": "ciclo-y-amplitud",
+        "tipo": "extremos-amplitud",
+        "nivel": 1,
+        "izquierdoCm": -3,
+        "derechoCm": 3,
+        "modelo": "oscilacion-simetrica"
+      },
+      "esperado": {
+        "respuesta": 3,
+        "unidad": "cm",
+        "texto": "3 cm"
+      },
+      "metodo": "Conteo de intervalos y suma explícita de desplazamientos absolutos."
+    },
+    {
+      "semilla": 1,
+      "opciones": {
+        "tipo": "conteo-periodo"
+      },
+      "entrada": {
+        "idea": "ciclo-y-amplitud",
+        "tipo": "conteo-periodo",
+        "nivel": 2,
+        "primerInstante": 2,
+        "ultimoInstante": 19.5,
+        "llegadas": 8,
+        "pide": "periodo",
+        "modelo": "movimiento-periodico"
+      },
+      "esperado": {
+        "respuesta": 2.5,
+        "unidad": "s",
+        "texto": "2,5 s"
+      },
+      "metodo": "Conteo de intervalos y suma explícita de desplazamientos absolutos."
+    },
+    {
+      "semilla": 2,
+      "opciones": {
+        "tipo": "recorrido-mixto"
+      },
+      "entrada": {
+        "idea": "ciclo-y-amplitud",
+        "tipo": "recorrido-mixto",
+        "nivel": 3,
+        "ACm": 15,
+        "T": 4,
+        "t": 26,
+        "inicio": "izquierda",
+        "modelo": "mas-desde-extremo"
+      },
+      "esperado": {
+        "respuesta": 3.9,
+        "unidad": "m",
+        "texto": "3,9 m"
+      },
+      "metodo": "Conteo de intervalos y suma explícita de desplazamientos absolutos."
+    },
+    {
+      "semilla": 3,
+      "opciones": {
+        "tipo": "fuerza-posicion"
+      },
+      "entrada": {
+        "idea": "aceleracion-al-centro",
+        "tipo": "fuerza-posicion",
+        "nivel": 1,
+        "k": 20,
+        "xCm": 9,
+        "modelo": "resorte-horizontal"
+      },
+      "esperado": {
+        "respuesta": -1.8,
+        "unidad": "N",
+        "texto": "−1,8 N"
+      },
+      "metodo": "Gradiente simétrico del área de fuerza y balance de la segunda ley."
+    },
+    {
+      "semilla": 4,
+      "opciones": {
+        "tipo": "aceleracion-masa"
+      },
+      "entrada": {
+        "idea": "aceleracion-al-centro",
+        "tipo": "aceleracion-masa",
+        "nivel": 2,
+        "m": 0.25,
+        "k": 80,
+        "xCm": 4,
+        "modelo": "resorte-horizontal"
+      },
+      "esperado": {
+        "respuesta": -12.8,
+        "unidad": "m/s²",
+        "texto": "−12,8 m/s²"
+      },
+      "metodo": "Gradiente simétrico del área de fuerza y balance de la segunda ley."
+    },
+    {
+      "semilla": 5,
+      "opciones": {
+        "tipo": "masa-dos-estados"
+      },
+      "entrada": {
+        "idea": "aceleracion-al-centro",
+        "tipo": "masa-dos-estados",
+        "nivel": 3,
+        "xPrimeroCm": -5,
+        "fuerzaPrimera": 3,
+        "xSegundoCm": 10,
+        "aceleracionSegunda": -15,
+        "modelo": "mismo-resorte-misma-masa"
+      },
+      "esperado": {
+        "respuesta": 0.4000000000000002,
+        "unidad": "kg",
+        "texto": "0,4 kg"
+      },
+      "metodo": "Gradiente simétrico del área de fuerza y balance de la segunda ley."
+    },
+    {
+      "semilla": 6,
+      "opciones": {
+        "tipo": "estado-cuartos"
+      },
+      "entrada": {
+        "idea": "graficas-mas",
+        "tipo": "estado-cuartos",
+        "nivel": 1,
+        "ACm": 5,
+        "T": 4,
+        "t": 6,
+        "inicio": "izquierda",
+        "modelo": "mas-desde-extremo"
+      },
+      "esperado": {
+        "respuesta": "x=5;sentido=reposo",
+        "unidad": "",
+        "texto": "x = 5 cm; reposo instantáneo"
+      },
+      "metodo": "Ecuación lineal integrada por RK4 y localización del evento por bisección; sin seno, coseno o inversas del constructor."
+    },
+    {
+      "semilla": 7,
+      "opciones": {
+        "tipo": "velocidad-fase"
+      },
+      "entrada": {
+        "idea": "graficas-mas",
+        "tipo": "velocidad-fase",
+        "nivel": 2,
+        "ACm": 6,
+        "T": 18,
+        "t": 13.5,
+        "fasePiNumerador": 4,
+        "fasePiDenominador": 6,
+        "modelo": "mas-fase"
+      },
+      "esperado": {
+        "respuesta": -0.010471975511967402,
+        "unidad": "m/s",
+        "texto": "≈ −0,01 m/s"
+      },
+      "metodo": "Ecuación lineal integrada por RK4 y localización del evento por bisección; sin seno, coseno o inversas del constructor."
+    },
+    {
+      "semilla": 8,
+      "opciones": {
+        "tipo": "primer-paso"
+      },
+      "entrada": {
+        "idea": "graficas-mas",
+        "tipo": "primer-paso",
+        "nivel": 3,
+        "ACm": 14,
+        "T": 12,
+        "xCm": 7,
+        "sentido": "derecha",
+        "inicio": "izquierda",
+        "modelo": "mas-primer-paso"
+      },
+      "esperado": {
+        "respuesta": 3.999999999999978,
+        "unidad": "s",
+        "texto": "4 s"
+      },
+      "metodo": "Ecuación lineal integrada por RK4 y localización del evento por bisección; sin seno, coseno o inversas del constructor."
+    },
+    {
+      "semilla": 9,
+      "opciones": {
+        "tipo": "resorte-periodo"
+      },
+      "entrada": {
+        "idea": "periodo-resorte",
+        "tipo": "resorte-periodo",
+        "nivel": 1,
+        "m": 1.28,
+        "k": 32,
+        "modelo": "resorte-horizontal"
+      },
+      "esperado": {
+        "respuesta": 1.256637061436086,
+        "unidad": "s",
+        "texto": "2π/5 s"
+      },
+      "metodo": "Período obtenido de un cruce de cero del oscilador integrado; balance estático o ensayo independiente de la conexión."
+    },
+    {
+      "semilla": 10,
+      "opciones": {
+        "tipo": "resorte-vertical"
+      },
+      "entrada": {
+        "idea": "periodo-resorte",
+        "tipo": "resorte-vertical",
+        "nivel": 2,
+        "m": 0.45,
+        "longitudNaturalCm": 24,
+        "longitudEquilibrioCm": 46.5,
+        "g": 10,
+        "modelo": "resorte-vertical"
+      },
+      "esperado": {
+        "respuesta": 0.9424777960770643,
+        "unidad": "s",
+        "texto": "3π/10 s"
+      },
+      "metodo": "Período obtenido de un cruce de cero del oscilador integrado; balance estático o ensayo independiente de la conexión."
+    },
+    {
+      "semilla": 11,
+      "opciones": {
+        "tipo": "resortes-conectados"
+      },
+      "entrada": {
+        "idea": "periodo-resorte",
+        "tipo": "resortes-conectados",
+        "nivel": 3,
+        "m": 1.2,
+        "rigidezPrimero": 40,
+        "rigidezSegundo": 120,
+        "conexion": "serie",
+        "modelo": "resortes-serie"
+      },
+      "esperado": {
+        "respuesta": 1.256637061436086,
+        "unidad": "s",
+        "texto": "2π/5 s"
+      },
+      "metodo": "Período obtenido de un cruce de cero del oscilador integrado; balance estático o ensayo independiente de la conexión."
+    },
+    {
+      "semilla": 12,
+      "opciones": {
+        "tipo": "pendulo-periodo"
+      },
+      "entrada": {
+        "idea": "pendulo",
+        "tipo": "pendulo-periodo",
+        "nivel": 1,
+        "longitudCm": 70,
+        "g": 12,
+        "anguloGrados": 5,
+        "modelo": "pendulo-pequeno"
+      },
+      "esperado": {
+        "respuesta": 1.5175334242078935,
+        "unidad": "s",
+        "texto": "≈ 1,518 s"
+      },
+      "metodo": "Período obtenido de un cruce de cero del oscilador integrado; balance estático o ensayo independiente de la conexión."
+    },
+    {
+      "semilla": 13,
+      "opciones": {
+        "tipo": "pendulo-razon"
+      },
+      "entrada": {
+        "idea": "pendulo",
+        "tipo": "pendulo-razon",
+        "nivel": 2,
+        "longitudPrimeraCm": 40,
+        "longitudSegundaCm": 144,
+        "gravedadPrimera": 10,
+        "gravedadSegunda": 12,
+        "anguloGrados": 10,
+        "modelo": "pendulo-pequeno"
+      },
+      "esperado": {
+        "respuesta": 1.732050807568877,
+        "unidad": "",
+        "texto": "≈ 1,732"
+      },
+      "metodo": "Período obtenido de un cruce de cero del oscilador integrado; balance estático o ensayo independiente de la conexión."
+    },
+    {
+      "semilla": 14,
+      "opciones": {
+        "tipo": "pendulo-longitud"
+      },
+      "entrada": {
+        "idea": "pendulo",
+        "tipo": "pendulo-longitud",
+        "nivel": 3,
+        "ciclos": 20,
+        "duracion": 24,
+        "g": 12,
+        "anguloGrados": 6,
+        "modelo": "pendulo-pequeno"
+      },
+      "esperado": {
+        "respuesta": 0.43770751333478164,
+        "unidad": "m",
+        "texto": "≈ 0,438 m"
+      },
+      "metodo": "Período obtenido de un cruce de cero del oscilador integrado; balance estático o ensayo independiente de la conexión."
+    },
+    {
+      "semilla": 15,
+      "opciones": {
+        "tipo": "energia-total"
+      },
+      "entrada": {
+        "idea": "energia-mas",
+        "tipo": "energia-total",
+        "nivel": 1,
+        "k": 40,
+        "ACm": 25,
+        "modelo": "energia-horizontal"
+      },
+      "esperado": {
+        "respuesta": 1.25,
+        "unidad": "J",
+        "texto": "1,25 J"
+      },
+      "metodo": "Área de fuerza mediante trapecios y balance energético resuelto por bisección."
+    },
+    {
+      "semilla": 16,
+      "opciones": {
+        "tipo": "rapidez-posicion"
+      },
+      "entrada": {
+        "idea": "energia-mas",
+        "tipo": "rapidez-posicion",
+        "nivel": 2,
+        "m": 0.4,
+        "k": 80,
+        "ACm": 10,
+        "xCm": 8,
+        "modelo": "energia-horizontal"
+      },
+      "esperado": {
+        "respuesta": 0.8485281374238571,
+        "unidad": "m/s",
+        "texto": "≈ 0,849 m/s"
+      },
+      "metodo": "Área de fuerza mediante trapecios y balance energético resuelto por bisección."
+    },
+    {
+      "semilla": 17,
+      "opciones": {
+        "tipo": "amplitud-desde-estado"
+      },
+      "entrada": {
+        "idea": "energia-mas",
+        "tipo": "amplitud-desde-estado",
+        "nivel": 3,
+        "m": 0.2,
+        "k": 120,
+        "xCm": 10,
+        "v": 0.8,
+        "modelo": "energia-horizontal"
+      },
+      "esperado": {
+        "respuesta": 10.519822558706334,
+        "unidad": "cm",
+        "texto": "≈ 10,52 cm"
+      },
+      "metodo": "Área de fuerza mediante trapecios y balance energético resuelto por bisección."
+    },
+    {
+      "semilla": 401,
+      "opciones": {
+        "tipo": "resortes-conectados"
+      },
+      "entrada": {
+        "idea": "periodo-resorte",
+        "tipo": "resortes-conectados",
+        "nivel": 3,
+        "m": 0.9,
+        "rigidezPrimero": 30,
+        "rigidezSegundo": 60,
+        "conexion": "paralelo",
+        "modelo": "resortes-paralelo"
+      },
+      "esperado": {
+        "respuesta": 0.628318530718043,
+        "unidad": "s",
+        "texto": "π/5 s"
+      },
+      "metodo": "Período obtenido de un cruce de cero del oscilador integrado; balance estático o ensayo independiente de la conexión."
+    },
+    {
+      "semilla": 400,
+      "opciones": {
+        "tipo": "estado-cuartos"
+      },
+      "entrada": {
+        "idea": "graficas-mas",
+        "tipo": "estado-cuartos",
+        "nivel": 1,
+        "ACm": 13,
+        "T": 10,
+        "t": 17.5,
+        "inicio": "derecha",
+        "modelo": "mas-desde-extremo"
+      },
+      "esperado": {
+        "respuesta": "x=0;sentido=derecha",
+        "unidad": "",
+        "texto": "x = 0 cm; hacia la derecha"
+      },
+      "metodo": "Ecuación lineal integrada por RK4 y localización del evento por bisección; sin seno, coseno o inversas del constructor."
+    }
+  ]
+}

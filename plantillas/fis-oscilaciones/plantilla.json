@@ -1,0 +1,19 @@
+{
+  "id": "fis-oscilaciones",
+  "titulo": "Movimiento armónico simple",
+  "formato": "predicciones",
+  "unidades": ["fisica.oscilaciones"],
+  "temas": [
+    "Movimiento periódico y oscilatorio",
+    "Ecuaciones y gráficas del MAS",
+    "Masa-resorte horizontal y vertical",
+    "Péndulo simple",
+    "Energía en el MAS"
+  ],
+  "estado": "probada",
+  "version": "1.0.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
