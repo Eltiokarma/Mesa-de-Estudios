@@ -29,3 +29,4 @@ contra los límites semanales de los planes.
 | razonamiento-verbal.cohesion-y-coherencia | auditoría y correcciones (cierre) | 328 158 | 30 min | 110 herramientas |
 | fisica.impulso-y-choques | redactor (Escribidor Escribano) | 424 129 | 33 min | 117 herramientas |
 | quimica.reacciones-y-balance | lector en frío A (ideas 1–3) | 125 990 | 2 min 16 s | 33 herramientas |
+| quimica.reacciones-y-balance | lector en frío B (ideas 4–6) | 130 663 | 2 min 44 s | 33 herramientas |
