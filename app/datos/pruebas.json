@@ -1964,6 +1964,62 @@
     "CE-SIN-RAIZ": {
      "respaldo": "hipotesis",
      "describe": "Da v² en vez de v: no saca la raíz"
+    },
+    "IC9-ignora-rebote": {
+     "respaldo": "hipotesis",
+     "describe": "Calcula solo el frenado hasta reposo e ignora la velocidad de salida opuesta."
+    },
+    "IC9-omite-sentido-salida": {
+     "respaldo": "hipotesis",
+     "describe": "Resta las rapideces sin asignar signo negativo a la velocidad de salida."
+    },
+    "IC9-resta-invertida": {
+     "respaldo": "hipotesis",
+     "describe": "Resta la velocidad final de la inicial e invierte el impulso y la fuerza media."
+    },
+    "IC9-impulso-como-fuerza": {
+     "respaldo": "hipotesis",
+     "describe": "Calcula el impulso pero no lo divide entre la duración para obtener fuerza media."
+    },
+    "IC9-centro-sin-avance": {
+     "respaldo": "hipotesis",
+     "describe": "Entrega la posición inicial del centro de masa y omite su desplazamiento posterior."
+    },
+    "IC9-posicion-promedio-simple": {
+     "respaldo": "hipotesis",
+     "describe": "Promedia las posiciones iniciales sin ponderar sus masas; después suma el avance correcto."
+    },
+    "IC9-velocidad-promedio-simple": {
+     "respaldo": "hipotesis",
+     "describe": "Promedia las velocidades sin ponderar sus masas al calcular el avance del centro."
+    },
+    "IC9-velocidades-sin-signo": {
+     "respaldo": "hipotesis",
+     "describe": "Suma las rapideces como si ambos carritos avanzaran en el mismo sentido."
+    },
+    "GV-K-LINEAL": {
+     "respaldo": "hipotesis",
+     "describe": "Hipótesis: multiplica el período por la razón de semiejes, sin usar los cuadrados y cubos de Kepler."
+    },
+    "GV-K-RAIZ": {
+     "respaldo": "hipotesis",
+     "describe": "Hipótesis: toma solo la raíz de la razón de semiejes y omite elevarla al cubo."
+    },
+    "GV-K-CUADRADO": {
+     "respaldo": "hipotesis",
+     "describe": "Hipótesis: multiplica el período por el cuadrado de la razón de semiejes."
+    },
+    "GV-E-RESTA": {
+     "respaldo": "hipotesis",
+     "describe": "Hipótesis: resta las rapideces inicial y de escape como si la energía dependiera linealmente de la rapidez."
+    },
+    "GV-E-SIN-GRAVEDAD": {
+     "respaldo": "hipotesis",
+     "describe": "Hipótesis: conserva la rapidez inicial e ignora el aumento de energía potencial durante el alejamiento."
+    },
+    "GV-E-UMBRAL": {
+     "respaldo": "hipotesis",
+     "describe": "Hipótesis: responde con la rapidez mínima de escape en el lanzamiento cuando se pide la rapidez final."
     }
    },
    "pares": [

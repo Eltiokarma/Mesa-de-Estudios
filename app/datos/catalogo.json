@@ -109,7 +109,7 @@
        "areas-volumenes": "Áreas y volúmenes",
        "homogeneidad": "Análisis dimensional"
       },
-      "terminos": 31
+      "terminos": 32
      }
     },
     {
@@ -221,7 +221,7 @@
        "encuentro": "Encuentros y alcances",
        "velocidad-relativa": "Velocidad relativa"
       },
-      "terminos": 21
+      "terminos": 22
      }
     },
     {
@@ -484,7 +484,7 @@
        "ascensor-y-marcos": "Peso aparente en el ascensor",
        "centripeta-es-resultante": "Dinámica circular"
       },
-      "terminos": 47
+      "terminos": 48
      }
     },
     {
@@ -494,7 +494,10 @@
       "Leyes de Kepler",
       "Ley de gravitación universal",
       "Campo gravitatorio",
-      "Variación de g con la altura"
+      "Variación de g con la altura",
+      "Energía gravitatoria",
+      "Órbitas circulares",
+      "Rapidez de escape"
      ],
      "universidades": {
       "uni": {
@@ -512,28 +515,30 @@
      "grado": 4,
      "requiere": [
       "fisica.dinamica",
-      "fisica.movimiento-circular"
+      "fisica.movimiento-circular",
+      "fisica.trabajo-y-energia"
      ],
      "plantillas": [
+      "fis-gravitacion",
       "gravitacion",
       "dinamica-fuerzas"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/fisica/gravitacion.js",
       "requiere": [
-       "/nucleo/kit/piezas/fis-lienzo.js",
-       "/plantillas/gravitacion/motor.js",
-       "/nucleo/fisica3d.js",
+       "/nucleo/kit/piezas/fis-gravitacion.js",
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
-      "ideas": 4,
+      "ideas": 6,
       "titulos": {
-       "cuadrado-inverso": "Doble distancia, cuarta parte",
-       "campo-gravitatorio": "El campo es del lugar",
-       "orbita-circular": "Más lejos, más lento",
-       "leyes-de-kepler": "Las tres leyes de Kepler"
+       "cuadrado-inverso": "Ley de gravitación universal",
+       "campo-gravitatorio": "Campo gravitatorio y peso",
+       "energia-gravitatoria": "Energía gravitatoria",
+       "orbita-circular": "Órbitas circulares",
+       "leyes-de-kepler": "Leyes de Kepler",
+       "escape": "Rapidez de escape"
       },
-      "terminos": 24
+      "terminos": 61
      }
     },
     {
@@ -615,6 +620,7 @@
       "fisica.trabajo-y-energia"
      ],
      "plantillas": [
+      "fis-impulso-choques",
       "choques",
       "velocidad-relativa",
       "impulso-grafica"
@@ -622,20 +628,19 @@
      "teoria": {
       "archivo": "/contenido/teoria/fisica/impulso-y-choques.js",
       "requiere": [
-       "/nucleo/kit/piezas/ejes.js",
-       "/nucleo/kit/piezas/fis-riel.js",
-       "/nucleo/kit/piezas/torre.js",
-       "/nucleo/kit/piezas/recta.js"
+       "/nucleo/kit/piezas/fis-estatica.js",
+       "/nucleo/kit/piezas/ejes.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "impulso": "El área de F–t empuja",
-       "conservacion": "Lo que uno gana, otro pierde",
-       "elastico-inelastico": "La energía cinética puede perderse",
-       "restitucion": "e compara rapideces",
-       "centro-masa": "El centro de masa queda"
+       "cantidad-movimiento": "Cantidad de movimiento",
+       "impulso": "Impulso: fuerza durante un intervalo",
+       "conservacion": "La cantidad de movimiento del sistema",
+       "elastico-inelastico": "Choques y energía cinética",
+       "restitucion": "Coeficiente de restitución",
+       "centro-masa": "Centro de masa"
       },
-      "terminos": 26
+      "terminos": 52
      }
     },
     {
@@ -1098,7 +1103,7 @@
        "generador": "Alterna: pico y eficaz",
        "transformador": "Las vueltas fijan el voltaje"
       },
-      "terminos": 34
+      "terminos": 35
      }
     },
     {
@@ -1148,7 +1153,7 @@
        "espectro": "El espectro es una regla",
        "cambio-de-medio": "Al entrar, f se queda"
       },
-      "terminos": 27
+      "terminos": 28
      }
     },
     {
@@ -8506,7 +8511,8 @@
     "/plantillas/choques/index.html",
     "/plantillas/choques/motor.js",
     "/plantillas/choques/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "cinematica-medias": {
    "id": "cinematica-medias",
@@ -9209,7 +9215,8 @@
    ],
    "rehacer": [
     "fisica.estatica",
-    "fisica.dinamica"
+    "fisica.dinamica",
+    "fisica.gravitacion"
    ]
   },
   "divisibilidad-restos": {
@@ -9660,6 +9667,54 @@
    "archivos": [
     "/plantillas/fis-estatica/generador.js",
     "/plantillas/fis-estatica/papel.json"
+   ]
+  },
+  "fis-gravitacion": {
+   "id": "fis-gravitacion",
+   "titulo": "Gravitación, órbitas y escape",
+   "formato": "predicciones",
+   "estado": "probada",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.gravitacion"
+   ],
+   "url": "#/practica/fis-gravitacion",
+   "ideas": [
+    "cuadrado-inverso",
+    "campo-gravitatorio",
+    "energia-gravitatoria",
+    "orbita-circular",
+    "leyes-de-kepler",
+    "escape"
+   ],
+   "papel": "/plantillas/fis-gravitacion/papel.json",
+   "archivos": [
+    "/plantillas/fis-gravitacion/generador.js",
+    "/plantillas/fis-gravitacion/papel.json"
+   ]
+  },
+  "fis-impulso-choques": {
+   "id": "fis-impulso-choques",
+   "titulo": "Impulso, cantidad de movimiento y choques",
+   "formato": "predicciones",
+   "estado": "probada",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.impulso-y-choques"
+   ],
+   "url": "#/practica/fis-impulso-choques",
+   "ideas": [
+    "cantidad-movimiento",
+    "impulso",
+    "conservacion",
+    "elastico-inelastico",
+    "restitucion",
+    "centro-masa"
+   ],
+   "papel": "/plantillas/fis-impulso-choques/papel.json",
+   "archivos": [
+    "/plantillas/fis-impulso-choques/generador.js",
+    "/plantillas/fis-impulso-choques/papel.json"
    ]
   },
   "fis-mru": {
@@ -10288,7 +10343,8 @@
     "/plantillas/gravitacion/index.html",
     "/plantillas/gravitacion/motor.js",
     "/plantillas/gravitacion/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "hidrocarburos": {
    "id": "hidrocarburos",
@@ -10340,7 +10396,8 @@
    "archivos": [
     "/plantillas/impulso-grafica/generador.js",
     "/plantillas/impulso-grafica/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "induccion": {
    "id": "induccion",
@@ -13003,6 +13060,9 @@
    "archivos": [
     "/plantillas/velocidad-relativa/generador.js",
     "/plantillas/velocidad-relativa/papel.json"
+   ],
+   "rehacer": [
+    "fisica.impulso-y-choques"
    ]
   },
   "vida-media": {
