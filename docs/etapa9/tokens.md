@@ -44,3 +44,4 @@ contra los límites semanales de los planes.
 | razonamiento-matematico.arreglos-numericos | lector en frío A (tarjetas y 3 momentos: capturas rotas) | 112 080 | 2 min | 22 herramientas |
 | quimica.materia-y-energia | redactor, unidad ya cerrada | 400 393 | 58 min | 125 herramientas |
 | trigonometria.reduccion-al-primer-cuadrante | auditoría y correcciones (cierre) | 350 180 | 40 min 35 s | 145 herramientas |
+| quimica.reacciones-y-balance | auditoría y correcciones (cierre) | 335 564 | 31 min 24 s | 150 herramientas |
