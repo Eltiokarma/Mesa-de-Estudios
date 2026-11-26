@@ -230,8 +230,8 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | trig-objeto · escuadras | se reconoce | juego de escuadras | [ver](capturas/trig-objeto--escuadras.webp) |  |
 | trig-objeto · figura | se reconoce | rectángulo de examen (diagrama propio) | [ver](capturas/trig-objeto--figura.webp) |  |
 | trig-objeto · loseta | a medias | loseta: cuadrado con diagonal; se lee como figura de examen | [ver](capturas/trig-objeto--loseta.webp) |  |
-| trig-objeto · poste | a medias | poste con su cable: el poste es una barrita; falta la base, el travesaño y el anclaje | [ver](capturas/trig-objeto--poste.webp) |  |
-| trig-objeto · rampa | a medias | rampa: triángulo sombreado; falta superficie de rampa (baranda, piso) | [ver](capturas/trig-objeto--rampa.webp) |  |
+| trig-objeto · poste | a medias | poste con su cable: el poste es una barrita; falta la base, el travesaño y el anclaje | [ver](capturas/trig-objeto--poste.webp) | redibujado: aisladores en la cruceta, cables que se van, veta del palo y base de concreto; se lee como poste de luz ([antes y después](antes-despues/trig-objeto--poste.webp)) |
+| trig-objeto · rampa | a medias | rampa: triángulo sombreado; falta superficie de rampa (baranda, piso) | [ver](capturas/trig-objeto--rampa.webp) | redibujado: baranda con parantes paralela a la rampa y sardinel de la vereda; el rótulo de la rampa sube sobre la baranda ([antes y después](antes-despues/trig-objeto--rampa.webp)) |
 | trig-objeto · repisa | se reconoce | repisa con soporte en una pared | [ver](capturas/trig-objeto--repisa.webp) |  |
 | trig-objeto · senal | se reconoce | señal triangular en su poste | [ver](capturas/trig-objeto--senal.webp) |  |
 | trig-objeto · sombras | se reconoce | poste, persona, sol y sombras | [ver](capturas/trig-objeto--sombras.webp) |  |

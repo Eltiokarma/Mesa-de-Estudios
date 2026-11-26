@@ -194,8 +194,17 @@
       let fondo = `<rect x="${XR}" y="${n(b[1])}" width="${W - 6 - XR}" height="${n(SUELO - b[1])}" fill="currentColor" fill-opacity="0.12"/>`
         + linea(b, [W - 6, b[1]], tinta(2)) + linea(r, b, tinta(2));
       fondo += poli([a, r, b], `fill="currentColor" fill-opacity="0.1" stroke="none"`) + suelo();
+      // 26 nov (dibujos reconocibles): la baranda de la rampa, paralela a ella y tenue, con sus parantes, y el sardinel
+      // de la vereda: un triángulo sombreado solo no se leía como rampa.
+      const u = unit(resta(b, a)), q = [u[1], -u[0]], L = largo(resta(b, a)), alto = 16;
+      const a1 = suma(suma(a, u, Math.min(14, L * 0.12)), q, alto), b1 = suma(suma(b, u, -6), q, alto);
+      let bar = `M${n(a1[0])} ${n(a1[1])}L${n(b1[0])} ${n(b1[1])}L${n(b1[0] + 24)} ${n(b1[1])}`;
+      const kp = Math.max(2, Math.round(L / 40));
+      for (let i = 0; i <= kp; i++) { const t = suma(a1, resta(b1, a1), i / kp), pie = suma(t, q, -alto); bar += `M${n(t[0])} ${n(t[1])}L${n(pie[0])} ${n(pie[1])}`; }
+      fondo += `<path d="${bar}" fill="none" ${tinta(1.8, 0.4)}/>`;
+      fondo += linea([XR, b[1] + 4], [W - 6, b[1] + 4], tinta(1, 0.3));
       const frente = linea(a, b, tinta(3));
-      return { r, a, b, s, fondo, frente, propios: [] };
+      return { r, a, b, s, fondo, frente, propios: [], separa: { h: alto + 12 }, evitar: [[a1, b1]] };
     },
     // poste: «el poste y el suelo forman el ángulo recto; el cable (o el rayo de sol) es la hipotenusa».
     poste(m, d) {
@@ -207,6 +216,13 @@
       if (sombra) fondo += `<rect x="${XP}" y="${SUELO - 2}" width="${n(m.ra * s)}" height="7" rx="3" fill="currentColor" fill-opacity="0.4"/>`;
       fondo += `<rect x="${XP - 4}" y="${n(b[1] - 6)}" width="8" height="${n(SUELO - b[1] + 6)}" rx="2" fill="currentColor" fill-opacity="0.18" ${tinta(1.5)}/>`;
       fondo += linea([XP - 14, b[1] + 8], [XP + 14, b[1] + 8], tinta(2.5));
+      // 26 nov (dibujos reconocibles): el poste de luz se reconoce por los aisladores de la cruceta y los cables que se
+      // van (tenues, hacia la izquierda, lejos de los rótulos); la veta del palo y su base de concreto.
+      for (const dx of [-12, 0, 12]) fondo += `<path d="M${XP + dx - 2.5} ${n(b[1] + 7)}L${XP + dx - 2.5} ${n(b[1] + 2)}L${XP + dx + 2.5} ${n(b[1] + 2)}L${XP + dx + 2.5} ${n(b[1] + 7)}" fill="var(--card)" ${tinta(1.3)}/>`;
+      const comba = (x0, y0, y1, baja) => Array.from({ length: 9 }, (_, i) => { const t = i / 8; return `${i ? 'L' : 'M'}${n(x0 + (6 - x0) * t)} ${n(y0 + (y1 - y0) * t + baja * 4 * t * (1 - t))}`; }).join('');
+      fondo += `<path d="${comba(XP - 12, b[1] + 2, b[1] + 8, 10)}${comba(XP, b[1] + 2, b[1] + 2, 8)}" fill="none" ${tinta(1.2, 0.35)}/>`;
+      fondo += linea([XP - 1, b[1] + 14], [XP - 1, SUELO - 10], tinta(1, 0.3));
+      fondo += `<path d="M${XP - 7} ${SUELO}L${XP - 7} ${SUELO - 6}L${XP + 7} ${SUELO - 6}L${XP + 7} ${SUELO}" fill="var(--card)" ${tinta(1.5)}/>`;
       let frente = '';
       if (sombra) {
         // El sol, lejos, en la dirección del rayo (de la punta de la sombra hacia la punta del poste).
