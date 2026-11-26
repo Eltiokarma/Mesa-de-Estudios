@@ -316,6 +316,26 @@
     "TAL-BICUAD-NINGUNA-descarta-todo": {
      "respaldo": "hipotesis",
      "describe": "Ve un valor de u negativo y cree que la ecuación no tiene raíces reales"
+    },
+    "SIG-pierde-el-signo": {
+     "respaldo": "parcial",
+     "describe": "Pierde el signo de (−q)ᵏ con k impar (Burroughs y colaboradores, ejemplo didáctico; docs/investigacion/etapa9/algebra.binomio-de-newton.md §3)"
+    },
+    "BLO-no-eleva-el-numero": {
+     "respaldo": "parcial",
+     "describe": "Eleva la letra pero no el número que la acompaña: pone b una sola vez (Burroughs y colaboradores, ejemplo didáctico)"
+    },
+    "IDX-usa-k-mas-uno": {
+     "respaldo": "hipotesis",
+     "describe": "Usa como k el número de veces que sale a, o el lugar: toma el término vecino"
+    },
+    "IDX-usa-k-menos-uno": {
+     "respaldo": "hipotesis",
+     "describe": "Usa una b menos de las que pide el exponente 0: toma el término anterior"
+    },
+    "TAL-BN-SINC-olvida-el-numero-de-b": {
+     "respaldo": "hipotesis",
+     "describe": "Da solo el número combinatorio C(n, k) y olvida el número que trae b, elevado a k"
     }
    },
    "pares": [
@@ -1139,6 +1159,30 @@
     "olvida-el-cero": {
      "respaldo": "hipotesis",
      "describe": "Resta la cifra de antes pero olvida el 0 del denominador (AT-SIN-CERO)"
+    },
+    "suma-2k-mas-1": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que pueden sobrar 2k + 1 y llega al cuadrado siguiente (AT-MAS-UNO)"
+    },
+    "suma-una-fila": {
+     "respaldo": "hipotesis",
+     "describe": "Suma solo una fila nueva, k, como residuo máximo (AT-UNA-FILA)"
+    },
+    "olvida-el-residuo": {
+     "respaldo": "hipotesis",
+     "describe": "Da k² sin el residuo (AT-SIN-RESIDUO)"
+    },
+    "suma-los-residuos": {
+     "respaldo": "hipotesis",
+     "describe": "Suma lo que sobra y lo que falta y lo da como el número (AT-SUMA)"
+    },
+    "da-la-raiz": {
+     "respaldo": "hipotesis",
+     "describe": "Halla la raíz k y la da como el número (AT-DA-K)"
+    },
+    "residuo-sobre-el-siguiente": {
+     "respaldo": "hipotesis",
+     "describe": "Suma lo que sobra al cuadrado siguiente, no al de k (AT-EXCESO)"
     }
    },
    "pares": [
@@ -2765,6 +2809,30 @@
     "GE-PIE3": {
      "respaldo": "hipotesis",
      "describe": "Da una sola parte del reparto en vez de las partes del tramo pedido"
+    },
+    "GE-PN2": {
+     "respaldo": "hipotesis",
+     "describe": "Pone el baricentro en la mitad de la mediana"
+    },
+    "GE-PN3": {
+     "respaldo": "hipotesis",
+     "describe": "Invierte el 2 : 1: da el tramo corto, el que llega al lado"
+    },
+    "GE-PN4": {
+     "respaldo": "hipotesis",
+     "describe": "Parte la mediana en 3 : 1, por las tres medianas"
+    },
+    "GE-IN1": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que la inscrita toca cada lado en su punto medio"
+    },
+    "GE-IN2": {
+     "respaldo": "hipotesis",
+     "describe": "Resta del semiperímetro un lado vecino en vez del opuesto"
+    },
+    "GE-IN3": {
+     "respaldo": "hipotesis",
+     "describe": "Da el semiperímetro entero como tangente"
     }
    },
    "pares": [
@@ -3195,6 +3263,18 @@
    "version": "1.2.0",
    "minutos": 16,
    "errores": {
+    "IE-POR-ATOMO": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta los electrones de un cromo y no los del dicromato entero, que tiene dos"
+    },
+    "IE-SIN-IGUALAR": {
+     "respaldo": "hipotesis",
+     "describe": "Suma las semirreacciones sin multiplicarlas: los electrones no se igualan"
+    },
+    "IE-COEF-H": {
+     "respaldo": "hipotesis",
+     "describe": "Da el coeficiente del H⁺ en vez del de la especie que se pide"
+    },
     "QM-OX-TOTAL": {
      "respaldo": "hipotesis",
      "describe": "Da lo que aportan todos los átomos del elemento juntos, sin repartirlo entre ellos"
@@ -4145,6 +4225,30 @@
     "RMP27-ultima": {
      "respaldo": "hipotesis",
      "describe": "En un ciclo, toma la última del ciclo, como si no sobrara nada"
+    },
+    "RMP1-sin-centro": {
+     "respaldo": "hipotesis",
+     "describe": "Reparte el total entre la fila y la columna, como si el centro estuviera en una sola"
+    },
+    "RMP183-el-centro": {
+     "respaldo": "hipotesis",
+     "describe": "Responde la tarjeta del centro en vez de lo que suma la línea"
+    },
+    "RMP61-las-dos": {
+     "respaldo": "hipotesis",
+     "describe": "Da lo que suman la fila y la columna juntas, sin repartir"
+    },
+    "RMP188-entre-cuatro": {
+     "respaldo": "hipotesis",
+     "describe": "Divide el producto entre las cuatro líneas que pasan por el centro"
+    },
+    "RMP194-dos-veces": {
+     "respaldo": "hipotesis",
+     "describe": "Toma el centro por sí mismo dos veces en vez de tres"
+    },
+    "RMP65-suma": {
+     "respaldo": "hipotesis",
+     "describe": "Suma el centro tres veces en vez de multiplicarlo (como en el de sumas)"
     }
    },
    "pares": [
@@ -4788,6 +4892,30 @@
     "DOS-MULTIPLICA-en-vez-de-dividir": {
      "respaldo": "hipotesis",
      "describe": "Multiplica lo avanzado por la resta de cotangentes en vez de dividir"
+    },
+    "TR15-olvida-el-menos-de-menos-theta": {
+     "respaldo": "parcial",
+     "describe": "Quita bien las vueltas, pero olvida que sen(−θ) = −sen θ"
+    },
+    "TR14-cambia-a-coseno": {
+     "respaldo": "parcial",
+     "describe": "Pone bien el signo, pero cambia el seno por el coseno sin que haya 90° ni 270°"
+    },
+    "TR14-TR15-coseno-sin-el-menos": {
+     "respaldo": "parcial",
+     "describe": "Cambia a coseno sin motivo y además olvida el menos de −θ"
+    },
+    "TR14-conserva-la-tangente": {
+     "respaldo": "parcial",
+     "describe": "Pone bien el signo, pero con 90° se queda con la tangente en vez de la cotangente"
+    },
+    "TR12-sin-signo": {
+     "respaldo": "parcial",
+     "describe": "Cambia bien a la cotangente, pero sin el signo menos del cuadrante II"
+    },
+    "TR14-TR12-conserva-y-sin-signo": {
+     "respaldo": "parcial",
+     "describe": "Se queda con la tangente y además pierde el signo"
     },
     "TR12-coseno-sin-signo": {
      "respaldo": "parcial",

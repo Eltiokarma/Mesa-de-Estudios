@@ -1439,7 +1439,7 @@
        "configuracion-iones": "Configuración de los iones",
        "desapareados-isoelectronicos": "Hund y el último electrón"
       },
-      "terminos": 41
+      "terminos": 40
      }
     },
     {
@@ -1488,7 +1488,7 @@
        "bloques-transicion": "Bloques y metales de transición",
        "metales-no-metales": "Metales, no metales y semimetales"
       },
-      "terminos": 40
+      "terminos": 39
      }
     },
     {
@@ -1785,26 +1785,30 @@
       "quimica.nomenclatura-inorganica"
      ],
      "plantillas": [
-      "balance-reacciones",
-      "clasificar-reacciones"
+      "reacciones-practica",
+      "clasificar-reacciones",
+      "balance-reacciones"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/quimica/reacciones-y-balance.js",
       "requiere": [
+       "/plantillas/balance-reacciones/motor.js",
+       "/nucleo/elementos.js",
        "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/quim-reaccion.js",
        "/nucleo/kit/piezas/quim-cadena.js",
-       "/nucleo/kit/piezas/recta.js",
-       "/nucleo/kit/piezas/quim-fichas.js"
+       "/nucleo/kit/piezas/recta.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "indicios": "Indicios, no pruebas",
-       "clasificar": "Juntar, separar, reemplazar",
-       "tanteo": "Coeficientes, nunca subíndices",
-       "oxida-reduce": "Quién se oxida, quién se reduce",
-       "ion-electron": "La carga también se balancea"
+       "indicios": "Indicios y ecuación química",
+       "clasificar": "Clases de reacciones",
+       "tanteo": "Balance por tanteo",
+       "oxida-reduce": "Oxidación, reducción y agentes",
+       "cambio-eo": "Electrones perdidos, electrones ganados",
+       "ion-electron": "Ion-electrón: ácido y básico"
       },
-      "terminos": 33
+      "terminos": 48
      }
     },
     {
@@ -2014,7 +2018,7 @@
        "diluir-y-retirar": "Diluir no es retirar",
        "estequiometria-solucion": "Reaccionar en solución: n = c·V"
       },
-      "terminos": 34
+      "terminos": 36
      }
     },
     {
@@ -2062,7 +2066,7 @@
        "orden-reaccion": "El orden sale de los datos",
        "vida-media": "La mitad en tiempos iguales"
       },
-      "terminos": 38
+      "terminos": 39
      }
     },
     {
@@ -2110,7 +2114,7 @@
        "grado-reaccion": "El grado de reacción α",
        "le-chatelier": "Le Chatelier: compara Q con K"
       },
-      "terminos": 31
+      "terminos": 30
      }
     },
     {
@@ -2160,7 +2164,7 @@
        "ph-al-diluir": "El pH al diluir",
        "neutralizacion": "Neutralizar no siempre da 7"
       },
-      "terminos": 33
+      "terminos": 32
      }
     },
     {
@@ -2212,7 +2216,7 @@
        "electrolisis-faraday": "La carga decide la masa",
        "pourbaix": "Potencial y pH en un mapa"
       },
-      "terminos": 38
+      "terminos": 39
      }
     },
     {
@@ -2269,7 +2273,7 @@
        "cis-trans-optica": "Cis, trans y el espejo",
        "reacciones-organicas": "Qué enlace cambia en la reacción"
       },
-      "terminos": 46
+      "terminos": 47
      }
     },
     {
@@ -2323,7 +2327,7 @@
        "isomeria-funcion": "Misma fórmula, otra familia",
        "nombrar-monofuncional": "Cadena, número y sufijo"
       },
-      "terminos": 37
+      "terminos": 36
      }
     },
     {
@@ -2380,7 +2384,7 @@
        "vitaminas-solubilidad": "Vitaminas: en grasa o en agua",
        "productos-naturales": "Familias por estructura, no por origen"
       },
-      "terminos": 36
+      "terminos": 35
      }
     },
     {
@@ -2432,7 +2436,7 @@
        "combustion": "Con poco oxígeno sale CO",
        "mena-ley-metal": "La ley no es la pureza"
       },
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -2680,7 +2684,7 @@
        "radicales": "La raíz cuadrada es un lado",
        "exponente-fraccionario": "La raíz es un exponente fraccionario"
       },
-      "terminos": 27
+      "terminos": 29
      }
     },
     {
@@ -2930,7 +2934,7 @@
        "igualdad": "Polinomios idénticos",
        "operaciones": "Multiplicar polinomios"
       },
-      "terminos": 42
+      "terminos": 43
      }
     },
     {
@@ -2983,7 +2987,7 @@
        "teorema-resto": "Teorema del resto",
        "cocientes-notables": "Cocientes notables"
       },
-      "terminos": 39
+      "terminos": 40
      }
     },
     {
@@ -3248,7 +3252,7 @@
        "ecuaciones": "Resolver y revisar el argumento",
        "inecuaciones": "Base menor que 1 invierte"
       },
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -3526,31 +3530,36 @@
        ]
       }
      },
-     "potencial_visual": "bajo",
+     "potencial_visual": "medio",
      "grado": 5,
      "requiere": [
       "algebra.productos-notables",
       "aritmetica.analisis-combinatorio"
      ],
      "plantillas": [
+      "binomio-practica",
       "binomio-newton"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/algebra/binomio-de-newton.js",
       "requiere": [
+       "/nucleo/kit/piezas/alg-cenefa.js",
        "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/arit-calculadora.js",
        "/nucleo/kit/piezas/ejes.js",
        "/plantillas/cuadrado-crece/motor.js",
        "/nucleo/kit/piezas/alg-cubo-3d.js"
       ],
-      "ideas": 4,
+      "ideas": 6,
       "titulos": {
-       "pascal-elecciones": "Cada coeficiente cuenta elecciones",
-       "termino-general": "El término k + 1 lleva bᵏ",
-       "exponente-no-natural": "Con exponente no natural, no termina",
-       "potencia-trinomio": "Un trinomio también cuenta órdenes"
+       "pascal-elecciones": "Elegir en cada paréntesis",
+       "termino-general": "El término general",
+       "termino-buscado": "Un término por su exponente",
+       "suma-coeficientes": "Cuántos términos y cuánto suman",
+       "exponente-no-natural": "Exponente que no es natural",
+       "potencia-trinomio": "La potencia de un trinomio"
       },
-      "terminos": 28
+      "terminos": 43
      }
     }
    ]
@@ -3686,7 +3695,7 @@
        "potencia": "Cada elemento duplica los subconjuntos",
        "cartesiano": "Pares con orden"
       },
-      "terminos": 24
+      "terminos": 25
      }
     },
     {
@@ -3733,7 +3742,7 @@
        "medias": "Tres medias para dos números",
        "serie": "Razones iguales: la suma también"
       },
-      "terminos": 31
+      "terminos": 32
      }
     },
     {
@@ -3781,7 +3790,7 @@
        "reparto": "Repartir según pesos",
        "compania": "Capital por tiempo"
       },
-      "terminos": 24
+      "terminos": 25
      }
     },
     {
@@ -3978,7 +3987,7 @@
        "cuartiles": "Cortar los datos en cuartos",
        "dispersion": "Qué tan lejos de la media"
       },
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -4137,7 +4146,7 @@
        "base-desconocida": "La base que no se ve",
        "conteo-cifras": "Contar cifras por bloques"
       },
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -4196,7 +4205,7 @@
        "defecto-exceso": "Sobran o faltan para otra bolsita",
        "cifras-producto": "Cifras del producto y del cociente"
       },
-      "terminos": 35
+      "terminos": 38
      }
     },
     {
@@ -4251,7 +4260,7 @@
        "criterios-pesos": "Criterios del 11, 7 y 13",
        "diofanticas": "Dos clases de monedas, pago justo"
       },
-      "terminos": 37
+      "terminos": 39
      }
     },
     {
@@ -4426,7 +4435,7 @@
        "generatriz": "La fracción generatriz",
        "otras-bases": "Fracciones en otras bases"
       },
-      "terminos": 52
+      "terminos": 53
      }
     },
     {
@@ -4450,32 +4459,36 @@
        ]
       }
      },
-     "potencial_visual": "bajo",
+     "potencial_visual": "medio",
      "grado": 3,
      "requiere": [
-      "aritmetica.numeros-primos-y-divisores"
+      "aritmetica.numeros-racionales"
      ],
      "plantillas": [
+      "potencias-raices",
       "potenciacion",
       "numeros-sucesiones"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/aritmetica/potenciacion-y-radicacion.js",
       "requiere": [
+       "/nucleo/kit/piezas/arit-cuadrado.js",
        "/nucleo/kit/piezas/arit-tabla.js",
-       "/nucleo/kit/piezas/arit-fichas.js",
+       "/nucleo/kit/piezas/arit-calculadora.js",
        "/nucleo/kit/piezas/recta.js",
        "/plantillas/potenciacion/motor.js",
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
-      "ideas": 4,
+      "ideas": 6,
       "titulos": {
-       "perfectos": "Los exponentes deciden",
-       "exclusion": "Descartar no es confirmar",
-       "raiz-entera": "El cuadrado más grande que cabe",
-       "aproximadas": "Encerrar la raíz por pasos"
+       "perfectos": "Cuadrados y cubos perfectos",
+       "exclusion": "Criterios para descartar cuadrados",
+       "raiz-entera": "Raíz cuadrada entera y residuo",
+       "raiz-cubica": "Raíz cúbica entera y residuo",
+       "contar": "Contar cuadrados en un tramo",
+       "aproximadas": "Aproximar una raíz por décimas"
       },
-      "terminos": 26
+      "terminos": 37
      }
     },
     {
@@ -4731,7 +4744,7 @@
        "lineas-notables": "Líneas notables",
        "angulo-de-bisectrices": "Ángulos entre bisectrices"
       },
-      "terminos": 52
+      "terminos": 53
      }
     },
     {
@@ -4963,10 +4976,11 @@
      "potencial_visual": "alto",
      "grado": 4,
      "requiere": [
-      "geometria.congruencia",
-      "geometria.circunferencia"
+      "geometria.circunferencia",
+      "geometria.proporcionalidad-y-semejanza"
      ],
      "plantillas": [
+      "geo-puntos-notables",
       "triangulo-estira",
       "geo-triangulos-notables",
       "geo-proporcionalidad"
@@ -4974,15 +4988,19 @@
      "teoria": {
       "archivo": "/contenido/teoria/geometria/puntos-notables.js",
       "requiere": [
-       "/nucleo/kit/piezas/geo-figura.js"
+       "/nucleo/kit/piezas/geo-figura.js",
+       "/nucleo/kit/piezas/geo-objeto.js"
       ],
-      "ideas": 3,
+      "ideas": 6,
       "titulos": {
-       "baricentro": "El baricentro parte en 2 : 1",
-       "centros": "Cada centro y sus líneas",
-       "euler": "Recta y círculo de Euler"
+       "baricentro": "El baricentro y las medianas",
+       "circuncentro": "El circuncentro y la circunscrita",
+       "incentro": "El incentro y la inscrita",
+       "ortocentro": "El ortocentro y las alturas",
+       "excentro": "El excentro y la exinscrita",
+       "euler": "La recta de Euler"
       },
-      "terminos": 48
+      "terminos": 70
      }
     },
     {
@@ -5820,7 +5838,7 @@
        "ecuaciones": "Tres ecuaciones, una recta",
        "paralelas-perpendiculares": "Paralelas, perpendiculares y distancia"
       },
-      "terminos": 34
+      "terminos": 35
      }
     },
     {
@@ -5876,10 +5894,11 @@
      "id": "trigonometria.reduccion-al-primer-cuadrante",
      "nombre": "Reducción al primer cuadrante",
      "temas": [
+      "Ángulo de referencia",
       "Ángulos menores de una vuelta",
-      "Ángulos mayores de una vuelta",
       "Ángulos negativos",
-      "Ángulos suplementarios y de una vuelta"
+      "Ángulos mayores de una vuelta",
+      "Cofunción con 90° y 270°"
      ],
      "universidades": {
       "uni": {
@@ -5899,22 +5918,24 @@
       "trigonometria.angulos-en-posicion-normal"
      ],
      "plantillas": [
-      "circunferencia-trig",
-      "trig-oblicuangulos"
+      "trig-reduccion",
+      "circunferencia-trig"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/trigonometria/reduccion-al-primer-cuadrante.js",
       "requiere": [
-       "/nucleo/kit/piezas/trig-plano.js"
+       "/nucleo/kit/piezas/trig-plano.js",
+       "/nucleo/kit/piezas/trig-pos.js"
       ],
-      "ideas": 4,
+      "ideas": 5,
       "titulos": {
-       "angulo-referencia": "Mismo tamaño, otro signo",
-       "cofuncion": "Un cuarto de vuelta intercambia",
+       "angulo-referencia": "El ángulo de referencia",
+       "misma-razon": "Misma razón, signo del cuadrante",
+       "opuestos": "Ángulos opuestos: θ y −θ",
        "mayores-negativos": "Primero se quitan las vueltas",
-       "suplementarios-vuelta": "Suplementarios y de una vuelta"
+       "cofuncion": "Con 90° y 270°, la cofunción"
       },
-      "terminos": 24
+      "terminos": 49
      }
     },
     {
@@ -6204,7 +6225,7 @@
        "secante-copas": "Copas fuera de la franja",
        "periodo-general": "El periodo depende de la función"
       },
-      "terminos": 38
+      "terminos": 37
      }
     },
     {
@@ -6253,7 +6274,7 @@
        "grafica-reflejo": "La gráfica se refleja",
        "otras-tres": "arccot, arcsec y arccsc"
       },
-      "terminos": 37
+      "terminos": 39
      }
     },
     {
@@ -6351,7 +6372,7 @@
        "proyecciones-tangentes": "La base, suma de dos sombras",
        "rumbos": "Rumbo: desde norte o sur"
       },
-      "terminos": 37
+      "terminos": 36
      }
     },
     {
@@ -6446,7 +6467,7 @@
        "recta-tangente": "Tocar una sola vez",
        "rotacion-ecuacion-general": "Girar los ejes, no la curva"
       },
-      "terminos": 40
+      "terminos": 41
      }
     },
     {
@@ -6583,7 +6604,7 @@
        "si-entonces": "Si llueve, la pista se moja",
        "parentesco": "Subir y bajar por el árbol"
       },
-      "terminos": 24
+      "terminos": 25
      }
     },
     {
@@ -6626,7 +6647,7 @@
        "deslizar-lados": "Deslizar lados hasta el borde",
        "arcos-que-suman": "Los arcos chicos suman igual"
       },
-      "terminos": 21
+      "terminos": 22
      }
     },
     {
@@ -6751,7 +6772,7 @@
        "torre-que-se-muda": "La torre que se muda",
        "pasar-un-numero": "Pasar un número, mover el doble"
       },
-      "terminos": 17
+      "terminos": 19
      }
     },
     {
@@ -6773,23 +6794,25 @@
      "grado": 3,
      "requiere": [],
      "plantillas": [
+      "rm-arreglos-ideas",
       "arreglos-giros",
       "rm-arreglos"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/razonamiento-matematico/arreglos-numericos.js",
       "requiere": [
-       "/nucleo/kit/piezas/rm-tablero.js",
-       "/nucleo/kit/piezas/rm-plano.js",
-       "/nucleo/kit/piezas/rm-fichas.js"
+       "/nucleo/kit/piezas/rm-casillas.js"
       ],
-      "ideas": 3,
+      "ideas": 6,
       "titulos": {
-       "suma-magica": "La suma mágica sale del total",
-       "vertices-dos-veces": "Los vértices cuentan dos veces",
-       "reparto-parejo": "Repartir en dos sumas iguales"
+       "reparto-parejo": "El total se reparte parejo",
+       "vertices-dos-veces": "Lo compartido cuenta dos veces",
+       "mayor-suma": "La mayor suma tiene que armarse",
+       "suma-magica": "El cuadrado mágico y su centro",
+       "producto-magico": "Cuando las líneas multiplican",
+       "piramide-de-sumas": "La pirámide de sumas"
       },
-      "terminos": 13
+      "terminos": 23
      }
     },
     {
@@ -6874,7 +6897,7 @@
        "dados": "Una cara fija solo su opuesta",
        "cerillas": "Cerillas y cuadrados de todo tamaño"
       },
-      "terminos": 15
+      "terminos": 16
      }
     },
     {
@@ -6918,7 +6941,7 @@
        "bisiestos": "Cuándo un año es bisiesto",
        "dia-de-la-semana": "Las semanas completas no cuentan"
       },
-      "terminos": 17
+      "terminos": 19
      }
     },
     {
@@ -7076,7 +7099,7 @@
        "regiones-con-rectas": "Cada recta nueva, más regiones",
        "reflejo": "Reflejar para enderezar el camino"
       },
-      "terminos": 15
+      "terminos": 16
      }
     },
     {
@@ -7160,7 +7183,7 @@
        "cuadratica": "Dos raíces, una respuesta",
        "cabezas-y-patas": "Cabezas y patas"
       },
-      "terminos": 18
+      "terminos": 17
      }
     },
     {
@@ -7208,7 +7231,7 @@
        "rodamiento": "Lo que recorre el centro",
        "area-barrida": "El área que barre un giro"
       },
-      "terminos": 29
+      "terminos": 30
      }
     },
     {
@@ -7256,7 +7279,7 @@
        "rutas-en-el-espacio": "Rutas por las aristas",
        "vistas": "Dos vistas, varias pilas"
       },
-      "terminos": 16
+      "terminos": 18
      }
     },
     {
@@ -7293,7 +7316,7 @@
        "puntos-de-una-liga": "Cuántos puntos reparte una liga",
        "suficiencia": "Bastan si todos coinciden"
       },
-      "terminos": 17
+      "terminos": 16
      }
     },
     {
@@ -7329,7 +7352,7 @@
        "contador-y-acumulador": "Contar no es sumar",
        "operadores": "El operador manda su regla"
       },
-      "terminos": 14
+      "terminos": 15
      }
     }
    ]
@@ -7421,7 +7444,7 @@
        "definicion-defectuosa": "Cuando la definición no define",
        "definicion-en-texto": "La definición dentro del texto"
       },
-      "terminos": 29
+      "terminos": 30
      }
     },
     {
@@ -7519,7 +7542,7 @@
        "sentido-figurado": "Literal o figurado",
        "inferir-significado": "El significado sale de las pistas"
       },
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -7557,7 +7580,7 @@
        "locuciones": "Varias palabras, un conector",
        "varios-espacios": "Varios espacios, una alternativa"
       },
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -7594,7 +7617,7 @@
        "impertinencia": "Lo que habla de otro asunto",
        "incompatibilidad": "Contradecir no es contrastar"
       },
-      "terminos": 16
+      "terminos": 17
      }
     },
     {
@@ -7632,7 +7655,7 @@
        "tiempo-y-causa": "El tiempo y la causa ordenan",
        "analizar-comparar": "Presentar antes de comparar"
       },
-      "terminos": 20
+      "terminos": 21
      }
     },
     {
@@ -7665,21 +7688,23 @@
       "razonamiento-verbal.conectores"
      ],
      "plantillas": [
+      "cohesion-coherencia",
       "lectura-verbal"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/razonamiento-verbal/cohesion-y-coherencia.js",
       "requiere": [
-       "/nucleo/kit/piezas/rv-texto.js"
+       "/nucleo/kit/piezas/rv-soporte.js"
       ],
-      "ideas": 4,
+      "ideas": 5,
       "titulos": {
+       "no-contradiccion": "Un texto que no se contradice",
        "referente": "A quién se refiere",
        "repetir-sustituir-callar": "Repetir, sustituir o callar",
        "conocido-y-nuevo": "Lo conocido trae lo nuevo",
-       "no-contradiccion": "Conectores no garantizan sentido"
+       "incluir": "La oración que falta"
       },
-      "terminos": 27
+      "terminos": 28
      }
     },
     {
@@ -7770,7 +7795,7 @@
        "jerarquia": "Principal y secundarias",
        "alternativas": "Elegir en el examen"
       },
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -7813,7 +7838,7 @@
        "parafrasis": "Parafrasear no es inferir",
        "sintesis": "Sintetizar sin borrar diferencias"
       },
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -7901,7 +7926,7 @@
        "implicito": "Lo que se dice sin decir",
        "intencion-global": "La intención sale del todo"
       },
-      "terminos": 18
+      "terminos": 19
      }
     },
     {
@@ -7942,7 +7967,7 @@
        "cuatro-casillas": "Dice, deduce, contradice o no sabe",
        "idea-principal": "Chocar con la idea principal"
       },
-      "terminos": 18
+      "terminos": 19
      }
     },
     {
@@ -7984,7 +8009,7 @@
        "condicional": "Si A, entonces B",
        "mundos-posibles": "Qué queda en otro mundo"
       },
-      "terminos": 20
+      "terminos": 21
      }
     },
     {
@@ -8031,7 +8056,7 @@
        "cuestion-y-posturas": "Dos autores, una cuestión",
        "tesis-antitesis-sintesis": "Tesis, antítesis y síntesis"
       },
-      "terminos": 22
+      "terminos": 23
      }
     },
     {
@@ -8146,7 +8171,7 @@
        "main-idea": "Main idea y summary",
        "stated-or-not": "Dicho, contradicho o no dicho"
       },
-      "terminos": 21
+      "terminos": 22
      }
     }
    ]
@@ -8287,6 +8312,9 @@
     "/plantillas/arreglos-giros/index.html",
     "/plantillas/arreglos-giros/motor.js",
     "/plantillas/arreglos-giros/papel.json"
+   ],
+   "rehacer": [
+    "razonamiento-matematico.arreglos-numericos"
    ]
   },
   "atomo-y-tabla": {
@@ -8328,7 +8356,8 @@
     "/plantillas/balance-reacciones/index.html",
     "/plantillas/balance-reacciones/motor.js",
     "/plantillas/balance-reacciones/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "binomio-newton": {
    "id": "binomio-newton",
@@ -8345,6 +8374,33 @@
     "/plantillas/binomio-newton/index.html",
     "/plantillas/binomio-newton/motor.js",
     "/plantillas/binomio-newton/papel.json"
+   ],
+   "rehacer": [
+    "algebra.binomio-de-newton"
+   ]
+  },
+  "binomio-practica": {
+   "id": "binomio-practica",
+   "titulo": "Binomio de Newton",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.binomio-de-newton"
+   ],
+   "url": "#/practica/binomio-practica",
+   "ideas": [
+    "pascal-elecciones",
+    "termino-general",
+    "termino-buscado",
+    "suma-coeficientes",
+    "exponente-no-natural",
+    "potencia-trinomio"
+   ],
+   "papel": "/plantillas/binomio-practica/papel.json",
+   "archivos": [
+    "/plantillas/binomio-practica/generador.js",
+    "/plantillas/binomio-practica/papel.json"
    ]
   },
   "biomoleculas": {
@@ -8819,7 +8875,8 @@
     "/plantillas/circunferencia-trig/papel.json"
    ],
    "rehacer": [
-    "trigonometria.angulos-en-posicion-normal"
+    "trigonometria.angulos-en-posicion-normal",
+    "trigonometria.reduccion-al-primer-cuadrante"
    ]
   },
   "clasificar-reacciones": {
@@ -8837,6 +8894,32 @@
    "archivos": [
     "/plantillas/clasificar-reacciones/generador.js",
     "/plantillas/clasificar-reacciones/papel.json"
+   ],
+   "rehacer": [
+    "quimica.reacciones-y-balance"
+   ]
+  },
+  "cohesion-coherencia": {
+   "id": "cohesion-coherencia",
+   "titulo": "Cohesión y coherencia: la contradicción, el referente, repetir o callar, el hilo y la oración que falta",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.cohesion-y-coherencia"
+   ],
+   "url": "#/practica/cohesion-coherencia",
+   "ideas": [
+    "no-contradiccion",
+    "referente",
+    "repetir-sustituir-callar",
+    "conocido-y-nuevo",
+    "incluir"
+   ],
+   "papel": "/plantillas/cohesion-coherencia/papel.json",
+   "archivos": [
+    "/plantillas/cohesion-coherencia/generador.js",
+    "/plantillas/cohesion-coherencia/papel.json"
    ]
   },
   "condensadores": {
@@ -10122,6 +10205,30 @@
     "geometria.relaciones-metricas"
    ]
   },
+  "geo-puntos-notables": {
+   "id": "geo-puntos-notables",
+   "titulo": "Puntos notables del triángulo",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.puntos-notables"
+   ],
+   "url": "#/practica/geo-puntos-notables",
+   "ideas": [
+    "baricentro",
+    "circuncentro",
+    "incentro",
+    "ortocentro",
+    "excentro",
+    "euler"
+   ],
+   "papel": "/plantillas/geo-puntos-notables/papel.json",
+   "archivos": [
+    "/plantillas/geo-puntos-notables/generador.js",
+    "/plantillas/geo-puntos-notables/papel.json"
+   ]
+  },
   "geo-relaciones-metricas": {
    "id": "geo-relaciones-metricas",
    "titulo": "Relaciones métricas en triángulos y cuadriláteros",
@@ -10233,6 +10340,9 @@
    "archivos": [
     "/plantillas/geo-triangulos-notables/generador.js",
     "/plantillas/geo-triangulos-notables/papel.json"
+   ],
+   "rehacer": [
+    "geometria.puntos-notables"
    ]
   },
   "geo-troncos-prismas": {
@@ -11385,6 +11495,33 @@
     "/plantillas/potenciacion/index.html",
     "/plantillas/potenciacion/motor.js",
     "/plantillas/potenciacion/papel.json"
+   ],
+   "rehacer": [
+    "aritmetica.potenciacion-y-radicacion"
+   ]
+  },
+  "potencias-raices": {
+   "id": "potencias-raices",
+   "titulo": "La bandeja cuadrada de doña Juana",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.potenciacion-y-radicacion"
+   ],
+   "url": "#/practica/potencias-raices",
+   "ideas": [
+    "perfectos",
+    "exclusion",
+    "raiz-entera",
+    "raiz-cubica",
+    "contar",
+    "aproximadas"
+   ],
+   "papel": "/plantillas/potencias-raices/papel.json",
+   "archivos": [
+    "/plantillas/potencias-raices/generador.js",
+    "/plantillas/potencias-raices/papel.json"
    ]
   },
   "primos-divisores": {
@@ -11631,6 +11768,30 @@
     "/plantillas/razones-trig-agudas/papel.json"
    ]
   },
+  "reacciones-practica": {
+   "id": "reacciones-practica",
+   "titulo": "Reacciones y balance",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.reacciones-y-balance"
+   ],
+   "url": "#/practica/reacciones-practica",
+   "ideas": [
+    "indicios",
+    "clasificar",
+    "tanteo",
+    "oxida-reduce",
+    "cambio-eo",
+    "ion-electron"
+   ],
+   "papel": "/plantillas/reacciones-practica/papel.json",
+   "archivos": [
+    "/plantillas/reacciones-practica/generador.js",
+    "/plantillas/reacciones-practica/papel.json"
+   ]
+  },
   "refraccion-snell": {
    "id": "refraccion-snell",
    "titulo": "El rayo que cambia de medio",
@@ -11757,6 +11918,33 @@
    "archivos": [
     "/plantillas/rm-arreglos/generador.js",
     "/plantillas/rm-arreglos/papel.json"
+   ],
+   "rehacer": [
+    "razonamiento-matematico.arreglos-numericos"
+   ]
+  },
+  "rm-arreglos-ideas": {
+   "id": "rm-arreglos-ideas",
+   "titulo": "Repartos, marcos y cuadrados mágicos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.arreglos-numericos"
+   ],
+   "url": "#/practica/rm-arreglos-ideas",
+   "ideas": [
+    "reparto-parejo",
+    "vertices-dos-veces",
+    "mayor-suma",
+    "suma-magica",
+    "producto-magico",
+    "piramide-de-sumas"
+   ],
+   "papel": "/plantillas/rm-arreglos-ideas/papel.json",
+   "archivos": [
+    "/plantillas/rm-arreglos-ideas/generador.js",
+    "/plantillas/rm-arreglos-ideas/papel.json"
    ]
   },
   "rm-balanzas": {
@@ -12820,8 +13008,7 @@
    "version": "0.1.0",
    "unidades": [
     "trigonometria.triangulos-oblicuangulos",
-    "trigonometria.areas-y-lineas-notables",
-    "trigonometria.reduccion-al-primer-cuadrante"
+    "trigonometria.areas-y-lineas-notables"
    ],
    "url": "#/practica/trig-oblicuangulos",
    "papel": "/plantillas/trig-oblicuangulos/papel.json",
@@ -12867,6 +13054,29 @@
    "archivos": [
     "/plantillas/trig-posicion-normal/generador.js",
     "/plantillas/trig-posicion-normal/papel.json"
+   ]
+  },
+  "trig-reduccion": {
+   "id": "trig-reduccion",
+   "titulo": "Reducción al primer cuadrante",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.reduccion-al-primer-cuadrante"
+   ],
+   "url": "#/practica/trig-reduccion",
+   "ideas": [
+    "angulo-referencia",
+    "misma-razon",
+    "opuestos",
+    "mayores-negativos",
+    "cofuncion"
+   ],
+   "papel": "/plantillas/trig-reduccion/papel.json",
+   "archivos": [
+    "/plantillas/trig-reduccion/generador.js",
+    "/plantillas/trig-reduccion/papel.json"
    ]
   },
   "trig-resolucion": {
