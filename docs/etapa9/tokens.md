@@ -47,3 +47,4 @@ contra los límites semanales de los planes.
 | quimica.reacciones-y-balance | auditoría y correcciones (cierre) | 335 564 | 31 min 24 s | 150 herramientas |
 | algebra.binomio-de-newton | lector en frío B (ideas 4–6) | 126 043 | 2 min 14 s | 33 herramientas |
 | algebra.binomio-de-newton | lector en frío A (ideas 1–3) | 127 141 | 2 min 28 s | 34 herramientas |
+| razonamiento-matematico.arreglos-numericos | lectores A y B, parte 1 rehecha (retomados) | +41 814 y +36 765 | 2 min cada uno | total A 148 894, B 148 845 |
