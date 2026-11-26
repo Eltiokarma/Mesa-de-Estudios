@@ -39,3 +39,4 @@ contra los límites semanales de los planes.
 | geometria.puntos-notables | lector en frío A (ideas 1–3) | 127 549 | 2 min 43 s | 33 herramientas |
 | quimica.propiedades-periodicas | redactor, unidad ya cerrada | 311 699 | 53 min | 66 herramientas |
 | algebra.binomio-de-newton | redactor (Escribidor Escribano) | 454 718 | 53 min | 102 herramientas |
+| razonamiento-matematico.arreglos-numericos | lector en frío B (solo tarjetas: capturas de momentos rotas) | 107 338 | 1 min 25 s | 17 herramientas |
