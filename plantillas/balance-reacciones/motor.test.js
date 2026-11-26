@@ -119,6 +119,15 @@ test('redox: lo que pierde el reductor es lo que gana el oxidante', () => {
   }
   assert.equal(motor.redox('AgNO3 + NaCl -> AgCl + NaNO3').esRedox, false);
 });
+// Electrones transferidos cuando parte de un reactivo no cambia, en la dismutación y en la comproporción. Rehechos a mano
+// con la ecuación balanceada: solo cuentan los átomos que cambian de EO. Con el motor anterior daban 14, 4, 16, 30 y 4.
+test('redox: los electrones cuentan solo los átomos que cambian de EO', () => {
+  for (const [e, n] of [['K2Cr2O7 + HCl -> KCl + CrCl3 + Cl2 + H2O', 6], ['MnO2 + HCl -> MnCl2 + Cl2 + H2O', 2],
+    ['KMnO4 + HCl -> KCl + MnCl2 + Cl2 + H2O', 10], ['Cl2 + NaOH -> NaCl + NaClO3 + H2O', 5], ['H2O2 -> H2O + O2', 2],
+    ['Fe + FeCl3 -> FeCl2', 2], ['Cu + HNO3 -> Cu(NO3)2 + NO + H2O', 6], ['Fe3O4 + CO -> Fe + CO2', 8]]) {
+    assert.equal(motor.redox(e).electrones, n, e);
+  }
+});
 test('ion-electrón: cada semirreacción queda balanceada en átomos y carga, con los electrones del cambio de número de oxidación', () => {
   const semis = [['MnO4^-', 'Mn^2+', 'acido'], ['MnO4^-', 'MnO2', 'basico'], ['Cr2O7^2-', 'Cr^3+', 'acido'], ['Fe^2+', 'Fe^3+', 'acido'], ['I^-', 'I2', 'basico'],
     ['NO3^-', 'NO', 'acido'], ['SO3^2-', 'SO4^2-', 'basico'], ['ClO3^-', 'Cl^-', 'acido'], ['CrO4^2-', 'Cr(OH)3', 'basico']];

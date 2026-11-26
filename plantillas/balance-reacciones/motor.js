@@ -367,15 +367,38 @@
       return estados[e].der.some(w => (haciaArriba ? w > v + 1e-9 : w < v - 1e-9)); });
     const reductor = esRedox ? [...new Set(sube.flatMap(e => cambiaEn(e, true)))] : [];
     const oxidante = esRedox ? [...new Set(baja.flatMap(e => cambiaEn(e, false)))] : [];
-    // Electrones: con la ecuación balanceada, Σ coef·átomos·(subida) de lo que se oxida.
+    // Electrones: con la ecuación balanceada, átomo por átomo. Los átomos que salen con el mismo EO con que entraron no
+    // cambian (en K₂Cr₂O₇ + 14 HCl, 8 de los 14 Cl siguen en −1 en el KCl y el CrCl₃: solo los 6 que pasan a Cl₂ pierden
+    // electrones). Los que quedan se emparejan en orden de EO (el menor de la izquierda con el menor de la derecha), y lo
+    // perdido es la suma de las subidas: así sale también la dismutación (3 Cl₂ → 5 Cl⁻ + ClO₃⁻: 5) y la
+    // comproporción (Fe + 2 Fe³⁺ → 3 Fe²⁺: 2). Antes se multiplicaba todo el reactivo por la subida, y daba 14, 30 o 4.
     let electrones = null, porUnidad = {};
     if (esRedox) {
       let b; try { b = balancear(ec); } catch (err) { b = null; }
-      const c = b ? b.coefs : null; electrones = 0;
+      const c = b ? b.coefs : null;
+      if (c) {
+        const todas = especies(ec), clave = v => Math.round(v * 1e6) / 1e6;
+        let perdidos = 0, ganados = 0;
+        for (const e of elementos(ec)) {
+          // Por EO (la clave redondeada solo junta 8/3 con 8/3; las restas usan el valor exacto): cuántos átomos de e.
+          const lado = fs => { const m = new Map(); for (const f of fs) { const n = especie(f).atomos[e]; if (!n) continue; const v = eo(f)[e], k = clave(v);
+            if (!m.has(k)) m.set(k, [v, 0]); m.get(k)[1] += c[todas.indexOf(f)] * n; } return m; };
+          const izq = lado(reac), der = lado(prod);
+          for (const [k, x] of izq) if (der.has(k)) { const y = der.get(k), q = Math.min(x[1], y[1]); x[1] -= q; y[1] -= q; }
+          const fila = m => [...m.values()].filter(([, n]) => n > 1e-9).sort((x, y) => x[0] - y[0]).map(([v, n]) => [v, n]);
+          const A = fila(izq), B = fila(der);
+          for (let i = 0, j = 0; i < A.length && j < B.length;) {
+            const q = Math.min(A[i][1], B[j][1]), d = B[j][0] - A[i][0];
+            if (d > 0) perdidos += q * d; else ganados -= q * d;
+            A[i][1] -= q; B[j][1] -= q; if (A[i][1] <= 1e-9) i++; if (B[j][1] <= 1e-9) j++;
+          }
+        }
+        electrones = clave(perdidos);
+        if (Math.abs(perdidos - ganados) > 1e-6) throw new Error(`los electrones no cuadran en ${escribir(ec, c)}: ${perdidos} perdidos y ${ganados} ganados`);
+      }
       for (const e of sube) for (const f of cambiaEn(e, true)) {
-        const k = especies(ec).indexOf(f), v = eo(f)[e], fin = Math.max(...estados[e].der);
+        const v = eo(f)[e], fin = Math.max(...estados[e].der);
         porUnidad[f] = (porUnidad[f] || 0) + especie(f).atomos[e] * (fin - v);
-        if (c) electrones += c[k] * especie(f).atomos[e] * (fin - v);
       }
       for (const e of baja) for (const f of cambiaEn(e, false)) {
         const v = eo(f)[e], fin = Math.min(...estados[e].der);

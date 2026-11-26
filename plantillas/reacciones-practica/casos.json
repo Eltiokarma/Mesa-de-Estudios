@@ -1,0 +1,187 @@
+{
+ "plantilla": "reacciones-practica",
+ "nota": "Una semilla por tipo; generar(semilla, { idea }). respuesta: el texto de la alternativa correcta.",
+ "verificacion": "Script aparte (26 nov 2026, scratchpad e9-quimica/verif/casos-gen.js): la respuesta sale del motor de balance-reacciones (balancear, clasificar, redox, oxidacion, semirreaccion, ionElectron) y de un conteo propio, no del generador.",
+ "casos": [
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "indicios",
+    "tipo": "hubo"
+   },
+   "esperado": {
+    "respuesta": "Sí: aparece CO₂, una sustancia nueva"
+   }
+  },
+  {
+   "semilla": 9,
+   "entrada": {
+    "idea": "indicios",
+    "tipo": "indicio"
+   },
+   "esperado": {
+    "respuesta": "Burbujas de CO₂"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "indicios",
+    "tipo": "estados-vf"
+   },
+   "esperado": {
+    "respuesta": "VVV"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "clasificar",
+    "tipo": "forma"
+   },
+   "esperado": {
+    "respuesta": "Adición"
+   }
+  },
+  {
+   "semilla": 9,
+   "entrada": {
+    "idea": "clasificar",
+    "tipo": "calor"
+   },
+   "esperado": {
+    "respuesta": "Libera calor: exotérmica"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "clasificar",
+    "tipo": "dos-etiquetas"
+   },
+   "esperado": {
+    "respuesta": "Doble desplazamiento y exotérmica"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "tanteo",
+    "tipo": "coeficiente"
+   },
+   "esperado": {
+    "respuesta": "3"
+   }
+  },
+  {
+   "semilla": 9,
+   "entrada": {
+    "idea": "tanteo",
+    "tipo": "suma"
+   },
+   "esperado": {
+    "respuesta": "19"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "tanteo",
+    "tipo": "fraccion"
+   },
+   "esperado": {
+    "respuesta": "13"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "oxida-reduce",
+    "tipo": "agente"
+   },
+   "esperado": {
+    "respuesta": "HCl"
+   }
+  },
+  {
+   "semilla": 9,
+   "entrada": {
+    "idea": "oxida-reduce",
+    "tipo": "salto"
+   },
+   "esperado": {
+    "respuesta": "Se reduce: su EO va de +2 a 0"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "oxida-reduce",
+    "tipo": "es-redox"
+   },
+   "esperado": {
+    "respuesta": "Fe + CuSO₄ → FeSO₄ + Cu"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "cambio-eo",
+    "tipo": "e-unidad"
+   },
+   "esperado": {
+    "respuesta": "6"
+   }
+  },
+  {
+   "semilla": 9,
+   "entrada": {
+    "idea": "cambio-eo",
+    "tipo": "coef-agente"
+   },
+   "esperado": {
+    "respuesta": "3"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "cambio-eo",
+    "tipo": "suma-redox"
+   },
+   "esperado": {
+    "respuesta": "29"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "ion-electron",
+    "tipo": "agua"
+   },
+   "esperado": {
+    "respuesta": "2 H₂O a la derecha"
+   }
+  },
+  {
+   "semilla": 9,
+   "entrada": {
+    "idea": "ion-electron",
+    "tipo": "electrones"
+   },
+   "esperado": {
+    "respuesta": "8 e⁻ a la izquierda"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "ion-electron",
+    "tipo": "global"
+   },
+   "esperado": {
+    "respuesta": "36"
+   }
+  }
+ ]
+}

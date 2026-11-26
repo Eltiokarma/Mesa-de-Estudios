@@ -75,8 +75,10 @@
     const ancho = (W - 2 * M - gap * (n - 1)) / n, alto = d.alto || 150;
     const conRotulo = cajas.some(c => c.rotulo), conCuenta = cajas.some(c => (c.cuenta || []).length);
     const y0 = TOP, y1 = TOP + alto;
-    const total = y1 + (conRotulo ? 24 : 6) + (conCuenta ? 26 : 0) + 6;
-    return { n, gap, ancho, alto, y0, y1, total, conRotulo, conCuenta, x: k => M + k * (ancho + gap) };
+    // `cuentaPorFila` (26 nov, Reacciones y balance): la fila de la cuenta se parte en renglones de a tantas especies.
+    const porFila = d.cuentaPorFila || Infinity, filasCuenta = Math.max(1, ...cajas.map(c => Math.ceil((c.cuenta || []).length / porFila) || 1));
+    const total = y1 + (conRotulo ? 24 : 6) + (conCuenta ? 26 * filasCuenta : 0) + 6;
+    return { n, gap, ancho, alto, y0, y1, total, conRotulo, conCuenta, porFila, x: k => M + k * (ancho + gap) };
   }
 
   // Región donde viven las partículas de una caja (el líquido del vaso o el gas bajo el émbolo).
@@ -178,9 +180,9 @@
       if (c.rotulo) s += T.rotulo(x + w / 2, g.y1 + 20, c.rotulo, { ancla: 'middle', peso: 600, min: x - 4, max: x + w + 4, clase: 'kit-num' });
       const cuenta = (c.cuenta || []).filter(ve);
       if (cuenta.length) {
-        const y = g.y1 + (g.conRotulo ? 24 : 6) + 16, paso = w / cuenta.length;
+        const pf = Math.min(cuenta.length, g.porFila), paso = w / pf;
         cuenta.forEach((q, j) => {
-          const cx = x + paso * j + 10;
+          const y = g.y1 + (g.conRotulo ? 24 : 6) + 16 + 26 * Math.floor(j / pf), cx = x + paso * (j % pf) + 10;
           // El número va después del dibujo de la especie (a su derecha, por ancho que sea la molécula).
           const forma = (d.especies || {})[q.e] || [[q.e, 0, 0]];
           const ext = Math.max(...forma.map(([sim, dx]) => dx + atomoDe(d, sim).r)) * 0.75;

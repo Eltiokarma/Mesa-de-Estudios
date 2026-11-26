@@ -1,0 +1,21 @@
+{
+  "id": "reacciones-practica",
+  "titulo": "Reacciones y balance",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.reacciones-y-balance"
+  ],
+  "temas": [
+    "Evidencias de una reacción",
+    "Clasificación de las reacciones",
+    "Balance por tanteo",
+    "Oxidación, reducción y agentes",
+    "Balance redox por ion-electrón"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

@@ -1,0 +1,84 @@
+{
+  "titulo": "Reacciones y balance: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un pan se tuesta y se pone negro: aparece carbón. ¿Hubo reacción química? Datos: Reacción química: se forman sustancias nuevas, con otras propiedades. Indicios: un gas que sale, un sólido que aparece (precipitado), un cambio de color o de temperatura. Alternativas: A) No: solo cambió de estado   B) No: sin cambio de color no hay reacción   C) Sí: aparece carbón, una sustancia nueva   D) No: solo se mezclaron dos cosas",
+      "respuesta": "C) Sí: aparece carbón, una sustancia nueva",
+      "pasos": [
+        "Hay reacción, porque aparece carbón, que antes no estaba."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Mg + 2 HCl → MgCl₂ + H₂. ¿Qué clase de reacción es, por su forma? Datos: Adición: varias sustancias forman una. Descomposición: una forma varias. Desplazamiento simple: un elemento toma el lugar de otro. Doble: dos compuestos intercambian parejas. Alternativas: A) Descomposición   B) Doble desplazamiento   C) Adición   D) Desplazamiento simple",
+      "respuesta": "D) Desplazamiento simple",
+      "pasos": [
+        "En esta reacción un elemento toma el lugar de otro, así que es de desplazamiento simple."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "__ NH₃ + 5 O₂ → 4 NO + 6 H₂O ¿Qué coeficiente va en el espacio? Datos: Átomos de un elemento = coeficiente × subíndice, iguales a los dos lados. Alternativas: A) 5   B) 8   C) 3   D) 4",
+      "respuesta": "D) 4",
+      "pasos": [
+        "Con 4, cada elemento queda con los mismos átomos a los dos lados:",
+        "4 NH₃ + 5 O₂ → 4 NO + 6 H₂O"
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "CuO + H₂ → Cu + H₂O. ¿Qué le pasa al Cu? Datos: EO: elemento suelto 0; hidrógeno +1; oxígeno −2; la suma de los EO de una especie es su carga. Se oxida: el EO sube (pierde electrones). Se reduce: el EO baja (gana electrones). Alternativas: A) No cambia: es el mismo elemento   B) Se oxida: su EO va de 0 a +2   C) Se oxida: su EO va de +2 a 0   D) Se reduce: su EO va de +2 a 0",
+      "respuesta": "D) Se reduce: su EO va de +2 a 0",
+      "pasos": [
+        "El Cu va de +2 a 0, así que gana electrones."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "K₂Cr₂O₇ + HCl → KCl + CrCl₃ + Cl₂ + H₂O. Balanceada con los electrones, ¿cuál es el coeficiente del agente oxidante? Datos: Electrones de una fórmula = átomos que cambian × salto del EO de cada uno. Los electrones que pierde el reductor son los que gana el oxidante. EO: elemento suelto 0; hidrógeno +1; oxígeno −2; la suma de los EO de una especie es su carga. Alternativas: A) 14   B) 6   C) 1   D) 2",
+      "respuesta": "C) 1",
+      "pasos": [
+        "Se transfieren 6 electrones, y el agente que se pide es el K₂Cr₂O₇.",
+        "K₂Cr₂O₇ + 14 HCl → 2 KCl + 2 CrCl₃ + 3 Cl₂ + 7 H₂O"
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En medio ácido: ClO₃⁻ + 6 H⁺ → Cl⁻ + 3 H₂O. ¿Cuántos electrones faltan y de qué lado? Datos: Medio ácido: el O se iguala con H₂O, el H con H⁺ y la carga con electrones. Carga de un lado: suma de coeficiente × carga de cada especie. Alternativas: A) 7 e⁻ a la izquierda   B) 6 e⁻ a la izquierda   C) Ninguno: los átomos ya cuadran   D) 5 e⁻ a la izquierda",
+      "respuesta": "B) 6 e⁻ a la izquierda",
+      "pasos": [
+        "La diferencia de carga entre los dos lados se iguala con electrones:",
+        "ClO₃⁻ + 6 H⁺ + 6 e⁻ → Cl⁻ + 3 H₂O"
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "La combustión C₂H₆ + O₂ → CO₂ + H₂O. Con los enteros más pequeños, ¿cuál es el coeficiente del O₂? Datos: Átomos de un elemento = coeficiente × subíndice, iguales a los dos lados. Se escriben los enteros más pequeños; el coeficiente 1 no se escribe, pero cuenta. Si sale una fracción, todos los coeficientes se multiplican por su denominador. Alternativas: A) 7   B) 4   C) 6   D) 14   E) 8",
+      "respuesta": "A) 7",
+      "pasos": [
+        "Se igualan primero el C y el H, al final el O, y todo se multiplica por 2 para quitar la fracción:",
+        "2 C₂H₆ + 7 O₂ → 4 CO₂ + 6 H₂O"
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En medio ácido, Cu + NO₃⁻ → Cu²⁺ + NO₂. Con los enteros más pequeños, ¿cuánto suman los coeficientes? Datos: Medio ácido: el O se iguala con H₂O, el H con H⁺ y la carga con electrones. Carga de un lado: suma de coeficiente × carga de cada especie. Las semirreacciones se multiplican hasta tener los mismos electrones y se suman. Alternativas: A) 8   B) 12   C) 7   D) 13   E) 24",
+      "respuesta": "B) 12",
+      "pasos": [
+        "Cada mitad se balancea por separado; después se igualan los electrones y se suman:",
+        "2 NO₃⁻ + Cu + 4 H⁺ → 2 NO₂ + Cu²⁺ + 2 H₂O"
+      ]
+    }
+  ]
+}

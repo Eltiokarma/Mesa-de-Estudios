@@ -13,6 +13,9 @@
     "docs/investigacion/quimica-ambiente-ideas-erroneas.md"
   ],
   "errores": {
+    "IE-POR-ATOMO": {"respaldo": "hipotesis", "describe": "Cuenta los electrones de un cromo y no los del dicromato entero, que tiene dos"},
+    "IE-SIN-IGUALAR": {"respaldo": "hipotesis", "describe": "Suma las semirreacciones sin multiplicarlas: los electrones no se igualan"},
+    "IE-COEF-H": {"respaldo": "hipotesis", "describe": "Da el coeficiente del H⁺ en vez del de la especie que se pide"},
     "QM-OX-TOTAL": { "respaldo": "hipotesis", "describe": "Da lo que aportan todos los átomos del elemento juntos, sin repartirlo entre ellos" },
     "QM-OX-SUBINDICE": { "respaldo": "hipotesis", "describe": "Toma el subíndice (el número de átomos) como estado de oxidación" },
     "QM-OX-SIGNO": { "respaldo": "hipotesis", "describe": "Da el estado de oxidación con el signo cambiado" },
@@ -1613,6 +1616,83 @@
           { "texto":  "1,942 mmol", "valor":  1.942, "error":  "ES14-moles-de-moleculas" },
           { "texto":  "64,08 mmol", "valor":  64.08, "error":  "ES6-todos-los-atomos" },
           { "texto":  "25,24 mmol", "valor":  25.24, "correcta":  true}
+        ]
+      }
+    },
+    {
+      "par": "qui-24",
+      "plantilla": "reacciones-practica",
+      "unidad": "quimica.reacciones-y-balance",
+      "nombreUnidad": "Reacciones químicas y balance",
+      "mide": "Ion-electrón en medio ácido: el reductor se multiplica hasta dar los electrones que toma el dicromato entero (dos cromos), no los de un cromo",
+      "A": {
+        "enunciado": "En medio ácido, el dicromato oxida al hierro(II): Fe²⁺ + Cr₂O₇²⁻ → Fe³⁺ + Cr³⁺. Balanceada con enteros mínimos, ¿cuál es el coeficiente del Fe²⁺?",
+        "datos": {
+          "ox": [
+            "Fe^2+",
+            "Fe^3+"
+          ],
+          "red": [
+            "Cr2O7^2-",
+            "Cr^3+"
+          ]
+        },
+        "opciones": [
+          {
+            "texto": "3",
+            "valor": 3,
+            "error": "IE-POR-ATOMO"
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "correcta": true
+          },
+          {
+            "texto": "1",
+            "valor": 1,
+            "error": "IE-SIN-IGUALAR"
+          },
+          {
+            "texto": "14",
+            "valor": 14,
+            "error": "IE-COEF-H"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En medio ácido, el dicromato oxida al yoduro: I⁻ + Cr₂O₇²⁻ → I₂ + Cr³⁺. Balanceada con enteros mínimos, ¿cuál es el coeficiente del I⁻?",
+        "datos": {
+          "ox": [
+            "I^-",
+            "I2"
+          ],
+          "red": [
+            "Cr2O7^2-",
+            "Cr^3+"
+          ]
+        },
+        "opciones": [
+          {
+            "texto": "14",
+            "valor": 14,
+            "error": "IE-COEF-H"
+          },
+          {
+            "texto": "2",
+            "valor": 2,
+            "error": "IE-SIN-IGUALAR"
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "correcta": true
+          },
+          {
+            "texto": "3",
+            "valor": 3,
+            "error": "IE-POR-ATOMO"
+          }
         ]
       }
     }

@@ -279,7 +279,7 @@
       "potencial_visual": "medio",
       "grado": 4,
       "requiere": ["quimica.nomenclatura-inorganica"],
-      "plantillas": ["balance-reacciones", "clasificar-reacciones"],
+      "plantillas": ["reacciones-practica", "clasificar-reacciones", "balance-reacciones"],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
     },
     {

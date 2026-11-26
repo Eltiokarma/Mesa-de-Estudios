@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["quimica.reacciones-y-balance"],
       "nivel": "básico",
       "enunciado": "Se deja una cinta de magnesio en una disolución azul de cloruro de cobre(II): Mg(s) + CuCl₂(ac) → MgCl₂(ac) + Cu(s). ¿De qué tipo es por su forma? ¿Es redox? Si lo es, ¿qué sustancia se oxida y cuál es el agente oxidante?",
       "respuesta": "Desplazamiento simple y redox: se oxida el Mg (agente reductor); el agente oxidante es el CuCl₂.",
@@ -34,6 +35,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["quimica.reacciones-y-balance"],
       "nivel": "básico",
       "enunciado": "En un encendedor arde butano: 2C₄H₁₀(g) + 13O₂(g) → 8CO₂(g) + 10H₂O(l), ΔH = −5760 kJ. Indica si es verdadero (V) o falso (F): I. Es redox. II. Es una combustión. III. Absorbe calor.",
       "respuesta": "VVF.",
@@ -70,6 +72,7 @@
     },
     {
       "id": "p3",
+      "unidades": ["quimica.reacciones-y-balance"],
       "nivel": "intermedio",
       "enunciado": "Un técnico agrega potasa cáustica a agua con bicarbonato de potasio: KHCO₃(ac) + KOH(ac) → K₂CO₃(ac) + H₂O(l). Un compañero dice que es redox porque «el bicarbonato pierde su hidrógeno». ¿Tiene razón? ¿Cómo se clasifica?",
       "respuesta": "No tiene razón: es una reacción ácido-base (neutralización de una sal ácida con un hidróxido), no redox. Por su forma es de doble desplazamiento.",
@@ -95,6 +98,7 @@
     },
     {
       "id": "p4",
+      "unidades": ["quimica.reacciones-y-balance"],
       "nivel": "intermedio",
       "enunciado": "El bromo líquido reacciona con soda cáustica: Br₂(l) + 2NaOH(ac) → NaBr(ac) + NaBrO(ac) + H₂O(l). ¿Qué pasa con el número de oxidación del bromo? ¿Cuál es el agente oxidante?",
       "respuesta": "El Br pasa de 0 a −1 (en NaBr) y a +1 (en NaBrO): se oxida y se reduce a la vez (dismutación). El Br₂ es a la vez agente oxidante y agente reductor.",
@@ -134,6 +138,7 @@
     },
     {
       "id": "p5",
+      "unidades": ["quimica.reacciones-y-balance"],
       "nivel": "intermedio",
       "enunciado": "En los rayos de una tormenta se forma monóxido de nitrógeno: 180 kJ + N₂(g) + O₂(g) ⇌ 2NO(g). ¿La reacción es exotérmica o endotérmica? ¿Cuánto calor interviene al formarse 15 g de NO? (N = 14, O = 16)",
       "respuesta": "Endotérmica; se absorben 45 kJ.",
@@ -161,6 +166,7 @@
     },
     {
       "id": "p6",
+      "unidades": ["quimica.reacciones-y-balance"],
       "nivel": "intermedio",
       "enunciado": "Relaciona cada ecuación con su tipo. I. Ba(OH)₂(ac) + 2HNO₃(ac) → Ba(NO₃)₂(ac) + 2H₂O(l). II. Cl₂(g) + 2KI(ac) → 2KCl(ac) + I₂(s). III. MgCO₃(s) → MgO(s) + CO₂(g). IV. Pb(NO₃)₂(ac) + Na₂SO₄(ac) → PbSO₄(s) + 2NaNO₃(ac). Tipos: a) descomposición; b) precipitación; c) neutralización; d) desplazamiento simple.",
       "respuesta": "I-c, II-d, III-a, IV-b.",
@@ -215,6 +221,7 @@
     },
     {
       "id": "p7",
+      "unidades": ["quimica.reacciones-y-balance"],
       "nivel": "avanzado",
       "enunciado": "Al mezclar cloruro férrico con yoduro de potasio aparece un color pardo: 2FeCl₃(ac) + 2KI(ac) → 2FeCl₂(ac) + 2KCl(ac) + I₂(s). Señala la sustancia que se oxida, el agente oxidante, la forma oxidada y la forma reducida. ¿Cuántos electrones pasan según la ecuación escrita?",
       "respuesta": "Se oxida el KI (agente reductor); el agente oxidante es el FeCl₃; forma oxidada: I₂; forma reducida: FeCl₂. Pasan 2 electrones.",
@@ -250,6 +257,7 @@
     },
     {
       "id": "p8",
+      "unidades": ["quimica.reacciones-y-balance"],
       "nivel": "avanzado",
       "enunciado": "¿Cuál de estas reacciones es a la vez redox y reversible? I. 2NO₂(g) ⇌ N₂O₄(g). II. H₂(g) + I₂(g) ⇌ 2HI(g). III. 2KClO₃(s) → 2KCl(s) + 3O₂(g). IV. CO₂(g) + H₂O(l) ⇌ H₂CO₃(ac).",
       "respuesta": "Solo la II.",

@@ -26,6 +26,9 @@ const SIN_ANIMAR = new Set(['estructura-atomica/nucleo-identidad', 'estructura-a
   // periódica sale de esta lista: sus cuatro juegos también son de buscar y sus mesas se fueron con Propiedades.
   'propiedades-periodicas/radio-atomico-ionico', 'propiedades-periodicas/radio-ionico',
   'propiedades-periodicas/energia-ionizacion', 'propiedades-periodicas/electronegatividad',
+  // Reacciones y balance (26 nov, etapa 9): en tanteo, cambio-eo e ion-electrón el alumno pone los coeficientes; un control
+  // que se moviera solo cumpliría la misión sin él. Sus ideas 1, 2 y 4 sí se animan.
+  'reacciones-y-balance/tanteo', 'reacciones-y-balance/cambio-eo', 'reacciones-y-balance/ion-electron',
   // Enlace químico (19 nov, etapa 6): las cinco misiones son de buscar una sustancia, un compuesto o una molécula entre
   // opciones; con un control que se mueve solo, la misión se cumpliría sin el alumno. La mesa que giraba sola se fue con
   // Geometría molecular (unidad nueva, fuera de esta ronda).
@@ -45,6 +48,9 @@ const SIN_ANIMAR = new Set(['estructura-atomica/nucleo-identidad', 'estructura-a
 // mesas eligen átomos o la posición del doble enlace; la mesa que gira se fue con Geometría molecular.
 // Nomenclatura inorgánica (etapa 7): sus dos mesas arman sales y eligen especies.
 const LAB_SIN_ANIMAR = new Set(['enlace-quimico', 'nomenclatura-inorganica']);
+// Lectura fija a propósito (26 nov, etapa 9): en Reacciones y balance, ideas 1 y 2, la lectura es la ecuación del caso
+// elegido; cambia al elegir otro caso, no con el tiempo de la cámara lenta (el dibujo sí se anima).
+const LECTURA_FIJA = new Set(['reacciones-y-balance/indicios', 'reacciones-y-balance/clasificar']);
 
 function revisar(nombre, j, piezaPorDefecto) {
   const ctr = j.controles || [];
@@ -72,7 +78,7 @@ function revisar(nombre, j, piezaPorDefecto) {
       assert.ok(Number.isFinite(p.x) && Number.isFinite(p.y), `${nombre}: manija ${a.id} no finita`);
     }
   }
-  if (j.lectura) assert.ok(lecturas.size >= 2, `${nombre}: la lectura no se mueve con la animación`);
+  if (j.lectura && !LECTURA_FIJA.has(nombre)) assert.ok(lecturas.size >= 2, `${nombre}: la lectura no se mueve con la animación`);
 }
 
 for (const u of UNIDADES) {
