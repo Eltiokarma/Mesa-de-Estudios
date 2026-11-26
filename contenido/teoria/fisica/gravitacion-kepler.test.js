@@ -129,7 +129,7 @@ function calcular(c) {
     case 'excentricidad': valor = q(c.ra).sub(c.rp).div(q(c.ra).add(c.rp)); unidad = ''; break;
     case 'area': valor = q(c.dt).mul(100).div(c.T); unidad = '%'; break;
     case 'area-dias': valor = q(c.dt).mul(100).div(q(c.T).mul(24)); unidad = '%'; break;
-    case 'duracion': valor = q(c.T).mul(c.porcentaje).div(100); unidad = 'h'; break;
+    case 'duracion': valor = q(c.T).mul(c.dias ? 24 : 1).mul(c.porcentaje).div(100); unidad = 'h'; break;
     case 'periodo': valor = periodo(c, c.aB); unidad = c.uTiempo || 'días'; break;
     case 'periodo-extremos': valor = periodo(c, q(c.rp).add(c.ra).div(2).n()); unidad = c.uTiempo || 'días'; break;
     case 'periodo-sector': valor = periodo(c, c.aB) * c.porcentaje / 100; unidad = c.uTiempo || 'días'; break;
@@ -154,10 +154,11 @@ function erroresEsperados(c) {
     Object.assign(er, { suma: c.rp + c.ra, diferencia: semi ? (c.ra - c.rp) / 2 : (c.ra - c.rp) / c.ra,
       'solo-lejano': semi ? c.ra : c.rp / c.ra, doble: r * 2 });
   } else if (['area', 'duracion', 'area-dias'].includes(c.tipo)) {
-    const duracion = c.tipo === 'duracion', horas = c.T * (c.tipo === 'area-dias' ? 24 : 1);
+    const duracion = c.tipo === 'duracion', horas = c.T * (c.tipo === 'area-dias' || c.dias ? 24 : 1);
     Object.assign(er, { inversa: duracion ? horas * 100 / c.porcentaje : 100 * horas / c.dt,
       'sin-cien': duracion ? horas * c.porcentaje : c.dt / horas, complemento: duracion ? horas - r : 100 - r, doble: 2 * r });
     if (c.tipo === 'area-dias') er['sin-dias'] = 100 * c.dt / c.T;
+    if (c.tipo === 'duracion' && c.dias) er['sin-dias'] = c.T * c.porcentaje / 100;
   } else if (['periodo', 'periodo-extremos', 'periodo-sector'].includes(c.tipo)) {
     const ab = c.tipo === 'periodo-extremos' ? (c.rp + c.ra) / 2 : c.aB, ratio = ab / c.aA, fraccion = c.tipo === 'periodo-sector' ? c.porcentaje / 100 : 1;
     Object.assign(er, { lineal: c.TA * ratio * fraccion, 'raiz-simple': c.TA * raizPositiva(ratio) * fraccion,
@@ -204,7 +205,7 @@ function verificarCaso(z) {
     assert.match(plano(z.datos), /semieje mayor.*separación instantánea/);
   }
   if (c.tipo === 'rapidez' || c.tipo === 'rapidez-alturas') assert.match(plano(z.datos), /Solo allí.*perpendicular/);
-  if (c.tipo === 'area-dias') assert.match(plano(z.datos), /1 día = 24 h/);
+  if (c.tipo === 'area-dias' || c.dias) assert.match(plano(z.datos), /1 día = 24 h/);
   const figura = (z.figura || z.dibujo).datos;
   assert.match(figura.alt, /no están a escala/); assert.ok(figura.paneles[0].notas.some(n => /sin escala/.test(n.texto)));
   for (const nota of figura.paneles[0].notas) {
@@ -221,7 +222,7 @@ function verificarCaso(z) {
     // Toda cifra de cálculo pertenece a datos, operadores o resultados físicos comprobados.
     const permitidos = [...ns, 1, 2, 3, 24, 100, r.valor];
     if (c.rp != null && c.ra != null) permitidos.push(c.rp + c.ra, (c.rp + c.ra) / 2);
-    if (c.tipo === 'area-dias') permitidos.push(c.T * 24);
+    if (c.tipo === 'area-dias' || c.dias) permitidos.push(c.T * 24);
     if (c.tipo === 'rapidez-alturas') permitidos.push(c.R + c.hp, c.R + c.ha);
     if (c.tipo === 'periodo-sector') permitidos.push(periodo(c, c.aB));
     if (c.tipo === 'sector-semieje') permitidos.push(c.dt * 100 / c.porcentaje);
@@ -258,7 +259,7 @@ test('Kepler: 15 ejemplos, cinco por nivel, cuatro descartes y A–E por fuerza 
       const aciertos = e.alternativas.map((a, i) => coincide(a, r.valor, r.unidad) ? i : -1).filter(i => i >= 0);
       assert.equal(aciertos.length, 1); letras.push(aciertos[0]);
       const errores = Object.values(erroresEsperados(e.verificacion));
-      e.alternativas.forEach((a, i) => { if (i !== aciertos[0]) { assert.ok(errores.some(v => coincide(a, v, r.unidad))); assert.ok(plano(e.solucion).includes('ABCDE'[i] + ':')); } });
+      e.alternativas.forEach((a, i) => { if (i !== aciertos[0]) { assert.ok(errores.some(v => coincide(a, v, r.unidad))); assert.ok(plano(e.solucion).includes(plano(a).replace(/^≈ /, '')), 'Alternativa sin explicar por su valor: ' + plano(a)); assert.ok(!/\b[A-E]:/.test(plano(e.solucion))); } });
     }
   }
   assert.deepEqual(letras.sort(), [0, 1, 2, 3, 4]);
@@ -359,8 +360,10 @@ test('Kepler: predicción independiente, ninguna fórmula o respuesta previa y M
   assert.deepEqual(p.opciones.map(o => visible(o.texto)), [24, 12, 6, 48]);
   const previo = JSON.stringify({ lee: idea.lee, glosario: cargado.glosario, consigna: idea.juega.consigna, mision: idea.juega.mision.texto, datos: p.datos });
   assert.doesNotMatch(previo, /24 años|T_B.*(?:\^3|√)|período.*(?:ocho veces|se octuplica)/);
-  const datoUA = plano(p.datos[2]); assert.match(datoUA, /149 597 870 700 m/);
+  const datoUA = plano(p.datos[2]); assert.match(datoUA, /1 UA ≈ 150 millones de km/);
   assert.equal(idea.mira.pasos.length, 4); idea.mira.pasos.forEach(p => igualdades(p.ecuacion));
   comprobarVisible(idea.mira.pasos.at(-1).ecuacion, 24, 'años');
-  assert.match(idea.regla.texto, /rápidez|rapidez/); assert.match(idea.regla.condicion, /masas orbitantes despreciables/);
+  assert.match(idea.regla.texto, /rápidez|rapidez/); assert.match(idea.regla.condicion, /masas que giran despreciables/);
+  // Auditoría (26 nov): la regla trae los extremos que piden «Así se resuelve» y «Ahora tú».
+  assert.match(JSON.stringify(idea.regla.ecuacion), /1 − e/); assert.match(JSON.stringify(idea.regla.ecuacion), /1 \+ e/);
 });

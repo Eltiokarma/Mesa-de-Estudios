@@ -209,7 +209,11 @@ function cantidades(caso, c) {
       const [a, b] = aportes(c); entradas = [c.MA, c.MB, c.D / 1000, c.m, Math.abs(c.x) / 1000];
       pasos = [[Math.abs(c.x), c.D - c.x], [a.abs().n(), b.abs().n()], [r]]; break;
     }
-    case 'equilibrio': entradas = [c.MA, c.MB, c.D / 1000]; pasos = [[c.MB, c.MA, raizPositiva(q(c.MB).div(c.MA))], [c.D / 1000, 1, c.MB, c.MA, r]]; break;
+    case 'equilibrio': {
+      // Auditoría (26 nov): el despeje muestra r_A + razón · r_A = D antes del resultado.
+      const razon = raizPositiva(q(c.MB).div(c.MA));
+      entradas = [c.MA, c.MB, c.D / 1000]; pasos = [[c.MB, c.MA, razon], [razon, c.D / 1000], [c.D / 1000, 1, razon, r]]; break;
+    }
     default: throw new Error('Cantidades sin comprobación: ' + c.tipo);
   }
   if (['directa', 'masa', 'distancia'].includes(c.tipo)) {
@@ -328,9 +332,10 @@ test('Ley: misión exhaustiva, lectura y fuerzas visibles con escala constante',
   assert.equal(juego.controles.length, 1); assert.equal(control.id, 'k');
   const ganadores = [], Fref = q('6.67e-11').mul('6e24').mul(600).div(q(12000000).pow(2));
   let escala;
-  const revisar = k => {
-    const val = { k }, razon = q(1).div(q(k).pow(2)).n();
-    assert.equal(juego.mision.logrado(val), Math.abs(razon - 1 / 4) < 1e-10);
+  // Auditoría (26 nov): dibujo y lectura usan k con la cifra que muestra el control (decimales: 1).
+  const revisar = kExacto => {
+    const val = { k: kExacto }, k = Math.round(kExacto * 10) / 10, razon = q(1).div(q(k).pow(2)).n();
+    assert.equal(juego.mision.logrado(val), Math.abs(1 / kExacto ** 2 - 1 / 4) < 1e-10);
     const lectura = juego.lectura(val);
     if (k === 1 && !valores(lectura).length) assert.match(plano(lectura), /lo mismo que en la referencia/);
     else comprobarVisible(lectura, razon, 'veces');

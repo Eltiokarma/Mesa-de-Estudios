@@ -359,7 +359,8 @@ function cantidades(caso, c) {
     case 'balanza': {
       const g = campoLocal(c).n(), operacion = c.g != null ? [c.g] : c.mu != null ? [c.mu, c.r, 2] : [c.g0, c.R, 2, c.R + c.h, 2];
       entradas = [c.m, c.beta]; filas = c.g == null ? [[...operacion, g]] : [];
-      filas.push([c.m, ...operacion, 1, c.beta, r]);
+      // Auditoría (26 nov): si el campo calculado es exacto, el paso del apoyo usa su valor.
+      filas.push([c.m, ...(c.g == null && Math.abs(g * 1000 - Math.round(g * 1000)) < 1e-7 ? [g] : operacion), 1, c.beta, r]);
       const dados = c.g != null ? [c.g] : c.mu != null ? [c.mu, c.r / 1000] : [c.g0, c.R / 1000, c.h / 1000];
       const visibles = cifras(caso.datos[0]).map(z => expresion(z).n());
       assert.equal(visibles.length, dados.length, 'Datos de balanza'); visibles.forEach((n, i) => cerca(n, dados[i]));
@@ -438,11 +439,12 @@ test('Campo: misión exhaustiva y 400 estados animados con campo constante', () 
   const j = idea.juega, c = j.controles[0], g = campoPuntual(4e14, 8e6).n(), ganadores = [];
   assert.equal(j.controles.length, 1); assert.equal(c.id, 'm');
   let posicion, escala;
-  const revisar = masa => {
-    const peso = q(masa).mul(g).n(), valores = { m: masa };
-    assert.equal(j.mision.logrado(valores), Math.abs(peso - 250) < 1e-9);
-    comprobarVisible(j.lectura(valores), g, 'N');
-    assert.match(plano(j.lectura(valores)), /Cada kilogramo/);
+  // Auditoría (26 nov): dibujo y lectura usan la masa entera que muestra el control (decimales: 0).
+  const revisar = masaExacta => {
+    const masa = Math.round(masaExacta), peso = q(masa).mul(g).n(), valores = { m: masaExacta };
+    assert.equal(j.mision.logrado(valores), Math.abs(masaExacta * g - 250) < 1e-9);
+    comprobarVisible(j.lectura(valores), peso, 'N');
+    assert.match(plano(j.lectura(valores)), /6,25 N\/kg/);
     const d = j.dibujo(valores).datos, p = d.paneles[0]; assert.equal(d.paneles.length, 1);
     if (posicion == null) { posicion = p.satelite.c; escala = d.escalas.F; }
     assert.deepEqual(p.satelite.c, posicion); cerca(d.escalas.F, escala);

@@ -126,7 +126,7 @@ function verificarEcuaciones(caso) {
     const lados = ecuacion.split(/[=≈]/); if (lados.length < 2) continue;
     const escalaE = /GJ/.test(ecuacion) ? 1e9 : 1, escalaR = /\bkm\b/.test(ecuacion) && !/km\/s/.test(ecuacion) ? 1000 : 1, escalaV = /km\/s/.test(ecuacion) ? 1000 : 1;
     const evaluar = s => {
-      let t = s.replace(/\b(?:GJ|J|km\/s|m\/s|km|kg)\b/g, '').replace(/−/g, '-').replace(/[·×]/g, '*').replace(/÷/g, '/').replace(/,/g, '.')
+      let t = s.replace(/([A-Za-z]),([A-Za-z0-9])/g, '$1$2').replace(/\b(?:GJ|J|km\/s|m\/s|km|kg)\b/g, '').replace(/−/g, '-').replace(/[·×]/g, '*').replace(/÷/g, '/').replace(/,/g, '.')
         .replace(/[⁻⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, ss => '**(' + [...ss].map(c => ({ '⁻': '-', '⁰': 0, '¹': 1, '²': 2, '³': 3, '⁴': 4, '⁵': 5, '⁶': 6, '⁷': 7, '⁸': 8, '⁹': 9 })[c]).join('') + ')');
       for (const k of Object.keys(dic).sort((a, b) => b.length - a.length)) {
         const re = new RegExp('(?<![A-Za-z0-9Δ])' + k + '(?![A-Za-z0-9])', 'g');
@@ -242,4 +242,19 @@ test('energía: el validador comprueba 400 semillas como calidad 2 sin cambiar l
   const parcial = { ...def, calidad: 2, ideas: [idea], glosario: def.glosario.filter(g => ['referencia en el infinito', 'trabajo gravitatorio', 'energía potencial gravitatoria', 'nivel de referencia'].includes(g.termino)) };
   delete parcial.laboratorio; delete parcial.laboratorioIdeas;
   assert.deepEqual(T.problemas(parcial, { semillas: 400 }), []);
+});
+
+// Auditoría (26 nov): r₁ y r₂ se dibujaban a la misma distancia del planeta aunque una fuera el doble de la otra.
+test('Energía: en las figuras de dos posiciones, la más lejana se dibuja más lejos', () => {
+  const figuras = [idea.predice.dibujo, idea.regla.dibujo, ...idea.ejemplos.map(e => e.figura)];
+  for (let s = 0; s < 120; s++) figuras.push(idea.resuelve.generar(s).dibujo, idea.ahoraTu.generar(s).dibujo);
+  let revisadas = 0;
+  for (const f of figuras) {
+    const ps = f && f.datos && f.datos.paneles;
+    if (!ps || ps.length !== 2 || !ps.every(p => p.cotas && p.cotas[0] && /=\s*[\d\s]+(,\d+)?\s*km/.test(p.cotas[0].texto))) continue;
+    const km = ps.map(p => +p.cotas[0].texto.replace(/^.*=\s*/, '').replace(/\s*km$/, '').replace(/\s/g, '').replace(',', '.'));
+    const x = ps.map(p => p.satelite.c[0]);
+    if (km[0] !== km[1]) { assert.equal(Math.sign(x[1] - x[0]), Math.sign(km[1] - km[0]), JSON.stringify(km)); revisadas++; }
+  }
+  assert.ok(revisadas >= 20, 'pocas figuras revisadas: ' + revisadas);
 });

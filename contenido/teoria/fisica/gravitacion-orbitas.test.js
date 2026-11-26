@@ -332,7 +332,7 @@ test('Órbitas: misión exhaustiva y 400 instantes; solo 5 km/s habilita círcul
     comprobarVisible(nota('GM '), 4e14, 'm³/s²'); comprobarVisible(nota('r '), 16000, 'km'); comprobarVisible(nota('v '), v, 'km/s');
     comprobarVisible(nota('g '), fis.a, 'm/s²'); comprobarVisible(nota('v²/r '), ac, 'm/s²');
     if (correcta) { comprobarVisible(nota('t '), t, 's'); assert.match(plano(j.lectura(a)), /exactamente|coincide/); }
-    else { assert.match(plano(p.notas), /Solo se muestra el estado inicial/); assert.match(fig.alt, /No se dibuja su trayectoria/); assert.match(plano(j.lectura(a)), ac < fis.a ? /supera/ : /menor/); }
+    else { assert.match(plano(p.notas), /Solo se muestra el estado inicial/); assert.match(fig.alt, /No se dibuja su trayectoria/); assert.match(plano(j.lectura(a)), ac < fis.a ? /g mayor que/ : /g menor que/); }
   }
   for (const v of velocidades) for (let t = reloj.min; t <= reloj.max; t += reloj.paso) revisar(v, t);
   for (let i = 0; i < 400; i++) revisar(velocidades[i % velocidades.length], Math.round(reloj.max * i / 399 * 1e5) / 1e5);

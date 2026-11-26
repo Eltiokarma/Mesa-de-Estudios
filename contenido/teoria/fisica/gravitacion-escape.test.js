@@ -117,7 +117,7 @@ function variables(c) {
   let rmax, hmax;
   if (['retorno', 'altura-retorno'].includes(c.tipo)) { rmax = z * 1000 + (c.tipo === 'altura-retorno' ? R : 0); hmax = rmax - R; }
   return { GM, m: masa, r: radio, r0: radio, R, h: c.tipo === 'radio-altura' ? z * 1000 : c.h, rmax, hmax,
-    vesc: esc, vescref: c.vRef, vescnueva: z * 1000, vc: c.vc, v0, vinf: z * 1000, vfinal: z * 1000, gsuperficie: g,
+    vesc: esc, vescref: c.vRef, vescnueva: z * 1000, vc: c.vc, v0, vinf: z * 1000, vfinal: z * 1000, gsuperficie: g, g0: g,
     EC: ck0, EPG: up0, EMinicial: ini, EMfinal: ini, ECinicial: ck0, EPGinicial: up0, EPGretorno: rmax ? -GM * masa / rmax : undefined };
 }
 function verificarEcuaciones(caso, extra = []) {
@@ -127,7 +127,7 @@ function verificarEcuaciones(caso, extra = []) {
     const lados = ecuacion.split(/[=≈]/); if (lados.length < 2) continue;
     const escalaE = /GJ/.test(ecuacion) ? 1e9 : 1, escalaR = /\bkm\b/.test(ecuacion) && !/km\/s/.test(ecuacion) ? 1000 : 1, escalaV = /km\/s/.test(ecuacion) ? 1000 : 1;
     const evaluar = s => {
-      let t = s.replace(/\b(?:GJ|J|km\/s|m\/s|km|kg)\b/g, '').replace(/−/g, '-').replace(/[·×]/g, '*').replace(/÷/g, '/').replace(/,/g, '.').replace(/_/g, '')
+      let t = s.replace(/([A-Za-z]),([A-Za-z0-9])/g, '$1$2').replace(/\b(?:GJ|J|km\/s|m\/s|km|kg)\b/g, '').replace(/−/g, '-').replace(/[·×]/g, '*').replace(/÷/g, '/').replace(/,/g, '.').replace(/_/g, '')
         .replace(/[⁻⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, ss => '**(' + [...ss].map(c => ({ '⁻': '-', '⁰': 0, '¹': 1, '²': 2, '³': 3, '⁴': 4, '⁵': 5, '⁶': 6, '⁷': 7, '⁸': 8, '⁹': 9 })[c]).join('') + ')');
       for (const k of Object.keys(dic).sort((a, b) => b.length - a.length)) {
         const re = new RegExp('(?<![A-Za-z0-9])' + k + '(?![A-Za-z0-9])', 'g');

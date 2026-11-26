@@ -153,3 +153,12 @@ test('cortes y flechas nulas respetan los datos sin cambiar su altura', () => {
   const nula = P.geometria(d, { corte: 1 });
   assert.equal(nula.flechas.length, 1); assert.ok(!nula.rotulos.some(r => r.panel === 0 && r.clase === 'rotulo-flecha'));
 });
+
+// Auditoría (26 nov): cada letra iba en su propio tspan con x estimado y el navegador
+// dejaba huecos dentro de las palabras («Ref er encia»). Una palabra va en un solo tspan.
+test('el texto corre seguido: una palabra no se parte en tspans con x propio', () => {
+  const s = P.dibujar({ paneles: [{ titulo: 'Referencia', notas: [{ texto: 'F_ref = 160 N', color: 'h' }, 'Separaciones a escala.'] }] });
+  assert.match(s, />Referencia<\/tspan>/); assert.match(s, />Separaciones a escala\.<\/tspan>/);
+  assert.match(s, /<tspan[^>]*font-size="[\d.]+"[^>]*>ref<\/tspan>/);
+  for (const [, t] of s.matchAll(/<text[^>]*>(.*?)<\/text>/g)) assert.ok((t.match(/<tspan[^>]*\sx="/g) || []).length <= 1, t);
+});

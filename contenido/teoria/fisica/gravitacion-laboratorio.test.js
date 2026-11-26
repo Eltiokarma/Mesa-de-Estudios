@@ -26,7 +26,8 @@ test('Laboratorio orbital: 400 estados obedecen a gravedad, tangencia y escala c
     assert.ok(modulo(derivada2.map((x, k) => x - objetivo[k])) < grav * 2e-6);
     const [vf, gf] = d.flechas;
     const dv = vf.a.map((x, k) => x - vf.de[k]), dg = gf.a.map((x, k) => x - gf.de[k]);
-    cerca(modulo(dv) / q.v, 0.00009); cerca(modulo(dg) / grav, 0.05);
+    cerca(modulo(dv) / q.v, 0.00009); cerca(modulo(dg) / grav, 0.06); // auditoría (26 nov)
+    assert.ok(modulo(d.flechas[1].a) > 0.42, 'la flecha de g no entra al planeta');
     assert.ok(punto(dg, q.posicion) < 0); assert.ok(Math.abs(punto(dv, q.posicion)) < radio * modulo(dv) * 1e-12);
     assert.equal(vf.color, 'c-o'); assert.equal(gf.color, 'tinta');
     assert.equal(vf.rotulo, 'v⃗'); assert.equal(gf.rotulo, 'g⃗');

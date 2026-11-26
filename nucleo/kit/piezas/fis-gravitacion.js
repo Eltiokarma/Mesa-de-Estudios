@@ -70,8 +70,22 @@
     return caja(x0, y - tip.arriba, x0 + tip.ancho, y + tip.abajo,
       { texto: String(texto), x: x0, y, tam, peso, color: o.color, tip, panel: o.panel, clase: o.clase || 'etiqueta' });
   }
+  // Auditoría (26 nov): un tspan con x propio por letra separaba las letras según el ancho estimado
+  // («Ref er encia», «Ct r o planet a»). El texto corre solo; los subíndices bajan y suben con dy.
+  // Una letra con flecha conserva su x, para que la flecha quede sobre ella.
   function textoSVG(r) {
-    const spans = r.tip.tokens.map(t => `<tspan x="${n(r.x + t.x)}" y="${n(r.y + t.dy)}"${t.sub ? ` font-size="${n(t.tam)}"` : ''}>${esc(t.texto)}</tspan>`).join('');
+    const grupos = [];
+    for (const t of r.tip.tokens) {
+      const g = grupos[grupos.length - 1];
+      if (g && !!g.sub === !!t.sub && !t.vector && !g.vector) g.texto += t.texto;
+      else grupos.push({ texto: t.texto, sub: t.sub, tam: t.tam, dy: t.dy, x: t.x, vector: t.vector });
+    }
+    let base = 0;
+    const spans = grupos.map((g, i) => {
+      const dy = g.dy - base; base = g.dy;
+      const pos = i === 0 || g.vector ? ` x="${n(r.x + g.x)}" y="${n(r.y + g.dy)}"` : dy ? ` dy="${n(dy)}"` : '';
+      return `<tspan${pos}${g.sub ? ` font-size="${n(g.tam)}"` : ''}>${esc(g.texto)}</tspan>`;
+    }).join('');
     let s = `<text class="kit-txt" fill="${color(r.color)}" font-size="${r.tam}" font-weight="${r.peso}" style="font-variant-numeric:tabular-nums">${spans}</text>`;
     for (const t of r.tip.tokens) if (t.vector) {
       const y = r.y + t.dy - r.tam * 0.98, x1 = r.x + t.x, x2 = x1 + Math.max(5, t.ancho);
