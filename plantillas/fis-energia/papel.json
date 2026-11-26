@@ -9,8 +9,8 @@
       "enunciado": "Jalas una caja con una cuerda a 53° sobre la horizontal, con 20 N, mientras avanza 12 m por el piso. ¿Cuánto trabajo hace la cuerda? Datos: Trabajo de una fuerza constante: W = F · d · cos θ, con θ entre la fuerza y el avance. sen 37° = 0,6 y cos 37° = 0,8; sen 53° = 0,8 y cos 53° = 0,6 (convención del examen). Alternativas: A) 192 J   B) 144 J   C) 240 J   D) 12 J",
       "respuesta": "B) 144 J",
       "pasos": [
-        "A lo largo del piso van 20 · 0,6 = 12 N.",
-        "W = 12 · 12 = 144 J."
+        "Solo la parte de la fuerza a lo largo del piso hace avanzar la carga: 20 · 0,6 = 12 N.",
+        "Esa parte por la distancia es el trabajo: W = 12 · 12 = 144 J."
       ]
     },
     {
@@ -19,8 +19,8 @@
       "enunciado": "Una bicicleta con su ciclista de 80 kg pasa de 4 m/s a 8 m/s. ¿Cuánto trabajo neto se hizo sobre ella? Datos: Trabajo neto: W_neto = ½ · m · v² − ½ · m · v₀². Alternativas: A) 3 840 J   B) 1 920 J   C) 2 560 J   D) 640 J",
       "respuesta": "B) 1 920 J",
       "pasos": [
-        "Al final: ½ · 80 · 8² = 2 560 J; al empezar: ½ · 80 · 4² = 640 J.",
-        "W_neto = 1 920 J."
+        "El trabajo neto es lo que ganó la energía cinética. Al final tiene ½ · 80 · 8² = 2 560 J, y al empezar, ½ · 80 · 4² = 640 J.",
+        "La diferencia es el trabajo neto: W_neto = 1 920 J."
       ]
     },
     {
@@ -29,8 +29,8 @@
       "enunciado": "Un resorte de 200 N/m se comprime 20 cm. ¿Cuánta energía potencial elástica guarda? Datos: Energía potencial elástica: E_PE = ½ · k · x², con x la deformación en metros. 1 m = 100 cm. Alternativas: A) 20 J   B) 40 000 J   C) 4 J   D) 8 J",
       "respuesta": "C) 4 J",
       "pasos": [
-        "En metros, x = 0,2 m.",
-        "E_PE = ½ · 200 · 0,2² = 4 J."
+        "La constante está en N/m, así que la deformación va en metros: x = 0,2 m.",
+        "La energía es la mitad de k por x²: E_PE = ½ · 200 · 0,2² = 4 J."
       ]
     },
     {
@@ -39,8 +39,8 @@
       "enunciado": "Sin rozamiento, un trineo baja por una duna de 2,45 m de alto, desde el reposo. ¿Con qué rapidez llega abajo? Datos: Sin rozamiento: E_M al inicio = E_M al final, con E_M = E_C + E_PG + E_PE. Energía potencial gravitatoria: E_PG = m · g · h, con h sobre la referencia (negativa debajo). Energía cinética: E_C = ½ · m · v². g = 10 m/s². Alternativas: A) 49 m/s   B) 24,5 m/s   C) 7 m/s   D) 4,95 m/s",
       "respuesta": "C) 7 m/s",
       "pasos": [
-        "La energía potencial de arriba es la cinética de abajo: v² = 2 · 10 · 2,45.",
-        "v = 7 m/s."
+        "Sin rozamiento, la energía potencial de arriba es la cinética de abajo, y la masa se cancela: v² = 2 · 10 · 2,45.",
+        "Al sacar la raíz, v = 7 m/s."
       ]
     },
     {
@@ -49,8 +49,8 @@
       "enunciado": "Un torno sube 80 kg a 5 m de altura en 10 s, a rapidez constante. ¿Qué potencia útil desarrolla? Datos: Potencia: P = W / t (1 W = 1 J/s); para subir a rapidez constante, W = m · g · h. Peso: m · g, con g = 10 m/s². Alternativas: A) 4 000 W   B) 40 W   C) 400 W   D) 800 W",
       "respuesta": "C) 400 W",
       "pasos": [
-        "W = 80 · 10 · 5 = 4 000 J, en 10 s.",
-        "P = 4 000 / 10 = 400 W."
+        "A rapidez constante jala lo que pesa la carga, así que el trabajo es W = 80 · 10 · 5 = 4 000 J, en 10 s.",
+        "La potencia reparte ese trabajo entre los segundos: P = 4 000 / 10 = 400 W."
       ]
     },
     {
@@ -59,7 +59,7 @@
       "enunciado": "Una pelota se suelta desde 8 m y en cada bote pierde el 25 % de su energía. ¿Hasta qué altura sube después del segundo bote? Datos: Si pierde un p % de su energía, le queda (100 − p) %. Energía potencial gravitatoria: E_PG = m · g · h, con h sobre la referencia (negativa debajo). g = 10 m/s². Alternativas: A) 2,53 m   B) 6 m   C) 4,5 m   D) 4 m",
       "respuesta": "C) 4,5 m",
       "pasos": [
-        "En cada bote le queda el 75 % de la energía, y la altura va con ella.",
+        "En cada bote le queda el 75 % de la energía que traía, y como en lo alto toda es potencial, la altura queda en la misma fracción.",
         "h = 8 · 0,75 · 0,75 = 4,5 m."
       ]
     },
@@ -69,8 +69,8 @@
       "enunciado": "Un bloque de 8 kg es arrastrado 2 m por un piso horizontal con una cuerda que jala con 50 N a 37° sobre la horizontal. Entre el piso y el bloque, μ_k = 0,25. ¿Cuánta energía disipa el rozamiento? Datos: Peso: m · g, con g = 10 m/s². Una fuerza F a θ sobre la horizontal: F · cos θ de lado y F · sen θ hacia arriba. sen 37° = 0,6 y cos 37° = 0,8; sen 53° = 0,8 y cos 53° = 0,6 (convención del examen). Si no sube ni baja, lo vertical suma cero. Rozamiento cinético: f_k = μ_k · N mientras desliza, contra el deslizamiento. Trabajo de una fuerza constante: W = F · d · cos θ, con θ entre la fuerza y el avance. Alternativas: A) 55 J   B) 80 J   C) 25 J   D) 12,5 J   E) 40 J",
       "respuesta": "C) 25 J",
       "pasos": [
-        "La normal: N = 80 − 50 · 0,6 = 50 N.",
-        "El rozamiento: f_k = 0,25 · 50 = 12,5 N; disipa 12,5 · 2 = 25 J."
+        "La cuerda tira hacia arriba con F · sen 37°, así que la normal es el peso menos esa parte: N = 80 − 50 · 0,6 = 50 N.",
+        "El rozamiento es el coeficiente por esa normal, f_k = 0,25 · 50 = 12,5 N, y disipa 12,5 · 2 = 25 J."
       ]
     },
     {
@@ -79,8 +79,8 @@
       "enunciado": "Cuelgas un bloque de 1 kg de un resorte de 250 N/m que está en su largo natural, y lo sueltas desde el reposo. ¿Cuánto se estira el resorte como máximo? Datos: Sin rozamiento: E_M al inicio = E_M al final, con E_M = E_C + E_PG + E_PE. Energía potencial gravitatoria: E_PG = m · g · h, con h sobre la referencia (negativa debajo). Energía potencial elástica: E_PE = ½ · k · x², con x la deformación en metros. g = 10 m/s². Alternativas: A) 0,02 m   B) 0,28 m   C) 0,08 m   D) 0,01 m   E) 0,04 m",
       "respuesta": "C) 0,08 m",
       "pasos": [
-        "Abajo del todo se detiene: 1 · 10 · x = ½ · 250 · x².",
-        "x = 0,08 m."
+        "En el punto más bajo se detiene, así que lo que perdió de energía potencial quedó en el resorte: 1 · 10 · x = ½ · 250 · x².",
+        "Se cancela una x de cada lado y queda x = 0,08 m."
       ]
     }
   ]

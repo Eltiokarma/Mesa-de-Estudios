@@ -168,11 +168,11 @@
       enunciado: [`Jalas ${cosa} con una cuerda a ${ang}° sobre la horizontal, con `, Ff(nw(Fv)), `, mientras avanza ${mt(d)} por el piso.`],
       pregunta: ['¿Cuánto trabajo hace la cuerda?'], datos: [D.trabajo, D.trig], correcta: Wv, fmt: J,
       errores: [
-        e('TR-SIN-COS', Fv * d, x => `Bien fuerza por distancia. Pero la cuerda va inclinada: solo cuenta su parte a lo largo del piso; sin el coseno sale ${x}.`),
-        e('TR-SENO', Fv * d * sen, x => `Bien inclinar la fuerza. Pero el seno da la parte que levanta, que no avanza; así sale ${x}.`),
-        e('TR-SIN-D', Fv * cos, x => `Bien la parte a lo largo del piso, ${x} en número. Falta multiplicarla por la distancia.`),
+        e('TR-SIN-COS', Fv * d, x => `Multiplicar la fuerza por la distancia está bien, pero la cuerda va inclinada y solo su parte a lo largo del piso hace avanzar la carga. Sin el coseno sale ${x}, como si la cuerda fuera paralela al piso.`),
+        e('TR-SENO', Fv * d * sen, x => `Tomar una parte de la fuerza está bien, pero el seno da la parte que levanta la carga, y esa no la hace avanzar. Con el seno sale ${x}; la parte que avanza lleva el coseno.`),
+        e('TR-SIN-D', Fv * cos, x => `La parte de la fuerza a lo largo del piso está bien, pero ${x} es en realidad esa fuerza, en newtons, y no un trabajo. Falta multiplicarla por la distancia.`),
       ],
-      solucion: [[`A lo largo del piso van ${f(Fv)} · ${f(cos)} = ${nw(Fv * cos)}.`], [`W = ${f(Fv * cos)} · ${f(d)} = ${J(Wv)}.`]],
+      solucion: [[`Solo la parte de la fuerza a lo largo del piso hace avanzar la carga: ${f(Fv)} · ${f(cos)} = ${nw(Fv * cos)}.`], [`Esa parte por la distancia es el trabajo: W = ${f(Fv * cos)} · ${f(d)} = ${J(Wv)}.`]],
       _datos: { F: Fv, ang, d },
     };
   }
@@ -184,11 +184,11 @@
       enunciado: [`Arrastras ${cosa} de ${m} kg a lo largo de ${mt(d)} por un piso horizontal, con una cuerda horizontal. Entre el piso y la carga, μ_k = ${f(mu)}.`],
       pregunta: ['¿Cuánta energía disipa el rozamiento (el valor de su trabajo, sin el signo)?'], datos: [D.peso, D.normal, D.cin, D.trabajo, D.cos], correcta: Wr, fmt: J,
       errores: [
-        e('TR-SIN-G', mu * m * d, x => `Bien μ_k por la distancia. Pero la normal es el peso, m · g: sin g sale ${x}.`),
-        e('TR-SIN-MU', m * G * d, x => `Bien la normal por la distancia. Pero el rozamiento es μ_k por la normal; sin μ_k sale ${x}.`),
-        e('TR-SIN-D', mu * m * G, x => `Bien el rozamiento, ${x} en número. Falta multiplicarlo por la distancia.`),
+        e('TR-SIN-G', mu * m * d, x => `Multiplicar el coeficiente por la distancia está bien, pero la normal es el peso, m · g, y no la masa sola. Sin g sale ${x}.`),
+        e('TR-SIN-MU', m * G * d, x => `La normal por la distancia está bien, pero el rozamiento es solo una fracción de la normal: el coeficiente por la normal. Sin el coeficiente sale ${x}.`),
+        e('TR-SIN-D', mu * m * G, x => `El rozamiento está bien, pero ${x} es en realidad esa fuerza, en newtons, y no un trabajo. Falta multiplicarla por la distancia que desliza.`),
       ],
-      solucion: [[`La normal es el peso: ${m * G} N; el rozamiento, ${f(mu)} · ${m * G} = `, Fr(nw(r.roce)), '.'], [`Su trabajo vale −${f(r.roce)} · ${f(d)} = −${J(Wr)}: disipa ${J(Wr)}.`]],
+      solucion: [[`La cuerda es horizontal y no levanta la carga, así que la normal es el peso, ${m * G} N, y el rozamiento es ${f(mu)} · ${m * G} = `, Fr(nw(r.roce)), '.'], [`Va contra el avance, así que su trabajo es negativo: −${f(r.roce)} · ${f(d)} = −${J(Wr)}. Disipa ${J(Wr)}.`]],
       _datos: { m, mu, d },
     };
   }
@@ -201,12 +201,12 @@
       enunciado: [`Un bloque de ${m} kg es arrastrado ${mt(d)} por un piso horizontal con una cuerda que jala con `, Ff(nw(Fv)), ` a 37° sobre la horizontal. Entre el piso y el bloque, μ_k = ${f(mu)}.`],
       pregunta: ['¿Cuánta energía disipa el rozamiento?'], datos: [D.peso, D.comp, D.trig, D.normal, D.cin, D.trabajo], correcta: Wr, fmt: J,
       errores: [
-        e('N-MG', mu * m * G * d, x => `Bien μ_k por la normal y por la distancia. Pero la cuerda levanta un poco: con la normal igual al peso sale ${x}.`),
-        e('N-SUMA', mu * (m * G + Fv * 0.6) * d, x => `Bien mirar lo vertical de la cuerda. Pero jala hacia arriba: se resta; sumando sale ${x}.`),
-        e('TR-CUERDA', Fv * 0.8 * d, x => `Bien la parte de la cuerda a lo largo del piso. Pero ${x} es el trabajo de la cuerda, no el del rozamiento.`),
-        e('TR-SIN-D', fr, x => `Bien el rozamiento, ${x} en número. Falta multiplicarlo por los ${f(d)} m.`),
+        e('N-MG', mu * m * G * d, x => `El coeficiente por la normal y por la distancia está bien, pero la cuerda tira un poco hacia arriba y el piso sostiene menos. Con la normal igual al peso sale ${x}, más de la cuenta.`),
+        e('N-SUMA', mu * (m * G + Fv * 0.6) * d, x => `Mirar la parte vertical de la cuerda está bien, pero esa parte jala hacia arriba y alivia el apoyo, así que se resta del peso. Sumándola sale ${x}.`),
+        e('TR-CUERDA', Fv * 0.8 * d, x => `La parte de la cuerda a lo largo del piso está bien calculada, pero ${x} es el trabajo de la cuerda. Piden la energía que disipa el rozamiento, que es otra fuerza.`),
+        e('TR-SIN-D', fr, x => `El rozamiento está bien, pero ${x} es en realidad esa fuerza, en newtons, y no una energía. Falta multiplicarla por los ${f(d)} m que desliza.`),
       ],
-      solucion: [['La normal: ', v('N', `N = ${m * G} − ${f(Fv)} · 0,6 = ${nw(Nn)}`), '.'], ['El rozamiento: ', Fr(`f_k = ${f(mu)} · ${f(Nn)} = ${nw(fr)}`), `; disipa ${f(fr)} · ${f(d)} = ${J(Wr)}.`]],
+      solucion: [['La cuerda tira hacia arriba con F · sen 37°, así que la normal es el peso menos esa parte: ', v('N', `N = ${m * G} − ${f(Fv)} · 0,6 = ${nw(Nn)}`), '.'], ['El rozamiento es el coeficiente por esa normal, ', Fr(`f_k = ${f(mu)} · ${f(Nn)} = ${nw(fr)}`), `, y disipa ${f(fr)} · ${f(d)} = ${J(Wr)}.`]],
       _datos: { m, F: Fv, mu, d },
     };
   }
@@ -221,11 +221,11 @@
       enunciado: [`${cosa[0].toUpperCase() + cosa.slice(1)} de ${f(m)} kg pasa de ${ms(v0)} a ${ms(vf)}.`],
       pregunta: [`¿Cuánto trabajo neto se hizo sobre ${cosa.startsWith('una') ? 'ella' : 'él'}?`], datos: [D.teorema], correcta: Wv, fmt: J,
       errores: [
-        e('TE-SIN-V0', m * vf * vf / 2, x => `Bien la energía del final, ${x}. Pero ya tenía energía al empezar: se resta.`),
-        e('TE-RESTA-V', m * (vf - v0) ** 2 / 2, x => `Bien la fórmula. Pero se restan energías, no rapideces antes de elevar; así sale ${x}.`),
-        e('TE-SIN-MEDIO', m * (vf * vf - v0 * v0), x => `Bien la diferencia. Pero falta el ½ de la energía cinética; sin él sale ${x}.`),
+        e('TE-SIN-V0', m * vf * vf / 2, x => `La energía del final, ${x}, está bien, pero el cuerpo ya se movía al empezar y tenía energía cinética. El trabajo neto es solo lo que ganó, así que esa energía inicial se resta.`),
+        e('TE-RESTA-V', m * (vf - v0) ** 2 / 2, x => `La fórmula está bien, pero restaste las rapideces antes de elevarlas al cuadrado, y así sale ${x}. Lo que se resta son las dos energías, cada una con su rapidez al cuadrado.`),
+        e('TE-SIN-MEDIO', m * (vf * vf - v0 * v0), x => `La diferencia de los cuadrados está bien, pero la energía cinética es la mitad de m · v². Sin el ½ sale ${x}, el doble de lo correcto.`),
       ],
-      solucion: [[`Al final: ½ · ${f(m)} · ${vf}² = ${J(m * vf * vf / 2)}; al empezar: ½ · ${f(m)} · ${v0}² = ${J(m * v0 * v0 / 2)}.`], [`W_neto = ${J(Wv)}.`]],
+      solucion: [[`El trabajo neto es lo que ganó la energía cinética. Al final tiene ½ · ${f(m)} · ${vf}² = ${J(m * vf * vf / 2)}, y al empezar, ½ · ${f(m)} · ${v0}² = ${J(m * v0 * v0 / 2)}.`], [`La diferencia es el trabajo neto: W_neto = ${J(Wv)}.`]],
       _datos: { m, v0, v: vf },
     };
   }
@@ -238,12 +238,12 @@
       enunciado: [`Empujas desde el reposo un carrito de ${m} kg con `, Ff(nw(Fv)), ` horizontales a lo largo de ${mt(d)}, y el piso lo frena con `, Fr(nw(fr)), '.'],
       pregunta: ['¿Con qué rapidez queda?'], datos: [D.suma, D.teorema], correcta: vf, fmt: ms,
       errores: [
-        e('TE-SIN-ROCE', Math.sqrt(2 * Fv * d / m), x => `Bien el teorema. Pero el rozamiento también trabaja, en contra; sin él sale ${x}.`),
-        e('TE-SIN-RAIZ', 2 * Wn / m, x => `Bien el trabajo neto. Pero eso es v²; sin la raíz sale ${x}.`),
-        e('TE-SIN-DOS', Math.sqrt(Wn / m), x => `Bien el trabajo neto. Pero el ½ de la energía deja un 2 al despejar; sin él sale ${x}.`),
-        e('TE-SUMA-ROCE', Math.sqrt(2 * (Fv + fr) * d / m), x => `Bien sumar los dos trabajos. Pero el del rozamiento es negativo: se resta; sumando sale ${x}.`),
+        e('TE-SIN-ROCE', Math.sqrt(2 * Fv * d / m), x => `Usar el teorema está bien, pero el rozamiento también trabaja, en contra del avance, y le quita energía. Sin él sale ${x}, más rápido de lo real.`),
+        e('TE-SIN-RAIZ', 2 * Wn / m, x => `El trabajo neto está bien, pero al despejar queda v², la rapidez al cuadrado. Sin la raíz sale ${x}.`),
+        e('TE-SIN-DOS', Math.sqrt(Wn / m), x => `El trabajo neto está bien, pero la energía cinética lleva un ½, y al despejar v² ese ½ deja un 2. Sin él sale ${x}.`),
+        e('TE-SUMA-ROCE', Math.sqrt(2 * (Fv + fr) * d / m), x => `Juntar los dos trabajos está bien, pero el del rozamiento es negativo porque frena, así que se resta. Sumándolo sale ${x}.`),
       ],
-      solucion: [[`W_neto = ${f(Fv)} · ${f(d)} − ${f(fr)} · ${f(d)} = ${J(Wn)}.`], [`½ · ${m} · v² = ${f(Wn)}: v = ${ms(vf)}.`]],
+      solucion: [[`El empujón suma su trabajo y el rozamiento resta el suyo: W_neto = ${f(Fv)} · ${f(d)} − ${f(fr)} · ${f(d)} = ${J(Wn)}.`], [`Partió del reposo, así que ese trabajo es toda su energía cinética: ½ · ${m} · v² = ${f(Wn)}, y v = ${ms(vf)}.`]],
       _datos: { m, F: Fv, f: fr, d },
     };
   }
@@ -255,11 +255,11 @@
       enunciado: [`Una caja desliza por un piso horizontal a ${ms(v0)} y el rozamiento la detiene en ${mt(d)}.`],
       pregunta: ['¿Cuánto vale el coeficiente de rozamiento cinético?'], datos: [D.teorema, D.cin, D.peso, D.normal, D.trabajo], correcta: mu, fmt: x => f(x),
       errores: [
-        e('TE-SIN-MEDIO', v0 * v0 / (G * d), x => `Bien igualar el trabajo del rozamiento a la energía. Pero la cinética lleva el ½; sin él sale ${x}.`),
-        e('TE-LINEAL', v0 / (2 * G * d), x => `Bien el planteo. Pero la energía va con v², no con v; así sale ${x}.`),
-        e('TE-INVIERTE', 2 * G * d / (v0 * v0), x => `Bien la ecuación. Pero al despejar μ_k la fracción va al revés; así sale ${x}.`),
+        e('TE-SIN-MEDIO', v0 * v0 / (G * d), x => `Igualar el trabajo del rozamiento a la energía cinética está bien, pero esa energía es ½ · m · v², y el ½ faltó. Sin él sale ${x}.`),
+        e('TE-LINEAL', v0 / (2 * G * d), x => `El planteo va bien, pero usaste la rapidez sin elevarla al cuadrado, y así sale ${x}. La energía cinética va con v².`),
+        e('TE-INVIERTE', 2 * G * d / (v0 * v0), x => `La ecuación está bien, pero al despejar el coeficiente pusiste la fracción al revés, y así sale ${x}. La rapidez al cuadrado va arriba.`),
       ],
-      solucion: [[`El rozamiento quita toda la energía cinética; la masa se cancela: μ_k · 10 · ${f(d)} = ½ · ${v0}².`], [`μ_k = ${f(mu)}.`]],
+      solucion: [[`Solo trabaja el rozamiento, y quita toda la energía cinética; la masa está en los dos lados y se cancela: μ_k · 10 · ${f(d)} = ½ · ${v0}².`], [`Al despejar, μ_k = ${f(mu)}.`]],
       _datos: { v0, d },
     };
   }
@@ -272,11 +272,11 @@
       enunciado: [`${cosa} de ${m} kg está en un estante a ${mt(h1)} del piso. La referencia es una mesa de ${mt(h0)} de alto.`],
       pregunta: ['¿Cuánto vale su energía potencial gravitatoria?'], datos: [D.epg, D.peso], correcta: E, fmt: J,
       errores: [
-        e('EP-REF', m * G * h1, x => `Bien m · g · h. Pero h se mide desde la referencia que dan, no desde el piso; así sale ${x}.`),
-        e('EP-SIN-G', m * Math.abs(h1 - h0), x => `Bien la altura sobre la referencia. Pero falta g; sin ella sale ${x}.`),
-        e('EP-SUMA', m * G * (h1 + h0), x => `Bien usar las dos alturas. Pero se restan; sumando sale ${x}.`),
+        e('EP-REF', m * G * h1, x => `Usar m · g · h está bien, pero mediste h desde el piso, y así sale ${x}. La altura se mide desde la referencia que dan: primero se resta su altura.`),
+        e('EP-SIN-G', m * Math.abs(h1 - h0), x => `La altura sobre la referencia está bien, pero la energía potencial usa el peso, m · g, y no la masa sola. Sin g sale ${x}.`),
+        e('EP-SUMA', m * G * (h1 + h0), x => `Usar las dos alturas está bien, pero la altura sobre la referencia es su diferencia: se restan. Sumándolas sale ${x}.`),
       ],
-      solucion: [[`Sobre la referencia: h = ${f(h1)} − ${f(h0)} = ${f(h1 - h0)} m.`], [`E_PG = ${m} · 10 · ${f(h1 - h0)} = ${J(E)}.`]],
+      solucion: [[`La altura se mide desde la referencia, no desde el piso: h = ${f(h1)} − ${f(h0)} = ${f(h1 - h0)} m.`], [`Con esa altura, E_PG = ${m} · 10 · ${f(h1 - h0)} = ${J(E)}.`]],
       _datos: { m, h1, h0 },
     };
   }
@@ -290,11 +290,11 @@
         enunciado: [`Un resorte de ${k} N/m está comprimido y guarda ${J(E)}.`],
         pregunta: ['¿Cuántos centímetros está comprimido?'], datos: [D.epe, D.cm], correcta: xc, fmt: x2 => `${f(x2)} cm`,
         errores: [
-          e('EP-SIN-RAIZ', 100 * 2 * E / k, x2 => `Bien despejar x². Pero eso es x² en metros cuadrados; sin la raíz sale ${x2}.`),
-          e('EP-SIN-MEDIO', 100 * Math.sqrt(E / k), x2 => `Bien la raíz. Pero el ½ deja un 2 al despejar; sin él sale ${x2}.`),
-          e('EP-INVIERTE', 100 * Math.sqrt(k / (2 * E)), x2 => `Bien la raíz. Pero al despejar x² la fracción va al revés; así sale ${x2}.`),
+          e('EP-SIN-RAIZ', 100 * 2 * E / k, x2 => `Despejar x² está bien, pero ese número está en metros cuadrados y todavía no es la compresión. Sin la raíz sale ${x2}.`),
+          e('EP-SIN-MEDIO', 100 * Math.sqrt(E / k), x2 => `Sacar la raíz está bien, pero la energía elástica lleva un ½, y al despejar x² ese ½ deja un 2. Sin él sale ${x2}.`),
+          e('EP-INVIERTE', 100 * Math.sqrt(k / (2 * E)), x2 => `Sacar la raíz está bien, pero al despejar x² pusiste la fracción al revés, y así sale ${x2}. La energía va arriba y k abajo.`),
         ],
-        solucion: [[`x² = 2 · ${f(E)} ÷ ${k} = ${f(x * x, 4)} m²; x = ${f(x)} m.`], [`En centímetros: ${xc} cm.`]],
+        solucion: [[`De E_PE = ½ · k · x² se despeja x²: x² = 2 · ${f(E)} ÷ ${k} = ${f(x * x, 4)} m², así que x = ${f(x)} m.`], [`Piden centímetros: ${f(x)} m son ${xc} cm.`]],
         _datos: { k, xc, variante: 'x' },
       };
     }
@@ -302,11 +302,11 @@
       enunciado: [`Un resorte de ${k} N/m se comprime ${xc} cm.`],
       pregunta: ['¿Cuánta energía potencial elástica guarda?'], datos: [D.epe, D.cm], correcta: E, fmt: J,
       errores: [
-        e('EP-LINEAL', k * x / 2, x2 => `Bien el ½ y la k. Pero x va al cuadrado; así sale ${x2}.`),
-        e('EP-SIN-MEDIO', k * x * x, x2 => `Bien k por x al cuadrado. Pero el área es un triángulo: lleva el ½; sin él sale ${x2}.`),
-        e('EP-CM', k * xc * xc / 2, x2 => `Bien la fórmula. Pero x va en metros; con centímetros sale ${x2}.`),
+        e('EP-LINEAL', k * x / 2, x2 => `El ½ y la k están bien, pero x va al cuadrado: el triángulo bajo F–x tiene base x y altura k · x. Sin el cuadrado sale ${x2}.`),
+        e('EP-SIN-MEDIO', k * x * x, x2 => `k por x al cuadrado está bien, pero la fuerza del resorte crece desde 0 y el área bajo F–x es un triángulo, con ½. Sin él sale ${x2}.`),
+        e('EP-CM', k * xc * xc / 2, x2 => `La fórmula está bien, pero la constante está en N/m, así que x va en metros. Con los centímetros sale ${x2}.`),
       ],
-      solucion: [[`En metros, x = ${f(x)} m.`], [`E_PE = ½ · ${k} · ${f(x)}² = ${J(E)}.`]],
+      solucion: [[`La constante está en N/m, así que la deformación va en metros: x = ${f(x)} m.`], [`La energía es la mitad de k por x²: E_PE = ½ · ${k} · ${f(x)}² = ${J(E)}.`]],
       _datos: { k, xc, variante: 'E' },
     };
   }
@@ -318,11 +318,11 @@
       enunciado: [`Un resorte de ${k} N/m mide ${L0} cm sin deformar. Lo estiras desde que mide ${L0 + a} cm hasta que mide ${L0 + b} cm.`],
       pregunta: ['¿Cuánto trabajo cuesta?'], datos: [D.epe, D.cm], correcta: Wv, fmt: J,
       errores: [
-        e('EP-DIF', M.trabajoResorte(k, 0, x2 - x1), x => `Bien las dos deformaciones. Pero se restan las energías, no las deformaciones antes de elevar; así sale ${x}.`),
-        e('EP-FINAL', M.trabajoResorte(k, 0, x2), x => `Bien la energía del final, ${x}. Pero ya estaba estirado: se resta la del comienzo.`),
-        e('EP-LARGO', M.trabajoResorte(k, (L0 + a) / 100, (L0 + b) / 100), x => `Bien restar las energías. Pero x se mide desde el largo natural, no desde 0; así sale ${x}.`),
+        e('EP-DIF', M.trabajoResorte(k, 0, x2 - x1), x => `Las dos deformaciones están bien, pero las restaste antes de elevarlas al cuadrado, y así sale ${x}. Lo que se resta son las dos energías.`),
+        e('EP-FINAL', M.trabajoResorte(k, 0, x2), x => `La energía del final, ${x}, está bien, pero el resorte ya estaba estirado al empezar y guardaba algo. El trabajo es solo lo que ganó: se resta la energía del comienzo.`),
+        e('EP-LARGO', M.trabajoResorte(k, (L0 + a) / 100, (L0 + b) / 100), x => `Restar las energías está bien, pero usaste los largos del resorte, y así sale ${x}. La deformación se mide desde el largo natural: es cuánto se alargó.`),
       ],
-      solucion: [[`Deformaciones: ${f(x1)} m y ${f(x2)} m.`], [`W = ½ · ${k} · (${f(x2)}² − ${f(x1)}²) = ${J(Wv)}.`]],
+      solucion: [[`Las deformaciones se miden desde el largo natural: ${f(x1)} m al empezar y ${f(x2)} m al final.`], [`El trabajo es lo que ganó la energía del resorte: W = ½ · ${k} · (${f(x2)}² − ${f(x1)}²) = ${J(Wv)}.`]],
       _datos: { k, L0, a, b },
     };
   }
@@ -335,11 +335,11 @@
       enunciado: [`Sin rozamiento, ${cosa[0]} baja ${cosa[1]} de ${mt(hh)} de alto, desde el reposo.`],
       pregunta: ['¿Con qué rapidez llega abajo?'], datos: [D.conserva, D.epg, D.ec], correcta: vf, fmt: ms,
       errores: [
-        e('CE-SIN-RAIZ', 2 * G * hh, x => `Bien igualar las energías. Pero eso es v²; sin la raíz sale ${x}.`),
-        e('TE-SIN-DOS', Math.sqrt(G * hh), x => `Bien la raíz. Pero el ½ de la cinética deja un 2 al despejar; sin él sale ${x}.`),
-        e('CE-GH', G * hh, x => `Bien usar g y h. Pero falta el 2 y falta la raíz; así sale ${x}.`),
+        e('CE-SIN-RAIZ', 2 * G * hh, x => `Igualar las energías está bien, pero al despejar queda v², la rapidez al cuadrado. Sin la raíz sale ${x}.`),
+        e('TE-SIN-DOS', Math.sqrt(G * hh), x => `Sacar la raíz está bien, pero la energía cinética lleva un ½, y al despejar v² ese ½ deja un 2. Sin él sale ${x}.`),
+        e('CE-GH', G * hh, x => `Usar g y h es el comienzo, pero faltan dos pasos: el 2 que deja el ½ de la energía cinética y la raíz. Así sale ${x}.`),
       ],
-      solucion: [[`La energía potencial de arriba es la cinética de abajo: v² = 2 · 10 · ${f(hh)}.`], [`v = ${ms(vf)}.`]],
+      solucion: [[`Sin rozamiento, la energía potencial de arriba es la cinética de abajo, y la masa se cancela: v² = 2 · 10 · ${f(hh)}.`], [`Al sacar la raíz, v = ${ms(vf)}.`]],
       _datos: { h: hh },
     };
   }
@@ -350,11 +350,11 @@
       enunciado: [`Un carrito de montaña rusa pasa por un punto a ${ms(v0)} y baja, sin rozamiento, hasta otro punto ${mt(dh)} más abajo.`],
       pregunta: ['¿Con qué rapidez pasa por ese punto?'], datos: [D.conserva, D.epg, D.ec], correcta: vf, fmt: ms,
       errores: [
-        e('CE-SIN-V0', Math.sqrt(2 * G * dh), x => `Bien la bajada. Pero ya traía rapidez; sin su energía sale ${x}.`),
-        e('CE-SUMA-V', v0 + Math.sqrt(2 * G * dh), x => `Bien las dos partes. Pero se suman energías, no rapideces; así sale ${x}.`),
-        e('TE-SIN-DOS', Math.sqrt(v0 * v0 + G * dh), x => `Bien sumar lo que traía. Pero la bajada aporta 2 · g · h a v²; así sale ${x}.`),
+        e('CE-SIN-V0', Math.sqrt(2 * G * dh), x => `Lo que gana en la bajada está bien, pero el carrito ya traía rapidez, y esa energía cinética se suma. Sin ella sale ${x}.`),
+        e('CE-SUMA-V', v0 + Math.sqrt(2 * G * dh), x => `Las dos partes están bien, pero sumaste rapideces, y así sale ${x}. Lo que se suma son energías, por eso se suman los cuadrados: v² = v₀² + 2 · g · h.`),
+        e('TE-SIN-DOS', Math.sqrt(v0 * v0 + G * dh), x => `Sumar lo que traía está bien, pero la bajada aporta 2 · g · h a v², no solo g · h. Así sale ${x}; ese 2 viene del ½ de la energía cinética.`),
       ],
-      solucion: [[`Por kilo: v² = ${v0}² + 2 · 10 · ${f(dh)} = ${f(vf * vf)}.`], [`v = ${ms(vf)}.`]],
+      solucion: [[`La energía mecánica no cambia; por cada kilo, a la cinética que traía se suma lo que gana al bajar: v² = ${v0}² + 2 · 10 · ${f(dh)} = ${f(vf * vf)}.`], [`Al sacar la raíz, v = ${ms(vf)}.`]],
       _datos: { v0, dh },
     };
   }
@@ -365,12 +365,12 @@
       enunciado: [`Cuelgas un bloque de ${m} kg de un resorte de ${k} N/m que está en su largo natural, y lo sueltas desde el reposo.`],
       pregunta: ['¿Cuánto se estira el resorte como máximo?'], datos: [D.conserva, D.epg, D.epe], correcta: x, fmt: mt,
       errores: [
-        e('CE-EQUILIBRIO', m * G / k, x2 => `Bien, ahí se quedaría quieto: ${x2}. Pero suelto, pasa de largo hasta el doble.`),
-        e('EP-SIN-MEDIO', m * G / (2 * k), x2 => `Bien igualar las energías. Pero el ½ va con el resorte, no con el peso; así sale ${x2}.`),
-        e('EP-SIN-G', 2 * m / k, x2 => `Bien el planteo. Pero lo que baja aporta m · g · x; sin g sale ${x2}.`),
-        e('EP-RAIZ', Math.sqrt(2 * m * G / k), x2 => `Bien igualar las energías. Pero se cancela una x de cada lado, no se saca raíz; así sale ${x2}.`),
+        e('CE-EQUILIBRIO', m * G / k, x2 => `Es cierto que en ${x2} el resorte sostiene el peso y el bloque se quedaría quieto si lo bajaras despacio. Suelto, llega ahí con rapidez y pasa de largo, hasta el doble.`),
+        e('EP-SIN-MEDIO', m * G / (2 * k), x2 => `Igualar las energías está bien, pero el ½ quedó en el lado del peso, y así sale ${x2}. El ½ es de la energía del resorte; lo que baja el bloque da m · g · x.`),
+        e('EP-SIN-G', 2 * m / k, x2 => `El planteo va bien, pero lo que baja el bloque aporta m · g · x, y faltó g. Sin g sale ${x2}.`),
+        e('EP-RAIZ', Math.sqrt(2 * m * G / k), x2 => `Igualar las energías está bien, pero en m · g · x = ½ · k · x² se cancela una x de cada lado, y no hace falta raíz. Con la raíz sale ${x2}.`),
       ],
-      solucion: [[`Abajo del todo se detiene: ${m} · 10 · x = ½ · ${k} · x².`], [`x = ${mt(x)}.`]],
+      solucion: [[`En el punto más bajo se detiene, así que lo que perdió de energía potencial quedó en el resorte: ${m} · 10 · x = ½ · ${k} · x².`], [`Se cancela una x de cada lado y queda x = ${mt(x)}.`]],
       _datos: { m, k },
     };
   }
@@ -384,11 +384,11 @@
       enunciado: [`${cosa} de ${m} kg baja desde ${mt(hh)} de alto, partiendo del reposo, y el rozamiento convierte ${J(Q)} en calor.`],
       pregunta: ['¿Con qué energía cinética llega abajo?'], datos: [D.balance, D.calor, D.epg], correcta: E - Q, fmt: J,
       errores: [
-        e('CE-ROCE', E, x => `Bien la energía de arriba, ${x}. Así llegaría sin rozamiento; aquí una parte se volvió calor.`),
-        e('W14', E + Q, x => `Bien juntar las dos. Pero el calor sale de la misma energía: se resta; sumando sale ${x}.`),
-        e('RZ-CALOR', Q, x => `Bien el calor, ${x}. Pero esa es la parte que se fue, no la que llega como movimiento.`),
+        e('CE-ROCE', E, x => `La energía de arriba, ${x}, está bien, pero así llegaría si no hubiera rozamiento. Aquí una parte se volvió calor en el camino y no llega como movimiento.`),
+        e('W14', E + Q, x => `Juntar las dos energías está bien, pero el calor no es energía extra: sale de la misma energía de arriba, así que se resta. Sumándolo sale ${x}.`),
+        e('RZ-CALOR', Q, x => `El calor, ${x}, está bien, pero esa es la parte que se fue. La que llega como movimiento es lo que queda de la energía de arriba al restarle ese calor.`),
       ],
-      solucion: [[`Arriba: ${m} · 10 · ${f(hh)} = ${J(E)}.`], [`Abajo llega E_C = ${f(E)} − ${f(Q)} = ${J(E - Q)}.`]],
+      solucion: [[`Arriba, quieto, tiene ${m} · 10 · ${f(hh)} = ${J(E)} de energía potencial.`], [`El calor sale de esa misma energía, así que abajo llega E_C = ${f(E)} − ${f(Q)} = ${J(E - Q)}.`]],
       _datos: { m, h: hh, Q },
     };
   }
@@ -401,11 +401,11 @@
       enunciado: [`Una pelota se suelta desde ${mt(H)} y en cada bote pierde el ${p} % de su energía.`],
       pregunta: [`¿Hasta qué altura sube después del ${cual} bote?`], datos: [D.pierde, D.epg], correcta: hh, fmt: mt,
       errores: [
-        e('RZ-LINEAL', malas[0], x => `Bien la pérdida de cada bote. Pero cada ${p} % es de lo que traía, no del comienzo; así sale ${x}.`),
-        e(n >= 2 ? 'RZ-UNO' : 'RZ-PIERDE', malas[1], x => (n >= 2 ? `Bien un bote, ${x}. Pero hay que repetirlo en cada bote.` : `Bien el porcentaje. Pero ${x} es lo que pierde, no lo que le queda.`)),
-        e('RZ-TRAMO', malas[2], x => `Bien multiplicar por lo que queda. Pero pierde en cada bote, no al bajar y al subir; así sale ${x}.`),
+        e('RZ-LINEAL', malas[0], x => `La pérdida de cada bote está bien, pero cada ${p} % se calcula sobre lo que traía en ese bote, no sobre la altura del comienzo. Restando siempre lo mismo sale ${x}.`),
+        e(n >= 2 ? 'RZ-UNO' : 'RZ-PIERDE', malas[1], x => (n >= 2 ? `Un bote está bien calculado, ${x}, pero hay más de uno, y en cada bote se vuelve a perder la misma fracción de lo que queda.` : `El porcentaje está bien usado, pero ${x} es la parte de la altura que pierde, no la que le queda después del bote.`)),
+        e('RZ-TRAMO', malas[2], x => `Multiplicar por lo que queda está bien, pero la pelota pierde energía en cada bote, no en cada bajada y en cada subida. Contando el doble de pérdidas sale ${x}.`),
       ],
-      solucion: [[`En cada bote le queda el ${100 - p} % de la energía, y la altura va con ella.`], [`h = ${f(H)}${` · ${f(q)}`.repeat(n)} = ${mt(hh)}.`]],
+      solucion: [[`En cada bote le queda el ${100 - p} % de la energía que traía, y como en lo alto toda es potencial, la altura queda en la misma fracción.`], [`h = ${f(H)}${` · ${f(q)}`.repeat(n)} = ${mt(hh)}.`]],
       _datos: { H, p, n },
     };
   }
@@ -417,11 +417,11 @@
       enunciado: [`Una caja baja desde el reposo por una rampa de 37° y ${mt(hh)} de alto, con μ_k = ${f(mu)}.`],
       pregunta: ['¿Con qué rapidez llega abajo?'], datos: [D.balance, D.rampa, D.trig, D.cin], correcta: vf, fmt: ms,
       errores: [
-        e('CE-ROCE', M.rapidez(hh, 0, 0, G), x => `Bien la energía de arriba. Así sería sin rozamiento; aquí la rampa le quita una parte. Sale ${x}.`),
-        e('RZ-NMG', Math.sqrt(2 * G * hh - 2 * mu * G * hh / 0.6), x => `Bien restar el rozamiento. Pero en la rampa la normal es m · g · cos 37°; con el peso entero sale ${x}.`),
-        e('CE-SIN-RAIZ', vf * vf, x => `Bien el balance. Pero eso es v²; sin la raíz sale ${x}.`),
+        e('CE-ROCE', M.rapidez(hh, 0, 0, G), x => `La energía de arriba está bien, pero así sería sin rozamiento, y sale ${x}. Aquí la rampa áspera le quita una parte en el camino.`),
+        e('RZ-NMG', Math.sqrt(2 * G * hh - 2 * mu * G * hh / 0.6), x => `Restar el rozamiento está bien, pero en la rampa el peso se reparte y la normal es solo m · g · cos 37°. Con la normal igual al peso sale ${x}.`),
+        e('CE-SIN-RAIZ', vf * vf, x => `El balance de energía está bien, pero al despejar queda v², la rapidez al cuadrado. Sin la raíz sale ${x}.`),
       ],
-      solucion: [[`Por kilo: arriba ${f(G * hh)} J; el rozamiento quita ${f(mu)} · 8 · ${f(hh / 0.6)} = ${J(mu * 8 * hh / 0.6)}.`], [`½ · v² = ${f(vf * vf / 2)}: v = ${ms(vf)}.`]],
+      solucion: [[`Por kilo, arriba hay ${f(G * hh)} J. La normal es 10 · cos 37° = 8 N y la rampa mide ${f(hh / 0.6)} m, así que el rozamiento quita ${f(mu)} · 8 · ${f(hh / 0.6)} = ${J(mu * 8 * hh / 0.6)}.`], [`Lo que queda es la cinética de abajo: ½ · v² = ${f(vf * vf / 2)}, y v = ${ms(vf)}.`]],
       _datos: { h: hh, mu },
     };
   }
@@ -434,12 +434,12 @@
       enunciado: [`${cosa} sube ${m} kg a ${mt(hh)} de altura en ${t} ${min ? (t === 1 ? 'minuto' : 'minutos') : 's'}, a rapidez constante.`],
       pregunta: ['¿Qué potencia útil desarrolla?'], datos: [D.potencia, D.peso, ...(min ? ['1 min = 60 s'] : [])], correcta: r.Putil, fmt: W_,
       errores: [
-        e('W15', r.W, x => `Bien el trabajo, ${x} en número. Pero la potencia lo reparte entre los segundos.`),
-        e('PO-SIN-G', m * hh / ts, x => `Bien dividir entre el tiempo. Pero el trabajo es el peso por la altura; sin g sale ${x}.`),
-        min ? e('PO-MIN', r.W / t, x => `Bien el trabajo entre el tiempo. Pero el tiempo va en segundos; en minutos sale ${x}.`)
-          : e('PO-FUERZA', m * G, x => `Bien el peso de la carga, ${x} en número. Pero esa es una fuerza; la potencia es trabajo por segundo.`),
+        e('W15', r.W, x => `El trabajo está bien, pero ${x} son en realidad joules, no watts. La potencia reparte ese trabajo entre los segundos que tarda: falta dividir entre el tiempo.`),
+        e('PO-SIN-G', m * hh / ts, x => `Dividir entre el tiempo está bien, pero el trabajo es el peso por la altura, y el peso es m · g. Sin g sale ${x}.`),
+        min ? e('PO-MIN', r.W / t, x => `Dividir el trabajo entre el tiempo está bien, pero un watt es un joule por segundo, así que el tiempo va en segundos. Con minutos sale ${x}.`)
+          : e('PO-FUERZA', m * G, x => `El peso de la carga está bien, pero ${x} es en realidad esa fuerza, en newtons. La potencia es trabajo por segundo: falta multiplicar por la altura y dividir entre el tiempo.`),
       ],
-      solucion: [[`W = ${m} · 10 · ${f(hh)} = ${J(r.W)}, en ${ts} s.`], [`P = ${f(r.W)} / ${ts} = ${W_(r.Putil)}.`]],
+      solucion: [[`A rapidez constante jala lo que pesa la carga, así que el trabajo es W = ${m} · 10 · ${f(hh)} = ${J(r.W)}, en ${ts} s.`], [`La potencia reparte ese trabajo entre los segundos: P = ${f(r.W)} / ${ts} = ${W_(r.Putil)}.`]],
       _datos: { m, h: hh, t, min },
     };
   }
@@ -450,12 +450,12 @@
       enunciado: [`${cosa} con una eficiencia del ${f(ef * 100)} % entrega ${W_(Pu)} útiles.`],
       pregunta: ['¿Qué potencia consume?'], datos: [D.efic], correcta: Pc, fmt: W_,
       errores: [
-        e('PO-EFIC', Pu * ef, x => `Bien usar la eficiencia. Pero lo consumido es más que lo útil: se divide; multiplicando sale ${x}.`),
-        e('PO-IGNORA', Pu, x => `Bien, ${x} es lo que entrega. Pero consume más, porque pierde una parte.`),
-        e('PO-SUMA', Pu * (2 - ef), x => `Bien que consume más. Pero lo perdido es una fracción de lo consumido, no de lo útil; así sale ${x}.`),
-        e('PO-PIERDE', Pu / (1 - ef), x => `Bien dividir lo útil. Pero entre la eficiencia, no entre lo que pierde; así sale ${x}.`),
+        e('PO-EFIC', Pu * ef, x => `Usar la eficiencia está bien, pero lo consumido siempre es más que lo útil, así que se divide entre ella. Multiplicando sale ${x}, menos de lo que entrega.`),
+        e('PO-IGNORA', Pu, x => `Es cierto que ${x} es lo que entrega, pero la máquina consume más que eso, porque una parte de lo que recibe se pierde como calor.`),
+        e('PO-SUMA', Pu * (2 - ef), x => `Es cierto que consume más, pero lo que pierde es una fracción de lo consumido, no de lo útil. Sumándole ese porcentaje a lo útil sale ${x}.`),
+        e('PO-PIERDE', Pu / (1 - ef), x => `Dividir lo útil está bien, pero entre la eficiencia, que es lo que aprovecha, y no entre lo que pierde. Así sale ${x}.`),
       ],
-      solucion: [['Lo útil entre la eficiencia:'], [`P_consumida = ${f(Pu)} / ${f(ef)} = ${W_(Pc)}.`]],
+      solucion: [['La eficiencia es lo útil entre lo consumido, así que lo consumido es lo útil entre la eficiencia.'], [`P_consumida = ${f(Pu)} / ${f(ef)} = ${W_(Pc)}, más de lo que entrega, como debe ser.`]],
       _datos: { Pu, ef },
     };
   }
@@ -466,11 +466,11 @@
       enunciado: [`Un tractor con su remolque suma ${m} kg y desarrolla ${Pk} kW útiles. Sube una cuesta de 37° con μ_k = ${f(mu)}, a rapidez constante.`],
       pregunta: ['¿Con qué rapidez sube?'], datos: [D.fv, D.constante, D.cuesta, D.rampa, D.cin, D.trig, D.kw], correcta: vf, fmt: ms,
       errores: [
-        e('PO-SIN-ROCE', Pk * 1000 / (m * G * 0.6), x => `Bien el peso a lo largo de la cuesta. Pero falta el rozamiento; sin él sale ${x}.`),
-        e('PO-SIN-PESO', Pk * 1000 / (m * G * mu * 0.8), x => `Bien el rozamiento. Pero en la cuesta el peso también tira hacia abajo; sin él sale ${x}.`),
-        e('N-MG', Pk * 1000 / (m * G * (0.6 + mu)), x => `Bien sumar las dos. Pero en la cuesta la normal es m · g · cos 37°; con el peso entero sale ${x}.`),
+        e('PO-SIN-ROCE', Pk * 1000 / (m * G * 0.6), x => `La parte del peso a lo largo de la cuesta está bien, pero falta el rozamiento, que también frena y el motor también vence. Sin él sale ${x}.`),
+        e('PO-SIN-PESO', Pk * 1000 / (m * G * mu * 0.8), x => `El rozamiento está bien, pero en la cuesta una parte del peso también tira hacia abajo, y el motor tiene que vencerla. Sin ella sale ${x}.`),
+        e('N-MG', Pk * 1000 / (m * G * (0.6 + mu)), x => `Sumar las dos fuerzas está bien, pero en la cuesta la normal es m · g · cos 37°, no el peso entero. Con el peso entero sale ${x}.`),
       ],
-      solucion: [['El motor vence ', Ff(`F = ${m * G} · 0,6 + ${f(mu)} · ${m * G} · 0,8 = ${nw(Fv)}`), '.'], [`v = ${f(Pk * 1000)} / ${f(Fv)} = ${ms(vf)}.`]],
+      solucion: [['A rapidez constante, el motor vence la parte del peso a lo largo de la cuesta y el rozamiento: ', Ff(`F = ${m * G} · 0,6 + ${f(mu)} · ${m * G} · 0,8 = ${nw(Fv)}`), '.'], [`De P = F · v se despeja la rapidez: v = ${f(Pk * 1000)} / ${f(Fv)} = ${ms(vf)}.`]],
       _datos: { m, mu, P: Pk },
     };
   }

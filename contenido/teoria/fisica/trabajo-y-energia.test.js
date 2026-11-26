@@ -309,3 +309,8 @@ test('lector en frío: niveles sin «1.er piso» ambiguo, cada h = 0 con su nomb
   const col = def.ideas[3].lee.tarjetas[0].dibujo.datos.textos.map(t => t.texto);
   assert.ok(col.includes('aquí, a 2,4 m') && !col.some(t => /^h = /.test(t)), 'la columna dice la altura de ahora');
 });
+test('verificación 26 nov: la Predice de los toboganes no afirma que el recto llegue antes (con el curvo más empinado al empezar, suele llegar antes el curvo)', () => {
+  const o = def.ideas[3].predice.opciones.find(x => x.error === 'CE-CAMINO');
+  assert.doesNotMatch(o.siFuera, /llega(r)? antes|hacerlo llegar antes/i);
+  assert.match(o.siFuera, /rapidez abajo, no cuánto tarda/);
+});

@@ -144,7 +144,7 @@
       errores.splice(2, 0, h('EP-sin-g', mu * m * vs / 1000, `Tomaste μ·m = ${f(mu * m)} como el rozamiento, sin multiplicar por g. El rozamiento es μ·m·g = ${f(F)} N.`));
     }
     const solucion = [
-      ['Rapidez en m/s: ', v('v', `v = ${vk}/3,6 = ${f(vs)} m/s`), '.'],
+      ['En P = F·v la rapidez va en m/s, así que primero se convierte: ', v('v', `v = ${vk}/3,6 = ${f(vs)} m/s`), '.'],
       conMu ? ['A rapidez constante la fuerza neta es cero: la cuerda iguala al rozamiento, ', v('F', `F = μ·m·g = ${f(mu)} · ${f(m)} · 10 = ${f(F)} N`), '.']
         : ['La fuerza del cable es ', v('F', `F = ${f(F)} N`), ' (va en la misma dirección que el movimiento).'],
       [v('x', 'P'), ' = ', v('F', 'F'), '·', v('v', 'v'), ` = ${f(F)} · ${f(vs)} = ${f(F * vs)} W = `, v('x', `${f(correcta)} kW`), '.'],
@@ -202,7 +202,7 @@
       h('EP-seno-coseno', Pw / (r.m * G * r.c + r.mu * r.m * G * r.s), 'Cambiaste seno y coseno. La parte del peso a lo largo del camino es m·g·sen θ y la normal es m·g·cos θ.'),
     ];
     const solucion = [
-      ['Fuerzas que se oponen: ', v('R', `m·g·sen ${r.ang}° = ${f(r.Fp)} N`), ' y ', v('R', `μ·m·g·cos ${r.ang}° = ${f(r.Fr)} N`), `. A rapidez constante, el cable jala con ${f(Fm)} N.`],
+      ['Al subir se oponen dos fuerzas, la parte del peso a lo largo del camino y el rozamiento: ', v('R', `m·g·sen ${r.ang}° = ${f(r.Fp)} N`), ' y ', v('R', `μ·m·g·cos ${r.ang}° = ${f(r.Fr)} N`), `. A rapidez constante, el cable jala con ${f(Fm)} N.`],
       ['De P = F·v: ', v('x', 'v'), ' = ', v('F', 'P'), `/F = ${f(Pw)}/${f(Fm)} ${exacto ? '=' : '≈'} `, v('x', `${f(correcta)} m/s`), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, unidad: 'm/s', variables: { ...VFV, F: { nombre: 'potencia', color: 'o' } }, enunciado, pregunta, solucion,
@@ -226,7 +226,7 @@
       u('U1-kmh', eta * Pc * 1000 / vk, `Dividiste entre la rapidez en km/h. En P = F·v va en m/s: ${vk} km/h = ${f(vs)} m/s.`),
     ];
     const solucion = [
-      ['Potencia útil: ', v('F', `P = ${f(eta)} · ${f(Pc)} kW = ${f(eta * Pc)} kW = ${f(eta * Pc * 1000)} W`), '. Rapidez del instante: ', v('v', `${vk}/3,6 = ${f(vs)} m/s`), '.'],
+      ['Solo la potencia útil mueve el auto, y es el rendimiento por lo que consume: ', v('F', `P = ${f(eta)} · ${f(Pc)} kW = ${f(eta * Pc)} kW = ${f(eta * Pc * 1000)} W`), '. La rapidez de ese instante, en m/s, es ', v('v', `${vk}/3,6 = ${f(vs)} m/s`), '.'],
       ['P = F·v vale en cada instante, con la rapidez de ese instante: ', v('x', 'F'), ' = ', v('F', 'P'), '/', v('v', 'v'), ` = ${f(eta * Pc * 1000)}/${f(vs)} = `, v('x', `${f(correcta)} N`), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, unidad: 'N', variables: { ...VFV, F: { nombre: 'potencia', color: 'o' } }, enunciado, pregunta, solucion,
@@ -295,8 +295,8 @@
     if (!limpio(correcta)) return null;
     const pregunta = ['¿Qué ', v('x', 'potencia media'), ' desarrolla contra su peso?'];
     const solucion = [
-      [conEsc ? `Altura que gana: ${datos.escalones} · ${datos.e} cm = ` : 'Altura que gana (la vertical, no el largo de la rampa): ', v('hh', `h = ${f(H)} m`), '.'],
-      ['Trabajo contra el peso: ', v('m', 'm'), '·g·', v('hh', 'h'), ` = ${f(m)} · 10 · ${f(H)} = ${f(m * G * H)} J.`],
+      [conEsc ? `Contra el peso cuenta la altura que gana: ${datos.escalones} · ${datos.e} cm = ` : 'Contra el peso cuenta la altura que gana, que es la vertical y no el largo de la rampa: ', v('hh', `h = ${f(H)} m`), '.'],
+      ['El trabajo contra el peso es ', v('m', 'm'), '·g·', v('hh', 'h'), ` = ${f(m)} · 10 · ${f(H)} = ${f(m * G * H)} J, y la potencia lo reparte entre los segundos.`],
       [v('x', 'P'), ' = W/', v('t', 't'), ` = ${f(m * G * H)}/${f(ts)} = `, v('x', `${f(correcta)} W`), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, unidad: 'W', variables: VPE, enunciado, pregunta, solucion, datos });
@@ -329,7 +329,7 @@
         u('U3-litros', Pu * 10, `Pasaste litros a metros cúbicos dividiendo entre 100. Un metro cúbico tiene 1000 litros; más simple: 1 L de agua es 1 kg.`),
         h('EP-sin-g', mt * H, 'Usaste la masa por segundo sin multiplicar por g. La bomba vence el peso del agua: P = (m/t)·g·h.'),
       ];
-      solucion = [masa, ...(surtidor ? [] : [['Altura que sube el agua: ', v('hh', `${f(prof)} + ${f(H - prof)} = ${f(H)} m`), '.']]), [v('x', 'P'), ' = (m/t)·g·', v('hh', 'h'), ` = ${f(mt)} · 10 · ${f(H)} = `, v('x', `${f(correcta)} W`), '.']];
+      solucion = [masa, ...(surtidor ? [] : [['El agua sube desde el fondo del pozo hasta el tanque: ', v('hh', `${f(prof)} + ${f(H - prof)} = ${f(H)} m`), '.']]), [v('x', 'P'), ' = (m/t)·g·', v('hh', 'h'), ` = ${f(mt)} · 10 · ${f(H)} = `, v('x', `${f(correcta)} W`), '.']];
       datos = { tipo: 'bomba', sub, Q, h: H, contexto: surtidor ? 'surtidor' : 'pozo', profundidad: prof };
     } else {
       const p = rng.elegir([0.2, 0.25, 0.4, 0.5]), eta = 1 - p, Pin = Pu / eta;
@@ -349,7 +349,7 @@
         u('U6-minutos', Pin * 60 / conv, `Usaste los ${f(Q)} litros de un minuto como si pasaran en un segundo: pasan ${f(mt)} kg por segundo.`),
       ];
       solucion = [masa,
-        ['Potencia útil: (m/t)·g·', v('hh', 'h'), ` = ${f(mt)} · 10 · ${f(H)} = ${f(Pu)} W.`],
+        ['La potencia útil es la energía que recibe el agua en cada segundo: (m/t)·g·', v('hh', 'h'), ` = ${f(mt)} · 10 · ${f(H)} = ${f(Pu)} W.`],
         ['Si se pierde el ', v('e', pct(p)), ', lo útil es el ', v('e', `${pct(eta)} (η = ${f(eta)})`), ' de lo consumido: ', v('x', 'P consumida'), ` = ${f(Pu)}/${f(eta)} = ${f(Pin)} W`,
           hp ? [' = ', v('x', `${f(Pin)}/746 ≈ ${f(correcta)} HP`), '.'] : [' = ', v('x', `${f(correcta)} kW`), '.']].flat(),
       ];
@@ -386,7 +386,7 @@
     for (let j = 0; j < T; j++) tramos.push(f(M + (n - j * k) * mp));
     const solucion = [
       [`Hay ${T} tramos de un piso. En cada uno el motor vence el peso de lo que va dentro: la cabina más la `, v('c', 'carga de ese tramo'), '.'],
-      [`Masas por tramo: ${tramos.join(' kg, ')} kg.`],
+      [`Así, las masas que sube en cada tramo son ${tramos.join(' kg, ')} kg.`],
       [v('x', 'W'), ' = (', tramos.join(' + '), ') · 10 · ', v('hh', f(hp)), ` = ${f(W)} J = `, v('x', `${f(correcta)} kJ`), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, unidad: 'kJ', variables: VAR, enunciado, pregunta, solucion,
@@ -478,7 +478,7 @@
       errores.splice(1, 0, u('PR3-medio', Math.sqrt(W / m), `Te faltó el ½ de la energía cinética: W = ½·m·v², así que v = √(2W/m).`));
     }
     const solucion = [
-      ['Tramo de cuerda entre la polea y el collarín: al inicio ', v('L', `√(${f(b)}² + ${f(x1)}²) = ${f(L1)} m`), '; al final ', v('L', x2 === 0 ? `${f(L2)} m` : `√(${f(b)}² + ${f(x2)}²) = ${f(L2)} m`), '.'],
+      ['El tramo de cuerda entre la polea y el collarín mide al inicio ', v('L', `√(${f(b)}² + ${f(x1)}²) = ${f(L1)} m`), ' y al final ', v('L', x2 === 0 ? `${f(L2)} m` : `√(${f(b)}² + ${f(x2)}²) = ${f(L2)} m`), '.'],
       [`El extremo libre baja lo que se acorta ese tramo: ${f(L1)} − ${f(L2)} = ${f(dL)} m (no los `, v('dx', `${f(x1 - x2)} m`), ' que avanza el collarín).'],
       sub === 'trabajo'
         ? [v('x', 'W'), ' = ', v('F', 'F'), ` · ${f(dL)} = `, v('x', `${f(correcta)} J`), '.']

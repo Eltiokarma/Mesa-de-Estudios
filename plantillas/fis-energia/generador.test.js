@@ -67,7 +67,7 @@ test('tipos por idea: las seis ideas de la unidad, cada tipo con su nivel y todo
   }
 });
 
-test('cada error trae su código, su respaldo y su fuente; la explicación empieza por lo bien hecho y muestra su valor', () => {
+test('cada error trae su código, su respaldo y su fuente; la explicación empieza por lo bien hecho, en una oración, y muestra su valor', () => {
   const ids = new Set();
   for (let s = 0; s < 1500; s++) {
     const p = gen.generar(s);
@@ -76,7 +76,9 @@ test('cada error trae su código, su respaldo y su fuente; la explicación empie
       ids.add(e.id);
       assert.equal(e.respaldo, { W1: 'documentado', W14: 'documentado', W15: 'parcial' }[e.id] || 'hipotesis', `semilla ${s}: ${e.id}`);
       assert.equal(e.fuente, ENE);
-      assert.match(e.explicacion, /^Bien/, `semilla ${s}: ${e.explicacion}`);
+      // Empieza por lo bien hecho con una oración completa («… está bien, pero …», «Es cierto que …»), ya no con «Bien X.»
+      assert.match(e.explicacion, /\bbien\b|cierto|comienzo/i, `semilla ${s}: ${e.explicacion}`);
+      assert.ok(!/^Bien\b/.test(e.explicacion) && !/_/.test(e.explicacion), `semilla ${s}: telegrama o «_» crudo: ${e.explicacion}`);
       assert.ok(e.explicacion.includes(a.texto) || e.explicacion.includes(a.texto.replace(/ [A-Za-z/]+$/, '')), `semilla ${s}: «${e.explicacion}» no muestra ${a.texto}`);
       assert.ok(!/\b(alternativa|opción|letra) [A-E]\b|\bla [A-E]\b/.test(e.explicacion), `semilla ${s}: nombra una letra`);
     }
