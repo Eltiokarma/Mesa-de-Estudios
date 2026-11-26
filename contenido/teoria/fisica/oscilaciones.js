@@ -10,13 +10,13 @@
 })(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(Math.abs(n) < 1e-10 ? 0 : n, d);
-  const COLORES = { x: 'i', A: 'i', L: 'i', d: 'i', v: 'o', a: 'd', F: 'd', t: 'h', T: 'h', f: 'h', omega: 'h', phi: 'h', theta: 'h', g: 'h', m: 'f', k: 'f', N: 'f', EC: 'o', EPE: 'i', EM: 'f' };
+  const COLORES = { x: 'i', A: 'i', L: 'i', d: 'i', delta: 'i', v: 'o', a: 'd', F: 'd', t: 'h', T: 'h', f: 'h', omega: 'h', phi: 'h', theta: 'h', g: 'h', m: 'f', k: 'f', N: 'f', EC: 'o', EPE: 'i', EM: 'f' };
   const V = (clave, texto) => ({ v: `c-${COLORES[clave]}`, t: String(texto), m: clave });
   const sub = (base, indice) => ({ sub: [base, indice] });
   const sup = (base, potencia = '2') => ({ sup: [base, potencia] });
   const frac = (arriba, abajo) => ({ frac: [arriba, abajo] });
   const raiz = contenido => ({ raiz: contenido });
-  const S = Object.fromEntries(Object.keys(COLORES).map(k => [k, V(k, { omega: 'ω', phi: 'φ', theta: 'θ' }[k] || k)]));
+  const S = Object.fromEntries(Object.keys(COLORES).map(k => [k, V(k, { omega: 'ω', phi: 'φ', theta: 'θ', delta: 'δ' }[k] || k)]));
   S.EC = sub(V('EC', 'E'), 'C'); S.EPE = sub(V('EPE', 'E'), 'PE'); S.EM = sub(V('EM', 'E'), 'M');
   const Q = (clave, n, unidad = '', decimales = 2) => V(clave, `${f(n, decimales)}${unidad ? ` ${unidad}` : ''}`);
   const est = (datos, estado = {}) => ({ pieza: 'fis-estatica', datos, estado });
@@ -148,7 +148,7 @@
         case 'camino-tiempo':
           valor = 4 * p.A * p.dt / p.T; unidad = 'cm'; clave = 'd';
           enunciado = ['Un bloque parte del extremo derecho. Su amplitud es ', Q('A', p.A, 'cm'), ' y su período, ', Q('T', p.T, 's'), '. ¿Qué distancia recorre en ', Q('t', p.dt, 's'), '?'];
-          formula = ['recorrido = ciclos completos · 4 · ', S.A, ' + medio ciclo · 2 · ', S.A];
+          formula = [S.d, ' = 4 · ', S.A, ' · ', S.N, ' + 2 · ', S.A];
           cuenta = [Q('t', p.dt, 's'), ' = ', Q('N', Math.floor(p.dt / p.T)), ' · ', Q('T', p.T, 's'), ' + ', Q('t', p.T / 2, 's'), ';   ', S.d, ' = ', Q('N', Math.floor(p.dt / p.T)), ' · 4 · ', Q('A', p.A), ' + 2 · ', Q('A', p.A), ' = ', Q('d', valor, unidad)];
           sentido = 'Se cuentan ciclos completos y medios ciclos; no se supone que el bloque tenga rapidez constante.';
           malos = [valor / 2, p.A, -2 * p.A]; explicaciones = ['Cuenta solo dos amplitudes por ciclo.', 'Confunde recorrido con amplitud.', 'Confunde recorrido con desplazamiento.']; break;
@@ -187,7 +187,7 @@
       if (tipo === 'marcas') cuentas.push(paso('Dividimos el tiempo transcurrido entre el número de intervalos.', [S.T, ' = ', frac('tiempo transcurrido', 'número de llegadas − 1')]));
       cuentas.push(paso('Reemplazamos los datos y hacemos la cuenta.', cuenta));
       return { enunciado, datos, dibujo, pide: `Se pide ${({ T: 'el período', f: 'la frecuencia', A: 'la amplitud', d: 'la distancia recorrida', x: 'la posición con signo', t: 'el tiempo total', N: 'el número de ciclos' })[clave]}.`,
-        tengo, regla: paso('Relacionamos las cantidades según qué cuenta un ciclo completo.', formula), cuentas, sentido,
+        tengo, regla: paso(tipo === 'camino-tiempo' ? 'Sumamos el recorrido de los ciclos completos y el del medio ciclo final.' : 'Relacionamos las cantidades según qué cuenta un ciclo completo.', formula), cuentas, sentido,
         respuesta: [Q(clave, valor, unidad)], opciones: opciones(valor, errores, fmt), caso: ps,
         erroresEjemplo: errores.map((e, j) => `${fmt(e.valor)}: ${['cambia la operación', 'confunde el dato pedido', 'cuenta mal los intervalos'][j]}.`).join(' ') };
     };
@@ -259,10 +259,321 @@
     };
   })();
 
+  // Cambia: el punto de liberación. Permanece: masa y resorte horizontal.
+  // Progresa: separar fuerza, aceleración y velocidad. Se reserva: cambiar al lado izquierdo.
+  // Debe verse: eje, equilibrio, masa, rigidez y flechas con escalas comunes.
+  const idea2 = (() => {
+    const signo = n => n > 0 ? '+' : '';
+    const exacto = n => Math.abs(n - Math.round(n * 1000) / 1000) < 1e-9;
+    const igual = n => exacto(n) ? ' = ' : ' ≈ ';
+    const numero = (clave, n, u = '') => Q(clave, n, u, 3);
+    const par = (clave, n) => n < 0 ? ['(', numero(clave, n), ')'] : numero(clave, n);
+    const a1 = sub(S.a, '1'), a2 = sub(S.a, '2'), x1 = sub(S.x, '1'), x2 = sub(S.x, '2');
+    const m1 = sub(S.m, '1'), m2 = sub(S.m, '2'), k1 = sub(S.k, '1'), k2 = sub(S.k, '2');
+    const F1 = sub(S.F, '1');
+    const reglaBase = [S.F, ' = −', S.k, ' · ', S.x, '; ', S.a, ' = ', frac(S.F, S.m)];
+    const avanzados = new Set(['calibrada', 'masa-calibrada', 'masa-nueva', 'rigidez-nueva', 'dos-masas']);
+    const modelo = ['Carro horizontal sin rozamiento y resorte ideal.', 'La derecha es positiva; el equilibrio fija el origen.'];
+    function figuraFuerzas(xcm, o) {
+      const d = carrito(xcm, o);
+      for (const flecha of d.flechas) if (flecha.de[1] === 156) flecha.de[1] = 171;
+      for (const t of d.textos) if (t.y === 156 && /^a =/.test(t.texto)) t.y = 169;
+      for (const linea of d.lineas) if (linea.de[0] === 178 && linea.a[0] === 178) { linea.de[1] = 92; linea.a[1] = 144; }
+      return d;
+    }
+
+    function dosEstados(p, q, revelar = false) {
+      const objetos = [], lineas = [], textos = [], paredes = [], flechas = [];
+      for (const [j, c] of [p, q].entries()) {
+        const y = 83 + 138 * j, X = 178 + 4 * c.xcm;
+        objetos.push({ tipo: 'resorte', de: [22, y], a: [X - 18, y], vueltas: 8, ancho: 7 },
+          { tipo: 'caja', x: X, y: y + 24, w: 36, h: 36 });
+        paredes.push({ x: 22, y0: y - 30, y1: y + 24, lado: -1 });
+        lineas.push({ de: [12, y + 24], a: [308, y + 24] }, { de: [178, y - 31], a: [178, y + 37], discontinua: true });
+        textos.push({ x: 12, y: y - 65, texto: j ? 'Segundo estado' : 'Primer estado' },
+          { x: 12, y: y - 45, texto: `x = ${signo(c.xcm)}${f(c.xcm)} cm`, color: 'i' },
+          { x: 308, y: y - 45, texto: j && !revelar ? 'a = ?' : `a = ${signo(c.a)}${f(c.a)} m/s²`, color: j && !revelar ? undefined : 'd', ancla: 'end' },
+          { x: 178, y: y + 54, texto: 'Equilibrio', ancla: 'middle' });
+        if (!j || revelar) flechas.push({ de: [X, y - 12], ang: c.a > 0 ? 0 : 180, largo: Math.abs(c.a) * 7, color: 'd' });
+      }
+      return est({ alto: 288, objetos, lineas, paredes, textos, flechas,
+        alt: revelar ? 'Dos estados del mismo bloque. La aceleración cambia de signo al pasar al otro lado del equilibrio.' : 'Dos posiciones del mismo bloque, con la aceleración del primer estado y una incógnita en el segundo.' });
+    }
+
+    function caso(tipo, p) {
+      let valor, unidad = 'm/s²', clave = 'a', enunciado, regla = reglaBase, cuentas = [], malos = [];
+      const d = [...modelo], agregar = (op, v, corta, motivo) => malos.push({ op, valor: v, corta, motivo });
+      const dato = (k, n, u) => numero(k, n, u);
+      if (Object.keys(p).some(k => /cm$/.test(k))) d.push('1 m = 100 cm.');
+      if (p.gramos != null) d.push('1 kg = 1000 g.');
+      switch (tipo) {
+      case 'fuerza':
+        valor = -p.k * p.x; clave = 'F'; unidad = 'N';
+        enunciado = ['Un resorte de ', dato('k', p.k, 'N/m'), ' tiene al bloque en ', S.x, ' = ', dato('x', p.x, 'm'), '. ¿Qué fuerza horizontal ejerce sobre el bloque?'];
+        regla = [S.F, ' = −', S.k, ' · ', S.x];
+        cuentas.push(paso('Multiplicamos la rigidez por el desplazamiento y cambiamos el signo.', [S.F, ' = −', dato('k', p.k), ' · ', par('x', p.x), igual(valor), dato('F', valor, unidad)]));
+        agregar('signo', -valor, 'signo cambiado', 'falta el signo que indica el regreso');
+        agregar('doble', 2 * valor, 'duplicas la fuerza', 'cuentas dos veces la fuerza del único resorte');
+        agregar('media', valor / 2, 'das fuerza media', 'promedias con cero en vez de tomar este instante'); break;
+      case 'aceleracion':
+        valor = p.F / p.m;
+        enunciado = ['Un bloque de ', dato('m', p.m, 'kg'), ' recibe una fuerza horizontal neta de ', dato('F', p.F, 'N'), '. ¿Cuál es su aceleración con signo?'];
+        regla = [S.F, ' = ', S.m, ' · ', S.a, '; ', S.a, ' = ', frac(S.F, S.m)];
+        cuentas.push(paso('Dividimos la fuerza neta entre la masa del bloque.', [S.a, ' = ', frac(dato('F', p.F), dato('m', p.m)), igual(valor), dato('a', valor, unidad)]));
+        agregar('signo', -valor, 'inviertes el sentido', 'cambias el sentido de la fuerza neta');
+        agregar('producto', p.F * p.m, 'multiplicas por masa', 'multiplicas por la masa en vez de dividir');
+        agregar('sin-masa', p.F, 'omites la masa', 'das el valor de la fuerza como aceleración');
+        agregar('doble', 2 * valor, 'duplicas la fuerza', 'cuentas dos veces la fuerza neta'); break;
+      case 'rigidez':
+        valor = -p.F / p.x; clave = 'k'; unidad = 'N/m';
+        enunciado = ['Cuando el bloque está en ', S.x, ' = ', dato('x', p.x, 'm'), ', el resorte ejerce ', dato('F', p.F, 'N'), '. ¿Cuál es su constante elástica?'];
+        regla = [S.F, ' = −', S.k, ' · ', S.x, '; ', S.k, ' = ', frac(['−', S.F], S.x)];
+        cuentas.push(paso('Despejamos la constante elástica conservando el signo del desplazamiento.', [S.k, ' = ', frac(['−', par('F', p.F)], par('x', p.x)), igual(valor), dato('k', valor, unidad)]));
+        agregar('signo', -valor, 'rigidez negativa', 'omites el signo de la fuerza recuperadora');
+        agregar('doble', 2 * valor, 'duplicas la fuerza', 'cuentas dos veces la fuerza indicada');
+        agregar('mitad', valor / 2, 'duplicas el desplazamiento', 'usas el doble de la separación dada'); break;
+      case 'posicion':
+        valor = -p.F / p.k; clave = 'x'; unidad = 'm';
+        enunciado = ['Un resorte de ', dato('k', p.k, 'N/m'), ' ejerce ', dato('F', p.F, 'N'), ' sobre el bloque. ¿Cuál es su desplazamiento desde el equilibrio?'];
+        regla = [S.F, ' = −', S.k, ' · ', S.x, '; ', S.x, ' = ', frac(['−', S.F], S.k)];
+        cuentas.push(paso('Despejamos el desplazamiento; su signo debe ser contrario al de la fuerza.', [S.x, ' = ', frac(['−', par('F', p.F)], dato('k', p.k)), igual(valor), dato('x', valor, unidad)]));
+        agregar('signo', -valor, 'signo cambiado', 'ubicas el bloque en el sentido de la fuerza');
+        agregar('doble', 2 * valor, 'duplicas la fuerza', 'despejas usando dos veces la fuerza dada');
+        agregar('mitad', valor / 2, 'duplicas la rigidez', 'usas dos veces la constante elástica'); break;
+      case 'aceleracion-cm':
+      case 'aceleracion-gramos': {
+        const masa = p.m ?? p.gramos / 1000, x = p.xcm / 100;
+        valor = -p.k * x / masa;
+        enunciado = ['Un bloque de ', dato('m', p.m ?? p.gramos, p.m != null ? 'kg' : 'g'), ' está unido a un resorte de ', dato('k', p.k, 'N/m'), '. En ', S.x, ' = ', dato('x', p.xcm, 'cm'), ', ¿cuál es su aceleración?'];
+        const conversion = [S.x, ' = ', frac(dato('x', p.xcm), '100'), ' = ', dato('x', x, 'm')];
+        if (p.gramos != null) conversion.push('; ', S.m, ' = ', frac(dato('m', p.gramos), '1000'), ' = ', dato('m', masa, 'kg'));
+        cuentas.push(paso('Expresamos el desplazamiento en metros y la masa en kilogramos.', conversion));
+        cuentas.push(paso('Aplicamos la fuerza del resorte y la segunda ley.', [S.a, ' = ', frac(['−', dato('k', p.k), ' · ', par('x', x)], dato('m', masa)), igual(valor), dato('a', valor, unidad)]));
+        agregar('signo', -valor, 'signo cambiado', 'haces que la aceleración se aleje del equilibrio');
+        agregar('sin-masa', -p.k * x, 'omites la masa', 'das la fuerza como si fuera aceleración');
+        agregar('producto', -p.k * x * masa, 'multiplicas por masa', 'multiplicas la fuerza por la masa');
+        agregar('cm-diez', 10 * valor, 'conviertes entre diez', 'divides los centímetros entre diez y no entre cien');
+        agregar('doble', 2 * valor, 'duplicas la fuerza', 'cuentas dos veces la fuerza del resorte'); break;
+      }
+      case 'masa': {
+        const fuerza = -p.k * p.xcm / 100; valor = fuerza / p.a; clave = 'm'; unidad = 'kg';
+        enunciado = ['Un resorte de ', dato('k', p.k, 'N/m'), ' acelera al bloque a ', dato('a', p.a, 'm/s²'), ' cuando ', S.x, ' = ', dato('x', p.xcm, 'cm'), '. ¿Cuál es la masa del bloque?'];
+        cuentas.push(paso('Convertimos el desplazamiento y calculamos la fuerza del resorte.', [S.F, ' = −', dato('k', p.k), ' · ', frac(par('x', p.xcm), '100'), igual(fuerza), dato('F', fuerza, 'N')]));
+        cuentas.push(paso('Despejamos la masa dividiendo fuerza entre aceleración.', [S.m, ' = ', frac(S.F, S.a), ' = ', frac(par('F', fuerza), par('a', p.a)), igual(valor), dato('m', valor, unidad)]));
+        agregar('signo', -valor, 'masa negativa', 'cambias solo uno de los signos de la división');
+        agregar('doble', 2 * valor, 'duplicas la fuerza', 'cuentas dos veces la fuerza del resorte');
+        agregar('mitad', valor / 2, 'duplicas la aceleración', 'divides entre dos veces la aceleración dada'); break;
+      }
+      case 'comparacion':
+        valor = p.a1 * p.x2cm / p.x1cm;
+        enunciado = ['En un mismo MAS, ', a1, ' = ', dato('a', p.a1, 'm/s²'), ' cuando ', x1, ' = ', dato('x', p.x1cm, 'cm'), '. ¿Qué aceleración corresponde a ', x2, ' = ', dato('x', p.x2cm, 'cm'), '?'];
+        regla = [frac(a2, a1), ' = ', frac(x2, x1)];
+        cuentas.push(paso('La masa y la rigidez permanecen iguales en los dos estados.', [a2, ' = ', a1, ' · ', frac(x2, x1)]));
+        cuentas.push(paso('Conservamos los signos al comparar los dos desplazamientos.', [a2, ' = ', par('a', p.a1), ' · ', frac(par('x', p.x2cm), par('x', p.x1cm)), igual(valor), dato('a', valor, unidad)]));
+        agregar('signo', -valor, 'signo cambiado', 'cambias el signo de la aceleración calculada');
+        agregar('sin-cambio', p.a1, 'mantienes la aceleración', 'conservas la aceleración del primer estado');
+        agregar('inversa', p.a1 * p.x1cm / p.x2cm, 'inviertes la razón', 'inviertes los desplazamientos en la comparación');
+        agregar('cuadrado', p.a1 * (p.x2cm / p.x1cm) ** 2, 'elevas la razón', 'elevas al cuadrado la razón de posiciones'); break;
+      case 'posicion-cm': {
+        const fuerza = p.m * p.a; valor = -100 * fuerza / p.k; clave = 'x'; unidad = 'cm';
+        enunciado = ['Un bloque de ', dato('m', p.m, 'kg'), ' y un resorte de ', dato('k', p.k, 'N/m'), ' producen una aceleración de ', dato('a', p.a, 'm/s²'), '. ¿Cuál es el desplazamiento en centímetros?'];
+        cuentas.push(paso('Calculamos la fuerza que produce la aceleración indicada.', [S.F, ' = ', dato('m', p.m), ' · ', par('a', p.a), igual(fuerza), dato('F', fuerza, 'N')]));
+        cuentas.push(paso('Despejamos el desplazamiento y lo expresamos en centímetros.', [S.x, ' = ', frac(['−', par('F', fuerza)], dato('k', p.k)), ' · 100', igual(valor), dato('x', valor, unidad)]));
+        agregar('signo', -valor, 'signo cambiado', 'ubicas el bloque en el sentido de la aceleración');
+        agregar('doble', 2 * valor, 'duplicas la fuerza', 'despejas con dos veces la fuerza neta');
+        agregar('mitad', valor / 2, 'duplicas la rigidez', 'usas dos veces la constante elástica'); break;
+      }
+      case 'calibrada': {
+        const rigidez = -p.F1 * 100 / p.x1cm; valor = p.F1 * p.x2cm / (p.m * p.x1cm);
+        enunciado = ['Un bloque de ', dato('m', p.m, 'kg'), ' recibe ', dato('F', p.F1, 'N'), ' en ', x1, ' = ', dato('x', p.x1cm, 'cm'), '. Con el mismo resorte, ¿qué aceleración tendrá en ', x2, ' = ', dato('x', p.x2cm, 'cm'), '?'];
+        cuentas.push(paso('Reconstruimos la constante elástica con el primer estado.', [S.k, ' = ', frac(['−', par('F', p.F1)], frac(par('x', p.x1cm), '100')), igual(rigidez), dato('k', rigidez, 'N/m')]));
+        cuentas.push(paso('Calculamos la aceleración usando el nuevo desplazamiento.', [a2, ' = ', frac(['−', dato('k', rigidez), ' · ', frac(par('x', p.x2cm), '100')], dato('m', p.m)), igual(valor), dato('a', valor, unidad)]));
+        agregar('sin-posicion', p.F1 / p.m, 'mantienes la fuerza', 'usas la fuerza del primer estado');
+        agregar('signo', -valor, 'signo cambiado', 'inviertes el sentido de la aceleración');
+        agregar('posicion-inversa', p.F1 * p.x1cm / (p.m * p.x2cm), 'inviertes los desplazamientos', 'inviertes la razón entre los desplazamientos');
+        agregar('sin-masa', p.F1 * p.x2cm / p.x1cm, 'omites la masa', 'das la nueva fuerza como aceleración');
+        agregar('producto-masa', p.F1 * p.x2cm * p.m / p.x1cm, 'multiplicas por masa', 'multiplicas por la masa en vez de dividir'); break;
+      }
+      case 'masa-calibrada': {
+        const masa = p.F1 / p.a1; valor = -p.k * p.x2cm / (100 * masa);
+        enunciado = ['Una fuerza horizontal neta de ', dato('F', p.F1, 'N'), ' acelera un bloque a ', dato('a', p.a1, 'm/s²'), '. Unido a un resorte de ', dato('k', p.k, 'N/m'), ', ¿qué aceleración tiene en ', x2, ' = ', dato('x', p.x2cm, 'cm'), '?'];
+        cuentas.push(paso('La primera fuerza y su aceleración permiten hallar la masa.', [S.m, ' = ', frac(F1, a1), ' = ', frac(par('F', p.F1), par('a', p.a1)), igual(masa), dato('m', masa, 'kg')]));
+        cuentas.push(paso('Usamos esa masa con la fuerza del resorte en el nuevo estado.', [a2, ' = ', frac(['−', dato('k', p.k), ' · ', frac(par('x', p.x2cm), '100')], dato('m', masa)), igual(valor), dato('a', valor, unidad)]));
+        agregar('signo', -valor, 'signo cambiado', 'inviertes el sentido de la fuerza');
+        agregar('sin-cambio', p.a1, 'mantienes la aceleración', 'usas la aceleración del ensayo anterior');
+        agregar('masa-inversa', -p.k * p.x2cm * p.F1 / (100 * p.a1), 'inviertes la masa', 'inviertes fuerza y aceleración al hallar la masa');
+        agregar('sin-masa', -p.k * p.x2cm / 100, 'omites la masa', 'das la fuerza del resorte como aceleración');
+        agregar('doble', 2 * valor, 'duplicas la fuerza', 'cuentas dos veces la fuerza del resorte'); break;
+      }
+      case 'masa-nueva': {
+        const masa = -p.k * p.x1cm / (100 * p.a1); valor = p.a1 * p.x2cm / (p.x1cm * p.factorM);
+        enunciado = ['Un resorte de ', dato('k', p.k, 'N/m'), ' da ', a1, ' = ', dato('a', p.a1, 'm/s²'), ' en ', x1, ' = ', dato('x', p.x1cm, 'cm'), '. La masa se multiplica por ', dato('m', p.factorM), '. ¿Qué aceleración hay en ', x2, ' = ', dato('x', p.x2cm, 'cm'), '?'];
+        cuentas.push(paso('Hallamos la masa del primer ensayo mediante fuerza y aceleración.', [m1, ' = ', frac(['−', dato('k', p.k), ' · ', frac(par('x', p.x1cm), '100')], par('a', p.a1)), igual(masa), dato('m', masa, 'kg')]));
+        cuentas.push(paso('La nueva masa multiplica el denominador; el desplazamiento también cambia.', [a2, ' = ', frac(['−', dato('k', p.k), ' · ', frac(par('x', p.x2cm), '100')], [dato('m', p.factorM), ' · ', dato('m', masa)]), igual(valor), dato('a', valor, unidad)]));
+        agregar('sin-masa-nueva', p.a1 * p.x2cm / p.x1cm, 'ignoras masa nueva', 'conservas la masa del primer ensayo');
+        agregar('masa-directa', p.a1 * p.x2cm * p.factorM / p.x1cm, 'masa directamente proporcional', 'multiplicas por el cambio de masa');
+        agregar('sin-posicion', p.a1 / p.factorM, 'ignoras posición nueva', 'conservas el desplazamiento del primer ensayo');
+        agregar('posicion-inversa', p.a1 * p.x1cm / (p.x2cm * p.factorM), 'inviertes los desplazamientos', 'inviertes la razón de posiciones');
+        agregar('signo', -valor, 'signo cambiado', 'inviertes el sentido de la aceleración'); break;
+      }
+      case 'rigidez-nueva': {
+        const primero = -100 * p.m * p.a1 / p.k1; valor = primero / p.factorK; clave = 'x'; unidad = 'cm';
+        enunciado = ['Un bloque de ', dato('m', p.m, 'kg'), ' acelera a ', dato('a', p.a1, 'm/s²'), ' con rigidez ', dato('k', p.k1, 'N/m'), '. La rigidez se multiplica por ', dato('k', p.factorK), '. ¿Qué desplazamiento mantiene esa aceleración?'];
+        cuentas.push(paso('Hallamos el desplazamiento que correspondía al primer resorte.', [x1, ' = ', frac(['−', dato('m', p.m), ' · ', par('a', p.a1)], dato('k', p.k1)), ' · 100', igual(primero), dato('x', primero, 'cm')]));
+        cuentas.push(paso('La fuerza requerida es la misma; dividimos por el cambio de rigidez.', [x2, ' = ', frac(['−100 · ', dato('m', p.m), ' · ', par('a', p.a1)], [dato('k', p.k1), ' · ', dato('k', p.factorK)]), igual(valor), dato('x', valor, unidad)]));
+        agregar('sin-rigidez', primero, 'mantienes el desplazamiento', 'ignoras el cambio de rigidez');
+        agregar('rigidez-directa', primero * p.factorK, 'multiplicas por rigidez', 'multiplicas en vez de dividir por el cambio');
+        agregar('signo', -valor, 'signo cambiado', 'ubicas el bloque en el sentido de la aceleración');
+        agregar('masa-inversa', -100 * p.a1 / (p.m * p.k1 * p.factorK), 'inviertes la masa', 'divides entre la masa al hallar la fuerza');
+        agregar('doble', 2 * valor, 'duplicas la fuerza', 'usas dos veces la fuerza requerida'); break;
+      }
+      case 'dos-masas': {
+        const rigidez = -100 * p.m1 * p.a1 / p.x1cm; valor = p.a1 * p.m1 * p.x2cm / (p.m2 * p.x1cm);
+        enunciado = ['Con ', dato('m', p.m1, 'kg'), ', un resorte da ', dato('a', p.a1, 'm/s²'), ' en ', x1, ' = ', dato('x', p.x1cm, 'cm'), '. Se coloca otro bloque de ', dato('m', p.m2, 'kg'), '. ¿Qué aceleración tiene en ', x2, ' = ', dato('x', p.x2cm, 'cm'), '?'];
+        cuentas.push(paso('La primera masa y su aceleración determinan la fuerza y la rigidez.', [S.k, ' = ', frac(['−', dato('m', p.m1), ' · ', par('a', p.a1)], frac(par('x', p.x1cm), '100')), igual(rigidez), dato('k', rigidez, 'N/m')]));
+        cuentas.push(paso('Usamos la misma rigidez con el segundo bloque y su posición.', [a2, ' = ', frac(['−', dato('k', rigidez), ' · ', frac(par('x', p.x2cm), '100')], dato('m', p.m2)), igual(valor), dato('a', valor, unidad)]));
+        agregar('sin-masas', p.a1 * p.x2cm / p.x1cm, 'ignoras las masas', 'tratas los dos bloques como si tuvieran igual masa');
+        agregar('masas-inversas', p.a1 * p.m2 * p.x2cm / (p.m1 * p.x1cm), 'inviertes las masas', 'inviertes la razón entre las masas');
+        agregar('sin-posicion', p.a1 * p.m1 / p.m2, 'ignoras posición nueva', 'mantienes la posición del primer ensayo');
+        agregar('posicion-inversa', p.a1 * p.m1 * p.x1cm / (p.m2 * p.x2cm), 'inviertes los desplazamientos', 'inviertes la razón de posiciones');
+        agregar('signo', -valor, 'signo cambiado', 'inviertes el sentido de la aceleración'); break;
+      }
+      default: throw new Error('Caso de aceleración desconocido: ' + tipo);
+      }
+      const fmt = n => `${exacto(n) ? '' : '≈ '}${['a', 'F', 'x'].includes(clave) ? signo(n) : ''}${f(n, 3)} ${unidad}`;
+      const elegidos = [], vistos = new Set([fmt(valor)]), limite = avanzados.has(tipo) ? 4 : 3;
+      for (const e of malos) {
+        if (!Number.isFinite(e.valor) || Math.abs(e.valor - valor) < 1e-9 || vistos.has(fmt(e.valor))) continue;
+        const escala = Math.abs(e.valor / valor); if (escala > 20 || escala < 0.05) continue;
+        vistos.add(fmt(e.valor)); elegidos.push({ ...e, error: `OS-ACEL-${tipo}-${e.op}`, siFuera: `Bien: identificas las cantidades; ${e.motivo}. Sale ${fmt(e.valor)}.` });
+        if (elegidos.length === limite) break;
+      }
+      if (elegidos.length !== limite) throw new Error('Faltan distractores: ' + tipo + ' ' + JSON.stringify(p));
+      let dibujo;
+      if (tipo === 'comparacion') dibujo = dosEstados({ xcm: p.x1cm, a: p.a1 }, { xcm: p.x2cm });
+      else {
+        const xx = p.xcm ?? p.x2cm ?? (p.x != null ? 100 * p.x : null);
+        const rotulos = [], campos = [['m', 'kg'], ['k', 'N/m'], ['F', 'N'], ['a', 'm/s²']];
+        for (const [c, u] of campos) if (p[c] != null) rotulos.push({ x: 45, y: 45 + 17 * rotulos.length, texto: `${c} = ${f(p[c], 3)} ${u}`, color: COLORES[c] });
+        const datos = carrito(xx ?? 0, { rotuloX: xx != null, textos: rotulos, alt: 'El bloque y el resorte del problema. Solo se rotulan cantidades dadas; la magnitud pedida no está dibujada.' });
+        if (xx == null) {
+          datos.lineas = []; datos.textos = datos.textos.filter(t => t.texto !== 'Equilibrio');
+          datos.textos.push({ x: 160, y: 208, texto: 'Esquema sin escala; posición desconocida', ancla: 'middle' });
+        }
+        dibujo = est(datos);
+      }
+      const nombres = { k: ['k', 'N/m'], k1: ['k', 'N/m'], m: ['m', 'kg'], m1: ['m', 'kg'], m2: ['m', 'kg'], gramos: ['m', 'g'],
+        F: ['F', 'N'], F1: ['F', 'N'], a: ['a', 'm/s²'], a1: ['a', 'm/s²'], x: ['x', 'm'], xcm: ['x', 'cm'], x1cm: ['x', 'cm'], x2cm: ['x', 'cm'], factorK: ['k', ''], factorM: ['m', ''] };
+      const etiquetas = { k1: 'rigidez inicial', m1: 'primera masa', m2: 'segunda masa', F1: 'primera fuerza', a1: 'primera aceleración', x1cm: 'primera posición', x2cm: 'segunda posición', factorK: 'factor de rigidez', factorM: 'factor de masa', gramos: 'masa' };
+      const tengo = Object.entries(p).flatMap(([n, v], j) => [j ? '; ' : '', `${etiquetas[n] || n}: `, numero(nombres[n][0], v, nombres[n][1])]);
+      const sentido = clave === 'm' || clave === 'k' ? 'La masa y la constante elástica son positivas; los signos se conservaron en las fuerzas.' : clave === 'x' ? 'El desplazamiento queda en el lado opuesto al sentido de la fuerza y la aceleración.' : 'El signo ubica la aceleración y la fuerza hacia el equilibrio, no necesariamente el movimiento.';
+      return { enunciado, datos: d, dibujo, pide: `Se pide ${({ a: 'la aceleración con signo', F: 'la fuerza con signo', k: 'la constante elástica', m: 'la masa del bloque', x: 'el desplazamiento con signo' })[clave]}.`,
+        tengo, regla: paso('Relacionamos fuerza, desplazamiento y masa.', regla), cuentas, sentido,
+        respuesta: [V(clave, fmt(valor))], opciones: opciones(valor, elegidos, fmt), caso: { tipo, ...p, valor, unidad, errores: elegidos.map(e => ({ id: e.error, valor: e.valor })) },
+        erroresEjemplo: elegidos.map(e => `${fmt(e.valor)}: ${e.corta}.`).join(' ') };
+    }
+
+    // Quince entradas originales; el oráculo independiente conserva sus esperados.
+    const banco = [
+      ['fuerza', { k: 60, x: -0.05 }, 'El resorte comprimido'],
+      ['aceleracion', { F: -1.5, m: 0.5 }, 'Fuerza y masa'],
+      ['rigidez', { F: -2.4, x: 0.08 }, 'Reconstruir la rigidez'],
+      ['posicion', { F: 3.6, k: 40 }, 'Ubicar el bloque'],
+      ['fuerza', { k: 25, x: 0.12 }, 'El resorte estirado'],
+      ['aceleracion-cm', { k: 30, m: 0.4, xcm: 8 }, 'Centímetros antes de calcular'],
+      ['aceleracion-gramos', { k: 24, gramos: 600, xcm: -5 }, 'Una masa en gramos'],
+      ['masa', { k: 50, xcm: 6, a: -4 }, 'La masa desconocida'],
+      ['comparacion', { a1: -2, x1cm: 4, x2cm: -10 }, 'Dos lados del equilibrio'],
+      ['posicion-cm', { k: 60, m: 0.75, a: 4 }, 'Un desplazamiento en centímetros'],
+      ['calibrada', { F1: -2.4, x1cm: 4, x2cm: -6, m: 0.75 }, 'Otro punto del mismo resorte'],
+      ['masa-calibrada', { F1: 1.5, a1: 2, k: 45, x2cm: -8 }, 'Dos ensayos con el bloque'],
+      ['masa-nueva', { k: 50, x1cm: 4, a1: -4, x2cm: -12, factorM: 3 }, 'Cambiar masa y posición'],
+      ['rigidez-nueva', { k1: 20, m: 0.4, a1: -6, factorK: 3 }, 'La misma aceleración'],
+      ['dos-masas', { m1: 0.4, x1cm: 5, a1: -5, m2: 0.8, x2cm: -12 }, 'Un bloque diferente'],
+    ];
+    const ejemplos = banco.map(([tipo, p, titulo], i) => ejemplo(caso(tipo, p), 1 + Math.floor(i / 5), titulo, i - 10));
+    function generar(s, res) {
+      const n = 1 + Math.floor(s / 5) % 8, signoX = s % 2 ? -1 : 1;
+      if (res) {
+        if (s % 5 === 0) return caso('aceleracion-cm', { k: 16 + 4 * n, m: 0.5, xcm: signoX * (n + 2) });
+        if (s % 5 === 1) return caso('masa', { k: 16 + 8 * n, xcm: signoX * 5, a: -signoX * (2 + n) });
+        if (s % 5 === 2) return caso('calibrada', { F1: -0.6 * (n + 1), x1cm: 3, x2cm: -9, m: 0.5 });
+        if (s % 5 === 3) return caso('rigidez-nueva', { k1: 15 + 5 * n, m: 0.75, a1: -2 * (n + 1), factorK: 3 });
+        return caso('comparacion', { a1: -0.5 * (n + 1), x1cm: 3, x2cm: -6 });
+      }
+      if (s % 5 === 0) return caso('fuerza', { k: 18 + 6 * n, x: signoX * (n + 2) / 100 });
+      if (s % 5 === 1) return caso('posicion-cm', { k: 30 + 10 * n, m: 0.5, a: signoX * (n + 1) });
+      if (s % 5 === 2) return caso('masa-calibrada', { F1: 0.75 * (n + 2), a1: n + 2, k: 24 + 6 * n, x2cm: -7 });
+      if (s % 5 === 3) return caso('masa-nueva', { k: 20 + 5 * n, x1cm: 5, a1: -0.25 * (n + 4), x2cm: -15, factorM: 2 });
+      return caso('dos-masas', { m1: 0.3, x1cm: 4, a1: -0.4 * (n + 2), m2: 0.6, x2cm: -10 });
+    }
+    const estadoJuego = val => { const xcm = Math.round(val.x * 10) / 10, fuerza = -20 * xcm / 100; return { xcm, F: fuerza, a: fuerza / 0.5 }; };
+    const vista = val => { const e = estadoJuego(val); return est(figuraFuerzas(e.xcm, { F: e.F, a: e.a, textos: [
+      { x: 12, y: 44, texto: 'm = 0,5 kg', color: 'f' }, { x: 308, y: 44, texto: 'k = 20 N/m', color: 'f', ancla: 'end' },
+      { x: 160, y: 208, texto: 'Instante de liberación; v = 0', color: 'o', ancla: 'middle' }
+    ] })); };
+    const pred = { x1: 2, a1: -3, x2: -6 }, razon = pred.x2 / pred.x1, ap = pred.a1 * razon;
+    const erroresPred = [-ap, -pred.a1, -pred.a1 * razon ** 2], fmtPred = n => `${signo(n)}${f(n)} m/s²`;
+    const reglaCaso = { k: 40, m: 0.5, xcm: -5 };
+    const fuerzaRegla = -reglaCaso.k * reglaCaso.xcm / 100, aceleracionRegla = fuerzaRegla / reglaCaso.m;
+    const antes = dosEstados({ xcm: pred.x1, a: pred.a1 }, { xcm: pred.x2 });
+    const despues = dosEstados({ xcm: pred.x1, a: pred.a1 }, { xcm: pred.x2, a: ap }, true);
+    glosario.push(
+      { termino: 'movimiento armónico simple', formas: ['movimiento armónico simple', 'MAS'], simple: 'Un modelo ideal para estudiar ciertos vaivenes.',
+        def: 'Movimiento oscilatorio rectilíneo ideal que relaciona posición, velocidad y aceleración.',
+        ejemplos: ['Un carro unido a un resorte ideal oscila sobre una mesa sin roce.', 'El modelo describe estados a la izquierda y a la derecha del equilibrio.', 'La posición, la velocidad y la aceleración describen aspectos distintos del mismo movimiento.'] },
+      { termino: 'fuerza recuperadora', formas: ['fuerza recuperadora', 'fuerza restauradora'], simple: 'El empuje que permite regresar.',
+        def: 'Fuerza del sistema que tiende a devolver el objeto hacia su posición de equilibrio.',
+        ejemplos: ['Un resorte estirado jala el bloque.', 'Un resorte comprimido empuja el bloque.', 'La fuerza de una mano que sostiene el bloque no es la fuerza recuperadora del resorte.'] },
+      { termino: 'elongación', formas: ['elongación', 'elongaciones'], simbolo: 'x', medida: 'm', simple: 'La separación del equilibrio, con su signo.',
+        def: 'Desplazamiento del objeto desde la posición de equilibrio. En una recta se expresa mediante una componente con signo.',
+        ejemplos: ['Con la derecha positiva, una elongación de +4 cm queda a la derecha.', 'Una elongación de -7 cm ubica el objeto a la izquierda del equilibrio.', 'Una elongación nula indica que el objeto está en el equilibrio.'] },
+    );
+    return {
+      id: 'aceleracion-al-centro', titulo: 'El empuje del resorte', pregunta: '¿Cómo relacionamos posición, fuerza y aceleración?', temas: ['Ecuaciones y gráficas del MAS', 'Masa-resorte horizontal y vertical'], pieza: 'fis-estatica',
+      aprendizaje: 'Relaciono el desplazamiento con fuerza y aceleración; conservo los signos y distingo acelerar de moverse.',
+      actividad: 'Elegir desde dónde soltar el bloque y comparar su aceleración inicial.',
+      lee: { tarjetas: [
+        { titulo: 'Un bloque y un resorte', texto: ['Estudiaremos el movimiento armónico simple, o MAS. El bloque está unido a un resorte sobre una mesa sin roce. Su masa ', S.m, ' y la constante elástica ', S.k, ' se mantienen.'], dibujo: vista({ x: 2 }) },
+        { titulo: 'Una referencia para medir', texto: ['La elongación ', S.x, ' se mide desde el equilibrio. La derecha es positiva. La fuerza recuperadora ', S.F, ' y la aceleración ', S.a, ' también se describen con signo.'] },
+        { titulo: 'El instante de soltar', texto: ['Cada posición del control inicia otro ensayo. Observamos el instante después de soltar el bloque: la mano ya no actúa. La velocidad inicial ', S.v, ' es cero. Compara las flechas.'] },
+      ] }, ejemplos,
+      juega: { pieza: 'fis-estatica', consigna: 'Suelta el bloque desde distintos puntos de la derecha. Compara la fuerza y la aceleración iniciales.',
+        voz: 'Cada posición inicia otro ensayo; el control no representa un reloj.',
+        controles: [{ id: 'x', etiqueta: 'Elongación inicial, x', min: 0, max: 8, paso: 2, inicio: 2, unidad: 'cm', decimales: 1, color: 'c-i' }],
+        mision: { texto: 'Consigue una aceleración inicial de −2,4 m/s².', logrado: val => Math.abs(estadoJuego(val).a + 2.4) < 1e-9, testigo: [{ x: 6 }], bien: 'La aceleración inicial coincide con la pedida y apunta hacia el equilibrio.' },
+        leyenda: [{ s: S.x, t: 'elongación con signo desde el equilibrio' }, { s: S.F, t: 'fuerza horizontal del resorte sobre el bloque' },
+          { s: S.a, t: 'aceleración horizontal del bloque' }, { s: S.m, t: 'masa del bloque' }, { s: S.k, t: 'constante elástica del resorte' }, { s: S.v, t: 'velocidad horizontal en el instante de liberación' }],
+        dibujo: vista, lectura: val => { const e = estadoJuego(val); return e.xcm ? ['En ', numero('x', e.xcm, 'cm'), ', ', S.a, ' = ', numero('a', e.a, 'm/s²'), ', hacia el equilibrio.'] : ['En el equilibrio, la fuerza y la aceleración iniciales son nulas.']; }, minimo: 2 },
+      predice: { pregunta: ['En el mismo MAS, ', S.a, ' = ', numero('a', pred.a1, 'm/s²'), ' cuando ', S.x, ' = ', numero('x', pred.x1, 'cm'), '. ¿Qué aceleración corresponde a ', S.x, ' = ', numero('x', pred.x2, 'cm'), '?'],
+        datos: ['La masa y la constante elástica no cambian.', 'La derecha es positiva.'], dibujo: antes, revelar: despues,
+        opciones: opciones(ap, [
+          { valor: erroresPred[0], error: 'OS-ACEL-PRED-SIGNO', siFuera: `Bien: triplicas el módulo. Mantener el signo anterior daría ${fmtPred(erroresPred[0])}.` },
+          { valor: erroresPred[1], error: 'OS-ACEL-PRED-MODULO', siFuera: `Bien: cambias el sentido. Conservar el módulo anterior daría ${fmtPred(erroresPred[1])}.` },
+          { valor: erroresPred[2], error: 'OS-ACEL-PRED-CUADRADO', siFuera: `Bien: reconoces el cambio de lado. Elevar al cuadrado el factor daría ${fmtPred(erroresPred[2])}.` }
+        ], fmtPred), coincide: 'Cambia el lado y se triplica la separación; la aceleración cambia de signo y triplica su módulo.' },
+      mira: { pieza: 'fis-estatica', datos: despues.datos, pasos: [
+        paso('El resorte ejerce una fuerza contraria al desplazamiento.', [S.F, ' = −', S.k, ' · ', S.x]),
+        paso('Dividimos la fuerza neta entre la masa para hallar la aceleración.', [S.a, ' = ', frac(S.F, S.m), ' = −', frac(S.k, S.m), ' · ', S.x]),
+        paso('El mismo bloque y resorte conservan la razón entre aceleración y elongación.', [frac(a2, a1), ' = ', frac(x2, x1)]),
+        paso('Las elongaciones tienen signos contrarios; su razón es negativa.', [frac(x2, x1), ' = ', frac(numero('x', pred.x2), numero('x', pred.x1)), ' = ', numero('x', razon)]),
+        paso('Multiplicamos la primera aceleración por esa razón.', [a2, ' = (', numero('a', pred.a1), ') · (', numero('x', razon), ') = ', numero('a', ap, 'm/s²')]),
+        paso('En el centro, fuerza y aceleración nulas no obligan a detenerse.', [S.x, ' = 0: ', S.F, ' = 0; ', S.a, ' = 0']),
+        paso('En un extremo se detiene un instante, pero la fuerza tiene máximo módulo.', [S.x, ' = ±', S.A, ': ', S.v, ' = 0; |', S.F, '| = ', S.k, ' · ', S.A]),
+      ] },
+      regla: { texto: 'En el MAS, la fuerza neta es proporcional al desplazamiento y apunta al equilibrio. La aceleración sigue la fuerza; la velocidad puede apuntar en otro sentido.',
+        ecuacion: [S.F, ' = −', S.k, ' · ', S.x, '; ', S.a, ' = ', frac(S.F, S.m), ' = −', frac(S.k, S.m), ' · ', S.x],
+        condicion: 'Resorte ideal horizontal, masa constante y sin rozamiento. La elongación se mide desde el equilibrio.',
+        dibujo: est(figuraFuerzas(reglaCaso.xcm, { F: fuerzaRegla, a: aceleracionRegla, textos: [{ x: 12, y: 44, texto: `k = ${f(reglaCaso.k)} N/m`, color: 'f' }, { x: 308, y: 44, texto: `m = ${f(reglaCaso.m)} kg`, color: 'f', ancla: 'end' }] })) },
+      resuelve: { pieza: 'fis-estatica', generar: s => resuelto(generar(s, true)) },
+      ahoraTu: { pieza: 'fis-estatica', generar: s => pregunta(generar(s, false)) },
+    };
+  })();
+
   return {
     unidad: 'fisica.oscilaciones', version: '1.0.0', estado: 'borrador',
     colores: COLORES,
-    letras: {x:'posición desde el equilibrio', A:'amplitud', d:'distancia recorrida', v:'velocidad con signo', a:'aceleración con signo', F:'fuerza horizontal del resorte', t:'tiempo', T:'período', f:'frecuencia', N:'número de ciclos', m:'masa', k:'constante elástica', L:'longitud del péndulo', g:'aceleración de la gravedad', ω:'frecuencia angular', φ:'fase inicial', θ:'inclinación del péndulo', E_C:'energía cinética', E_PE:'energía potencial elástica', E_M:'energía mecánica'},
+    letras: {x:'posición desde el equilibrio', A:'amplitud', d:'distancia recorrida', δ:'deformación del resorte desde su longitud natural', v:'velocidad con signo', a:'aceleración con signo', F:'fuerza del resorte', t:'tiempo', T:'período', f:'frecuencia', N:'número de ciclos', m:'masa', k:'constante elástica', L:'longitud del péndulo', g:'aceleración de la gravedad', ω:'frecuencia angular', φ:'fase inicial', θ:'inclinación del péndulo', E_C:'energía cinética', E_PE:'energía potencial elástica', E_M:'energía mecánica'},
     requiere: ['/nucleo/kit/piezas/fis-estatica.js','/nucleo/kit/piezas/ejes.js'],
     glosario,
     
@@ -271,6 +582,6 @@
       pregunta: '¿Qué tendría que conservar un péndulo para que su reloj mida bien?',
       fuente: {titulo:'APS: Huygens y el primer reloj de péndulo',url:'https://www.aps.org/apsnews/2017/06/huygens-patents-first-pendulum-clock'},
     },
-    ideas: [idea1],
+    ideas: [idea1, idea2],
   };
 });
