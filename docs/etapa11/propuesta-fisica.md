@@ -120,13 +120,17 @@ Se agrupan magnitudes relacionadas, pero el color nunca sustituye el símbolo, l
 | Energía cinética, E con subíndice C | Energía asociada al movimiento del carro. | Naranja o. |
 | Energía potencial elástica, E con subíndice PE | Energía del resorte horizontal, medida desde su longitud natural. | Turquesa i. |
 | Energía mecánica, E con subíndice M | Suma de las energías cinética y potencial elástica del oscilador horizontal. | Violeta f. |
-| n y d | Número de ciclos completos y recorrido acumulado, respectivamente. | Tinta; siempre con nombre y unidad cuando corresponda. |
+| N | Número de ciclos completos. | Violeta f. |
+| d | Distancia recorrida, que se acumula durante el movimiento. | Turquesa i. |
+| δ | Deformación del resorte desde su longitud natural; el subíndice indica equilibrio o instante inicial cuando hace falta. | Turquesa i. |
 
 Esta paleta responde al encargo actual. No se afirma que coincida símbolo por símbolo con todas las unidades anteriores. Se conserva la nomenclatura energética de Trabajo y energía, evitando K/U como nombres alternativos.
 
 El verde de aceleración/fuerza y el naranja de velocidad se distinguirán también por rótulos y carriles separados: velocidad encima del carro, aceleración/fuerza debajo. En gráficos comparados se nombrará cada eje y, si coinciden curvas, se usarán trazos diferentes. Las barras de energía llevarán nombres y valores; no dependerán solo de sus tonos.
 
 ### Componentes y referencias
+
+El término «fase» será local a Oscilaciones: aquí es un ángulo y no debe marcar «cambio de fase» en Calor. «Ciclo» no será una forma global de «oscilación», para no confundir los ciclos termodinámicos con un vaivén mecánico. Período y frecuencia se recuperan de Movimiento circular, sin duplicar sus entradas.
 
 En el movimiento rectilíneo, x, v, a y la fuerza con signo son componentes sobre un eje positivo visible; no se colocará una flecha vectorial sobre un escalar. Las flechas del dibujo representan dirección y sentido. Si se emplea una magnitud vectorial completa, se construirá con el nodo de vector y se dirá que es un vector.
 

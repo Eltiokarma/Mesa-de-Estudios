@@ -23,6 +23,19 @@ test('oscilaciones: contrato de calidad 2 simulado en 400 semillas, sin marcar l
   assert.deepEqual(T.problemas({ ...def, calidad: 2 }, { semillas: 400, temas }), []);
 });
 
+test('oscilaciones: el glosario no confunde fase o ciclo con sus sentidos termodinámicos', () => {
+  const G = require('../../../nucleo/glosario.js');
+  const indice = G.indice([
+    { id: def.unidad, nombre: 'Oscilaciones', def },
+    { id: 'fisica.temperatura-y-calor', nombre: 'Calor', texto: 'Un cambio de fase.' },
+    { id: 'fisica.termodinamica', nombre: 'Termodinámica', texto: 'Ciclo termodinámico y ciclos de una máquina térmica.' },
+  ]);
+  const fase = indice.entradas.find(e => e.termino === 'fase');
+  assert.equal(fase.local, true);
+  assert.deepEqual(fase.aparece, [def.unidad]);
+  assert.deepEqual(indice.entradas.find(e => e.termino === 'oscilación').aparece, [def.unidad]);
+});
+
 test('oscilaciones: texto real de ecuaciones y SVG sin subíndices crudos ni valores inválidos', () => {
   function texto(partes, donde) {
     if (partes === undefined || partes === null) return;
