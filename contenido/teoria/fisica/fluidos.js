@@ -1,755 +1,360 @@
-/*
- * Teoría de «Fluidos» (fisica.fluidos). Molde de docs/teoria.md; forma copiada de
- * contenido/teoria/fisica/movimiento-rectilineo.js.
- * Fuente del contenido: docs/teoria/matriz/fisica.json (unidad 11), precisiones de física del expediente y
- * docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md (códigos F1–F15).
- * Colores (regla 4): p presión turquesa (c-i), h profundidad verde (c-d), F fuerza y empuje rojo (c-h),
- * v velocidad naranja (c-o). ρ, A, V y γ van en tinta.
- * g = 10 m/s² en toda la unidad (lo dice cada regla).
- * Estado: completa (14 nov 2026): seis ideas que cubren los siete temas del catálogo.
- * Códigos nuevos (hipótesis, sin fuente empírica): FL-ANGOSTO, FL-SIN-G, FL-KPA, FL-OTRO-LADO, FL-MISMO-NIVEL,
- * FL-RESTA, FL-BARO-IGUAL, FL-BARO-INV, PA-IGUAL, PA-INV, PA-CUADRADO, AR-PESO, AR-FONDO, AR-TOTAL,
- * TS-UNA, TS-EMPUJE, TS-PESO, BE-APRIETA, BE-IGUAL, BE-DIAMETRO, BE-INV.
- *
- * Ficha de tarea (diseno-y-animacion):
- *   Promesa: ver que la presión de un líquido depende de la profundidad y que esa idea explica tubos, prensas y empuje.
- *   Persona y condiciones: postulante de 4.º y 5.º, celular de gama baja a 360 px, a veces sin conexión.
- *   Resultado observable: calcula una presión, un desnivel, una fuerza de prensa, un empuje y una rapidez en un tubo.
- *   Orden de atención: 1.º el recipiente y sus puntos · 2.º la lectura en vivo · acción: el botón fijo · fondo: Tilo.
- *   Estados: juego sin tocar · predicción pendiente · coincide / no coincide · paso de mira · caso nuevo · «No sé».
- *   Duda que resuelve: ¿por qué la forma del recipiente no importa y la profundidad sí?
- */
+/* Fluidos: modelos ideales, datos explícitos y seis ideas. Propuesta: docs/etapa12/propuesta-fisica.md. */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
 })(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
-  const f = (n, d = 2) => Kit.formatear(n, d);
-  const p = { v: 'c-i', t: 'p' }, h = { v: 'c-d', t: 'h' }, F = { v: 'c-h', t: 'F' }, E = { v: 'c-h', t: 'E' }, v = { v: 'c-o', t: 'v' };
-  const p0 = { sub: [p, '0'] };
-  const G = 10, RHO_W = 1000;
-  function azar(s) {
-    let q = (s * 2654435761 + 12345) >>> 0;
+  const f = (n, d = 2) => Kit.formatear(Math.abs(n) < 1e-10 ? 0 : n, d);
+  const COLORES = { p:'i', F:'h', E:'h', P:'h', T:'h', W:'o', rho:'f', m:'f', gamma:'f', n:'f', A:'d', V:'d', h:'d', z:'d', ell:'d', L:'d', r:'d', d:'d', theta:'d', v:'o', Q:'o', t:'h', g:'h' };
+  const V = (clave, texto) => ({ v: `c-${COLORES[clave]}`, t: String(texto), m: clave });
+  const sub = (base, indice) => ({ sub: [base, indice] });
+  const sup = (base, potencia = '2') => ({ sup: [base, potencia] });
+  const frac = (arriba, abajo) => ({ frac: [arriba, abajo] });
+  const raiz = contenido => ({ raiz: contenido });
+  const S = Object.fromEntries(Object.keys(COLORES).map(k => [k, V(k, { rho:'ρ', gamma:'γ', ell:'ℓ', theta:'θ' }[k] || k)]));
+  const Q = (clave, n, unidad = '', decimales = 2) => V(clave, `${f(n, decimales)}${unidad ? ` ${unidad}` : ''}`);
+  const est = (datos, estado = {}) => ({ pieza: 'fis-estatica', datos, estado });
+  const ejes = (datos, estado = {}) => ({ pieza: 'ejes', datos, estado });
+  const paso = (texto, ecuacion) => ({ texto, ...(ecuacion ? { ecuacion } : {}) });
+  const glosario = [];
+  const flu = (datos, estado = {}) => ({ pieza:'fis-fluidos-e12', datos, estado });
+  function opciones(valor, errores, formato = n => String(n)) {
+    const lista = [{ id: 'c', texto: formato(valor), correcta: true, valor }, ...errores.map((e, n) => ({ id: `d${n}`, texto: formato(e.valor), valor: e.valor, error: e.error, siFuera: e.siFuera }))];
+    if (new Set(lista.map(o => o.texto)).size !== lista.length) throw new Error('Fluidos: alternativas repetidas');
+    if (errores.some(e => e.valor === valor)) throw new Error('Fluidos: dos respuestas correctas');
+    return lista;
+  }
+  // Los adaptadores comparten el caso calculado, no confunden las familias de Resuelve y Ahora tú.
+  function resuelto(c) {
+    return { enunciado: c.enunciado, datos: c.datos, dibujo: c.dibujo, caso: c.caso,
+      pasos: [{ tipo: 'pide', texto: c.pide }, { tipo: 'datos', texto: c.tengo }, { tipo: 'regla', ...c.regla },
+        ...c.cuentas.map(p => ({ tipo: 'cuentas', ...p })), { tipo: 'sentido', texto: c.sentido }], respuesta: c.respuesta };
+  }
+  function pregunta(c) {
+    return { pregunta: c.enunciado, datos: c.datos, dibujo: c.dibujo, caso: c.caso, opciones: c.opciones,
+      solucion: { texto: c.sentido, ecuacion: c.cuentas[c.cuentas.length - 1].ecuacion || c.respuesta } };
+  }
+  function ejemplo(c, nivel, titulo, indice = 0) {
+    const sol = [c.regla, ...c.cuentas];
+    const out = { nivel, titulo, enunciado: c.enunciado, datos: c.datos, figura: c.dibujo, solucion: sol, respuesta: c.respuesta, caso: c.caso };
+    if (nivel === 3) {
+      const ops = c.opciones.slice(), rotar = indice % ops.length;
+      out.alternativas = ops.slice(rotar).concat(ops.slice(0, rotar)).map(o => o.texto);
+      // Cada valor incorrecto se nombra con su explicación; nunca se reutiliza A como nombre de un cuerpo.
+      out.solucion.push({ texto: c.erroresEjemplo || 'Las otras opciones confunden la magnitud pedida con un dato o cambian la operación necesaria.' });
+    }
+    if (out.solucion.length > 4) throw new Error('Fluidos: solución demasiado larga');
+    return out;
+  }
+
+  function azar(semilla) {
+    let q = (semilla * 2654435761 + 12345) >>> 0;
     const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
     r.ent = (lo, hi) => lo + Math.floor(r() * (hi - lo + 1));
     r.de = xs => xs[Math.floor(r() * xs.length)];
     return r;
   }
-  function opciones(correcta, distractores, fmt) {
-    const vistos = new Set([fmt(correcta)]);
-    const ops = [{ id: 'c', texto: fmt(correcta), correcta: true }];
-    for (const d of distractores) {
-      const txt = fmt(d.valor);
-      if (vistos.has(txt) || !Number.isFinite(d.valor)) continue;
-      vistos.add(txt);
-      ops.push({ id: d.id, texto: txt, error: d.error, siFuera: d.siFuera });
-    }
-    return ops.slice(0, 4);
+
+const idea1 = (() => {
+  const n=x=>f(x,3), q=(k,x,u='')=>Q(k,x,u,6), pa=sub(S.p,'abs'), ps=sub(S.p,'0'), pm=sub(S.p,'man'), pe=sub(S.p,'ext');
+  const signo=x=>Math.abs(Number(x.toFixed(3))-x)<1e-9?' = ':' ≈ ';
+  const mostrar=(x,u)=>(signo(x).includes('≈')?'≈ ':'')+n(x)+' '+u;
+  const unidad={densidad:'kg/L',presion:'Pa',fuerza:'N',incremento:'kPa',manometrica:'kPa','densidad-conversion':'kg/m³',area:'cm²',absoluta:'kPa',profundidad:'m','densidad-desnivel':'kg/m³','muestra-profundidad':'m','area-tapa':'cm²','dos-lecturas':'kPa','masa-presiones':'kg','tapa-profundidad':'m'};
+  const clave={densidad:'rho',presion:'p',fuerza:'F',incremento:'p',manometrica:'p','densidad-conversion':'rho',area:'A',absoluta:'p',profundidad:'h','densidad-desnivel':'rho','muestra-profundidad':'h','area-tapa':'A','dos-lecturas':'p','masa-presiones':'m','tapa-profundidad':'h'};
+  const liquido=['Líquido homogéneo en reposo; densidad constante.','Para este modelo, g = 10 m/s².'];
+  const eq=['1 kPa = 1000 Pa.','1 L = 0,001 m³.','1 cm² = 0,0001 m².'];
+  const er=(operacion,valor,motivo,corto)=>({operacion,valor,motivo,corto});
+  function pistones(areas,fuerzas,presiones){
+    const ids=areas.map((a,i)=>'cara-'+i),dos=ids.length===2;
+    return flu({tipo:'prensa',modo:'medida',escala:{transversal:dos?2000:4000,fuerza:dos?0.5:1},
+      prensa:{profundidad:0.1,conectados:false,pistones:areas.map((a,i)=>({id:ids[i],area:a/10000}))},
+      flechas:fuerzas.map((F,i)=>({id:'f-'+i,ref:ids[i],magnitud:F,sentido:1,color:'h'})),
+      rotulos:areas.flatMap((a,i)=>[{ref:ids[i],fila:0,texto:'A = '+n(a)+' cm²',color:'d'},
+        {ref:ids[i],fila:1,texto:'F = '+n(fuerzas[i])+' N',color:'h'},
+        ...(presiones&&presiones[i]!==null?[{ref:ids[i],fila:2,texto:'p = '+n(presiones[i])+' kPa',color:'i'}]:[])]),
+      alt:dos?'Dos caras independientes reciben fuerzas normales iguales; sus áreas están indicadas.':'Una fuerza normal actúa sobre un pistón horizontal de área conocida.'});
   }
-
-  // Gesto directo (docs/teoria.md §4b): las manijas viven en las coordenadas de fis-vasos o de ejes; mover las
-  // convierte en valores con la inversa de su escala, y el lector ajusta cada valor al paso y al rango de su control.
-  const VASOS = () => Kit.piezas['fis-vasos'], EJES = () => Kit.piezas.ejes;
-
-  // ---------- Idea 1: igual profundidad, igual presión ----------
-  // Cambia: la profundidad del punto y el líquido · Permanece: los tres vasos de formas distintas, llenos al mismo nivel ·
-  // Progresa: la cota h, que crece hacia abajo desde la superficie · Se reserva: el fondo de los tres vasos ·
-  // Debe verse: la misma presión en los tres puntos, aunque haya distinta cantidad de líquido encima.
-  // Se manipula: el punto del vaso del medio, que se arrastra hacia abajo (h).
-  // Hallazgo 9: «Mira» se queda con un solo vaso recto a propósito: ya se vio que la forma no cuenta, y con un vaso
-  // la columna de agua que pesa sobre cada m² se lee mejor. Es la misma pieza y el mismo punto con su cota h.
-  const NIV = 0.8;
-  const LIQ = { 800: 'aceite', 1000: 'agua', 1200: 'salmuera', 13600: 'mercurio' };
-  const tonoDe = rho => (rho >= 13600 ? 3 : rho >= 1100 ? 2 : 1);
-  const tresVasos = (hh, rho, conRot = true, o = {}) => ({
-    alto: 1, unidad: 'm',
-    recipientes: ['embudo', 'recto', 'botella'].map((forma, k) => ({ tipo: 'vaso', forma, nivel: NIV, tono: tonoDe(rho), rotulo: 'ABC'[k] })),
-    puntos: [0, 1, 2].map(k => ({ k, y: NIV - hh, color: 'i', rotulo: conRot ? `${f(rho * G * hh / 1000, 1)} kPa` : undefined, desde: o.desdeP || 0 })),
-    cotas: [{ k: 0, y1: NIV - hh, y2: NIV, texto: 'h', color: 'd', desde: o.desdeC || 0 }],
-  });
-  // La manija va sobre el punto del vaso k; arrastrarla hacia abajo aumenta h (la cota se mide desde la superficie).
-  const arrastreProfundidad = (datosDe, k = 1) => ({
-    id: 'punto', etiqueta: 'punto dentro del líquido', color: 'c-d',
-    donde: val => { const g = VASOS().geometria(datosDe(val)); return { x: g.cx(k), y: g.Y(NIV - val.h) }; },
-    mover: (pt, val) => ({ h: NIV - VASOS().geometria(datosDe(val)).Yi(pt.y) }),
-  });
-  const hidrostatica = {
-    id: 'presion-profundidad',
-    titulo: 'Igual profundidad, igual presión',
-    temas: ['Densidad y presión', 'Presión hidrostática y atmosférica'],
-    pieza: 'fis-vasos',
-    juega: {
-      consigna: 'Tres vasos de formas distintas, llenos hasta la misma altura. El punto baja y sube solo: mira la presión en los tres. Cambia el líquido.',
-      voz: 'Compara los tres puntos. ¿Qué número cambia y qué número se repite?',
-      controles: [
-        { id: 'h', etiqueta: 'h', color: 'c-d', min: 0.1, max: 0.8, paso: 0.1, inicio: 0.3, unidad: 'm', decimales: 1, auto: { velocidad: 0.2, modo: 'rebota' } },
-        { id: 'rho', etiqueta: 'Líquido', opciones: [{ valor: 800, texto: 'aceite' }, { valor: 1000, texto: 'agua' }, { valor: 1200, texto: 'salmuera' }], inicio: 1000 },
-      ],
-      dibujo: val => ({ datos: tresVasos(val.h, val.rho), estado: {} }),
-      lectura: val => [p, ` = ${f(val.rho * G * val.h / 1000, 1)} kPa en los tres, más la del aire`],
-      minimo: 3,
-      // Arrastra el punto del vaso del medio hacia abajo: es la profundidad h.
-      arrastres: [arrastreProfundidad(val => tresVasos(val.h, val.rho))],
-    },
-    predice: {
-      pregunta: 'Los tres vasos tienen agua hasta 0,8 m. El de la izquierda tiene mucha más agua. ¿En cuál es mayor la presión del agua en el fondo?',
-      opciones: [
-        { id: 'c', texto: 'Es la misma en los tres', correcta: true },
-        { id: 'mas-agua', texto: 'En A: tiene más agua encima', error: 'F2', siFuera: 'A tiene más agua, cierto. Pero las paredes inclinadas sostienen parte de su peso.' },
-        { id: 'angosto', texto: 'En C: el agua está más apretada', error: 'FL-ANGOSTO', siFuera: 'Lo angosto sí cambia algo: la fuerza total en la tapa. La presión, no.' },
-        { id: 'ancho', texto: 'En C: su fondo es más ancho', error: 'F7', siFuera: 'Un fondo más ancho recibe más fuerza total, cierto. La fuerza por cada m² es igual.' },
-      ],
-      dibujo: { datos: tresVasos(0.8, 1000, false), estado: {} },
-      revelar: { datos: tresVasos(0.8, 1000, true), estado: {} },
-      coincide: 'Coincide: los tres puntos están 0,8 m por debajo de la superficie. Eso es lo que cuenta.',
-    },
-    mira: {
-      pieza: 'fis-vasos',
-      datos: Object.assign(tresVasos(0.5, 1000, true, { desdeC: 1, desdeP: 3 }), { recipientes: [{ tipo: 'vaso', forma: 'recto', nivel: NIV, tono: 1 }], puntos: [{ k: 0, y: 0.3, color: 'i', rotulo: '5 kPa', desde: 3 }], cotas: [{ k: 0, y1: 0.3, y2: NIV, texto: 'h = 0,5 m', color: 'd', desde: 1 }] }),
-      pasos: [
-        { estado: { corte: 1 }, texto: 'Sobre cada m² del punto hay una columna de agua de 0,5 m.', ecuacion: [h, ' = 0,5 m'] },
-        { estado: { corte: 2 }, texto: 'Esa columna pesa ρ·g·h por cada m²: masa = densidad × volumen.', ecuacion: ['m = ρ · V = 1000 · 0,5 = 500 kg por m²'] },
-        { estado: { corte: 3 }, texto: 'Presión es fuerza entre área: 5000 N sobre 1 m².', ecuacion: [p, ' = ', { frac: [F, 'A'] }, ' = ρ g ', h, ' = 5000 Pa = 5 kPa'] },
-        { estado: { corte: 3 }, texto: 'Encima del agua está el aire, otro fluido, que también aprieta.', ecuacion: [p, ' = ', p0, ' + ρ g ', h] },
-      ],
-    },
-    regla: {
-      texto: 'En un líquido en reposo, la presión hidrostática ρgh crece con la profundidad. Puntos a la misma profundidad tienen la misma presión, sea cual sea la forma del recipiente.',
-      ecuacion: [p, ' = ', { llave: [p0], nota: 'la del aire', color: 'c-i' }, ' + ', { llave: ['ρ g ', h], nota: 'la del líquido', color: 'c-d' }, '   ·   ', p, ' = ', { frac: [F, 'A'] }, '   ·   ', 'ρ = ', { frac: ['m', 'V'] }],
-      condicion: 'líquido homogéneo y quieto; h, en vertical desde la superficie. p₀ es la presión atmosférica: unos 100 kPa en Lima.',
-    },
-    ahoraTu: {
-      pieza: 'fis-vasos',
-      generar(s) {
-        const r = azar(s), rho = r.de([800, 1000, 1200]), H = r.de([0.6, 0.8, 1]), y = r.de([0.1, 0.2, 0.3]), hh = H - y;
-        const pk = rho * G * hh / 1000;
-        const datos = { alto: 1, unidad: 'm', recipientes: [{ tipo: 'vaso', forma: r.de(['embudo', 'botella', 'ancho']), nivel: H, tono: tonoDe(rho) }], puntos: [{ k: 0, y, color: 'i', rotulo: 'P' }], cotas: [{ k: 0, y1: 0, y2: y, texto: `${f(y, 1)} m`, color: 'd' }] };
-        return {
-          pregunta: `Un recipiente tiene ${LIQ[rho]} (ρ = ${f(rho)} kg/m³) hasta ${f(H, 1)} m. El punto P está a ${f(y, 1)} m del fondo. ¿Cuánto vale la presión del líquido en P? (g = 10 m/s²)`,
-          dibujo: { datos, estado: {} },
-          opciones: opciones(pk, [
-            { id: 'fondo', valor: rho * G * y / 1000, error: 'F4', siFuera: `Eso mide h desde el fondo. La profundidad se cuenta desde la superficie: ${f(hh, 1)} m.` },
-            { id: 'todo', valor: rho * G * H / 1000, error: 'F4', siFuera: 'Esa es la presión en el fondo; P está más arriba.' },
-            { id: 'sin-g', valor: rho * hh / 1000, error: 'FL-SIN-G', siFuera: 'Eso olvida multiplicar por g: ρ·h no es todavía una presión.' },
-          ], n => `${f(n, 1)} kPa`),
-          solucion: {
-            texto: `P está ${f(hh, 1)} m por debajo de la superficie.`,
-            ecuacion: [p, ` = ${f(rho)} · 10 · ${f(hh, 1)} = ${f(rho * G * hh)} Pa = ${f(pk, 1)} kPa`],
-            dibujo: { datos: Object.assign({}, datos, { cotas: [{ k: 0, y1: y, y2: H, texto: `h = ${f(hh, 1)} m`, color: 'd' }] }), estado: {} },
-          },
-        };
-      },
-    },
+  function figura(tipo,e){
+    // Solo se entregan a la pieza entradas conocidas; el esquema es independiente de la respuesta.
+    if(['presion','fuerza','area'].includes(tipo)){
+      const etiquetas=[];
+      if(e.F!==undefined)etiquetas.push({texto:'F = '+n(e.F)+' N',color:'h'});
+      if(e.A!==undefined)etiquetas.push({texto:'A = '+n(e.A)+' m²',color:'d'});
+      if(e.p!==undefined)etiquetas.push({texto:'p = '+n(e.p)+(tipo==='fuerza'?' Pa':' kPa'),color:'i'});
+      return flu({tipo:'prensa',modo:'esquema',prensa:{conectados:false,pistones:[{id:'cara'}]},
+        flechas:e.F!==undefined?[{id:'f',ref:'cara',sentido:1,cualitativa:true,color:'h'}]:[],
+        rotulos:etiquetas.map((x,i)=>({...x,ref:'cara',fila:i})),alt:'Una cara plana de un pistón recibe una fuerza normal resultante. Se indica su presión media cuando está dada.'});
+    }
+    if(['muestra-profundidad','masa-presiones'].includes(tipo)){
+      const filas=[{ref:'muestra',fila:0,texto:'Muestra',color:'f'},
+        {ref:'muestra',fila:1,texto:'Volumen: '+n(e.VL)+' L',color:'d'},
+        ...(e.m!==undefined?[{ref:'muestra',fila:2,texto:'Masa: '+n(e.m)+' kg',color:'f'}]:[]),
+        {ref:'tanque',fila:0,texto:'Tanque',color:'f'},
+        {ref:'tanque',fila:1,texto:'Superficie: '+n(e.p0)+' kPa',color:'i'},
+        {ref:'tanque',fila:2,texto:'Sensor: '+n(e.pAbs)+' kPa',color:'i'}];
+      return flu({tipo:'vasos',modo:'esquema',vasos:[{id:'muestra'},{id:'tanque'}],
+        puntos:[{id:'sensor',recipiente:'tanque'}],
+        cotas:[{de:'superficie-tanque',a:'sensor',lado:'izq',separacion:12,texto:e.h===undefined?'h = ?':n(e.h)+' m',color:'d'}],
+        rotulos:filas,alt:'Una muestra y un tanque contienen el mismo líquido. Solo el tanque tiene el sensor de presión; los tamaños no están a escala.'});
+    }
+    if(['densidad-desnivel','dos-lecturas'].includes(tipo)){
+      return flu({tipo:'vasos',modo:'medida',escala:{vertical:40,transversal:40},vasos:[{id:'tanque',alto:5.2,ancho:3,nivel:5}],
+        puntos:[{id:'superior',recipiente:'tanque',altura:5-e.h1},{id:'inferior',recipiente:'tanque',altura:5-e.h2}],
+        cotas:[{de:'superficie-tanque',a:'superior',lado:'izq',texto:n(e.h1)+' m',color:'d'},
+          {de:'superficie-tanque',a:'inferior',lado:'der',texto:n(e.h2)+' m',color:'d'}],
+        rotulos:[{ref:'tanque',fila:0,texto:'Dos sensores de presión',color:'i'},
+          ...(tipo==='dos-lecturas'?[{ref:'tanque',fila:1,texto:'Superior: '+n(e.p1)+' kPa',color:'i'},{ref:'tanque',fila:2,texto:'Inferior: '+n(e.p2)+' kPa',color:'i'}]:
+            [{ref:'tanque',fila:1,texto:'Aumento: '+n(e.dp)+' kPa',color:'i'}])],
+        alt:'Dos sensores están a las profundidades indicadas desde la misma superficie; el inferior registra la presión mayor.'});
+    }
+    const rotulos=[];
+    const add=(texto,color)=>rotulos.push({ref:'tanque',texto,color});
+    if(e.m!==undefined)add('Masa: '+n(e.m)+' kg','f');
+    if(e.VL!==undefined)add('Volumen: '+n(e.VL)+' L','d');
+    if(e.rho!==undefined)add('ρ = '+n(e.rho)+' kg/m³','f');
+    if(e.h!==undefined)add('h = '+n(e.h)+' m','d');
+    if(e.p0!==undefined)add('Superficie: '+n(e.p0)+' kPa','i');
+    if(e.pAbs!==undefined)add('Interior: '+n(e.pAbs)+' kPa','i');
+    if(e.pExt!==undefined)add('Exterior: '+n(e.pExt)+' kPa','i');
+    if(e.F!==undefined)add('F = '+n(e.F)+' N','h');
+    if(e.A!==undefined)add('Área: '+n(e.A)+' m²','d');
+    if(e.mg!==undefined)add('Masa: '+n(e.mg)+' g','f');
+    if(e.Vcm!==undefined)add('Volumen: '+n(e.Vcm)+' cm³','d');
+    if(e.h1!==undefined)add('Sensor 1: '+n(e.h1)+' m','d');
+    if(e.h2!==undefined)add('Sensor 2: '+n(e.h2)+' m','d');
+    const tapa=tipo.includes('tapa'),cerrado=tapa||tipo==='manometrica';
+    const sensor=['incremento','absoluta','profundidad'].includes(tipo);
+    return flu({tipo:'vasos',modo:'esquema',vasos:[{id:'tanque',forma:'recto',...(tapa?{tapa:'fondo',cerrado:true}:cerrado?{tapa:true}:{})}],
+      ...(sensor?{puntos:[{id:'sensor',recipiente:'tanque'}]}:{}),
+      ...(tapa||sensor?{cotas:[{de:'superficie-tanque',a:tapa?'tapa-tanque':'sensor',lado:'der',texto:e.h===undefined?'h = ?':'h',color:'d'}]}:{}),
+      rotulos:rotulos.slice(0,3).map((x,i)=>({...x,fila:i})),alt:tapa?'Un tanque cerrado tiene una tapa horizontal en el fondo, debajo de la superficie. La profundidad pedida no está a escala.':'Un recipiente muestra datos conocidos. El esquema no representa a escala las incógnitas.'});
+  }
+  function caso(tipo,e,conOpciones=false){
+    const k=clave[tipo],u=unidad[tipo],g=e.g||10;
+    let valor,enunciado,regla,cuentas,errores=[],intermedios={},datos=[...liquido];
+    const final=(izq,num)=>[izq,signo(num),Q(k,num,u,3)];
+    switch(tipo){
+      case 'densidad':
+        valor=e.m/e.VL;datos=['La masa corresponde solo al líquido.','El volumen está medido en litros.'];
+        enunciado=['Una muestra de líquido tiene ',q('m',e.m,'kg'),' y ocupa ',q('V',e.VL,'L'),'. ¿Cuál es su densidad en kg/L?'];
+        regla=paso('La densidad relaciona la masa del líquido con el volumen que ocupa.',[S.rho,' = ',frac(S.m,S.V)]);
+        cuentas=[paso('Dividimos las cantidades compatibles.',final([S.rho,' = ',frac(q('m',e.m),q('V',e.VL))],valor))];break;
+      case 'presion':
+        valor=e.F/e.A;datos=['La fuerza indicada es la resultante normal sobre una sola cara.'];
+        enunciado=['Una fuerza normal de ',q('F',e.F,'N'),' actúa sobre una cara de ',q('A',e.A,'m²'),'. ¿Qué presión media produce?'];
+        regla=paso('Dividimos la fuerza normal entre el área de la cara.',[S.p,' = ',frac(S.F,S.A)]);
+        cuentas=[paso('La presión queda en pascales.',final([S.p,' = ',frac(q('F',e.F),q('A',e.A))],valor))];break;
+      case 'fuerza':
+        valor=e.p*e.A;datos=['La presión indicada es el promedio sobre toda la cara.'];
+        enunciado=['Una presión media de ',q('p',e.p,'Pa'),' actúa sobre una cara plana de ',q('A',e.A,'m²'),'. ¿Qué fuerza normal resultante ejerce?'];
+        regla=paso('Despejamos la fuerza que actúa sobre esa cara.',[S.p,' = ',frac(S.F,S.A),'   ·   ',S.F,' = ',S.p,' · ',S.A]);
+        cuentas=[paso('Multiplicamos presión por área.',final([S.F,' = ',q('p',e.p),' · ',q('A',e.A)],valor))];break;
+      case 'incremento':
+        valor=e.rho*g*e.h/1000;datos.push(eq[0]);
+        enunciado=['Un líquido de ',q('rho',e.rho,'kg/m³'),' está en reposo. ¿Cuánto aumenta la presión al bajar ',q('h',e.h,'m'),' desde su superficie?'];
+        regla=paso('La columna añade presión a la referencia de la superficie.',[S.p,' − ',ps,' = ',S.rho,' · ',S.g,' · ',S.h]);
+        cuentas=[paso('Calculamos el aumento y lo expresamos en kilopascales.',final([S.p,' − ',ps,' = ',frac([q('rho',e.rho),' · ',q('g',g),' · ',q('h',e.h)],'1000')],valor))];break;
+      case 'manometrica':
+        valor=e.pAbs-e.pExt;datos=['Las dos presiones dadas son absolutas.'];
+        enunciado=['Un tanque cerrado registra ',q('p',e.pAbs,'kPa'),' absolutos. El aire exterior está a ',q('p',e.pExt,'kPa'),' absolutos. ¿Cuál es la presión manométrica?'];
+        regla=paso('La presión manométrica compara el interior con el aire exterior.',[pm,' = ',pa,' − ',pe]);
+        cuentas=[paso('Restamos la referencia exterior.',final([pm,' = ',q('p',e.pAbs),' − ',q('p',e.pExt)],valor))];break;
+      case 'densidad-conversion':
+        valor=e.mg/e.Vcm*1000;datos=['La masa corresponde solo al líquido.','1 g = 0,001 kg; 1 cm³ = 0,000001 m³.'];
+        enunciado=['Una muestra tiene ',q('m',e.mg,'g'),' y ocupa ',q('V',e.Vcm,'cm³'),'. ¿Cuál es su densidad en kg/m³?'];
+        regla=paso('Usamos masa y volumen en las unidades solicitadas.',[S.rho,' = ',frac(S.m,S.V)]);
+        cuentas=[paso('Convertimos ambas cantidades.',[S.m,' = ',q('m',e.mg/1000,'kg'),'; ',S.V,' = ',q('V',e.Vcm/1e6,'m³')]),
+          paso('El cociente conserva el significado de densidad.',final([S.rho,' = ',frac(q('m',e.mg/1000),q('V',e.Vcm/1e6))],valor))];break;
+      case 'area':
+        valor=e.F/(e.p*1000)*10000;datos=['La fuerza indicada es la resultante normal sobre una sola cara.',eq[0],eq[2]];
+        enunciado=['Una fuerza normal resultante de ',q('F',e.F,'N'),' produce una presión media de ',q('p',e.p,'kPa'),' sobre una cara. ¿Qué área tiene, en cm²?'];
+        regla=paso('Aislamos el área y usamos la presión en pascales.',[S.p,' = ',frac(S.F,S.A),'   ·   ',S.A,' = ',frac(S.F,S.p)]);
+        cuentas=[paso('Calculamos el área en metros cuadrados.',[S.A,' = ',frac(q('F',e.F),[q('p',e.p),' · 1000']),' = ',q('A',valor/10000,'m²')]),
+          paso('Convertimos a centímetros cuadrados.',final([S.A,' = ',q('A',valor/10000),' · 10 000'],valor))];break;
+      case 'absoluta':
+        valor=e.p0+e.rho*g*e.h/1000;datos.push('La presión superficial indicada es absoluta.',eq[0]);
+        enunciado=['La superficie de un líquido está a ',q('p',e.p0,'kPa'),'. Su densidad es ',q('rho',e.rho,'kg/m³'),'. ¿Qué presión absoluta hay a ',q('h',e.h,'m'),' de profundidad?'];
+        regla=paso('La presión interior conserva la referencia absoluta de la superficie.',[pa,' = ',ps,' + ',S.rho,' · ',S.g,' · ',S.h]);
+        cuentas=[paso('Expresamos el aumento de presión en kilopascales.',final([pa,' = ',q('p',e.p0),' + ',frac([q('rho',e.rho),' · ',q('g',g),' · ',q('h',e.h)],'1000')],valor))];break;
+      case 'profundidad':
+        valor=(e.pAbs-e.p0)*1000/(e.rho*g);datos.push('Las presiones interior y superficial son absolutas.',eq[0]);
+        enunciado=['Un líquido de ',q('rho',e.rho,'kg/m³'),' tiene ',q('p',e.p0,'kPa'),' en la superficie y ',q('p',e.pAbs,'kPa'),' en un sensor. ¿A qué profundidad está?'];
+        regla=paso('Restamos la referencia antes de aislar la profundidad.',[pa,' = ',ps,' + ',S.rho,' · ',S.g,' · ',S.h,'   ·   ',S.h,' = ',frac([pa,' − ',ps],[S.rho,' · ',S.g])]);
+        cuentas=[paso('Convertimos la diferencia a pascales.',final([S.h,' = ',frac(['(',q('p',e.pAbs),' − ',q('p',e.p0),') · 1000'],[q('rho',e.rho),' · ',q('g',g)])],valor))];break;
+      case 'densidad-desnivel':
+        valor=e.dp*1000/(g*(e.h2-e.h1));datos.push(eq[0],'Las profundidades parten de la misma superficie.');
+        enunciado=['La presión aumenta ',q('p',e.dp,'kPa'),' entre sensores a ',q('h',e.h1,'m'),' y ',q('h',e.h2,'m'),'. ¿Cuál es la densidad del líquido?'];
+        regla=paso('La diferencia de presión corresponde a la columna entre sensores. Δ indica una diferencia.', ['Δ',S.p,' = ',S.rho,' · ',S.g,' · Δ',S.h]);
+        cuentas=[paso('Restamos profundidades y despejamos la densidad.',['Δ',S.h,' = ',q('h',e.h2),' − ',q('h',e.h1),' = ',q('h',e.h2-e.h1,'m'),'; ',S.rho,' = ',frac(['Δ',S.p],[S.g,' · Δ',S.h])]),
+          paso('Usamos la diferencia de presión en pascales.',final([S.rho,' = ',frac([q('p',e.dp),' · 1000'],[q('g',g),' · ',q('h',e.h2-e.h1)])],valor))];break;
+      case 'muestra-profundidad': {
+        const rho=e.m/e.VL*1000;valor=(e.pAbs-e.p0)*1000/(rho*g);intermedios={rho};
+        datos.push('La muestra y el tanque contienen el mismo líquido.','Las dos presiones indicadas son absolutas.',eq[0],eq[1]);
+        enunciado=['Una muestra de ',q('m',e.m,'kg'),' ocupa ',q('V',e.VL,'L'),'. En el tanque, superficie y sensor marcan ',q('p',e.p0,'kPa'),' y ',q('p',e.pAbs,'kPa'),'. ¿A qué profundidad está el sensor?'];
+        regla=paso('La muestra permite calcular la densidad del tanque.',[S.rho,' = ',frac(S.m,S.V),' = ',frac(q('m',e.m),q('V',e.VL/1000)),' = ',q('rho',rho,'kg/m³')]);
+        cuentas=[paso('Aislamos la profundidad en la relación hidrostática.',[pa,' = ',ps,' + ',S.rho,' · ',S.g,' · ',S.h,'   ·   ',S.h,' = ',frac([pa,' − ',ps],[S.rho,' · ',S.g])]),
+          paso('Sustituimos la diferencia de presión y la densidad.',final([S.h,' = ',frac(['(',q('p',e.pAbs),' − ',q('p',e.p0),') · 1000'],[q('rho',rho),' · ',q('g',g)])],valor))];
+        errores=[er('SIN_SUPERFICIE',e.pAbs*1000/(rho*g),'omitiste restar la presión superficial','omite referencia'),er('SUMA_SUPERFICIE',(e.pAbs+e.p0)*1000/(rho*g),'sumaste las presiones','suma presiones'),er('PRODUCTO_MUESTRA',valor/(e.VL*e.VL),'multiplicaste masa por volumen al hallar densidad','multiplica masa y volumen')];break;
+      }
+      case 'area-tapa': {
+        const pInt=e.p0+e.rho*g*e.h/1000,dp=pInt-e.pExt;valor=e.F/(dp*1000)*10000;intermedios={pInt,dp};
+        datos=['Líquido homogéneo en reposo; g = 10 m/s² en este modelo.','Tapa horizontal: la presión es uniforme en cada cara.','La fuerza neta indicada corresponde solo a las presiones.','Las presiones dadas son absolutas.',eq[0],eq[2]];
+        enunciado=['Una tapa está ',q('h',e.h,'m'),' bajo un líquido de ',q('rho',e.rho,'kg/m³'),'. Superficie y exterior están a ',q('p',e.p0,'kPa'),' y ',q('p',e.pExt,'kPa'),'. La fuerza neta es ',q('F',e.F,'N'),'. ¿Qué área tiene?'];
+        regla=paso('Calculamos la presión interior en la tapa.',[pa,' = ',ps,' + ',S.rho,' · ',S.g,' · ',S.h,'   ·   ',pa,' = ',q('p',e.p0),' + ',frac([q('rho',e.rho),' · ',q('g',g),' · ',q('h',e.h)],'1000'),' = ',q('p',pInt,'kPa')]);
+        cuentas=[paso('Las caras reciben fuerzas opuestas; despejamos el área.',[S.F,' = (',pa,' − ',pe,') · ',S.A,'   ·   ',S.A,' = ',frac(S.F,[pa,' − ',pe])]),
+          paso('Calculamos el área y la convertimos a centímetros cuadrados.',final([S.A,' = ',frac([q('F',e.F),' · 10 000'],['(',q('p',pInt),' − ',q('p',e.pExt),') · 1000'])],valor))];
+        errores=[er('SIN_EXTERIOR',e.F/(pInt*1000)*10000,'ignoraste la presión exterior','omite exterior'),er('SIN_COLUMNA',e.F/((e.p0-e.pExt)*1000)*10000,'omitiste la columna líquida','omite columna'),er('SUMA_CARAS',e.F/((pInt+e.pExt)*1000)*10000,'sumaste fuerzas de sentidos opuestos','suma fuerzas opuestas')];break;
+      }
+      case 'dos-lecturas': {
+        const rho=(e.p2-e.p1)*1000/(g*(e.h2-e.h1));valor=e.p1-rho*g*e.h1/1000;intermedios={rho};
+        datos.push('Ambos sensores miden presión absoluta en el mismo líquido.','Las profundidades parten de la misma superficie.',eq[0]);
+        enunciado=['A ',q('h',e.h1,'m'),' se miden ',q('p',e.p1,'kPa'),'; a ',q('h',e.h2,'m'),', ',q('p',e.p2,'kPa'),'. ¿Cuál es la presión absoluta en la superficie?'];
+        regla=paso('Al restar las lecturas se elimina la referencia superficial.',[sub(S.p,'2'),' − ',sub(S.p,'1'),' = ',S.rho,' · ',S.g,' · (',sub(S.h,'2'),' − ',sub(S.h,'1'),')']);
+        cuentas=[paso('Aislamos la densidad con la columna entre sensores.',[S.rho,' = ',frac(['(',q('p',e.p2),' − ',q('p',e.p1),') · 1000'],[q('g',g),' · (',q('h',e.h2),' − ',q('h',e.h1),')']),' = ',q('rho',rho,'kg/m³')]),
+          paso('Despejamos la referencia con la primera lectura.',final([ps,' = ',sub(S.p,'1'),' − ',S.rho,' · ',S.g,' · ',sub(S.h,'1'),'   ·   ',ps,' = ',q('p',e.p1),' − ',frac([q('rho',rho),' · ',q('g',g),' · ',q('h',e.h1)],'1000')],valor))];
+        errores=[er('PRIMER_SENSOR',e.p1,'tomaste la primera lectura como superficial','usa primera lectura'),er('SUMA_COLUMNA',e.p1+rho*g*e.h1/1000,'sumaste la columna al subir','suma al subir'),er('SEGUNDO_SIN_REFERENCIA',e.p1-e.p2*e.h1/e.h2,'hallaste densidad suponiendo presión superficial nula','supone referencia nula')];break;
+      }
+      case 'masa-presiones': {
+        const rho=(e.pAbs-e.p0)*1000/(g*e.h);valor=rho*e.VL/1000;intermedios={rho};
+        datos.push('La muestra tiene la misma densidad que el líquido del tanque.','Las dos presiones son absolutas.',eq[0],eq[1]);
+        enunciado=['Superficie y sensor, a ',q('h',e.h,'m'),', marcan ',q('p',e.p0,'kPa'),' y ',q('p',e.pAbs,'kPa'),'. ¿Qué masa tiene una muestra de ',q('V',e.VL,'L'),'?'];
+        regla=paso('Aislamos la densidad a partir de la presión hidrostática.',[pa,' − ',ps,' = ',S.rho,' · ',S.g,' · ',S.h,'   ·   ',S.rho,' = ',frac([pa,' − ',ps],[S.g,' · ',S.h])]);
+        cuentas=[paso('Calculamos la densidad con las presiones en pascales.',[S.rho,' = ',frac(['(',q('p',e.pAbs),' − ',q('p',e.p0),') · 1000'],[q('g',g),' · ',q('h',e.h)]),' = ',q('rho',rho,'kg/m³')]),
+          paso('Despejamos la masa y convertimos el volumen a metros cúbicos.',final([S.rho,' = ',frac(S.m,S.V),'   ·   ',S.m,' = ',S.rho,' · ',S.V,' = ',q('rho',rho),' · ',q('V',e.VL/1000)],valor))];
+        errores=[er('SIN_SUPERFICIE',e.pAbs*e.VL/(g*e.h),'ignoraste la presión superficial','omite superficie'),er('SUMA_SUPERFICIE',(e.pAbs+e.p0)*e.VL/(g*e.h),'sumaste las presiones','suma presiones'),er('SIN_GRAVEDAD',valor*g,'omitiste la gravedad al hallar densidad','omite gravedad')];break;
+      }
+      case 'tapa-profundidad': {
+        const dp=e.F/(e.Acm/10000)/1000;valor=(dp-(e.p0-e.pExt))*1000/(e.rho*g);intermedios={dp};
+        datos=['Líquido homogéneo en reposo; g = 10 m/s² en este modelo.','Tapa horizontal: la presión es uniforme en cada cara.','La fuerza neta indicada corresponde solo a las presiones.','Las presiones dadas son absolutas.',eq[0],eq[2]];
+        enunciado=['Una tapa de ',q('A',e.Acm,'cm²'),' recibe ',q('F',e.F,'N'),' netos. El líquido tiene ',q('rho',e.rho,'kg/m³'),'; superficie y exterior están a ',q('p',e.p0,'kPa'),' y ',q('p',e.pExt,'kPa'),'. ¿A qué profundidad está?'];
+        regla=paso('Las presiones opuestas producen una fuerza neta.',[S.F,' = (',pa,' − ',pe,') · ',S.A,'   ·   ',pa,' − ',pe,' = ',frac(q('F',e.F),q('A',e.Acm/10000)),' = ',q('p',dp*1000,'Pa')]);
+        cuentas=[paso('Sustituimos la presión hidrostática y aislamos la profundidad.',[S.h,' = ',frac([frac(S.F,S.A),' − (',ps,' − ',pe,')'],[S.rho,' · ',S.g])]),
+          paso('Usamos la diferencia de presión en pascales.',final([S.h,' = ',frac(['(',q('p',dp),' − (',q('p',e.p0),' − ',q('p',e.pExt),')) · 1000'],[q('rho',e.rho),' · ',q('g',g)])],valor))];
+        errores=[er('SIN_REFERENCIA',dp*1000/(e.rho*g),'atribuiste toda la diferencia a la columna','omite referencia superficial'),er('SUMA_REFERENCIA',(dp+e.p0-e.pExt)*1000/(e.rho*g),'sumaste la diferencia superficial','suma diferencia superficial'),er('SIN_EXTERIOR',(dp-e.p0)*1000/(e.rho*g),'restaste la presión superficial sin incluir la exterior','omite exterior')];break;
+      }
+      default:throw new Error('Tipo desconocido: '+tipo);
+    }
+    const errorPublico=errores.map(x=>({valor:x.valor,error:'FL12-P-'+x.operacion,siFuera:'Identificaste los datos; '+x.motivo+'. Obtienes '+mostrar(x.valor,u)+'.'}));
+    const ops=conOpciones?opciones(valor,errorPublico,x=>mostrar(x,u)):[];
+    return {enunciado,datos,dibujo:figura(tipo,e),pide:['Busco ',V(k,({rho:'la densidad',p:'la presión',F:'la fuerza',A:'el área',h:'la profundidad',m:'la masa'})[k]),'.'],
+      tengo:Object.entries(e).filter(([k])=>k!=='g').map(([k,x])=>({m:q('m',x,'kg'),VL:q('V',x,'L'),mg:q('m',x,'g'),Vcm:q('V',x,'cm³'),rho:q('rho',x,'kg/m³'),F:q('F',x,'N'),A:q('A',x,'m²'),p:q('p',x,'kPa'),p0:q('p',x,'kPa'),pAbs:q('p',x,'kPa'),dp:q('p',x,'kPa'),h:q('h',x,'m'),h1:q('h',x,'m'),h2:q('h',x,'m')}[k]||String(x))).flatMap((x,i)=>i?['; ',x]:[x]),
+      regla,cuentas,sentido:['La respuesta es ',V(k,mostrar(valor,u)),', con las unidades y la referencia solicitadas.'],respuesta:[V(k,mostrar(valor,u))],opciones:ops,
+      caso:{tipo,...e,g,valor,unidad:u,intermedios,errores:errores.map(({operacion,valor})=>({operacion,valor}))},
+      erroresEjemplo:errores.map(x=>mostrar(x.valor,u)+': '+(x.corto||x.motivo)).join('; ')+'.'};
+  }
+  const muestras=[
+    ['densidad',{m:1.8,VL:2},'Masa en un volumen'],['presion',{F:180,A:0.6},'Una fuerza normal'],
+    ['fuerza',{p:2500,A:0.04},'Fuerza sobre una cara'],['incremento',{rho:1000,h:0.6},'Debajo de la superficie'],
+    ['manometrica',{pAbs:94,pExt:100},'Una lectura bajo la referencia'],
+    ['densidad-conversion',{mg:150,Vcm:125},'La misma densidad en otras unidades'],['area',{F:240,p:60},'Despejar una superficie'],
+    ['absoluta',{rho:800,h:0.75,p0:95},'La presión sobre el líquido'],['profundidad',{rho:1400,pAbs:128,p0:100},'Ubicar el sensor'],
+    ['densidad-desnivel',{dp:7.2,h1:0.2,h2:1.1},'Dos profundidades conocidas'],
+    ['muestra-profundidad',{m:1.5,VL:2,p0:90,pAbs:120},'De la muestra al tanque'],
+    ['area-tapa',{rho:1000,h:0.4,p0:116,pExt:100,F:600},'Las dos caras de una tapa'],
+    ['dos-lecturas',{p1:108,p2:120,h1:0.4,h2:1.6},'Reconstruir la presión superficial'],
+    ['masa-presiones',{p0:100,pAbs:130,h:2,VL:1.5},'Pesar una muestra mediante lecturas'],
+    ['tapa-profundidad',{Acm:24,F:72,rho:1000,p0:110,pExt:100},'La profundidad de una tapa']
+  ];
+  const firma=(t,e)=>t+'|'+JSON.stringify(Object.entries(e).sort());
+  const reservadas=new Set(muestras.map(([t,e])=>firma(t,e)));
+  function generar(semilla,practica){
+    const r=azar(semilla+(practica?17000:9000));
+    for(let intento=0;intento<200;intento++){
+      let t,e;
+      if(!practica){
+        t=r.de(['densidad-conversion','area','absoluta','profundidad','densidad-desnivel']);
+        const rho=r.de([700,900,1100,1300]),h=r.de([0.4,0.8,1.2,1.6]),p0=r.de([84,92,96]);
+        if(t==='densidad-conversion'){const Vcm=r.de([80,160,240,320]);e={mg:rho*Vcm/1000,Vcm};}
+        if(t==='area'){e={F:r.de([120,180,300,360]),p:r.de([15,25,30,45])};if((10*e.F)%e.p!==0)continue;}
+        if(t==='absoluta')e={rho,h,p0};
+        if(t==='profundidad')e={rho,p0,pAbs:p0+rho*10*h/1000};
+        if(t==='densidad-desnivel'){const h1=r.de([0.1,0.3,0.5]),h2=h1+h;e={dp:rho*10*h/1000,h1,h2};}
+      }else{
+        t=r.de(['muestra-profundidad','area-tapa','dos-lecturas','masa-presiones','tapa-profundidad']);
+        const rho=r.de([750,900,1000,1250]),h=r.de([1.6,2.4,3.2,4]),p0=r.de([80,96,104]),V=r.de([1.2,1.6,2,2.4]);
+        if(t==='muestra-profundidad')e={m:rho*V/1000,VL:V,p0,pAbs:p0+rho*10*h/1000};
+        if(t==='area-tapa'){const pExt=p0-20,A=r.de([0.002,0.004,0.006,0.008]);e={rho,h,p0,pExt,F:(20+rho*10*h/1000)*1000*A};}
+        if(t==='dos-lecturas'){const h1=r.de([0.2,0.4,0.6]),h2=h1+h;e={p1:p0+rho*10*h1/1000,p2:p0+rho*10*h2/1000,h1,h2};}
+        if(t==='masa-presiones')e={p0,pAbs:p0+rho*10*h/1000,h,VL:V};
+        if(t==='tapa-profundidad'){const pExt=p0-12,Acm=r.de([16,20,32,40]);e={rho,p0,pExt,Acm,F:(12+rho*10*h/1000)*1000*Acm/10000};}
+      }
+      e=Object.fromEntries(Object.entries(e).map(([k,v])=>[k,typeof v==='number'?Number(v.toFixed(8)):v]));
+      if(reservadas.has(firma(t,e)))continue;
+      const c=caso(t,e,practica);
+      if(practica&&c.caso.errores.some(x=>Math.abs(x.valor/c.caso.valor)<0.05||Math.abs(x.valor/c.caso.valor)>20))continue;
+      return practica?pregunta(c):resuelto(c);
+    }
+    throw new Error('No salió un caso de presión distinto y dentro de escala.');
+  }
+  glosario.push(
+    {termino:'densidad',simbolo:'ρ',medida:'kg/m³',formas:['densidad','densidades'],simple:'Cuánta masa hay en un volumen de material.',def:'Masa de una muestra dividida entre el volumen que ocupa.',ejemplos:['Una muestra de 2 kg en 2 L tiene densidad de 1 kg/L.','Dos litros y un litro del mismo líquido homogéneo tienen igual densidad.','Conocer masa y volumen permite comparar materiales.']},
+    {termino:'presión',simbolo:'p',medida:'Pa',formas:['presión','presiones'],simple:'Una medida de la acción normal distribuida sobre una superficie.',def:'Magnitud escalar que describe la acción normal distribuida de un fluido sobre una superficie.',ejemplos:['Un sensor registra la presión en el interior de un tanque.','La presión se mide en pascales.','Una pared y un fondo reciben fuerzas normales de un líquido.']},
+    {termino:'presión absoluta',simbolo:'p',medida:'Pa',formas:['presión absoluta','presiones absolutas'],simple:'Presión medida desde el vacío como referencia.',def:'Presión cuya referencia de cero es el vacío.',ejemplos:['Una lectura absoluta identifica su referencia.','Una cámara puede tener menor presión absoluta que el aire exterior.','La presión absoluta no puede ser negativa.']},
+    {termino:'presión manométrica',simbolo:'p',medida:'Pa',formas:['presión manométrica','presiones manométricas'],simple:'Diferencia de presión respecto al aire que rodea el instrumento.',def:'Presión interior menos presión atmosférica de referencia.',ejemplos:['Cero manométrico indica igual presión que el aire de referencia.','Una lectura manométrica negativa corresponde a presión menor que la exterior.','Dos instrumentos deben usar la misma referencia para comparar sus lecturas.']}
+  );
+  const pred={F:90,A1:30,A2:15},pInicial=pred.F/(pred.A1/10000)/1000,pFinal=pred.F/(pred.A2/10000)/1000;
+  const compara=revelar=>pistones([pred.A1,pred.A2],[pred.F,pred.F],[pInicial,revelar?pFinal:null]);
+  const columna=flu({tipo:'vasos',modo:'esquema',vasos:[{id:'tanque'}],puntos:[{id:'sensor',recipiente:'tanque'}],
+    cotas:[{de:'superficie-tanque',a:'sensor',lado:'der',texto:'h',color:'d'}],
+    rotulos:[{ref:'tanque',fila:0,texto:'Presión superficial',color:'i'},{ref:'tanque',fila:1,texto:'Columna de líquido',color:'f'},{ref:'tanque',fila:2,texto:'Profundidad vertical: h',color:'d'}],
+    alt:'Un recipiente con líquido en reposo; la profundidad vertical parte de su superficie.'});
+  const caras=flu({tipo:'vasos',modo:'esquema',vasos:[{id:'tanque',tapa:'fondo',cerrado:true}],
+    rotulos:[{ref:'tanque',fila:0,texto:'Tapa horizontal en el fondo',color:'d'},
+      {ref:'tanque',fila:1,texto:'Interior: presión absoluta',color:'i'},
+      {ref:'tanque',fila:2,texto:'Exterior: aire de referencia',color:'i'}],
+    alt:'La tapa horizontal del fondo tiene líquido en su cara superior y aire exterior en la inferior.'});
+  return {
+    id:'presion-profundidad',titulo:'Un líquido y una superficie',pregunta:'¿Cómo relacionas una fuerza, una superficie y la presión de un líquido?',
+    temas:['Densidad y presión','Presión hidrostática y atmosférica'],pieza:'fis-fluidos-e12',
+    aprendizaje:'Distingo fuerza y presión; calculo la densidad y uso una referencia para interpretar la presión de un líquido quieto.',
+    actividad:'Aplicar una fuerza normal a un pistón y leer la presión que añade al líquido.',
+    lee:{tarjetas:[
+      {titulo:'Una cara que empuja al líquido',texto:'Un pistón es una pieza móvil que empuja al líquido. La fuerza normal actúa perpendicularmente a su cara. El sensor mide la presión añadida respecto al aire exterior.',dibujo:pistones([20],[20],[10])},
+      {titulo:'Masa y volumen son cantidades distintas',texto:['La densidad ',S.rho,' indica cuánta masa ',S.m,' corresponde al volumen ',S.V,'. Se calcula dividiendo masa entre volumen. Una muestra de 0,8 kg en 1 L tiene 0,8 kg/L.'],ecuacion:[S.rho,' = ',frac(S.m,S.V)]},
+      {titulo:'La referencia de una lectura',texto:'La presión absoluta se mide desde el vacío. La presión manométrica compara con el aire exterior. En el juego, el sensor muestra la presión añadida por tu fuerza; se mide en kilopascales.'}
+    ]},
+    ejemplos:muestras.map(([t,e,titulo],i)=>ejemplo(caso(t,e,i>=10),Math.floor(i/5)+1,titulo,i-10)),
+    juega:{pieza:'fis-fluidos-e12',consigna:'Un pistón horizontal empuja un líquido encerrado. Ajusta la fuerza normal para alcanzar la lectura pedida.',voz:'Compara las lecturas mientras la misma cara recibe fuerzas diferentes.',
+      mision:{texto:'Haz que el sensor registre 30 kPa de presión añadida.',logrado:v=>Math.abs(v.F/0.002/1000-30)<1e-9,bien:'La lectura llegó a 30 kPa con la misma área.',pista:'Prueba otra fuerza y compara la lectura del sensor.'},
+      controles:[{id:'F',etiqueta:'Fuerza normal, F',color:'c-h',opciones:[20,40,60,80].map(F=>({valor:F,texto:F+' N'})),inicio:20}],
+      leyenda:[{s:S.F,t:'fuerza normal adicional, sin incluir el aire exterior'},{s:S.A,t:'área fija de la cara: 20 cm²'},{s:S.p,t:'presión añadida respecto al aire, medida en kPa'},{s:'Modelo',t:'equilibrio; pistón sin masa ni rozamiento'}],
+      dibujo:v=>pistones([20],[v.F],[v.F/0.002/1000]),lectura:v=>['Con ',q('F',v.F,'N'),', el sensor marca ',q('p',v.F/0.002/1000,'kPa'),'.'],resumen:{F:40},minimo:2},
+    predice:{pregunta:'El sensor mide 30 kPa con una fuerza de 90 N sobre 30 cm². Conservas la fuerza y usas 15 cm². ¿Qué presión añadida esperas?',
+      datos:['La fuerza actúa perpendicularmente sobre cada cara.','El pistón está en equilibrio y no tiene masa ni rozamiento.','Ambos casos usan el mismo aire exterior como referencia.'],
+      opciones:opciones(pFinal,[{valor:pInicial,error:'FL12-P-CONSERVA',siFuera:'Conservaste la fuerza. Esa lectura corresponde al área inicial: 30 kPa.'},
+        {valor:pInicial*pred.A2/pred.A1,error:'FL12-P-PROPORCIONAL',siFuera:'Reconociste media área; hiciste la presión proporcional al área y obtuviste 15 kPa.'},
+        {valor:pInicial*(pred.A1/pred.A2)**2,error:'FL12-P-DOBLE_CAMBIO',siFuera:'Reconociste que cambia el área; aplicaste dos veces su factor y obtuviste 120 kPa.'}],x=>n(x)+' kPa'),
+      dibujo:compara(false),revelar:compara(true),coincide:'Coincide: la misma fuerza actúa sobre media área y añade el doble de presión.'},
+    mira:{pieza:'fis-fluidos-e12',datos:compara(true).datos,pasos:[
+      {estado:{paso:0},texto:'La presión media divide la fuerza normal entre el área.',ecuacion:[S.p,' = ',frac(S.F,S.A)]},
+      {estado:{paso:1},texto:'La fuerza permanece; convertimos la nueva área a metros cuadrados.',ecuacion:[S.p,' = ',frac(q('F',90),q('A',0.0015)),' = ',q('p',60000,'Pa'),' = ',q('p',60,'kPa')]},
+      {estado:{datos:columna.datos},texto:'Una columna de área constante tiene volumen igual al área por profundidad.',ecuacion:[S.V,' = ',S.A,' · ',S.h,'   ·   ',S.m,' = ',S.rho,' · ',S.V]},
+      {estado:{datos:columna.datos},texto:['El peso añade presión; ',ps,' es presión superficial; ',S.g,' es la aceleración gravitatoria.'],ecuacion:[S.p,' − ',ps,' = ',frac([S.m,' · ',S.g],S.A),' = ',S.rho,' · ',S.g,' · ',S.h]},
+      {estado:{datos:columna.datos},texto:'La presión interior suma la referencia superficial y el aporte de la columna.',ecuacion:[pa,' = ',ps,' + ',S.rho,' · ',S.g,' · ',S.h]},
+      {estado:{datos:columna.datos},texto:'Entre dos profundidades, la misma referencia superficial se cancela al restar.',ecuacion:[sub(S.p,'2'),' − ',sub(S.p,'1'),' = ',S.rho,' · ',S.g,' · (',sub(S.h,'2'),' − ',sub(S.h,'1'),')']},
+      {estado:{datos:caras.datos},texto:'Restamos la referencia exterior; dos caras horizontales reciben fuerzas normales opuestas.',ecuacion:[pm,' = ',pa,' − ',pe,'   ·   ',S.F,' = ',pm,' · ',S.A]}
+    ]},
+    regla:{texto:'La presión media relaciona fuerza normal y área. En un líquido quieto, aumenta con la profundidad vertical. La presión manométrica resta la referencia atmosférica.',
+      ecuacion:[S.p,' = ',frac(S.F,S.A),'   ·   ',pa,' = ',ps,' + ',S.rho,' · ',S.g,' · ',S.h],
+      condicion:'Líquido homogéneo en reposo, gravedad uniforme; referencia superficial conocida. Sobre una cara horizontal, la presión es uniforme.',
+      voz:'La densidad es masa entre volumen. Una presión absoluta y una manométrica usan ceros distintos.',dibujo:columna},
+    resuelve:{pieza:'fis-fluidos-e12',generar:s=>generar(s,false)},ahoraTu:{pieza:'fis-fluidos-e12',generar:s=>generar(s,true)}
   };
-
-  // ---------- Idea 2: vasos comunicantes, manómetro y barómetro ----------
-  // Cambia: la columna de aceite y la ciudad del barómetro · Permanece: el agua del tubo en U y el mercurio ·
-  // Progresa: el desnivel del agua y la altura de la columna de mercurio · Se reserva: la comparación del aceite con el agua ·
-  // Debe verse: dos puntos a la misma altura en el mismo líquido conectado tienen la misma presión.
-  // Se manipula: la superficie del aceite, que se arrastra hacia arriba (cuánto aceite se echa).
-  const RHO_AC = 800, H0 = 0.45;
-  const CIUDAD = { 1: { n: 'Lima', p: 101 }, 2: { n: 'Arequipa', p: 77 }, 3: { n: 'Juliaca', p: 64 } };
-  const tuboU = (ha, rhoA = RHO_AC, o = {}) => {
-    const dif = ha * rhoA / RHO_W, hL = H0 - dif / 2, hR = H0 + dif / 2;
-    return {
-      recipiente: { tipo: 'u', izq: [{ h: hL, tono: 2 }, { h: ha, tono: 1 }], der: [{ h: hR, tono: 2 }], rotulo: o.rotulo },
-      dif, hL, hR,
-    };
-  };
-  const columnaHg = pk => 0.76 * pk / 101;   // 76 cm de mercurio con 101 kPa (convención de academia)
-  const figuraU = (ha, ciudad, o = {}) => {
-    const u = tuboU(ha);
-    const rec = [u.recipiente];
-    if (ciudad) rec.push({ tipo: 'barometro', columna: columnaHg(CIUDAD[ciudad].p), rotulo: CIUDAD[ciudad].n });
-    return {
-      alto: 0.85, unidad: 'm', recipientes: rec,
-      puntos: o.puntos === false ? [] : [{ k: 0, y: u.hL, lado: 'izq', rotulo: 'A', color: 'i', desde: o.desdeP || 0 }, { k: 0, y: u.hL, lado: 'der', rotulo: 'B', color: 'i', desde: o.desdeP || 0 }],
-      cotas: o.cotas === false ? [] : [{ k: 0, y1: u.hL, y2: u.hL + ha, texto: `${f(ha * 100)} cm`, color: 'd', lado: 'izq', desde: o.desdeC || 0 }, { k: 0, y1: u.hL, y2: u.hR, texto: `${f(u.dif * 100)} cm`, color: 'd', lado: 'der', desde: o.desdeC2 || 0 }],
-    };
-  };
-  const comunicantes = {
-    id: 'vasos-comunicantes',
-    titulo: 'Misma altura, misma presión',
-    temas: ['Manómetro, barómetro y vasos comunicantes'],
-    pieza: 'fis-vasos',
-    juega: {
-      consigna: 'Entra y sale aceite en una rama del tubo en U: mira cuánto sube el agua del otro lado. El barómetro cambia con la ciudad.',
-      voz: 'Mira cuánto sube el agua del otro lado y cuánto mide el mercurio.',
-      controles: [
-        { id: 'ha', etiqueta: 'aceite', color: 'c-d', min: 0.1, max: 0.4, paso: 0.05, inicio: 0.2, unidad: 'm', decimales: 2, auto: { velocidad: 0.08, modo: 'rebota' } },
-        { id: 'c', etiqueta: 'Ciudad', opciones: [{ valor: 1, texto: 'Lima' }, { valor: 2, texto: 'Arequipa' }, { valor: 3, texto: 'Juliaca' }], inicio: 1 },
-      ],
-      dibujo: val => ({ datos: figuraU(val.ha, val.c), estado: {} }),
-      lectura: val => [`Desnivel del agua: ${f(val.ha * RHO_AC / RHO_W * 100, 1)} cm · mercurio: ${f(columnaHg(CIUDAD[val.c].p) * 100, 0)} cm`],
-      minimo: 3,
-      // Arrastra la superficie del aceite: su tope está en hL + ha = H0 + ha·(1 − ρa/2ρw).
-      arrastres: [{
-        id: 'aceite', etiqueta: 'superficie del aceite', color: 'c-d',
-        donde: val => { const g = VASOS().geometria(figuraU(val.ha, val.c)); return { x: g.rama(0, 'izq'), y: g.Y(tuboU(val.ha).hL + val.ha) }; },
-        mover: (pt, val) => ({ ha: (VASOS().geometria(figuraU(val.ha, val.c)).Yi(pt.y) - H0) / (1 - RHO_AC / RHO_W / 2) }),
-      }],
-    },
-    predice: {
-      pregunta: 'En un tubo en U con agua se echan 10 cm de aceite (ρ = 800 kg/m³) en una rama. ¿Cuánto más alta queda la superficie del aceite que la del agua en la otra rama?',
-      opciones: [
-        { id: 'c', texto: '2 cm', correcta: true },
-        { id: 'igual', texto: '0 cm: quedan al mismo nivel', error: 'FL-MISMO-NIVEL', siFuera: 'El mismo nivel vale con un solo líquido. Con dos densidades, la columna liviana es más alta.' },
-        { id: 'diez', texto: '10 cm', error: 'FL-OTRO-LADO', siFuera: 'Eso supone que el agua no se movió. El agua del otro lado sube 8 cm.' },
-        { id: 'ocho', texto: '8 cm', error: 'FL-RESTA', siFuera: 'Ese es el desnivel del agua entre las dos ramas, no el del aceite.' },
-      ],
-      dibujo: { datos: Object.assign(figuraU(0.1, 0, { puntos: false, cotas: false }), {}), estado: {} },
-      revelar: { datos: Object.assign(figuraU(0.1, 0, { cotas: false }), { cotas: [{ k: 0, y1: tuboU(0.1).hL, y2: tuboU(0.1).hL + 0.1, texto: '10 cm', color: 'd', lado: 'izq' }, { k: 0, y1: tuboU(0.1).hR, y2: tuboU(0.1).hL + 0.1, texto: '2 cm', color: 'd', lado: 'der' }] }), estado: {} },
-      coincide: 'Coincide: 10 cm de aceite pesan como 8 cm de agua. El aceite sobresale 2 cm.',
-    },
-    mira: {
-      pieza: 'fis-vasos',
-      datos: figuraU(0.1, 1, { desdeP: 1, desdeC: 2, desdeC2: 3 }),
-      pasos: [
-        { estado: { corte: 1 }, texto: 'A y B están a la misma altura y en el mismo líquido conectado.', ecuacion: [{ sub: [p, 'A'] }, ' = ', { sub: [p, 'B'] }] },
-        { estado: { corte: 2 }, texto: 'Sobre A hay 10 cm de aceite.', ecuacion: [{ sub: [p, 'A'] }, ' = 800 · 10 · 0,10 = 800 Pa'] },
-        { estado: { corte: 3 }, texto: 'Sobre B, el agua que subió: la misma presión pide 8 cm.', ecuacion: [h, ' = ', { frac: ['800', '1000 · 10'] }, ' = 0,08 m'] },
-        { estado: { corte: 3 }, texto: 'El barómetro es lo mismo: el aire de afuera equilibra la columna.', ecuacion: [p0, ' = ', { sub: ['ρ', 'Hg'] }, ' g ', h, '   →   76 cm en Lima'] },
-      ],
-    },
-    regla: {
-      texto: 'En vasos comunicantes con líquido quieto, los puntos a igual altura tienen igual presión. Así miden el manómetro y el barómetro: la columna más densa queda más baja.',
-      ecuacion: [{ sub: ['ρ', '1'] }, { sub: [h, '1'] }, ' = ', { sub: ['ρ', '2'] }, { sub: [h, '2'] }, '   ·   ', p0, ' = ', { llave: [{ sub: ['ρ', 'Hg'] }, ' g ', h], nota: 'columna de mercurio', color: 'c-d' }],
-      condicion: 'los dos puntos están en el mismo líquido, sin otro líquido entre ellos, y las ramas están abiertas al mismo aire.',
-    },
-    ahoraTu: {
-      pieza: 'fis-vasos',
-      generar(s) {
-        const r = azar(s);
-        if (s % 2 === 0) {
-          const ha = r.de([0.1, 0.15, 0.2, 0.25, 0.3]), rhoA = r.de([600, 700, 800, 900]), dif = ha * rhoA / RHO_W;
-          const u = tuboU(ha, rhoA);
-          return {
-            pregunta: `En un tubo en U con agua se echan ${f(ha * 100)} cm de un líquido de ρ = ${f(rhoA)} kg/m³ en una rama. ¿Cuánto más alta queda el agua de la otra rama que la del lado del líquido?`,
-            dibujo: { datos: { alto: 0.85, unidad: 'm', recipientes: [u.recipiente] }, estado: {} },
-            opciones: opciones(dif * 100, [
-              { id: 'igual', valor: ha * 100, error: 'FL-OTRO-LADO', siFuera: 'Ese desnivel sería cierto si el líquido tuviera la densidad del agua.' },
-              { id: 'inv', valor: ha * RHO_W / rhoA * 100, error: 'FL-BARO-INV', siFuera: 'Ese cociente está al revés: la columna de agua, más densa, es más corta.' },
-              { id: 'resta', valor: (ha - dif) * 100, error: 'FL-RESTA', siFuera: 'Esa es la parte que el líquido sobresale del agua.' },
-            ], n => `${f(n)} cm`),
-            solucion: { texto: 'Las dos columnas sobre el nivel de la interfaz pesan lo mismo por m².', ecuacion: [{ sub: [h, 'agua'] }, ` = ${f(ha * 100)} · ${f(rhoA)} / 1000 = ${f(dif * 100)} cm`] },
-          };
-        }
-        const pk = r.de([60, 64, 70, 77, 85, 90, 101]), hc = pk * 1000 / (13600 * G);
-        return {
-          pregunta: `En una ciudad la presión del aire es ${f(pk)} kPa. ¿Qué altura alcanza la columna de un barómetro de mercurio (ρ = 13 600 kg/m³)? (g = 10 m/s²)`,
-          dibujo: { datos: { alto: 1, unidad: 'm', recipientes: [{ tipo: 'barometro', columna: hc }] }, estado: {} },
-          opciones: opciones(hc * 100, [
-            { id: 'igual', valor: 76, error: 'FL-BARO-IGUAL', siFuera: '76 cm es la altura a nivel del mar; aquí el aire aprieta distinto.' },
-            { id: 'sin-g', valor: pk * 1000 / 13600 * 100, error: 'FL-SIN-G', siFuera: 'Eso olvida dividir entre g.' },
-            { id: 'inv', valor: 76 * 101 / pk, error: 'FL-BARO-INV', siFuera: 'Con menos presión del aire, la columna baja, no sube.' },
-          ], n => `${f(n, 1)} cm`),
-          solucion: { texto: 'El aire de afuera sostiene la columna: p₀ = ρgh.', ecuacion: [h, ` = ${f(pk * 1000)} / (13 600 · 10) = ${f(hc, 3)} m`] },
-        };
-      },
-    },
-  };
-
-  // ---------- Idea 3: Pascal y la prensa ----------
-  // Cambia: la razón de áreas y la fuerza en el émbolo chico · Permanece: el líquido encerrado ·
-  // Progresa: la flecha de F₂, que crece con A₂ · Se reserva: cuánto baja el émbolo chico ·
-  // Debe verse: la presión se transmite igual; la fuerza se multiplica, el recorrido se divide.
-  // Se manipula: la cola de la flecha F₁ sobre el émbolo chico, que se estira hacia arriba (cuánto se empuja).
-  // Las flechas van a 0,6 px por newton; F₁ no baja de 8 px para que su punta no se pierda.
-  const ESC_F = 0.6;
-  const prensa = (F1, k, o = {}) => ({
-    alto: 1, unidad: 'm',
-    recipientes: [{ tipo: 'prensa', a1: 1, a2: k, nivel: 0.55, F1: { texto: o.sin1 ? '' : `${f(F1)} N`, largo: Math.max(8, F1 * ESC_F) }, F2: o.sin2 ? undefined : { texto: `${f(F1 * k)} N`, largo: Math.min(120, Math.max(14, F1 * k * ESC_F)) } }],
-  });
-  const arrastreF1 = datosDe => ({
-    id: 'empuje-chico', etiqueta: 'fuerza sobre el émbolo chico', color: 'c-h',
-    donde: val => { const d = datosDe(val), g = VASOS().geometria(d).prensa(d.recipientes[0]); return { x: g.x1, y: g.pieF - d.recipientes[0].F1.largo }; },
-    mover: (pt, val) => { const d = datosDe(val), g = VASOS().geometria(d).prensa(d.recipientes[0]); return { F1: (g.pieF - pt.y) / ESC_F }; },
-  });
-  const pascal = {
-    id: 'prensa-hidraulica',
-    titulo: 'La prensa multiplica la fuerza',
-    temas: ['Principio de Pascal'],
-    pieza: 'fis-vasos',
-    juega: {
-      consigna: 'La fuerza sobre el émbolo chico sube y baja sola. Mira cómo la sigue la del grande. Cambia cuántas veces más área tiene.',
-      voz: 'Las dos flechas son fuerzas. ¿Qué tienen en común los dos émbolos?',
-      controles: [
-        { id: 'F1', etiqueta: 'F₁', color: 'c-h', min: 10, max: 40, paso: 10, inicio: 20, unidad: 'N', decimales: 0, auto: { velocidad: 10, modo: 'rebota' } },
-        { id: 'k', etiqueta: 'A₂ / A₁', min: 2, max: 5, paso: 1, inicio: 3, decimales: 0 },
-      ],
-      // Mientras corre, F₁ avanza de newton en newton (el cuadro no muestra decimales que nadie eligió).
-      dibujo: val => ({ datos: prensa(Math.round(val.F1), val.k), estado: {} }),
-      lectura: val => [{ sub: [F, '2'] }, ` = ${f(Math.round(val.F1))} · ${f(val.k)} = ${f(Math.round(val.F1) * val.k)} N`],
-      minimo: 3,
-      // Arrastra la cola de la flecha F₁ hacia arriba: más largo es empujar más fuerte.
-      arrastres: [arrastreF1(val => prensa(val.F1, val.k))],
-    },
-    predice: {
-      pregunta: 'En una prensa, el émbolo grande tiene 5 veces el área del chico. Para que el grande suba 1 cm, ¿cuánto tiene que bajar el émbolo chico?',
-      opciones: [
-        { id: 'c', texto: '5 cm', correcta: true },
-        { id: 'igual', texto: '1 cm, lo mismo', error: 'PA-IGUAL', siFuera: 'Sería cierto con áreas iguales. El líquido que baja se reparte en un área 5 veces mayor.' },
-        { id: 'inv', texto: '0,2 cm', error: 'PA-INV', siFuera: 'Esa razón es la de las fuerzas al revés; el recorrido del chico es mayor.' },
-        { id: 'cuad', texto: '25 cm', error: 'PA-CUADRADO', siFuera: 'Eso usa 5 dos veces. El volumen que se mueve es el mismo en los dos lados.' },
-      ],
-      dibujo: { datos: prensa(20, 5, { sin2: true }), estado: {} },
-      revelar: { datos: prensa(20, 5), estado: {} },
-      coincide: 'Coincide: el volumen que baja en el chico (A₁ · 5 cm) es el que sube en el grande (5A₁ · 1 cm).',
-    },
-    mira: {
-      pieza: 'fis-vasos',
-      datos: prensa(20, 5),
-      pasos: [
-        { estado: {}, texto: 'El émbolo chico aprieta el líquido: 20 N sobre A₁.', ecuacion: [p, ' = ', { frac: [{ sub: [F, '1'] }, { sub: ['A', '1'] }] }] },
-        { estado: {}, texto: 'El líquido encerrado lleva esa presión a todas partes.', ecuacion: [p, ' = ', { frac: [{ sub: [F, '2'] }, { sub: ['A', '2'] }] }] },
-        { estado: {}, texto: 'Con 5 veces el área, la fuerza es 5 veces mayor.', ecuacion: [{ sub: [F, '2'] }, ' = 20 · 5 = 100 N'] },
-        { estado: {}, texto: 'El precio: el chico recorre 5 veces más. El trabajo no cambia.', ecuacion: ['20 N · 5 cm = 100 N · 1 cm'] },
-      ],
-    },
-    regla: {
-      texto: 'Principio de Pascal: un cambio de presión en un líquido encerrado llega igual a todos sus puntos. En la prensa, la fuerza crece con el área.',
-      ecuacion: [{ frac: [{ sub: [F, '1'] }, { sub: ['A', '1'] }] }, ' = ', { frac: [{ sub: [F, '2'] }, { sub: ['A', '2'] }] }, '   ·   ', { llave: [{ sub: ['A', '1'] }, { sub: ['d', '1'] }], nota: 'volumen que baja' }, ' = ', { llave: [{ sub: ['A', '2'] }, { sub: ['d', '2'] }], nota: 'volumen que sube' }],
-      condicion: 'líquido encerrado que no se comprime, émbolos a la misma altura y sin rozamiento.',
-    },
-    ahoraTu: {
-      pieza: 'fis-vasos',
-      generar(s) {
-        const r = azar(s), k = r.de([4, 5, 8, 10]), F2 = r.de([800, 1000, 2000, 4000]), F1 = F2 / k;
-        const fig = (t1, t2) => ({ datos: { alto: 1, unidad: 'm', recipientes: [{ tipo: 'prensa', a1: 1, a2: k, nivel: 0.55, F1: { texto: t1, largo: 20 }, F2: { texto: t2, largo: 60 } }] }, estado: {} });
-        if (s % 2 === 0) return {
-          pregunta: `Una prensa tiene émbolos de áreas A₁ y A₂ = ${f(k)}A₁. ¿Qué fuerza hay que hacer en el chico para levantar ${f(F2)} N en el grande?`,
-          dibujo: fig('?', `${f(F2)} N`),
-          opciones: opciones(F1, [
-            { id: 'por', valor: F2 * k, error: 'PA-INV', siFuera: 'Eso multiplica por la razón de áreas: el chico necesita menos fuerza.' },
-            { id: 'igual', valor: F2, error: 'PA-IGUAL', siFuera: 'La misma fuerza valdría con áreas iguales.' },
-            { id: 'cuad', valor: F2 / (k * k), error: 'PA-CUADRADO', siFuera: 'Eso divide dos veces; el área ya es la razón que cuenta.' },
-          ], n => `${f(n)} N`),
-          solucion: { texto: 'La presión es la misma en los dos émbolos.', ecuacion: [{ sub: [F, '1'] }, ` = ${f(F2)} / ${f(k)} = ${f(F1)} N`] },
-        };
-        const dr = r.de([0.5, 1, 2, 3]);
-        return {
-          pregunta: `Una prensa tiene A₂ = ${f(k)}A₁. Si el émbolo grande sube ${f(dr)} cm, ¿cuánto baja el chico?`,
-          dibujo: fig('', ''),
-          opciones: opciones(dr * k, [
-            { id: 'igual', valor: dr, error: 'PA-IGUAL', siFuera: 'Igual recorrido valdría con áreas iguales.' },
-            { id: 'inv', valor: dr / k, error: 'PA-INV', siFuera: 'El chico recorre más, no menos: mueve el mismo volumen con menos área.' },
-            { id: 'cuad', valor: dr * k * k, error: 'PA-CUADRADO', siFuera: 'Eso multiplica dos veces por la razón de áreas.' },
-          ], n => `${f(n)} cm`),
-          solucion: { texto: 'El volumen que baja en un lado sube en el otro.', ecuacion: [{ sub: ['d', '1'] }, ` = ${f(k)} · ${f(dr)} = ${f(dr * k)} cm`] },
-        };
-      },
-    },
-  };
-
-  // ---------- Idea 4: Arquímedes ----------
-  // Cambia: el material del bloque y el líquido · Permanece: el bloque, siempre de 1 litro ·
-  // Progresa: la parte sumergida y la flecha de empuje · Se reserva: dos bloques de igual tamaño bajo el agua ·
-  // Debe verse: el empuje es el peso del líquido desalojado; no depende de cuánto pesa el bloque.
-  // Sin arrastre en el juego: material y líquido son opciones. El bloque se arrastra en el laboratorio («Bloque de
-  // densidad libre»), donde su densidad es continua.
-  const VB = 0.001, LADO = 0.2, NIV_B = 0.62;   // 1 litro: en la figura, un bloque de 0,2 de alto
-  const MAT = { 250: 'corcho', 600: 'madera', 900: 'hielo', 2700: 'aluminio' };
-  const flota = (rb, rl) => {
-    const frac = Math.min(1, rb / rl), Wn = rb * VB * G, En = rl * G * VB * frac;
-    return { frac, Wn, En, hunde: rb > rl };
-  };
-  const vasoBloque = (rb, rl, o = {}) => {
-    const q = flota(rb, rl), niv = NIV_B;
-    const base = q.hunde ? 0 : niv - LADO * q.frac;
-    const esc = 2.2;   // px por N en las dos flechas
-    return {
-      alto: 1, unidad: 'm',
-      recipientes: [{ tipo: 'vaso', forma: 'ancho', nivel: niv, tono: tonoDe(rl), bloque: { ancho: 0.24, alto: LADO, base, rotulo: o.rot || MAT[rb], E: o.sinE ? undefined : { largo: q.En * esc, texto: `E = ${f(q.En, 1)} N` }, W: { largo: q.Wn * esc, texto: `W = ${f(q.Wn, 1)} N` } } }],
-    };
-  };
-  // Animación (15 nov): una mano sostiene el bloque y lo hunde hasta cubrirlo y lo vuelve a sacar. El empuje es el peso
-  // del líquido desalojado, ρ g V·fracción (regla 1); el peso no cambia. Donde E = W, suelto, flotaría.
-  const empujeHundido = (rl, fr) => rl * G * VB * fr;
-  const vasoHundido = (rb, rl, fr) => {
-    const W = rb * VB * G, En = empujeHundido(rl, fr), esc = 2.2;
-    return {
-      alto: 1, unidad: 'm',
-      recipientes: [{ tipo: 'vaso', forma: 'ancho', nivel: NIV_B, tono: tonoDe(rl), bloque: { ancho: 0.24, alto: LADO, base: NIV_B - LADO * fr, rotulo: MAT[rb], E: En > 0 ? { largo: En * esc, texto: `E = ${f(En, 1)} N` } : undefined, W: { largo: W * esc, texto: `W = ${f(W, 1)} N` } } }],
-    };
-  };
-  const arquimedes = {
-    id: 'empuje',
-    titulo: 'El empuje es el líquido desalojado',
-    temas: ['Principio de Arquímedes'],
-    pieza: 'fis-vasos',
-    juega: {
-      consigna: 'Una mano hunde y saca un bloque de 1 litro. Compara el empuje hidrostático E con el peso W. Cambia el material y el líquido.',
-      voz: 'Fíjate qué parte del bloque queda bajo la superficie.',
-      controles: [
-        { id: 'rb', etiqueta: 'Bloque', opciones: [{ valor: 250, texto: 'corcho' }, { valor: 600, texto: 'madera' }, { valor: 900, texto: 'hielo' }, { valor: 2700, texto: 'aluminio' }], inicio: 600 },
-        { id: 'rl', etiqueta: 'Líquido', opciones: [{ valor: 800, texto: 'aceite' }, { valor: 1000, texto: 'agua' }], inicio: 1000 },
-        { id: 's', etiqueta: 'sumergido', min: 0, max: 100, paso: 10, inicio: 0, unidad: '%', decimales: 0, auto: { velocidad: 25, modo: 'rebota' } },
-      ],
-      dibujo: val => ({ datos: vasoHundido(val.rb, val.rl, val.s / 100), estado: {} }),
-      lectura: val => { const q = flota(val.rb, val.rl), En = empujeHundido(val.rl, val.s / 100); return [E, ` = ${f(En, 1)} N · W = ${f(q.Wn, 1)} N`, q.hunde ? '' : Math.abs(En - q.Wn) < 0.06 ? ' · aquí flota' : '']; },
-      minimo: 3,
-    },
-    predice: {
-      pregunta: 'Un bloque de aluminio y uno de madera, del mismo tamaño, se mantienen bajo el agua, sumergidos por completo. ¿Cuál recibe más empuje?',
-      opciones: [
-        { id: 'c', texto: 'Los dos reciben el mismo empuje', correcta: true },
-        { id: 'pesado', texto: 'El de aluminio, porque pesa más', error: 'F10', siFuera: 'El aluminio sí pesa más. Pero el agua empuja según el volumen que desaloja.' },
-        { id: 'madera', texto: 'El de madera, porque flota', error: 'F13', siFuera: 'Suelta, la madera sube, cierto. Eso es porque pesa menos, no porque reciba más empuje.' },
-        { id: 'fondo', texto: 'El que esté más abajo', error: 'F12', siFuera: 'Abajo la presión es mayor, pero en todas sus caras: la diferencia no cambia.' },
-      ],
-      dibujo: { datos: vasoBloque(2700, 1000, { sinE: true }), estado: {} },
-      revelar: { datos: { alto: 1, unidad: 'm', recipientes: [{ tipo: 'vaso', forma: 'ancho', nivel: 0.62, tono: 1, bloque: { ancho: 0.24, alto: LADO, base: 0.3, rotulo: 'madera', E: { largo: 22, texto: 'E = 10 N' }, W: { largo: 13.2, texto: 'W = 6 N' } } }] }, estado: {} },
-      coincide: 'Coincide: los dos desalojan 1 litro de agua, que pesa 10 N. Lo que cambia es su peso.',
-    },
-    mira: {
-      pieza: 'fis-vasos',
-      datos: vasoBloque(600, 1000),
-      pasos: [
-        { estado: {}, texto: 'El bloque de madera pesa 6 N: 0,6 kg por litro.', ecuacion: ['W = ρ V g = 600 · 0,001 · 10 = 6 N'] },
-        { estado: {}, texto: 'Flota en equilibrio: el empuje iguala al peso.', ecuacion: [E, ' = W = 6 N'] },
-        { estado: {}, texto: 'El empuje es el peso del agua desalojada.', ecuacion: [E, ' = ', { sub: ['ρ', 'agua'] }, ' g ', { sub: ['V', 'sum'] }] },
-        { estado: {}, texto: 'Desaloja 0,6 litros: el 60 % del bloque está bajo el agua.', ecuacion: [{ sub: ['V', 'sum'] }, ' = ', { frac: ['6', '1000 · 10'] }, ' = 0,0006 m³'] },
-      ],
-    },
-    regla: {
-      texto: 'Principio de Arquímedes: lo que está en un líquido recibe hacia arriba un empuje hidrostático igual al peso del líquido desalojado. Si flota, el empuje iguala su peso.',
-      ecuacion: [E, ' = ', { sub: ['ρ', 'líquido'] }, ' g ', { llave: [{ sub: ['V', 'sumergido'] }], nota: 'solo lo hundido' }, '   ·   ', 'flota: ', E, ' = W'],
-      condicion: 'V es solo el volumen bajo la superficie. Flota si su densidad media es menor que la del líquido.',
-    },
-    ahoraTu: {
-      pieza: 'fis-vasos',
-      generar(s) {
-        const r = azar(s);
-        if (s % 2 === 0) {
-          const rb = r.de([300, 400, 500, 600, 700, 900]), rl = r.de([1000, 1200]), fr = rb / rl;
-          return {
-            pregunta: `Un bloque de densidad ${f(rb)} kg/m³ flota en un líquido de ${f(rl)} kg/m³. ¿Qué fracción de su volumen queda sumergida?`,
-            dibujo: { datos: vasoBloque(rb, rl, { rot: '?', sinE: true }), estado: {} },
-            opciones: opciones(fr * 100, [
-              { id: 'fuera', valor: (1 - fr) * 100, error: 'AR-TOTAL', siFuera: 'Esa es la parte que queda afuera del líquido.' },
-              { id: 'inv', valor: rl / rb * 100, error: 'AR-PESO', siFuera: 'Ese cociente está al revés: nunca puede pasar de 100 %.' },
-              { id: 'todo', valor: 100, error: 'AR-TOTAL', siFuera: 'Todo sumergido sería cierto si fuera igual de denso que el líquido.' },
-            ], n => `${f(n, 1)} %`),
-            solucion: { texto: 'Flotando, el empuje iguala al peso: las densidades dan la fracción.', ecuacion: [{ frac: [{ sub: ['V', 'sum'] }, 'V'] }, ` = ${f(rb)} / ${f(rl)} = ${f(fr * 100, 1)} %`] },
-          };
-        }
-        const m = r.de([2, 3, 4, 5]), rb = r.de([2000, 2500, 4000, 5000]), V = m / rb, En = RHO_W * G * V, Ap = m * G - En;
-        return {
-          pregunta: `Una piedra de ${f(m)} kg y densidad ${f(rb)} kg/m³ cuelga de un dinamómetro, sumergida por completo en agua. ¿Cuánto marca el dinamómetro? (g = 10 m/s²)`,
-          opciones: opciones(Ap, [
-            { id: 'peso', valor: m * G, error: 'AR-PESO', siFuera: 'Ese es su peso en el aire; bajo el agua, el empuje ayuda a sostenerla.' },
-            { id: 'empuje', valor: En, error: 'AR-TOTAL', siFuera: 'Ese es el empuje solo; el dinamómetro marca peso menos empuje.' },
-            { id: 'suma', valor: m * G + En, error: 'F15', siFuera: 'El empuje va hacia arriba: se resta, no se suma.' },
-          ], n => `${f(n, 1)} N`),
-          solucion: { texto: 'Su volumen sale de m/ρ; el empuje es el peso de ese volumen de agua.', ecuacion: [E, ` = 1000 · 10 · ${f(V, 4)} = ${f(En, 1)} N`, '   ·   ', `${f(m * G)} − ${f(En, 1)} = ${f(Ap, 1)} N`] },
-        };
-      },
-    },
-  };
-
-  // ---------- Idea 5: tensión superficial ----------
-  // Cambia: el largo del alambre y el líquido · Permanece: el marco con una película de dos caras ·
-  // Progresa: la recta F–L · Se reserva: el clip que no se hunde · Debe verse: la superficie tira en proporción al largo del borde.
-  // Se manipula: el punto de la recta F–L, que se arrastra a lo largo (L).
-  const GAMMA = { 73: 'agua', 25: 'agua jabonosa' };
-  const ejeTS = (lineas, extra = {}) => Object.assign({
-    x: { min: 0, max: 10, paso: 2, nombre: 'L', unidad: 'cm', decimales: 0 },
-    y: { min: 0, max: 16, paso: 4, nombre: 'F', unidad: 'mN', decimales: 0, color: 'h' },
-    curvas: lineas.map(([g, rot, caras]) => ({ puntos: [[0, 0], [10, caras * g * 0.1]], color: 'h', rotulo: rot, discontinua: caras === 1 })),
-  }, extra);
-  const ejeAlambre = val => ejeTS([[val.g, GAMMA[val.g], 2]], { puntos: [{ x: val.L, y: 2 * val.g * val.L / 100, color: 'h', rotulo: `${f(2 * val.g * val.L / 100, 2)} mN`, guias: true }] });
-  const tension = {
-    id: 'tension-superficial',
-    titulo: 'La superficie tira como una piel',
-    temas: ['Tensión superficial'],
-    pieza: 'ejes',
-    juega: {
-      consigna: 'Un alambre deslizante cierra un marco con una película de líquido. Su largo crece y se achica solo: mira la fuerza. Cambia el líquido.',
-      voz: 'La película tiene dos caras, y las dos tiran del alambre.',
-      controles: [
-        { id: 'L', etiqueta: 'L', min: 2, max: 10, paso: 2, inicio: 4, unidad: 'cm', decimales: 0, auto: { velocidad: 2, modo: 'rebota' } },
-        { id: 'g', etiqueta: 'Líquido', opciones: [{ valor: 73, texto: 'agua' }, { valor: 25, texto: 'jabonosa' }], inicio: 25 },
-      ],
-      dibujo: val => ({ datos: ejeAlambre(val), estado: {} }),
-      lectura: val => [F, ` = 2γL = ${f(2 * val.g * val.L / 100, 2)} mN`],
-      minimo: 3,
-      // Arrastra el punto por la recta: hacia la derecha, alambre más largo.
-      arrastres: [{
-        id: 'largo', etiqueta: 'largo del alambre',
-        donde: val => { const g = EJES().geometria(ejeAlambre(val)); return { x: g.X(val.L), y: g.Y(2 * val.g * val.L / 100) }; },
-        mover: (pt, val) => ({ L: EJES().geometria(ejeAlambre(val)).Xi(pt.x) }),
-      }],
-    },
-    predice: {
-      pregunta: 'Un clip de acero, más denso que el agua, puede quedar quieto sobre la superficie si se coloca con cuidado. ¿Qué lo sostiene?',
-      opciones: [
-        { id: 'c', texto: 'La superficie del agua, que tira como una piel', correcta: true },
-        { id: 'empuje', texto: 'El empuje de Arquímedes', error: 'TS-EMPUJE', siFuera: 'El empuje existe, pero apenas desaloja agua: no alcanza para su peso.' },
-        { id: 'liviano', texto: 'Es más liviano que el agua', error: 'TS-PESO', siFuera: 'Liviano sí es, pero más denso: si se hunde un poco, se va al fondo.' },
-        { id: 'aire', texto: 'El aire que queda debajo', error: 'D7', siFuera: 'El aire no lo sostiene: sin la superficie intacta, el clip cae.' },
-      ],
-      dibujo: { datos: ejeTS([[73, 'agua', 2]]), estado: {} },
-      revelar: { datos: ejeTS([[73, 'agua', 2]], { puntos: [{ x: 6, y: 2 * 73 * 6 / 100, color: 'h', rotulo: `${f(2 * 73 * 6 / 100, 2)} mN`, guias: true }], curvas: [{ puntos: [[0, 0], [10, 14.6]], color: 'h', rotulo: 'agua' }, { puntos: [[0, 5], [10, 5]], color: 'd', rotulo: 'peso del clip: 5 mN', discontinua: true }] }), estado: {} },
-      coincide: 'Coincide: 6 cm de alambre tocan el agua por dos lados; la superficie tira hasta 8,76 mN, más que los 5 mN del clip.',
-    },
-    mira: {
-      datos: ejeTS([], { y: { min: 0, max: 6, paso: 2, nombre: 'F', unidad: 'mN', decimales: 0, color: 'h' },
-        curvas: [{ puntos: [[0, 0], [10, 2.5]], color: 'h', rotulo: 'una cara', discontinua: true, desde: 2 }, { puntos: [[0, 0], [10, 5]], color: 'h', rotulo: 'dos caras', en: [4, 2], desde: 3 }],
-        puntos: [{ x: 8, y: 2, color: 'h', rotulo: '2 mN', guias: true, desde: 2, hasta: 2 }, { x: 8, y: 4, color: 'h', rotulo: '4 mN', guias: true, desde: 3 }] }),
-      pasos: [
-        { estado: { corte: 1 }, texto: 'Cada cara de la película tira del borde: γ newtons por metro.', ecuacion: ['γ = ', { frac: [F, 'L'] }, ' = 0,025 N/m'] },
-        { estado: { corte: 2 }, texto: 'Una sola cara con 8 cm daría 2 mN: la línea discontinua.', ecuacion: [F, ' = 0,025 · 0,08 = 0,002 N'] },
-        { estado: { corte: 3 }, texto: 'La película tiene dos caras: el doble.', ecuacion: [F, ' = 2 γ L = 4 mN'] },
-      ],
-    },
-    regla: {
-      texto: 'La superficie de un líquido tira de su borde con una fuerza proporcional al largo del borde. Ese cociente es la tensión superficial γ.',
-      ecuacion: ['γ = ', { frac: [F, 'L'] }, '   ·   ', F, ' = ', { llave: ['2'], nota: 'dos caras' }, 'γL'],
-      condicion: 'L es el largo del borde mojado; γ depende del líquido y de la temperatura (el jabón la baja).',
-    },
-    ahoraTu: {
-      generar(s) {
-        const r = azar(s), g = r.de([25, 40, 50, 73]), L = r.de([3, 4, 5, 6, 8, 10]), dos = s % 2 === 0;
-        const Fm = (dos ? 2 : 1) * g * L / 100;
-        return {
-          pregunta: dos
-            ? `Un alambre de ${f(L)} cm cierra un marco con una película de líquido (γ = ${f(g / 1000, 3)} N/m). ¿Con qué fuerza tira la película del alambre?`
-            : `Un aro de borde recto de ${f(L)} cm toca la superficie de un líquido (γ = ${f(g / 1000, 3)} N/m) por una sola cara. ¿Con qué fuerza tira la superficie?`,
-          opciones: opciones(Fm, [
-            { id: 'caras', valor: (dos ? 1 : 2) * g * L / 100, error: 'TS-UNA', siFuera: dos ? 'Eso cuenta una sola cara; la película tiene dos.' : 'Eso cuenta dos caras; aquí solo hay una.' },
-            { id: 'cm', valor: Fm * 100, error: 'U1', siFuera: 'Eso usa L en cm sin pasar a metros.' },
-            { id: 'div', valor: (dos ? 2 : 1) * g / 1000 / (L / 100) * 1000, error: 'TS-DIV', siFuera: 'Eso divide γ entre L; la fuerza es γ por L.' },
-          ], n => `${f(n, 2)} mN`),
-          solucion: { texto: dos ? 'Dos caras tiran del alambre.' : 'Una sola cara tira del borde.', ecuacion: [F, ` = ${dos ? '2 · ' : ''}${f(g / 1000, 3)} · ${f(L / 100, 2)} = ${f(Fm, 2)} mN`] },
-        };
-      },
-    },
-  };
-
-  // ---------- Idea 6: caudal, continuidad y Bernoulli ----------
-  // Cambia: cuánto se angosta el tubo y la rapidez de entrada · Permanece: el caudal que entra y el que sale ·
-  // Progresa: la flecha de v en el tramo angosto y el desnivel de los tubitos · Se reserva: la presión en lo angosto ·
-  // Debe verse: donde el agua va más rápido, la presión es menor.
-  // Se manipula: la pared de abajo del tramo angosto, que se sube para apretar el tubo (A₁ / A₂).
-  const tuboB = (v1, k, o = {}) => {
-    const v2 = v1 * k, dp = 0.5 * RHO_W * (v2 * v2 - v1 * v1), h1 = 0.5, h2 = h1 - dp / (RHO_W * G);
-    return { datos: { alto: 0.6, unidad: 'm', colores: { v: 'o' }, recipientes: [{ tipo: 'tubo', a1: k, a2: 1, v1: { texto: `${f(v1)} m/s`, largo: v1 * 20 }, v2: { texto: o.sinV2 ? '?' : `${f(v2)} m/s`, largo: v2 * 20 }, h1, h2: o.sinH2 ? h1 : h2 }] }, v2, dp, h2 };
-  };
-  const bernoulli = {
-    id: 'bernoulli',
-    titulo: 'Más rápido, menos presión',
-    temas: ['Caudal, continuidad y Bernoulli (solo San Marcos)'],
-    pieza: 'fis-vasos',
-    juega: {
-      consigna: 'El tubo se angosta y se ensancha solo. Mira la flecha de rapidez y los tubitos. Cambia la rapidez de entrada.',
-      voz: 'Mira las dos flechas y la altura del agua en los tubitos.',
-      controles: [
-        { id: 'v1', etiqueta: 'v₁', color: 'c-o', min: 0.5, max: 1, paso: 0.25, inicio: 0.5, unidad: 'm/s', decimales: 2 },
-        { id: 'k', etiqueta: 'A₁ / A₂', min: 1, max: 3, paso: 0.5, inicio: 2, decimales: 1, auto: { velocidad: 0.5, modo: 'rebota' } },
-      ],
-      dibujo: val => ({ datos: tuboB(val.v1, val.k).datos, estado: {} }),
-      lectura: val => { const b = tuboB(val.v1, val.k); return [{ sub: [v, '2'] }, ` = ${f(b.v2)} m/s · Δp = ${f(b.dp / 1000, 2)} kPa`]; },
-      minimo: 3,
-      // Arrastra la pared de abajo del tramo angosto hacia arriba: el tramo mide H1/k, con H1 la altura del ancho.
-      arrastres: [{
-        id: 'angosto', etiqueta: 'pared del tramo angosto',
-        donde: val => { const d = tuboB(val.v1, val.k).datos, g = VASOS().geometria(d).tubo(d.recipientes[0]); return { x: g.xAngosto, y: g.ym + g.H2 / 2 }; },
-        mover: (pt, val) => { const d = tuboB(val.v1, val.k).datos, g = VASOS().geometria(d).tubo(d.recipientes[0]); return { k: g.H1 / 2 / Math.max(1, pt.y - g.ym) }; },
-      }],
-    },
-    predice: {
-      pregunta: 'Agua que fluye pasa de un tramo ancho a uno de la mitad del área. En el tramo angosto, ¿la presión del agua es mayor, igual o menor?',
-      opciones: [
-        { id: 'c', texto: 'Menor', correcta: true },
-        { id: 'mayor', texto: 'Mayor: el agua va más apretada', error: 'BE-APRIETA', siFuera: 'Apretada parece, cierto. Pero el agua se acelera, y para acelerar la presión de atrás tiene que ser mayor.' },
-        { id: 'igual', texto: 'Igual: pasa el mismo caudal', error: 'BE-IGUAL', siFuera: 'El caudal sí es el mismo. La presión cambia porque cambia la rapidez.' },
-      ],
-      dibujo: { datos: tuboB(1, 2, { sinV2: true, sinH2: true }).datos, estado: {} },
-      revelar: { datos: tuboB(1, 2).datos, estado: {} },
-      coincide: 'Coincide: el agua se acelera de 1 a 2 m/s, y la presión baja; el tubito de lo angosto queda más bajo.',
-    },
-    mira: {
-      pieza: 'fis-vasos',
-      datos: tuboB(1, 2).datos,
-      pasos: [
-        { estado: {}, texto: 'El agua no se acumula: el caudal que entra es el que pasa.', ecuacion: ['Q = ', { sub: ['A', '1'] }, { sub: [v, '1'] }, ' = ', { sub: ['A', '2'] }, { sub: [v, '2'] }] },
-        { estado: {}, texto: 'Con la mitad del área, va al doble de rapidez.', ecuacion: [{ sub: [v, '2'] }, ' = 2 · 1 = 2 m/s'] },
-        { estado: {}, texto: 'Ganar rapidez cuesta presión: Bernoulli.', ecuacion: [{ sub: [p, '1'] }, ' − ', { sub: [p, '2'] }, ' = ½ · 1000 · (', { sup: ['2', '2'] }, ' − ', { sup: ['1', '2'] }, ') = 1500 Pa'] },
-        { estado: {}, texto: 'Por eso el tubito del tramo angosto baja 15 cm.', ecuacion: [{ frac: ['1500', '1000 · 10'] }, ' = 0,15 m'] },
-      ],
-    },
-    regla: {
-      texto: 'Ecuación de continuidad: el caudal se conserva; donde el tubo es angosto, el líquido va más rápido. Principio de Bernoulli: donde va más rápido, la presión es menor.',
-      ecuacion: [{ llave: [{ sub: ['A', '1'] }, { sub: [v, '1'] }], nota: 'el caudal' }, ' = ', { sub: ['A', '2'] }, { sub: [v, '2'] }, '   ·   ', p, ' + ', { llave: ['½ρ', { sup: [v, '2'] }], nota: 'por ir rápido', color: 'c-o' }, ' + ρg', h, ' = constante'],
-      condicion: 'flujo estacionario, incompresible y sin viscosidad, siguiendo una misma línea de flujo. g = 10 m/s².',
-    },
-    ahoraTu: {
-      generar(s) {
-        const r = azar(s), d1 = r.de([2, 3, 4, 6]), d2 = d1 / r.de([2, 3]), v1 = r.de([0.5, 1, 1.5, 2]);
-        if (s % 2 === 0) {
-          const v2 = v1 * (d1 / d2) ** 2;
-          return {
-            pregunta: `Agua entra a ${f(v1)} m/s por un tubo de ${f(d1)} cm de diámetro que se angosta a ${f(d2)} cm. ¿Con qué rapidez sale por el tramo angosto?`,
-            opciones: opciones(v2, [
-              { id: 'diam', valor: v1 * d1 / d2, error: 'BE-DIAMETRO', siFuera: 'Eso usa la razón de diámetros; el área va con el diámetro al cuadrado.' },
-              { id: 'inv', valor: v1 * (d2 / d1) ** 2, error: 'BE-INV', siFuera: 'Eso la hace más lenta; en lo angosto va más rápido.' },
-              { id: 'igual', valor: v1, error: 'BE-IGUAL', siFuera: 'La misma rapidez valdría si el tubo no se angostara.' },
-            ], n => `${f(n)} m/s`),
-            solucion: { texto: 'El caudal es igual; el área va con el diámetro al cuadrado.', ecuacion: [{ sub: [v, '2'] }, ` = ${f(v1)} · `, { sup: [`(${f(d1)}/${f(d2)})`, '2'] }, ` = ${f(v2)} m/s`] },
-          };
-        }
-        const k = r.de([2, 3]), v2 = v1 * k, dp = 0.5 * RHO_W * (v2 * v2 - v1 * v1);
-        return {
-          pregunta: `Agua pasa a ${f(v1)} m/s por un tramo ancho y a ${f(v2)} m/s por uno angosto, a la misma altura. ¿Cuánto menor es la presión en el tramo angosto?`,
-          opciones: opciones(dp / 1000, [
-            { id: 'sin-cuad', valor: 0.5 * RHO_W * (v2 - v1) / 1000, error: 'BE-IGUAL', siFuera: 'Eso resta rapideces sin elevarlas al cuadrado.' },
-            { id: 'sin-medio', valor: RHO_W * (v2 * v2 - v1 * v1) / 1000, error: 'BE-INV', siFuera: 'Eso olvida el ½ de la energía cinética por volumen.' },
-            { id: 'solo2', valor: 0.5 * RHO_W * v2 * v2 / 1000, error: 'BE-IGUAL', siFuera: 'Eso olvida que en el tramo ancho el agua ya se movía.' },
-          ], n => `${f(n, 2)} kPa`),
-          solucion: { texto: 'A la misma altura, lo que gana en ½ρv² lo pierde en presión.', ecuacion: [{ sub: [p, '1'] }, ' − ', { sub: [p, '2'] }, ' = ½ · 1000 · (', { sup: [f(v2), '2'] }, ' − ', { sup: [f(v1), '2'] }, `) = ${f(dp)} Pa`] },
-        };
-      },
-    },
-  };
-
-  // Para los retos: las mismas cuentas que leen las mesas. `guardado` dice si el caso actual ya se guardó.
-  const presionTotal = val => CIUDAD[val.c].p + val.rho * G * val.h / 1000;   // kPa
-  const fuerza2 = val => val.F1 * val.k;
-  const guardado = (val, gs, claves) => gs.some(g => claves.every(c => g[c] === val[c]));
+})();
 
   return {
-    unidad: 'fisica.fluidos',
-    version: '0.1.0',
-    estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/fis-vasos.js', '/nucleo/kit/piezas/ejes.js'],
-    // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. «Empuje» a secas no se
-    // define (en estática es el de la mano): va «empuje hidrostático». Pascal, Arquímedes y Bernoulli solo dentro del
-    // nombre del principio, para no marcar a las personas.
-    glosario: [
-      { termino: 'fluido', def: 'Sustancia que fluye y toma la forma de su recipiente: un líquido o un gas.',
-        ver: ['presión'] },
-      { termino: 'densidad', simbolo: 'ρ', medida: 'kg/m³', def: 'Masa que hay en cada unidad de volumen de una sustancia: masa entre volumen.',
-        ejemplo: '1 m³ de agua tiene 1000 kg: ρ = 1000 kg/m³.', ver: ['empuje hidrostático'] },
-      { termino: 'presión', simbolo: 'p', medida: 'Pa', def: 'Fuerza perpendicular repartida sobre cada unidad de área: fuerza entre área.',
-        ejemplo: '5000 N sobre 1 m²: p = 5000 Pa = 5 kPa.', ver: ['presión hidrostática', 'presión atmosférica'] },
-      { termino: 'presión hidrostática', medida: 'Pa', def: 'La que hace un líquido quieto por el peso de lo que tiene encima: ρgh.',
-        ejemplo: 'A 0,5 m bajo el agua: 1000 · 10 · 0,5 = 5000 Pa.', ver: ['presión'] },
-      { termino: 'presión atmosférica', simbolo: 'p₀', medida: 'kPa', def: 'La que hace el aire sobre todo lo que toca, por el peso del aire de encima.',
-        ejemplo: 'Unos 101 kPa en Lima y unos 64 kPa en Juliaca.', ver: ['barómetro'] },
-      { termino: 'vasos comunicantes', def: 'Recipientes unidos por abajo; con un mismo líquido quieto, su nivel queda a la misma altura.',
-        ver: ['manómetro'] },
-      { termino: 'manómetro', def: 'Aparato que mide una presión comparándola con una columna de líquido, como un tubo en U.',
-        ver: ['vasos comunicantes', 'barómetro'] },
-      { termino: 'barómetro', def: 'Aparato que mide la presión atmosférica; el de mercurio usa la altura de una columna.',
-        ejemplo: 'En Lima, la columna de mercurio mide unos 76 cm.', ver: ['presión atmosférica'] },
-      { termino: 'principio de Pascal', def: 'Un cambio de presión en un líquido encerrado llega igual a todos sus puntos.',
-        ejemplo: '20 N en un émbolo; en otro de área 5 veces mayor, salen 100 N.', ver: ['presión'] },
-      { termino: 'principio de Arquímedes', def: 'Todo cuerpo dentro de un líquido recibe una fuerza hacia arriba igual al peso del líquido que desaloja.',
-        ver: ['empuje hidrostático'] },
-      { termino: 'empuje hidrostático', simbolo: 'E', medida: 'N', def: 'Fuerza hacia arriba que hace un líquido sobre lo que está dentro de él.',
-        ejemplo: 'Madera de 1 litro flotando en agua: E = W = 6 N.', ver: ['principio de Arquímedes', 'densidad'] },
-      { termino: 'tensión superficial', simbolo: 'γ', medida: 'N/m', def: 'Tirón de la superficie de un líquido, como una piel, por cada metro de borde.',
-        ejemplo: 'Agua: γ ≈ 0,073 N/m; el jabón la baja.' },
-      { termino: 'caudal', simbolo: 'Q', medida: 'm³/s', def: 'Volumen de fluido que pasa por una sección del tubo en cada segundo: área por rapidez.',
-        ejemplo: 'Tubo de 0,01 m² con agua a 2 m/s: Q = 0,02 m³/s.', ver: ['ecuación de continuidad'] },
-      { termino: 'ecuación de continuidad', def: 'En un tubo lleno, pasa el mismo caudal por todas partes: A₁v₁ = A₂v₂.',
-        ejemplo: 'Con la mitad del área, el agua va al doble de rapidez.', ver: ['caudal'] },
-      { termino: 'principio de Bernoulli', formas: ['principio de Bernoulli', 'ecuación de Bernoulli'], def: 'En un fluido que corre sin roce, donde va más rápido, su presión es menor.',
-        ejemplo: 'Agua que pasa de 1 a 2 m/s a la misma altura: la presión baja 1500 Pa.', ver: ['ecuación de continuidad'] },
-    ],
-    laboratorio: [
-      {
-        // Más rica que la idea 1: suma la presión del aire de la ciudad y deja probar el mercurio.
-        id: 'presion-total', titulo: 'Presión total en tres vasos', pieza: 'fis-vasos',
-        consigna: 'El punto baja y sube solo. Cambia el líquido y la ciudad, y compara la presión del líquido con la del aire.',
-        controles: [
-          { id: 'h', etiqueta: 'h', color: 'c-d', min: 0.1, max: 0.8, paso: 0.1, inicio: 0.5, unidad: 'm', decimales: 1, auto: { velocidad: 0.2, modo: 'rebota' } },
-          { id: 'rho', etiqueta: 'Líquido', opciones: [{ valor: 800, texto: 'aceite' }, { valor: 1000, texto: 'agua' }, { valor: 1200, texto: 'salmuera' }, { valor: 13600, texto: 'mercurio' }], inicio: 1000 },
-          { id: 'c', etiqueta: 'Ciudad', opciones: [{ valor: 1, texto: 'Lima' }, { valor: 2, texto: 'Arequipa' }, { valor: 3, texto: 'Juliaca' }], inicio: 1 },
-        ],
-        dibujo: val => ({ datos: tresVasos(val.h, val.rho), estado: {} }),
-        lectura: val => [`${LIQ[val.rho]}, `, h, ` = ${f(val.h, 1)}\u00a0m en ${CIUDAD[val.c].n}: `, p, ` = ${f(presionTotal(val), 1)}\u00a0kPa`],
-        arrastres: [arrastreProfundidad(val => tresVasos(val.h, val.rho))],
-        invitaciones: [
-          { texto: 'Guarda el mismo punto del mismo l\u00edquido en Lima y en Juliaca.',
-            logrado: (val, guardados) => guardado(val, guardados, ['h', 'rho', 'c'])
-              && guardados.some(g => g.h === val.h && g.rho === val.rho && g.c * val.c === 3),
-            bien: 'El l\u00edquido aprieta igual; la diferencia la pone el aire de cada ciudad.' },
-          { texto: 'Haz que el l\u00edquido apriete m\u00e1s que todo el aire de encima.',
-            logrado: val => val.rho * G * val.h / 1000 > CIUDAD[val.c].p,
-            bien: 'Con mercurio, menos de un metro pesa m\u00e1s que toda esa atm\u00f3sfera.' },
-          { texto: 'Busca la presi\u00f3n total m\u00e1s baja que puedes conseguir.',
-            logrado: val => presionTotal(val) <= presionTotal({ h: 0.1, rho: 800, c: 3 }) + 1e-9,
-            bien: 'Poco l\u00edquido, liviano, y una ciudad alta con menos aire encima.' },
-          { texto: 'En Lima, haz que la presi\u00f3n total llegue justo a 109 kPa.',
-            logrado: val => val.c === 1 && Math.abs(presionTotal(val) - 109) < 1e-9,
-            bien: 'El agua puso 8 kPa: \u03c1gh, sin importar la forma del vaso.' },
-        ],
-      },
-      {
-        // El caso que la idea 4 no deja probar: cualquier densidad, y un metal que flota en mercurio.
-        id: 'bloque-libre', titulo: 'Bloque de densidad libre', pieza: 'fis-vasos',
-        consigna: 'Arrastra el bloque hacia abajo o usa − y +: cambias su densidad. Prueba también en mercurio.',
-        controles: [
-          { id: 'rb', etiqueta: 'ρ del bloque en kg/m³', min: 100, max: 2700, paso: 100, inicio: 600, decimales: 0 },
-          { id: 'rl', etiqueta: 'Líquido', opciones: [{ valor: 800, texto: 'aceite' }, { valor: 1000, texto: 'agua' }, { valor: 1200, texto: 'salmuera' }, { valor: 13600, texto: 'mercurio' }], inicio: 1000 },
-        ],
-        dibujo: val => ({ datos: vasoBloque(val.rb, val.rl, { rot: `${f(val.rb)}` }), estado: {} }),
-        lectura: val => { const q = flota(val.rb, val.rl); return [`${f(val.rb)}\u00a0kg/m³ en ${LIQ[val.rl]}: `, q.hunde ? 'se hunde' : `flota, ${f(q.frac * 100, 0)}\u00a0% hundido`]; },
-        // Flotando, la cara de arriba del bloque está en NIVEL − LADO·ρb/ρl + LADO: bajarla es hacerlo más denso.
-        // Hundido, la manija queda en el fondo y se sube con −.
-        arrastres: [{
-          id: 'bloque', etiqueta: 'cara de arriba del bloque',
-          donde: val => { const q = flota(val.rb, val.rl), g = VASOS().geometria(vasoBloque(val.rb, val.rl)); return { x: g.cx(0), y: g.Y((q.hunde ? 0 : NIV_B - LADO * q.frac) + LADO) }; },
-          mover: (pt, val) => {
-            const yv = VASOS().geometria(vasoBloque(val.rb, val.rl)).Yi(pt.y), frac = (NIV_B + LADO - yv) / LADO;
-            if (frac > 1.5) return flota(val.rb, val.rl).hunde ? {} : { rb: val.rl };
-            return { rb: Math.min(1, frac) * val.rl };
-          },
-        }],
-        invitaciones: [
-          { texto: 'Haz que el bloque flote con justo la mitad hundida.',
-            logrado: val => { const q = flota(val.rb, val.rl); return !q.hunde && Math.abs(q.frac - 0.5) < 1e-9; },
-            bien: 'Mitad hundida: el bloque tiene la mitad de la densidad del líquido.' },
-          { texto: 'Haz flotar un bloque de 2700 kg/m³, como el aluminio.',
-            logrado: val => val.rb === 2700 && !flota(val.rb, val.rl).hunde,
-            bien: 'Flota en mercurio: lo que decide es comparar densidades, no si es metal.' },
-          { texto: 'Busca el bloque más denso que todavía flota en agua.',
-            logrado: val => val.rl === 1000 && !flota(val.rb, 1000).hunde && flota(val.rb + 100, 1000).hunde,
-            bien: 'Con la misma densidad del agua queda entero adentro, sin hundirse.' },
-          { texto: 'Guarda el mismo bloque flotando en agua y en salmuera.',
-            logrado: (val, guardados) => !flota(val.rb, val.rl).hunde && guardado(val, guardados, ['rb', 'rl'])
-              && guardados.some(g => g.rb === val.rb && g.rl !== val.rl && [g.rl, val.rl].sort().join() === '1000,1200' && !flota(g.rb, g.rl).hunde),
-            bien: 'En salmuera, más densa, basta hundir menos para igualar el peso.' },
-        ],
-      },
-      Object.assign({ id: 'prensa', titulo: 'La prensa hidráulica', pieza: 'fis-vasos',
-        invitaciones: [
-          { texto: 'Levanta justo 120 N con el émbolo grande.',
-            logrado: val => Math.abs(fuerza2(val) - 120) < 1e-9,
-            bien: 'Hay dos maneras: más fuerza abajo o un émbolo grande más ancho.' },
-          { texto: 'Con la menor fuerza posible, levanta 100 N o más.',
-            logrado: val => fuerza2(val) >= 100 && fuerza2({ F1: val.F1 - 10, k: 5 }) < 100,
-            bien: 'Con 20 N alcanzó: el área cinco veces mayor multiplicó la fuerza.' },
-          { texto: 'Guarda dos prensas que levanten lo mismo con distinta fuerza.',
-            logrado: (val, guardados) => guardado(val, guardados, ['F1', 'k'])
-              && guardados.some(g => g.F1 !== val.F1 && Math.abs(fuerza2(g) - fuerza2(val)) < 1e-9),
-            bien: 'Menos fuerza pidió más área: la presión es la misma en los dos émbolos.' },
-        ] }, pascal.juega),
-    ],
+    unidad:'fisica.fluidos', version:'1.0.0', estado:'borrador',
+    colores: COLORES,
+    letras: { p:'presión', F:'fuerza normal aplicada', E:'empuje', P:'peso', T:'tensión de la suspensión', W:'trabajo de una fuerza', ρ:'densidad', m:'masa', γ:'coeficiente de tensión superficial', n:'número de caras', A:'área de sección', V:'volumen', h:'distancia vertical entre los niveles indicados', z:'altura sobre la referencia común', ℓ:'recorrido de un pistón', L:'longitud de contacto', r:'radio', d:'diámetro', θ:'ángulo de contacto', v:'rapidez media', Q:'caudal volumétrico', t:'tiempo', g:'módulo de la aceleración de la gravedad' },
+    requiere:['/nucleo/kit/piezas/fis-fluidos-e12.js','/nucleo/kit/piezas/fis-estatica.js','/nucleo/kit/piezas/ejes.js'],
+    glosario,
     historia: {
-      texto: 'En 1644, Torricelli describió una columna de mercurio sostenida en un tubo invertido y la explicó por el peso del aire de afuera. En 1648, Pascal hizo comparar un barómetro al pie y en la cima de una montaña: arriba, la columna era más baja. La presión del aire se volvió algo que se mide.',
-      pregunta: '¿Qué altura tendría la columna en Juliaca?',
-      fuente: { titulo: 'Museo Galileo — Barometer', url: 'https://catalogue.museogalileo.it/indepth/Barometer.html' },
+      texto:'En una carta del 11 de junio de 1644, Torricelli describió un tubo invertido sobre una cubeta de mercurio. La columna no cayó por completo. Relacionó su sostén con la presión del aire sobre la cubeta. El barómetro permitió estudiar una acción invisible mediante una altura que se podía medir y comparar.',
+      pregunta:'¿Qué permite averiguar la altura de una columna de líquido?',
+      fuente:{titulo:'Museo Galileo: el experimento de Torricelli',url:'https://catalogue.museogalileo.it/indepth/TorricellianExperiment.html'},
     },
-    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
-    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
-    laboratorioIdeas: {
-      'presion-total': ['presion-profundidad'],
-      'bloque-libre': ['empuje'],
-      'prensa': ['prensa-hidraulica'],
-    },
-    ideas: [hidrostatica, comunicantes, pascal, arquimedes, tension, bernoulli],
+    
+    ideas:[idea1],
   };
 });
