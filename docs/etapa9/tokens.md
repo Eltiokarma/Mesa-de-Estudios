@@ -90,3 +90,4 @@ contra los límites semanales de los planes.
 | aperturas geometría (7) | revisión del Escribidor Escribano | 199 107 | 4 min 55 s | 30 herramientas |
 | aperturas álgebra (6) | doble revisión (choques honestos) | 188 738 | 5 min 46 s | 29 herramientas |
 | aperturas trigonometría (6) | doble revisión (choques honestos) | 198 604 | 6 min | 26 herramientas |
+| aperturas RM y verbal (12) | doble revisión (choques honestos) | 206 167 | 8 min 15 s | 34 herramientas |
