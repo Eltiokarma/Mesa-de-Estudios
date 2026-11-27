@@ -113,10 +113,12 @@ for (const [curso, archivo] of archivos) {
 
     // La ficha para Gerson: completa, con los datos de memoria, y fuera de lo que ve el alumno.
     const fi = def.ficha || {};
-    for (const c of ['alcance', 'choque', 'atajo']) assert.ok(typeof fi[c] === 'string' && fi[c].trim(), `ficha.${c}: falta`);
+    for (const c of ['seLleva', 'alcance', 'choque', 'atajo']) assert.ok(typeof fi[c] === 'string' && fi[c].trim(), `ficha.${c}: falta`);
+    // Lo que el alumno se lleva (apertura-pisa.md, «Lo que el alumno se lleva»): una oración entera, con verbo y punto final.
+    assert.ok(oraciones(fi.seLleva).length >= 1 && nPalabras(fi.seLleva) >= 10 && /\.$/.test(fi.seLleva.trim()), 'ficha.seLleva: una oración de 10 palabras o más que termina en punto');
     assert.ok(Array.isArray(fi.porVerificar) && fi.porVerificar.every(x => typeof x === 'string' && x.trim()), 'ficha.porVerificar: lista de los datos que salieron de memoria (vacía si no hay)');
     const html = Apertura.html(def);
-    for (const c of ['alcance', 'choque', 'atajo']) assert.ok(!html.includes(fi[c]), `la app muestra ficha.${c}`);
+    for (const c of ['seLleva', 'alcance', 'choque', 'atajo']) assert.ok(!html.includes(fi[c]), `la app muestra ficha.${c}`);
     for (const x of fi.porVerificar) assert.ok(!html.includes(x), 'la app muestra ficha.porVerificar');
     assert.ok(html.includes('Antes de seguir') && html.includes('Lo que predice'), 'el HTML trae la pregunta y la figura');
   });

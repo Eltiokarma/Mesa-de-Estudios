@@ -34,7 +34,7 @@ Un archivo por unidad, aparte de la teoría (para no chocar con quien edita la t
                               // «Lo que predice» y «Lo que se mide»; `antes` = después de qué párrafo va
   ecuacion: [...],            // opcional, nodos de nucleo/ecuacion.js con los colores de la unidad
   pregunta: '…',              // «Antes de seguir»: no se responde aquí
-  ficha: { alcance, choque, atajo, porVerificar } // para Gerson; la app no la muestra
+  ficha: { seLleva, alcance, choque, atajo, porVerificar } // para Gerson; la app no la muestra
 }
 ```
 
