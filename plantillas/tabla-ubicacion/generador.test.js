@@ -104,3 +104,27 @@ test('auditoría: las explicaciones dicen la cuenta de su alternativa, y los tr�
     if (d.tipo === 'mas-metalico') { const o = d.trio.slice().sort((a, b) => (EL[b].p - EL[a].p) || (EL[a].g - EL[b].g)); assert.ok(EI_NIST[o[0]] < EI_NIST[o[1]] && EI_NIST[o[1]] < EI_NIST[o[2]], `${s}: trío ${d.trio}`); }
   }
 });
+
+// Verificador de la segunda pasada (27 nov). (1) En «misma familia», la alternativa QM-CUENTA-GRUPO del magnesio y del
+// calcio es el escandio o el itrio (ns² y un d): la explicación decía «tiene 2 electrones, no 2». (2) En los cuatro
+// anómalos, la alternativa QM-ANOMALO-GRUPO es la suma real más uno (Cr → 7; Cu, Ag, Au → 12), como dice el texto nuevo.
+test('par-familia: QM-CUENTA-GRUPO no dice «N electrones, no N»; anomalo: QM-ANOMALO-GRUPO es la suma real más uno', () => {
+  let pares = 0, anom = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s, { idea: 'ubicacion-lewis' });
+    if (p._datos.tipo === 'par-familia') for (const a of p.alternativas) {
+      if (!a.error || a.error.id !== 'QM-CUENTA-GRUPO') continue;
+      pares++;
+      const m = a.error.explicacion.match(/tiene (\d+) electrones, no (\d+)/);
+      if (m) assert.notEqual(m[1], m[2], `${s}: ${a.error.explicacion}`);
+    }
+    const q = gen.generar(s, { idea: 'bloques-transicion' });
+    if (q._datos.tipo === 'anomalo') {
+      const a = q.alternativas.find(x => x.error && x.error.id === 'QM-ANOMALO-GRUPO'), z = q._datos.z, real = EL[z].g;
+      assert.match(a.error.explicacion, /sumaste un electrón de más/);
+      assert.equal(a.texto, `Periodo ${EL[z].p}, grupo ${real + 1} (${ROM[real + 1]})`, `${s} Z = ${z}`);
+      anom++;
+    }
+  }
+  assert.ok(pares > 20 && anom > 20, `${pares} ${anom}`);
+});

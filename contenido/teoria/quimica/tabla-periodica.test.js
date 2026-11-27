@@ -501,3 +501,25 @@ test('idea 4: la regla dice que los no metales casi no conducen', () => {
   const r = def.ideas[3].regla.texto;
   assert.match(r, /no metales[^.]*casi no conducen/, r);
 });
+
+// Verificador de la segunda pasada (27 nov): el número atómico del periodo 2 y grupo VIIA tenía la alternativa Z = 1 con
+// «es el de arriba, en el periodo 1», pero el hidrógeno no está encima del flúor; y algunas semillas decían «los 1
+// electrones p» o «1 electrón (2s¹), los de valencia».
+test('segunda pasada: «el de arriba» está de verdad encima, y ninguna cuenta dice «los 1 electrones»', () => {
+  let arriba = 0;
+  for (const I of def.ideas) for (let s = 0; s < SEMILLAS; s++) {
+    const c = I.ahoraTu.generar(s);
+    for (const o of c.opciones) {
+      const t = plano(o.siFuera || '');
+      assert.doesNotMatch(t, /\blos 1 electrones\b/, `${I.id} ${s}: ${t}`);
+      if (o.error === 'QM-PERIODO-ANTERIOR' && /es el de arriba/.test(t) && /^\d+$/.test(o.texto)) {
+        const m = plano(c.pregunta).match(/periodo (\d+) y en el grupo (\w+)/), z = +o.texto;
+        assert.ok(TABLA[z] && TABLA[z].p === +m[1] - 1, `${s}: Z = ${z} no está en el periodo ${+m[1] - 1}`);
+        assert.ok(debajo(z) && TABLA[debajo(z)].p === +m[1], `${s}: Z = ${z} no tiene a nadie debajo en el periodo ${m[1]}`);
+        arriba++;
+      }
+    }
+    assert.doesNotMatch(plano(c.solucion.texto), /\b1 electrón \([^)]*\), los de valencia/, `${I.id} ${s}`);
+  }
+  assert.ok(arriba > 10);
+});

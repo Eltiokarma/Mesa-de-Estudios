@@ -28,7 +28,7 @@
       "respuesta": "C) 16",
       "pasos": [
         "Su nivel más alto es el 3, con 6 electrones: [Ne] 3s² 3p⁴.",
-        "10 + 6 = 16."
+        "Z es el total de electrones: 10 + 6 = 16."
       ]
     },
     {
@@ -47,7 +47,7 @@
       "respuesta": "C) Periodo 2, grupo 15 (VA)",
       "pasos": [
         "Su configuración es [He] 2s² 2p³.",
-        "El nivel más alto es el 2, con 5 electrones (2s² 2p³), así que está en el grupo 15 (VA)."
+        "El nivel más alto es el 2 y da el periodo. Tiene 5 electrones (2s² 2p³), así que está en el grupo 15 (VA)."
       ]
     },
     {
@@ -57,7 +57,7 @@
       "respuesta": "D) 19",
       "pasos": [
         "Su nivel más alto es el 4, con 1 electrón: [Ar] 4s¹.",
-        "18 + 1 = 19."
+        "Z es el total de electrones: 18 + 1 = 19."
       ]
     },
     {
@@ -67,7 +67,7 @@
       "respuesta": "A) [Kr] 5s² 4d¹⁰ 5p⁴",
       "pasos": [
         "El selenio tiene 6 electrones en su nivel más alto (4s² 4p⁴).",
-        "El elemento de su familia también los tiene: 5s² 5p⁴ (Z = 52, grupo 16 (VIA))."
+        "El elemento de su familia también los tiene: 5s² 5p⁴ (Z = 52, grupo 16 (VIA)). Por eso están en la misma columna."
       ]
     },
     {
@@ -77,7 +77,7 @@
       "respuesta": "B) Periodo 2, grupo 14 (IVA)",
       "pasos": [
         "Su configuración es [He] 2s² 2p².",
-        "El nivel más alto es el 2, con 4 electrones (2s² 2p²), así que está en el grupo 14 (IVA)."
+        "El nivel más alto es el 2 y da el periodo. Tiene 4 electrones (2s² 2p²), así que está en el grupo 14 (IVA)."
       ]
     }
   ]

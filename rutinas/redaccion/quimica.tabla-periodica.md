@@ -99,3 +99,149 @@ desde el gas noble, periodos y largos, Lewis, grupos A y B, excepciones, caráct
 
 **Comprobación:** `tabla-periodica.test.js` 23/23; `tabla-ubicacion` 9/9; validador con `calidad: 2` en 200 semillas:
 0; `papel-reglas.js`: nada de estas plantillas. `teoria.test.js` (última corrida): 163 de 164; la unidad pasa, y la única falla es `quimica/mol-y-composicion.js`, otra unidad en obra. La prueba del glosario, que en una corrida anterior fallaba por `app/datos/glosario/*.json` desfasado, ya pasa.
+## Segunda pasada: explica (27 nov)
+
+Encargo: `docs/metodo/unidad/redaccion-delegada.md`, punto 4 («Explica, no solo pules») y topes nuevos del punto 6;
+criterio `escribidor-escribano`. Gerson vio la unidad en la app y la encontró corta y sin mucho significado. Esta pasada
+agrega el porqué, un caso conocido y lo que pasa si no se cumple. Solo texto: ningún número, respuesta, distractor,
+dibujo, color ni letra cambió, y la marca `calidad: 2` se queda.
+
+Archivos: `contenido/teoria/quimica/tabla-periodica.js`, `plantillas/tabla-ubicacion/generador.js` y su `papel.json`
+(regenerado con `herramientas/papel-generador.js`: los mismos 8 problemas, solo cambian los pasos).
+
+### Qué cambió, por tipo de texto
+
+- **Reglas (4) y «Vale si» (4).** Cada regla dice ahora por qué vale lo que dice («porque cada fila empieza a llenar un
+  nivel nuevo») y trae un caso que el alumno reconoce (el sodio y el potasio, el cloro con 3s² 3p⁵, el hierro con 4s² 3d⁶).
+  Cada condición dice además qué pasa cuando no se cumple: por masa, el argón caería entre dos metales; si termina en d,
+  el grupo se cuenta de otro modo; al calentarse, un semimetal conduce más.
+- **`siFuera` de Predice (12) y de «Ahora tú» (unos 45 moldes en las cuatro ideas).** El molde «Bien X. Pero Y.» pasa a
+  una sola oración con «pero», que nombra el razonamiento equivocado y lo explica con un caso o con su cuenta. Varios
+  `siFuera` fijos ahora usan los datos del caso («El Z = 16 es menor que el del argón, 18…»).
+- **Explicaciones de alternativas de los 60 ejemplos.** Las de nivel 3 dicen ahora por qué falla cada letra («…pero
+  esos subniveles van por dentro», «…aunque está a su derecha en la misma fila»), no solo qué hizo.
+- **Pasos de «Así se resuelve» y soluciones.** Cada paso dice por qué se hace eso («cada gas noble cierra una fila»,
+  «la regla compara dentro de una fila o de una columna») y qué significa el resultado.
+- **Mira (24 pasos) y Lee.** Cada paso agrega el porqué del cambio que se ve: «esa manera de portarse vuelve cada 8
+  elementos», «del potasio al kriptón hay 18, porque en el medio aparecen 10 metales», «los d van por dentro».
+- **Verdadero o falso (tres bancos, 30 afirmaciones).** El porqué de cada afirmación pasa de un rótulo («son los
+  grupos A») a una razón con un caso («son los grupos A, los que terminan en s o en p, como el sodio o el cloro»).
+- **Glosario.** Los 16 `simple` llevan ahora un ejemplo de la vida o de la tabla, dentro de las 14 palabras («Un gas que
+  casi no reacciona con nada, como el helio de los globos»). El de «grupo» no dice que los de una columna se parecen,
+  y el de «semimetal» no nombra al silicio, porque los dos adelantarían una predicción.
+- **Práctica `tabla-ubicacion`.** Las 15 familias de explicaciones y las soluciones siguen la misma pauta.
+- **Errores de lengua que salían en algunas semillas:** «El plata tiene…» → «La plata tiene…» (Así se resuelve, idea
+  3); «los 1 electrón de ese nivel dicen» → «el electrón de ese nivel dice»; «tiene diez: en un subnivel d caben…» (dos
+  dos puntos) → «tiene diez, porque…»; «son metales: quedan a la izquierda…» → «…quedan a la izquierda…, así que son
+  metales». El `siFuera` por defecto («Bien el camino…») hablaba de gases nobles también en la idea 2, donde no hay;
+  ahora es general.
+
+### Seis ejemplos de antes y después
+
+1. **Regla de la idea 1.**
+   Antes: «Si los elementos se ordenan por Z, sus propiedades se repiten cada cierto número de lugares: es la ley
+   periódica. Cada una de las 7 filas es un periodo, y cada una de las 18 columnas, un grupo o familia de elementos
+   parecidos.» Vale si «los elementos se ordenan por número atómico, no por masa.»
+   Después: «… es la ley periódica. Cada una de las 7 filas es un periodo y termina en un gas noble. Cada una de las 18
+   columnas es un grupo o familia, y sus elementos se portan parecido, como el sodio y el potasio.» Vale si «los
+   elementos se ordenan por número atómico, no por masa; por masa, el argón quedaría entre el potasio y el calcio, y un
+   gas caería en la columna de los metales.»
+2. **Regla de la idea 2.**
+   Antes: «El periodo es el número del nivel más alto que tiene electrones. En los grupos A, los electrones de ese
+   nivel, que son los de valencia, dan el número romano del grupo y los puntos del símbolo de Lewis.»
+   Después: «El periodo es el número del nivel más alto que tiene electrones, porque cada fila empieza a llenar un nivel
+   nuevo. En los grupos A, los electrones de ese nivel, que son los de valencia, dan el número romano del grupo y los
+   puntos de Lewis: el cloro, 3s² 3p⁵, tiene 7 y está en el VIIA.»
+3. **Explicación de alternativa, Predice de la idea 1** (la que elige «como el hierro, que también tiene muchos
+   protones»).
+   Antes: «Los dos tienen muchos protones, cierto. Pero el parecido lo da la columna, no cuántos protones hay.»
+   Después: «Tener muchos protones no basta para parecerse: el kriptón, con 36, es un gas, y el hierro, con 26, un metal
+   duro. Lo que se repite es el lugar en la columna, y encima del rubidio está el potasio.»
+4. **Explicación de alternativa, «Ahora tú» de la idea 1** (familia del Z = 16, el que cuenta hacia el otro lado).
+   Antes: «Contaste bien 2 lugares desde el gas noble. Pero el elemento va antes de él, no después, y del otro lado
+   queda otra familia.»
+   Después: «Contaste bien 2 lugares, pero hacia el lado equivocado. El Z = 16 es menor que el del argón, 18, así que
+   va antes de él; a esa distancia, del otro lado, queda otra familia.»
+5. **Paso de «Así se resuelve», idea 1** (Z = 56).
+   Antes: «Está 2 lugares después del xenón, que es su gas noble más cercano.»
+   Después: «Como hay 5 gases nobles antes, el elemento está en el periodo 6. Está 2 lugares después del xenón, que
+   cierra la fila de arriba, así que se cuenta desde el grupo 1.»
+6. **Explicaciones de alternativas de un ejemplo de examen, idea 1** («Tres vecinos», Z = 35, 36 y 37).
+   Antes: «La A olvida que el periodo termina en el 36. La B confunde estar junto al mismo gas noble con ser familia.»
+   Después: «La A olvida que el periodo 4 termina en el 36: el 37 ya abre otra fila. La B confunde estar junto al mismo
+   gas noble con ser familia, pero X va antes del gas y R, después, en columnas opuestas.»
+
+### Para el auditor
+
+1. **Práctica, `anomalo`, error QM-ANOMALO-GRUPO** (Cr → grupo 7; Cu, Ag, Au → grupo 12): la explicación decía «el grupo
+   suma los electrones que tiene, no los que tendría», pero sin el cambio la suma da lo mismo (la solución misma lo
+   dice). La alternativa es la suma correcta más 1; ahora la explicación dice eso: «sumaste un electrón de más: el que
+   pasó del s al d se cuenta una sola vez». Cambia el sentido del texto, no el número: conviene confirmar.
+2. **Datos que agregó esta pasada, de memoria, por confirmar:** el argón (39,9) pesa más que el potasio (39,1), así que
+   por masa iría entre el potasio y el calcio (no se escribió la cifra); el argón de los focos rodea el filamento sin
+   quemarlo; «halógeno» quiere decir «que forma sal»; de cada cinco elementos, unos cuatro son metales; el cobre y la
+   plata conducen muy bien la electricidad; un semimetal como el silicio conduce más al calentarse; el ancho de los
+   bloques (2, 6, 10 y 14 columnas, contando el f en sus dos filas); el 3d empieza a llenarse en el escandio, el que
+   sigue al calcio.
+3. **Tope de `siFuera` en Predice:** `docs/teoria.md` (esquema de la línea 79) todavía dice «≤ 20», mientras
+   `nucleo/teoria.js` y la tabla del §5 dicen 40. Los `siFuera` de Predice de esta unidad tienen ahora de 28 a 39
+   palabras; el validador los acepta. Hay que corregir el esquema de `teoria.md`.
+4. **Explicaciones de la práctica:** `herramientas/validar-ejercicios.js --auditar` mide las explicaciones contra 20
+   palabras (presupuesto de `escena-viva.md`); ahora tienen de 20 a 33. No es una prueba que falle, pero el número de
+   esa auditoría sube.
+5. `papel-reglas.js` marca `quimica-conceptos p2 [papel-datos]`, una plantilla compartida que esta pasada no tocó.
+
+### Comprobaciones (27 nov)
+
+- `node --test contenido/teoria/quimica/tabla-periodica.test.js`: 23 de 23, con la simulación de `calidad: 2` (60
+  semillas, glosario incluido).
+- `node --test plantillas/tabla-ubicacion/generador.test.js`: 9 de 9. `papel-generador.js --revisar`: al día.
+- `contenido/teoria/teoria.test.js`: 162 de 164. La unidad pasa; fallan `quimica/materia-y-energia.js` (otra unidad en
+  obra) y la prueba del glosario (`app/datos/glosario/quimica.json` desfasado hasta que se corra `npm run catalogo` al
+  integrar).
+- `node herramientas/ecuaciones-ancho.js quimica.tabla-periodica`, servidor propio en el puerto 4263: 44 pantallas, 275
+  renglones, todo cabe.
+- Volcado de lo que ve el alumno en 200 semillas por idea (script en el scratchpad): ningún campo pasa su tope, sin
+  «undefined», «NaN» ni dobles espacios.
+
+## Verificación de la segunda pasada (27 nov)
+
+Verificador de cierre. Se leyeron todas las oraciones nuevas (teoría en 60 semillas por idea; `tabla-ubicacion` en 120
+por idea) contra HEAD y se resolvieron las notas.
+
+**Datos, opciones y respuestas contra HEAD (200 semillas por idea, más las 500 a 505; la práctica por idea):** iguales,
+sin ninguna diferencia fuera del texto.
+
+**Corregido (con prueba que falla con la versión del redactor):**
+- **Número atómico, periodo 2 y grupo VIIA (idea 2):** la alternativa Z = 1 decía «Bien el grupo… es el de arriba, en el
+  periodo 1», pero el hidrógeno no está encima del flúor. Ahora, cuando no hay nadie arriba: «Restaste 8, como para subir
+  una fila, pero el Z = 1 es el hidrógeno, del periodo 1, que no está en este grupo…». (`tabla-periodica.test.js`)
+- **Plurales rotos (idea 2):** «Contaste bien los 1 electrones p» (galio, indio) → «el electrón p»; «Ahí hay 1 electrón
+  (2s¹), los de valencia» → «el de valencia». (`tabla-periodica.test.js`)
+- **`tabla-ubicacion`, misma familia del magnesio y del calcio:** la alternativa QM-CUENTA-GRUPO es el escandio o el
+  itrio, con dos electrones en su nivel más alto, y la explicación decía «tiene 2 electrones, no 2». Ahora: «…y su nivel
+  más alto también tiene 2 electrones, pero termina en d: su grupo suma también el d y queda en otra columna».
+  (`generador.test.js`, que además fija QM-ANOMALO-GRUPO)
+- Sin prueba, de precisión: la condición de la idea 1 decía que por masa «un gas caería en la columna de los metales»;
+  ahora «en la columna del litio y el sodio, que son metales».
+
+**Notas del redactor, confirmadas:**
+- **QM-ANOMALO-GRUPO** (Cr, Cu, Ag, Au): en las cuatro, la alternativa es la suma real más uno (Cr → 7; Cu, Ag, Au →
+  12): «sumaste un electrón de más: el que pasó del s al d se cuenta una sola vez» describe bien esa cuenta (2 + 5 o
+  2 + 10). Comprobado en 600 semillas.
+- **Datos de memoria:** argón 39,95 contra potasio 39,10 (por masa el argón iría en el lugar 19, bajo el sodio); el argón
+  rodea el filamento de los focos; «halógeno» viene del griego «que forma sal»; unos 94 de 118 elementos son metales
+  (cuatro de cada cinco); el cobre y la plata conducen muy bien; el silicio, semiconductor, conduce más al calentarse;
+  bloques de 2, 6, 10 y 14 columnas; el 3d empieza en el escandio. Todo cierto.
+- `papel-reglas.js` marca `quimica-conceptos p2 [papel-datos]`: es una plantilla compartida por once unidades de química
+  (estas tres incluidas), sin cambios en esta pasada; queda pendiente para quien la rehaga.
+- El esquema de `docs/teoria.md` ya dice 40 para el `siFuera` (commit d4a1a36).
+
+**Comprobación:** `tabla-periodica.test.js` 24/24; `tabla-ubicacion` 10/10; validador con `calidad: 2` en 200
+semillas: 0; `papel-generador.js --revisar`: al día.
+
+`contenido/teoria/teoria.test.js`: 163 de 164; la única falla, «glosario … archivos de la app al día», espera a
+`npm run catalogo`.
+
+Archivos de esta verificación: `contenido/teoria/quimica/tabla-periodica.js`, `contenido/teoria/quimica/tabla-periodica.test.js`,
+`plantillas/tabla-ubicacion/generador.js`, `plantillas/tabla-ubicacion/generador.test.js`.
