@@ -44,9 +44,9 @@
     unidad: 'aritmetica.numeros-racionales',
     titulo: '¿Por qué una cuenta de S/\u00a010 entre tres amigos nunca sale justa en céntimos?', // espacio duro: «S/» no queda solo al final del renglón
     parrafos: [
-      ['Tres amigos comparten una cuenta de S/ 10, y la calculadora del celular dice que a cada uno le toca ', parte('3,3333333'),
-        ', con treses hasta que se acaba la pantalla. ',
-        'Si cada uno paga S/ 3,33, juntan S/ 9,99 y ', resto('falta un céntimo'), '; si cada uno pone S/ 3,34, juntan S/ 10,02 y sobran dos.'],
+      ['Tres amigos comparten una cuenta de S/ 10 y cada uno le va a pasar su parte por el celular a quien pagó. ',
+        'La calculadora dice que a cada uno le toca ', parte('3,3333333'), ', con treses hasta que se acaba la pantalla. ',
+        'Si cada uno transfiere S/ 3,33, juntan S/ 9,99 y ', resto('falta un céntimo'), '; si cada uno transfiere S/ 3,34, juntan S/ 10,02 y sobran dos céntimos.'],
       ['Con la coma decimal, cualquier reparto parecería salir justo, como S/ 10 entre ', partes('cuatro'), ', que da S/ 2,50 a cada uno, o entre ',
         partes('cinco'), ', que da S/ 2. ',
         'Podrías culpar a la calculadora por cortar los treses cuando se le acaba el espacio, pero una calculadora con mil cifras seguiría mostrando treses hasta el final de la pantalla.'],
@@ -65,9 +65,11 @@
       choque: 'La coma decimal hace esperar que S/ 10 entre tres salga justo, como entre cuatro o entre cinco, y en céntimos siempre falta o sobra uno.',
       atajo: 'Redondear (dos pagan S/ 3,33 y uno S/ 3,34), que arregla el pago pero no explica por qué entre cuatro no hace falta. La explicación trampa es culpar a la pantalla de la calculadora; se descarta porque con más cifras saldrían más treses.',
       porVerificar: [
+        'Que las monedas de 1 céntimo hayan dejado de circular en el Perú (el BCRP dejó de acuñarlas hacia 2011; de memoria) y que las transferencias por celular acepten céntimos (Yape y Plin lo permiten; de memoria).',
         'Que la calculadora de un celular común muestre 3,3333333 (8 cifras) para 10 ÷ 3; depende del modelo y de la app, y algunas muestran más treses.',
       ],
       notas: [
+        'Doble revisión (27 nov): las cuentas cuadran (3 × 3,33 = 9,99; 3 × 3,34 = 10,02; 10 entre 4 y entre 5 salen justos), y la expectativa sale de los repartos entre cuatro y entre cinco, que el alumno ya hizo; la trampa de la calculadora es una idea que de verdad trae. Se corrigió un dato del párrafo 1: las monedas de 1 céntimo ya casi no circulan en el Perú, así que con efectivo nadie paga S/ 3,33. Ahora cada amigo transfiere su parte por el celular, donde los céntimos sí cuentan, y «sobran dos» pasó a «sobran dos céntimos».',
         'Revisión del Escribidor Escribano (27 nov): «Uno podría culpar» pasó a de tú («Podrías culpar») y «ningún número de céntimos la alcanza», que deja dudar si alcanzar es llegar o pasarse, ahora dice «ningún número entero de céntimos da justo esa cantidad».',
         'La pregunta (S/ 10 entre 8 = S/ 1,25, exacto) entra a la idea 4 sin decir qué denominadores dan decimal exacto. No usa 40 ni 11 (Predice de las ideas 4 y 5).',
         'El párrafo 3 dice que 10/3 es exacto como fracción: es el punto de llegada del tema (racional = fracción), no una regla de la unidad.',

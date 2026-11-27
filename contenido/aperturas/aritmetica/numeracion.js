@@ -84,6 +84,7 @@
         'Que un recreo de 20 minutos, de 9:50 a 10:10, sea un horario plausible en un colegio peruano (es un ejemplo: «supón que»; los horarios varían por colegio y por turno).',
       ],
       notas: [
+        'Doble revisión (27 nov): sin cambios. El recreo de 9:50 a 10:10 dura 20 minutos; 1010 − 950 = 60 y 10,10 − 9,50 = 0,6 hablan del mismo recreo. Restar las horas como números (o pedir prestado 100 en vez de 60) es un error real de la resta escrita de horas, no un muñeco: la intuición del reloj es la correcta y el texto la usa como «Lo que se mide».',
         'Los 36 minutos del atajo no van al texto: la misión de la idea 2 dice «la caja ya guarda 36» y la prueba común lo marcaría como valor de la unidad. El texto dice «más de la mitad de una hora».',
         'Revisión del Escribidor Escribano (27 nov): el párrafo 3 decía que las cuentas tratan «los minutos como si diez de ellos formaran el grupo siguiente», y eso también pasa en el reloj (diez minutos hacen una decena de minutos); lo que de verdad suponen la resta y la coma es una hora de cien minutos, y ahora lo dice. Se cambió «Por eso la misma cifra no vale lo mismo en todas partes», cuyo «por eso» no salía de lo anterior, y «Cualquiera que lo haya vivido sabe» por «Si miras el reloj, ves». «Cien» va en letras para no escribir el 100 de la Predice 1 (100 en base 5).',
         'La pregunta se puede responder con el párrafo 3 (a los 60 minutos la hora sube en uno, así que los minutos nunca pasan de 59) y abre la idea 1, «¿Por qué en base 5 no existe la cifra 5?», sin decirla.',

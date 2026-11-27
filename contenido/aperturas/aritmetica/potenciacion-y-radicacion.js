@@ -1,8 +1,8 @@
 /*
  * Apertura de «Potenciación y radicación» (docs/metodo/apertura-pisa.md; criterio en docs/metodo/entrada-pisa.md).
- * El choque se prueba con las manos: una hoja bond A4 no se deja doblar por la mitad más de siete u ocho veces. Quien
- * suma capas espera unas 14 después de siete dobleces, y hay 128, el grosor de un cuaderno delgado. Lo que el alumno se
- * lleva va en ficha.seLleva. No es la pizza (agrandar una figura): aquí se multiplica por dos una y otra vez. No
+ * El hecho se prueba con las manos: una hoja bond A4 no se deja doblar por la mitad más de siete u ocho veces. Desde la
+ * doble revisión (27 nov) no se fabrica sorpresa: la intuición de duplicar es la correcta, y la apertura la muestra
+ * aplicada (128 capas, casi 13 mm, un taco que no cede). Lo que el alumno se lleva va en ficha.seLleva. No es la pizza (agrandar una figura): aquí se multiplica por dos una y otra vez. No
  * adelanta ninguna Predice (600 por 6, 2021 entre 44² y 45², 9 × 9 con residuo 18, del cubo de 8 al de 9, los 22
  * cuadrados de tres cifras, √2): no escribe 64, 36, 81, 100 ni 121, aciertos de misiones. Colores de la unidad: los
  * dobleces (el exponente) en turquesa (c-i) y las capas que salen (el número) en naranja (c-o).
@@ -36,40 +36,42 @@
   };
   const svg = `<svg viewBox="0 0 520 380" width="520" height="380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <line x1="260" y1="12" x2="260" y2="370" style="stroke:var(--line)" stroke-width="2"/>
-    ${panel(0, 'Lo que predice', 14, '14 capas', ['Sumar capas:', 'menos de 2 mm'])}
-    ${panel(260, 'Lo que se mide', 128, '128 capas', ['Duplicar capas:', 'casi 13 mm'])}
+    ${panel(0, 'Lo que predice', 128, '128 capas', ['Duplicar 7 veces:', '128 × 0,1 mm'])}
+    ${panel(260, 'Lo que se mide', 128, 'casi 13 mm', ['Con una regla:', 'un cuaderno delgado'])}
   </svg>`;
 
   return {
     unidad: 'aritmetica.potenciacion-y-radicacion',
     titulo: '¿Por qué una hoja de papel no se deja doblar más de siete u ocho veces?',
     parrafos: [
-      ['Toma una hoja bond A4 y dóblala por la mitad, una y otra vez, siempre en el mismo sentido: al sexto o séptimo doblez el papel ya casi no cede, por más fuerza que hagas. ',
-        'Después de ', dobleces('siete dobleces'), ' hay ', capas('128 capas'),
-        ' de papel, y como una resma de 500 hojas mide unos 5 cm, ese bloque tiene casi 13 mm, el grosor de un cuaderno delgado.'],
-      ['La cuenta que haría cualquiera es sumar, como si cada doblez agregara una o dos capas, y con siete dobleces saldrían unas ', capas('14 capas'),
-        ', menos de 2 mm, algo que se dobla sin esfuerzo. ',
-        'Echarle la culpa a la falta de fuerza no explica por qué el límite es casi el mismo para cualquier persona, sea un niño o un adulto fuerte.'],
-      ['Cada doblez no suma una capa, sino que duplica las que había, y multiplicar por dos siete veces seguidas lleva de una hoja a 128 capas. ',
-        'El tema de la potenciación y la radicación trata de los números que salen de multiplicar un número por sí mismo varias veces, como los cuadrados y los cubos, y del camino de vuelta, que es la raíz.'],
+      ['Toma una hoja bond A4 y dóblala por la mitad una y otra vez, sin desdoblarla: al sexto o séptimo doblez el papel ya casi no cede, por más fuerza que hagas. ',
+        'La falta de fuerza no lo explica, porque el límite es casi el mismo para cualquier persona, sea un niño o un adulto fuerte.'],
+      ['Lo que pasa lo puedes predecir sin doblar nada, porque cada doblez pone una mitad de la hoja sobre la otra y duplica las capas que había: 2, 4, 8 y así hasta ',
+        capas('128 capas'), ' después de ', dobleces('siete dobleces'), '. ',
+        'Como una resma de 500 hojas mide unos 5\u00a0cm, cada hoja tiene una décima de milímetro, y 128 capas forman un bloque de casi 13\u00a0mm, el grosor de un cuaderno delgado.'],
+      ['Cada doblez también parte la hoja por la mitad, así que al final queda un taco de apenas 2 o 3\u00a0cm de lado y más de 1\u00a0cm de grueso, que se parece más a un dado que a una hoja. ',
+        'Multiplicar por dos siete veces seguidas te dio las capas y el grosor sin contar nada, y de esas cuentas trata el tema de la potenciación y la radicación. ',
+        'El tema estudia los números que salen de multiplicar un número por sí mismo varias veces, como los cuadrados y los cubos, y el camino de vuelta, que es la raíz.'],
     ],
     figura: {
       antes: 2,
       svg,
-      alt: 'Dos dibujos con la misma escala de una hoja doblada siete veces, vista de costado. Lo que predice la suma de capas: un bloque delgado de 14 capas, menos de 2 mm. Lo que se mide al duplicar en cada doblez: un bloque de 128 capas, casi 13 mm.',
+      alt: 'Dos dibujos con la misma escala de una hoja doblada siete veces, vista de costado. Lo que predice la cuenta de duplicar en cada doblez: 128 capas de 0,1 mm. Lo que se mide con una regla: un bloque de casi 13 mm, el grosor de un cuaderno delgado.',
     },
     pregunta: 'Si en vez de doblar la hoja en dos la doblaras en tres partes iguales cada vez, como una carta, ¿cuántas capas tendrías después de tres dobleces?',
     ficha: {
-      seLleva: 'Duplicar una y otra vez crece mucho más rápido que sumar: siete dobleces juntan 128 capas de papel, y por eso una hoja no se deja doblar muchas veces.',
+      seLleva: 'Con una multiplicación repetida se predice sin doblar nada que siete dobleces juntan 128 capas, casi 13 mm de papel en un taco pequeño, y por eso una hoja no se deja doblar muchas veces.',
       alcance: 'Parcial, deducción propia (cantidad y cambio: crecimiento multiplicativo; la tabla de la entrada PISA pone «cambio multiplicativo» en exponenciales).',
-      choque: 'Sumar capas predice unas 14 después de siete dobleces, y hay 128, casi 13 mm de papel.',
-      atajo: 'Sumar una o dos capas por doblez. La explicación trampa es la falta de fuerza; se descarta porque el límite es casi el mismo para cualquiera. También influye que el papel se acorta a la mitad en cada doblez, y eso es otra vez una potencia de 2, así que no cambia el choque.',
+      choque: 'Sin choque fabricado: la intuición del alumno (cada doblez duplica las capas) es correcta, y la apertura muestra lo que permite: predecir 128 capas y casi 13 mm sin doblar, y entender por qué la hoja deja de ceder.',
+      atajo: 'La versión anterior oponía la suma de una o dos capas por doblez (unas 14 capas), que nadie haría con la hoja en la mano, porque al segundo doblez ya se ven 4. La explicación trampa es la falta de fuerza; se descarta porque el límite es casi el mismo para cualquiera. También influye que el papel se acorta a la mitad en cada doblez, y eso es otra vez una potencia de 2, y ahora el texto lo usa para decir por qué el taco ya no cede.',
       porVerificar: [
+        'Tamaño del taco después de siete dobleces alternados de una A4 (210 × 297 mm): unos 26 × 19 mm, cálculo propio; con aire entre las capas, el grosor real pasa de 13 mm.',
         'Que una hoja bond A4 común no se deje doblar a mano más de siete u ocho veces (dato muy difundido; Britney Gallivan llegó a 12 con un papel muy largo en 2002; de memoria).',
         'Grosor de la hoja bond de 75 g/m²: unos 0,1 mm; una resma de 500 hojas mide unos 5 cm (de memoria; varía entre 4,5 y 5,5 cm según la marca).',
         'Que 128 capas de 0,1 mm (12,8 mm) sean «el grosor de un cuaderno delgado» (comparación propia, por verificar con un cuaderno de 50 hojas).',
       ],
       notas: [
+        'Doble revisión (27 nov): la versión anterior oponía «sumar una o dos capas por doblez» (unas 14 capas) a las 128 que salen al duplicar. Era un muñeco de paja: con la hoja en la mano, cualquiera ve 2 capas al primer doblez y 4 al segundo, y nadie suma. Duplicar es la intuición correcta, así que la apertura ya no fabrica sorpresa: «Lo que predice» es la cuenta de duplicar (128 capas de 0,1 mm) y «Lo que se mide», el bloque de casi 13 mm, y el texto muestra lo que permite la cuenta (saber el grosor sin doblar y ver que queda un taco pequeño que no cede). Se quitó «siempre en el mismo sentido», que haría una tira y no un taco. La falta de fuerza pasó al párrafo 1. Queda el punto de abajo (el puente hacia cuadrados y raíces), que no se resuelve con este hecho.',
         'No repite la pizza: allá se agranda una figura y su área crece con el cuadrado del ancho; aquí se multiplica por dos una y otra vez. El tema de la unidad (cuadrados, cubos y raíces) se nombra solo al final.',
         'La pregunta da 3 × 3 × 3 = 27 capas, un cubo, y abre la idea 1 (cuadrados y cubos perfectos) sin decirla. No es una Predice.',
         'Revisión del Escribidor Escribano (27 nov): «Cada doblez no agrega capas» era falso al pie de la letra (agrega tantas como había) y pasó a «no suma una capa». La última oración tenía un sujeto de 30 palabras antes de «son»; ahora el verbo llega pronto («El tema … trata de …»).',

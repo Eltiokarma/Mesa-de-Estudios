@@ -69,6 +69,7 @@
         'Consumo típico de una casa peruana: unos 150 kWh al mes (de memoria; varía mucho entre Lima, la sierra y la selva). Con él, 9745 kWh son unos 65 meses, más de cinco años.',
       ],
       notas: [
+        'Doble revisión (27 nov): sin cambios. Las cuentas cuadran (de 9870 a 10 000 faltan 130, y 130 + 125 = 255; 125 − 9870 es negativo; 9870 − 125 = 9745), las tres cuentas hablan de las mismas dos lecturas y la resta de siempre es el procedimiento que el alumno aplica tal cual a un recibo. La salida (el medidor dio la vuelta, como un cuentakilómetros) es intuitiva y el texto la dice sin fabricar sorpresa; la pregunta la pone a trabajar.',
         'La pregunta pide partir el consumo en dos tramos: lo que faltaba para llegar a 10 000 y lo que vino después. Es la entrada del complemento aritmético (idea 3) sin decir su nombre ni su cuenta. No se escribe 130 ni 260 en lo que ve el alumno.',
         'Revisión del Escribidor Escribano (27 nov): el párrafo 3 cerraba la serie «lo que se lleva, lo que se presta y lo que falta…» con otra «y de eso trata», que se lee como un cuarto miembro; ahora la serie cierra con punto y coma. Lo demás no cambió: el choque se entiende sin saber el tema y la pregunta se puede intentar contando con los dedos.',
         'El 255 del recibo no es una medición propia: sale de 130 + 125 y se presenta como lo que cobra el recibo.',

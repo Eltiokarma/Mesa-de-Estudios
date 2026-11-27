@@ -53,7 +53,7 @@
       ['Las dos reglas de tres suponen que, cuando una cantidad se duplica, la otra se duplica o se queda en la mitad. ',
         'Con la pizza no pasa ninguna de las dos cosas, porque al agrandarla la masa crece a lo ancho y también a lo largo, y por eso al doble de ancho le toca lo de ',
         pizza('cuatro personales'), '. ',
-        'Por eso, antes de usar una regla de tres, hay que averiguar qué le pasa a una cantidad cuando la otra se duplica, y de esa pregunta trata el tema de las magnitudes proporcionales.'],
+        'Así que antes de usar una regla de tres hay que averiguar qué le pasa a una cantidad cuando la otra se duplica, y de esa pregunta trata el tema de las magnitudes proporcionales.'],
     ],
     figura: {
       antes: 2,
@@ -71,6 +71,7 @@
         'Que la familiar pese lo de cuatro personales es cálculo (el área crece con el cuadrado del ancho), no una pesada propia; vale si el grosor de la masa y los ingredientes por centímetro cuadrado son los mismos.',
       ],
       notas: [
+        'Doble revisión (27 nov): las cuentas cuadran (al doble de ancho, cuatro veces el área: 40² entre 20² da 4) y la predicción de la regla de tres directa (dos personales) es el error real de linealidad que comete el alumno; la expectativa y lo medido hablan de las mismas dos pizzas. Solo se cambió el arranque de la última oración del párrafo 3, «Por eso», que repetía el «por eso» de la oración anterior; ahora dice «Así que».',
         'Segunda versión (27 nov): Gerson rechazó la primera, que era el ejemplo del skill (la talla del niño). Esta busca un hecho propio, que un alumno de 5.º entiende sin saber el tema, y deja una oración para llevarse (seLleva).',
         'La pregunta compara pares (largo del pan y tajadas, ancho de la pizza y pizza) y se puede responder con el párrafo 3: el pan crece solo a lo largo. La clase recoge esa respuesta para presentar la proporcionalidad directa.',
         'Revisión del Escribidor Escribano (27 nov): el título y la figura decían «trae», que no dice de qué; ahora todo habla de lo que pesa, como la balanza del párrafo 1. Se quitó «Quien usa la regla de tres…» (molde) y la pregunta, que decía «¿Qué tiene ese pan que no tiene la pizza?», ahora pide la diferencia al agrandarse y aclara que las tajadas son del mismo tamaño (si no, el pan también podría crecer a lo ancho).',

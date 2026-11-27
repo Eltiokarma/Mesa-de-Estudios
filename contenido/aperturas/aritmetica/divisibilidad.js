@@ -41,8 +41,8 @@
     parrafos: [
       ['En 2026, el 28 de julio cayó martes; en 2027 caerá miércoles, y en 2028, viernes, sin pasar por el jueves. ',
         'Puedes comprobarlo en el calendario de tu celular con cualquier fecha, por ejemplo con tu cumpleaños, que tampoco cae cada año el mismo día.'],
-      ['Un año tiene ', semana('52 semanas'), ', y cada semana repite los mismos siete días en el mismo orden. ',
-        'Con eso, cualquiera esperaría que el calendario se repitiera exactamente igual y que el 28 de julio fuera martes todos los años. ',
+      ['Se suele decir que un año tiene ', semana('52 semanas'), ', y cada semana repite los mismos siete días en el mismo orden. ',
+        'Si el año fuera de 52 semanas justas, el calendario de cada año sería una copia del anterior y el 28 de julio caería martes todos los años. ',
         'Echarle la culpa al año bisiesto tampoco basta, porque 2026 y 2027 no son bisiestos y la fecha se corrió igual.'],
       ['Las 52 semanas suman 364 días, pero un año normal tiene 365, así que el año no se deja repartir justo en semanas completas: ',
         sobra('algo queda afuera'), '. ',
@@ -63,6 +63,7 @@
         'Días de la semana del 28 de julio de 2026, 2027 y 2028 (martes, miércoles y viernes): calculados con el calendario gregoriano en Node, no de memoria.',
       ],
       notas: [
+        'Doble revisión (27 nov): el párrafo 2 decía «Un año tiene 52 semanas» y «cualquiera esperaría que el calendario se repitiera exactamente igual», justo después de que el párrafo 1 recordara que el cumpleaños no cae cada año el mismo día: nadie espera eso, y era un muñeco de paja. Ahora el párrafo 2 parte de lo que de verdad se dice («se suele decir que un año tiene 52 semanas») y saca la consecuencia como condición («si el año fuera de 52 semanas justas…»): el choque es entre ese dicho y lo que el alumno ya vio en el calendario. Las fechas se recalcularon (martes, miércoles y viernes) y la figura no cambia.',
         'Revisión del Escribidor Escribano (27 nov): el párrafo 3 decía «un día queda afuera, sin completar otra semana, y ese día es el que empuja la fecha». Eso ya es la regla de la idea 2 («al operar, mandan los sueltos») aplicada al choque, y con ella la pregunta de los 100 días sale sin pensar. Ahora el párrafo deja el hecho (364 contra 365: el año no cabe en semanas completas y algo queda afuera) y no dice que lo que sobra empuja la fecha ni cuánto la empuja; eso queda para la pregunta y la idea 2. También se cambió «igualito», que es coloquial, por «exactamente igual». El seLleva se ajustó a lo que ahora dice el texto.',
         'La pregunta se resuelve con el resto de 100 entre 7 (2: jueves) y abre la idea 2 sin sus números. No es una Predice ni tiene opciones.',
       ],
