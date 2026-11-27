@@ -98,3 +98,4 @@ contra los límites semanales de los planes.
 | aperturas física (11) | doble revisión (choques honestos) | 226 372 | 10 min 26 s | 39 herramientas |
 | algebra.division-de-polinomios | revisión del Escribidor Escribano | 153 287 | 3 min 8 s | 13 herramientas |
 | aperturas RM y verbal (12) | tercera pasada (líneas y palabras) | 147 955 | 2 min 52 s | 18 herramientas |
+| aperturas química y geometría (16) | tercera pasada (líneas y palabras) | 157 096 | 4 min | 21 herramientas |
