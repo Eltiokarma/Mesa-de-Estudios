@@ -84,6 +84,18 @@ grupos de trabajo?») puede hacer sentir mal al alumno nuevo. Por eso, además d
 9. **Si no hay un buen hecho, se investiga.** Cuando no aparece un caso cotidiano honesto, la apertura se marca para
    un agente que la investigue con calma, en vez de rellenar con un choque forzado.
 
+## Tercera pasada: líneas y palabras (Gerson, 27 nov)
+
+10. **Cada ecuación en su línea.** Toda ecuación, equivalencia, cuenta o paso de un número a una letra («el 9, que es
+    3 × 3, pasa a ser x²») va en una línea sola, como en la teoría, no metida en la oración. En el párrafo se escribe
+    `{ linea: [ ...partes de nucleo/ecuacion.js... ] }` entre los trozos de texto; la app la pinta centrada y el texto
+    sigue debajo. Una cuenta por línea; si son varios pasos, una línea por paso. Los números sueltos de un dato
+    («unos 5 km») siguen en la oración.
+11. **Una palabra, un sentido.** Si una palabra con varios sentidos («cuenta»: la que se paga y la que se calcula;
+    «clase», «grado», «carga», «masa», «resto», «nota») aparece dos veces en el mismo párrafo con sentidos distintos,
+    se cambia una por otra palabra.
+12. **Nombres claros.** Se usa el nombre con que la gente conoce la cosa («estafa piramidal», no «pirámide de dinero»).
+
 ## Revisión del Escribidor Escribano (Gerson, 27 nov)
 
 Toda apertura pasa, después de escrita, por una revisión aparte con la skill `anthropic-skills:escribidor-escribano`,
