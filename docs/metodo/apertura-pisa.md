@@ -47,6 +47,14 @@ Un archivo por unidad, aparte de la teoría (para no chocar con quien edita la t
 - La ficha está completa; `porVerificar` lista los datos de memoria.
 - Sin `ficha` visible en la app.
 
+## Revisión del Escribidor Escribano (Gerson, 27 nov)
+
+Toda apertura pasa, después de escrita, por una revisión aparte con la skill `anthropic-skills:escribidor-escribano`,
+hecha por un agente que no la escribió: coherencia entre párrafos (cada uno sigue del anterior y el choque se entiende
+sin releer), que el título, la imagen y la pregunta hablen del mismo choque, y las reglas de la casa (oraciones de al
+menos 10 palabras, sin raya, coma decimal, de tú, nada telegráfico). Esa revisión no cambia datos medidos ni el choque:
+si ve un problema de contenido, lo anota en la ficha. Sin esa revisión, la apertura no se publica.
+
 ## Piloto
 
 Tres unidades antes de las 158: `aritmetica.magnitudes-proporcionales` y `quimica.geometria-molecular` (los dos
