@@ -73,3 +73,12 @@ contra los límites semanales de los planes.
 | fisica (tanda 2, 4 unidades) | verificación de notas del redactor | 271 018 | 14 min 44 s | 86 herramientas |
 | quimica.propiedades-periodicas | redactor, segunda pasada («explica») | 278 953 | 14 min | 48 herramientas |
 | quimica.tabla-periodica | redactor, segunda pasada («explica») | 372 510 | 17 min 43 s | 67 herramientas |
+| quimica.estructura-atomica | redactor, segunda pasada («explica») | 392 921 | 24 min | 88 herramientas |
+| quimica.materia-y-energia | redactor, segunda pasada («explica») | 448 631 | 27 min | 117 herramientas |
+| aperturas piloto (3) | infraestructura y escritura (Entrada PISA) | 339 284 | 17 min 44 s | 87 herramientas |
+| aperturas piloto (3) | revisión del Escribidor Escribano | 168 029 | 6 min | 28 herramientas |
+| quimica.geometria-molecular | redactor, segunda pasada («explica») | 363 759 | 20 min | 69 herramientas |
+| quimica.nomenclatura-inorganica | redactor, segunda pasada («explica») | 390 979 | 21 min 30 s | 92 herramientas |
+| quimica (2.ª pasada, tanda 1) | verificación | 364 551 | 21 min 43 s | 121 herramientas |
+| quimica.enlace-quimico | redactor, segunda pasada («explica») | 376 706 | 22 min | 70 herramientas |
+| quimica.mol-y-composicion | redactor, segunda pasada («explica») | 476 705 | 22 min 30 s | 80 herramientas |
