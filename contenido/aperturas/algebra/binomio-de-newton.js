@@ -42,9 +42,9 @@
     unidad: 'algebra.binomio-de-newton',
     titulo: '¿Por qué con tres monedas sale una sola cara tres veces más seguido que tres caras?',
     parrafos: [
-      ['Si lanzas tres monedas a la vez, anotas cuántas caras salen y repites el lanzamiento muchas veces, las tres caras salen en apenas ',
+      ['Si lanzas tres monedas a la vez, anotas cuántas caras salen y repites el lanzamiento muchas veces, las tres caras salen más o menos en ',
         veces('1 de cada 8'), ' lanzamientos, y ninguna cara, igual de poco. ',
-        'En cambio, una cara sola sale en ', veces('3 de cada 8'), ' lanzamientos, y dos caras, también en 3 de cada 8: tres veces más seguido.'],
+        'En cambio, una cara sola sale más o menos en ', veces('3 de cada 8'), ' lanzamientos, y dos caras, también en 3 de cada 8: tres veces más seguido.'],
       ['Como cada moneda cae en cara o en sello con la misma probabilidad, parece justo que los cuatro resultados posibles, de cero a tres caras, salgan igual de seguido, en ',
         veces('1 de cada 4'), ' lanzamientos. ',
         'Con tres monedas se pueden anotar a mano todas las maneras de caer y contarlas, pero con ocho monedas ya son 256 maneras, y nadie las escribe una por una.'],
@@ -66,6 +66,7 @@
         'Las frecuencias (1, 3, 3 y 1 de cada 8) son las probabilidades teóricas de monedas parejas; con lanzamientos reales salen cerca, no exactas. Falta un registro propio (por ejemplo, 200 lanzamientos de un salón) si se quiere decir «se mide» con datos.',
       ],
       notas: [
+        'Doble revisión (27 nov): el choque es honesto (las mismas tres monedas en la predicción y en lo medido, y la idea de que todos los resultados son igual de probables es un error real y estudiado, el sesgo de equiprobabilidad de Lecoutre, de memoria). Solo cambió «salen en apenas 1 de cada 8» por «salen más o menos en 1 de cada 8», y lo mismo con 3 de cada 8: con lanzamientos de verdad las frecuencias se acercan a esas fracciones, no las clavan, y el texto ahora es cierto tal como se lee.',
         'Revisión del Escribidor Escribano (27 nov): el título decía «casi nunca salen las tres en cara», exagerado para 1 de cada 8; ahora nombra el choque con el dato (una cara sale tres veces más seguido que tres caras).',
         'Tres monedas y no cuatro: con cuatro, el seis de «dos caras» sería la respuesta de la misión de la idea 1. Por eso tampoco aparece (a + b)³ con sus coeficientes ni la suma de coeficientes de la idea 4.',
         'La pregunta se responde con el párrafo 3 (según cuál moneda cae en cara): de tres maneras. Es el «elegir en cada paréntesis» de la idea 1 con monedas, sin ser una Predice.',

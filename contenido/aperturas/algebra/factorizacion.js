@@ -69,7 +69,7 @@
         'Te queda una pieza en forma de L con 91 cuadraditos. ',
         'Si la cortas con un solo tijeretazo recto y pones uno de los pedazos, girado, al costado del otro, se forma un rectángulo completo de ',
         largo('13 cuadraditos'), ' de largo y ', ancho('7'), ' de ancho, sin huecos ni escalones.'],
-      ['Lo que uno espera es que una pieza mordida siga mordida, y que al mover un pedazo el hueco de la esquina reaparezca en otro lado como un escalón. ',
+      ['Si te piden armar un rectángulo con esa pieza, lo natural es pensar que no se puede, porque al mover un pedazo el hueco de la esquina reaparece en otro lado como un escalón. ',
         'Contar los 91 cuadraditos y buscar dos números que multiplicados den 91 cuesta trabajo, porque 91 parece no partirse de ninguna manera. ',
         'Y aunque encuentres 13 por 7, esa cuenta no dice qué medidas tendría el rectángulo con un cuadrado o una esquina de otro tamaño.'],
       ['La L no tenía forma de rectángulo, pero tenía el área justa de uno, y sus dos medidas salen de cómo está hecha la pieza, no de probar números al azar. ',
@@ -92,6 +92,7 @@
         'Las cuentas son cálculo: 100 − 9 = 91 = 13 · 7, y con un cuadrado de 8 y una esquina de 2, 64 − 4 = 60 = 10 · 6. El corte va entre la tira de 3 por 7 de arriba y el bloque de 10 por 7 de abajo; la tira se gira y se pone al costado del bloque.',
       ],
       notas: [
+        'Doble revisión (27 nov): el choque es honesto. La predicción y lo medido hablan de la misma pieza de 91 cuadraditos, y las cuentas cuadran (la tira de arriba, de 7 por 3, se gira y se pone al costado del bloque de 10 por 7: 13 por 7). Que 91 parezca primo es un tropiezo real, y que una L no se pueda volver rectángulo con un solo corte es lo que espera quien no lo ha probado; el alumno lo comprueba con tijera y cuaderno. Solo cambió la primera oración del párrafo 2: «Lo que uno espera es que una pieza mordida siga mordida» era impersonal y vago, y ahora dice qué se pensaría ante el encargo concreto, de tú.',
         'Tercera versión (27 nov), del revisor: la anterior repartía un salón en filas iguales (muy parecida a aritmetica/numeros-primos-y-divisores.js) y su choque era de aritmética. Gerson pidió un choque propio de la unidad; este es «volver a armar un rectángulo y encontrar de qué medidas sale un área».',
         'La pregunta se puede intentar dibujando en el cuaderno: sale un rectángulo de 10 por 6. Abre la idea 2 (productos notables al revés) sin responder su Predice, que es la de x⁴ − 16, y la idea 1 (escribir como producto).',
         'El cuadrado es de 10 y la esquina de 3 porque la prueba de «no delata» marca el 12 y el 11 (están en los aciertos de las misiones); con una esquina de 1 o de 2 saldrían 11 o 12.',
