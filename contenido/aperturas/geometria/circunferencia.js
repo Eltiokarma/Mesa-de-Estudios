@@ -102,6 +102,7 @@
         'Desde un acantilado de 30 m, el horizonte se va a unos 20 km y el bote se vería entero: es la respuesta de la pregunta, no se escribe en la apertura.',
       ],
       notas: [
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido (5 km, 10 km, 1,6 m y 6371 km son datos).',
         'La figura exagera la curva del mar para que se vea la recta que la toca; el texto alternativo y un rótulo lo dicen. No hay radios dibujados ni ángulos, para no adelantar la idea 1 (radio, cuerda y tangente).',
         'El párrafo 3 dice que la línea de la vista toca el mar en un solo punto: es la salida al choque y nombra la tangente sin la palabra ni la regla del ángulo recto.',
         'Revisión del Escribidor Escribano (27 nov): sin cambios en el texto. Recalculado: con los ojos a 1,6 m y R = 6371 km, el horizonte geométrico queda a 4,5 km (unos 4,9 km con la refracción normal, k ≈ 0,13), y a 10 km se esconden 2,4 m del bote sin refracción y unos 1,8 m con ella; «unos 5 km» y «unos 2 m» se sostienen. El párrafo 3 explica la salida (la línea de la vista toca el mar en un punto) y roza el «la entrada no explica»: se deja porque no da la regla del radio ni ningún número.',

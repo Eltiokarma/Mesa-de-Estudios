@@ -91,6 +91,7 @@
         'Mayólicas de 20 cm por 20 cm: medida común en las tiendas del Perú (de memoria). La pared es imaginada («Imagina una pared…»), no una foto de una pared real.',
       ],
       notas: [
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido (los 20 cm son un dato).',
         'La figura es la misma pared en los dos paneles; en «Lo que se mide» se agregan las dos rayas marcadas en naranja y las cotas de 20 cm en cada extremo. Al marcar las rayas, la ilusión se debilita en ese panel, que es lo que se quiere mostrar.',
         'La ilusión necesita que el cemento sea de un gris intermedio entre las dos mayólicas: se usa var(--muted) con tinta y el color de la tarjeta, que funciona en el tema claro y en el oscuro. Revisar que se vea a 390 px (la captura de la ficha).',
         'La pregunta se puede intentar sin teoría (medir la distancia en varios sitios, o cruzar las dos rayas con un hilo y comparar las esquinas que se forman) y lleva a la idea 5, sin dar su Predice.',

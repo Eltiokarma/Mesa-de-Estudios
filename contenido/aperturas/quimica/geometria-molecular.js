@@ -52,7 +52,9 @@
     titulo: '¿Por qué el hielo flota, si casi todo sólido se hunde en su líquido?',
     parrafos: [
       ['Si dejas una botella llena de agua en el congelador, al día siguiente la encuentras hinchada o rajada, porque el agua ocupa más espacio cuando se congela. ',
-        'Cada litro de agua da unos 1,09 L de hielo, y por eso un cubito flota en un vaso de agua con casi la décima parte afuera.'],
+        'Al congelarse, cada litro de agua da algo más de un litro de hielo:',
+        { linea: ['1 L de agua → 1,09 L de hielo'] },
+        'Por eso un cubito flota en un vaso de agua con casi la décima parte afuera.'],
       ['Casi todo lo que conoces se encoge al enfriarse, y la mayoría de las sustancias quedan más apretadas cuando se vuelven sólidas. ',
         'Con la parafina de una vela pasa así: un trozo de vela sólida se hunde en la parafina derretida, y el hielo tendría que hundirse igual en el fondo del vaso. ',
         'Tampoco sirve decir que el hielo flota por el aire que tiene atrapado, porque un hielo transparente, sin una sola burbuja, también flota.'],
@@ -78,6 +80,7 @@
         'La red del hielo: cada molécula se une a cuatro vecinas por puentes de hidrógeno en un arreglo tetraédrico que deja huecos; el texto lo dice como «un orden fijo que deja huecos», sin los nombres.',
       ],
       notas: [
+        'Tercera pasada (27 nov): la equivalencia «cada litro de agua da unos 1,09 L de hielo» sale a una línea sola (1 L de agua → 1,09 L de hielo), con la oración de antes terminada en dos puntos y la consecuencia («Por eso un cubito flota…») debajo. Sin palabras de doble sentido.',
         'Doble revisión (27 nov): sin cambios (piloto aprobado). Cuentas rehechas: 1 / 0,917 = 1,09 L de hielo por litro y 1 − 0,917 = 8 % afuera, «casi la décima parte». Para Gerson: el alumno sabe que el hielo flota, así que el párrafo 2 no le atribuye la creencia contraria; la deduce de la regla general («casi todo sólido se hunde en su líquido», con la parafina como caso visto), y la pregunta del título es por qué el agua es la excepción. No es un muñeco de paja, pero si se quisiera la versión del punto 7, la apertura mostraría el hielo que flota aplicado (los lagos que se congelan por arriba y no por abajo).',
         'El párrafo 3 dice que la forma decide el orden del hielo y no explica cómo: ni las regiones de electrones, ni los pares libres, ni los puentes de hidrógeno. Eso queda para las ideas 1, 3 y 4.',
         'La pregunta abre la idea 1 («¿Por qué el agua no es una molécula recta?») y se puede intentar con lo leído: una forma doblada se acomoda peor que un palito. No es una Predice ni tiene opciones.',

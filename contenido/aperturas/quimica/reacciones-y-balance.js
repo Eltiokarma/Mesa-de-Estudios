@@ -52,8 +52,9 @@
     unidad: 'quimica.reacciones-y-balance',
     titulo: '¿Por qué una bola de virulana pesa más después de quemarse que antes?',
     parrafos: [
-      ['La virulana, la lana de acero con que se lavan las ollas, arde con chispas anaranjadas si le acercas una llama, y queda convertida en una masa oscura que se desmorona entre los dedos. ',
-        'Si la pesas en una balanza de cocina antes y después, la bola quemada marca más que la bola entera, y si todo su hierro llegara a quemarse, 10 g de virulana pasarían a pesar unos 14 g.'],
+      ['La virulana, la lana de acero con que se lavan las ollas, arde con chispas anaranjadas si le acercas una llama, y queda convertida en un ovillo oscuro que se desmorona entre los dedos. ',
+        'Si la pesas en una balanza de cocina antes y después, la bola quemada marca más que la bola entera, y si todo su hierro llegara a quemarse, la balanza mostraría más o menos este cambio:',
+        { linea: ['10 g antes → 14 g después'] }],
       ['Todo lo que has visto quemarse predice lo contrario: la leña queda en un puñado de ceniza, la vela se acaba y el papel casi desaparece, así que lo quemado tendría que pesar menos. ',
         'Tampoco es que el fuego le deje algo suyo encima, porque si la virulana se quema dentro de un frasco bien cerrado, el frasco entero marca en la balanza lo mismo antes y después.'],
       ['Al arder, la virulana no crea materia ni la recibe del fuego, y aun así la balanza marca unos gramos que la bola entera no tenía. ',
@@ -77,6 +78,7 @@
         'Que «virulana» se entienda en todo el Perú como lana de acero para lavar ollas (de memoria: es una marca que se volvió nombre común; el texto la presenta como «la lana de acero»).',
       ],
       notas: [
+        'Tercera pasada (27 nov): el cambio de masa «10 g de virulana pasarían a pesar unos 14 g» sale a una línea sola (10 g antes → 14 g después), con la oración terminada en dos puntos. «Una masa oscura», en una unidad que trata de conservar la masa, pasa a «un ovillo oscuro» para que «masa» quede solo como magnitud.',
         'Doble revisión (27 nov): sin cambios. El choque es honesto: «lo quemado pesa menos» es una idea que los alumnos traen de verdad (la leña, la vela, el papel), y la comparación es justa (la misma bola, la misma balanza, antes y después; el frasco cerrado descarta que el fuego le deje algo). Las cuentas se rehicieron: 10 g de hierro dan 14,3 g de Fe₂O₃ o 13,8 g de Fe₃O₄, así que «unos 14 g» vale con las dos.',
         'Revisión (Escribidor Escribano, 27 nov): el párrafo 3 decía «se forma una sustancia nueva con lo que ya había dentro del frasco», que respondía la pregunta guía, y enunciaba la ley de conservación («la materia no aparece ni desaparece»), que es la regla de la unidad. Quedó el choque: no crea materia, no la recibe del fuego y aun así gana gramos.',
         'La pregunta deja abierta la fuente de los gramos de más (el oxígeno del aire del frasco), que el alumno puede deducir con lo leído: si nada entró al frasco y la virulana ganó masa, algo de adentro del frasco la perdió. El texto no nombra el oxígeno para no responderla.',

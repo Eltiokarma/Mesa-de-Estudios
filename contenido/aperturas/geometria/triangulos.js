@@ -66,6 +66,7 @@
         'Que en las plazas y parques del Perú aparezcan caminitos pelados en el pasto (los «caminos del deseo») aunque haya letreros de no pisar: observación común, de memoria.',
       ],
       notas: [
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido; los 100 m y 71 m son resultados dados como datos, sin cuenta escrita, y la cuenta del caminito (el teorema de Pitágoras) no se adelanta.',
         'Doble revisión (27 nov): la versión anterior partía un tallarín crudo en dos puntos al azar y decía que «casi todos esperan que el triángulo salga siempre». Gerson preguntó si alguien de verdad espera eso, y no hay fuente que lo sostenga: era un muñeco de paja, y la sorpresa de «una de cada cuatro» dependía de esa expectativa. La idea de fondo (si un lado es muy largo, los otros dos no alcanzan) es intuitiva y útil, así que la apertura se reescribió para mostrarla aplicada, con «Lo que predice» como la intuición correcta, según la regla 7. Se cambiaron el título, los tres párrafos, la figura, la pregunta y la ficha. El problema del palo roto (1/4, verificado en la web en la primera revisión) queda como idea para el laboratorio o una lectura, no para la apertura.',
         'La figura es el mismo parque en los dos paneles; en «Lo que se mide» las veredas llevan sus 50 m y el caminito, unos 71 m. Los 71 m salen de Pitágoras, que el alumno no necesita: el texto los da como medida.',
         'No aparece ninguna medida de la lámpara de la idea 4 (40 cm y 25 cm) ni los topes 15 cm y 65 cm.',

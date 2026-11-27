@@ -51,7 +51,8 @@
       ['Cuando se mide una chacra de cuatro lados con una wincha, no basta con anotar el largo de cada lindero: quien mide con cuidado anota también una diagonal, de una esquina a la de enfrente. ',
         'La razón se ve con dos chacras que tienen los mismos linderos: ', largo('20 m'), ', ', corto('10 m'), ', ', largo('20 m'), ' y ', corto('10 m'), '. ',
         'Si las esquinas de la primera son rectas, la chacra tiene 200 m², y la segunda, que está inclinada, tiene solo 140 m².'],
-      ['Lo que parece lógico es que cuatro linderos digan todo de una chacra, y que su área salga de multiplicar ', largo('20 m'), ' por ', corto('10 m'), '. ',
+      ['Lo que parece lógico es que cuatro linderos digan todo de una chacra, y que su área salga de multiplicar un lindero largo por uno corto:',
+        { linea: [largo('20 m'), ' × ', corto('10 m'), ' = 200 m²'] },
         'Esa cuenta vale solo si las esquinas son rectas, y nada en los cuatro largos obliga a que lo sean: la segunda chacra es la primera con dos esquinas empujadas de costado, sin estirar ni encoger ningún lindero.'],
       ['Los cuatro linderos dejan que la chacra se aplaste y pierda área, y la diagonal, que la parte en dos triángulos, le quita ese juego. ',
         'Qué medidas bastan para que un triángulo quede fijo, y cuándo dos triángulos son iguales en todo, es el tema de esta unidad: la congruencia de triángulos.'],
@@ -72,6 +73,7 @@
         'Los 140 m² son cálculo (20 m × 7 m, con los lados de 10 m inclinados hasta 7 m de alto), no una medición de una chacra real.',
       ],
       notas: [
+        'Tercera pasada (27 nov): la multiplicación «multiplicar 20 m por 10 m» sale a una línea sola (20 m × 10 m = 200 m²), con las fichas de color del lindero largo y el corto; la oración de antes termina en dos puntos («…de multiplicar un lindero largo por uno corto:») y «Esa cuenta vale solo si…» sigue debajo. Sin palabras de doble sentido.',
         'La figura dibuja las mismas dos chacras en los dos paneles, con los linderos rotulados en naranja (20 m) y turquesa (10 m); solo cambia el área escrita en la inclinada. La inclinación (unos 44° con la base) no es un ángulo notable, para no dar a medir nada de la idea 6 (los triángulos de 30° y 60°, o de 37° y 53°).',
         'El párrafo 3 dice que la diagonal le quita el juego a la chacra, pero no por qué: esa es la pregunta. Que tres lados fijan un triángulo (LLL) es la respuesta que la idea 1 pone a prueba con un caso donde tres medidas no bastan (dos tijerales).',
         'No se nombran los tijerales ni los ángulos dados, que son el escenario de la Predice de la idea 1.',

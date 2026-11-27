@@ -74,6 +74,7 @@
         'Que la prueba de llama sirva en el laboratorio para reconocer elementos (es una prueba escolar clásica).',
       ],
       notas: [
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido.',
         'Doble revisión (27 nov): reescrita. Antes: «¿Por qué el cobre pinta de verde la llama azul, si no la calienta más?», con la predicción de que el color de la llama marca su temperatura, como el fierro del herrero. Gerson la puso de ejemplo de muñeco de paja: nadie cree que el cobre colorea la llama porque la calienta más. Después: la idea es intuitiva y útil, así que la apertura la muestra aplicada (el pirotécnico elige el elemento para elegir el color; la luz es una firma que delata al elemento) y «Lo que predice» es la intuición correcta, con la llama punteada que la medición confirma.',
         'Doble revisión (27 nov): se quitó el cobre de esta unidad porque aparece también en «Mol y composición» (63,55 u), la unidad que sigue; ahí el cobre hace falta por su proporción de isótopos (69 % y 31 %). Aquí lo reemplaza el sodio de la sal, que el alumno ve en su cocina.',
         'El párrafo 3 nombra la estructura atómica como la salida y no explica cómo sale la luz: ni niveles, ni saltos de electrones. La pregunta se puede intentar con lo que sabe un alumno de 5.º (los átomos tienen protones y electrones, y cada elemento tiene un número distinto) y abre la idea 1 sin responder su Predice, que es sobre el ion Na⁺.',
