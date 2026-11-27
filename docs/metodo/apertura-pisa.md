@@ -65,6 +65,25 @@ de ser muy clara»; y los ejemplos del skill eran ejemplos, no textos para poner
 4. **Texto propio.** Los ejemplos del skill (la talla del niño, el metano) muestran el método; no se copian ni se
    adaptan. Cada apertura busca su propio hecho cotidiano.
 
+## Segunda revisión: choques honestos (Gerson, 27 nov, después de leer las 62)
+
+Gerson encontró errores en cinco que leyó. En el queque de división de polinomios, 25 trozos entre 6 personas sobra 1;
+«con 100 trozos sobrarían 4», dice el texto, pero la segunda cuenta reparte entre 11, no entre 6: cambia el divisor a
+escondidas para fabricar la sorpresa. Y el título de números primos («¿Por qué un alumno más puede arruinar todos los
+grupos de trabajo?») puede hacer sentir mal al alumno nuevo. Por eso, además de lo anterior:
+
+5. **Comparación justa.** La expectativa y lo medido hablan del mismo caso con las mismas cantidades. Si de un ejemplo
+   al otro cambian dos cosas a la vez (el tamaño y el divisor), la «sorpresa» es un truco y no se publica.
+6. **Nada de muñecos de paja.** La predicción equivocada tiene que ser una que un alumno de verdad haría. Si nadie se
+   equivocaría ahí, no hay choque.
+7. **Si es intuitivo, se dice intuitivo.** No hace falta forzar una sorpresa: si la idea se entiende sin romperle la
+   cabeza al alumno y sirve en la vida, la apertura la muestra aplicada (dónde se usa, qué permite hacer) y la pregunta
+   guía invita a usarla. El esquema de dos paneles se mantiene, pero «Lo que predice» puede ser la intuición correcta.
+8. **Títulos que no hieren.** Ningún título ni ejemplo pone a una persona (un alumno, un grupo, una familia) como el
+   problema o la causa de algo malo.
+9. **Si no hay un buen hecho, se investiga.** Cuando no aparece un caso cotidiano honesto, la apertura se marca para
+   un agente que la investigue con calma, en vez de rellenar con un choque forzado.
+
 ## Revisión del Escribidor Escribano (Gerson, 27 nov)
 
 Toda apertura pasa, después de escrita, por una revisión aparte con la skill `anthropic-skills:escribidor-escribano`,
