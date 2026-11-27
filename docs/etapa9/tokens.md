@@ -88,3 +88,4 @@ contra los límites semanales de los planes.
 | aperturas geometría (7) | infraestructura de captura y escritura | 360 861 | 28 min 15 s | 67 herramientas |
 | aperturas física (10) | revisión del Escribidor Escribano | 217 508 | 8 min 50 s | 47 herramientas |
 | aperturas geometría (7) | revisión del Escribidor Escribano | 199 107 | 4 min 55 s | 30 herramientas |
+| aperturas álgebra (6) | doble revisión (choques honestos) | 188 738 | 5 min 46 s | 29 herramientas |
