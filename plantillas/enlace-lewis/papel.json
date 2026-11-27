@@ -9,7 +9,7 @@
       "enunciado": "En el CO₃²⁻, el doble enlace puede ir en cualquiera de sus 3 enlaces C–O iguales. ¿Cuántas estructuras de resonancia tiene? Datos: CO₃²⁻: un C–O doble en cada dibujo. Alternativas: A) 4   B) 1   C) 6   D) 3",
       "respuesta": "D) 3",
       "pasos": [
-        "Hay un dibujo por cada enlace donde puede ir el doble."
+        "Hay un dibujo por cada enlace donde puede ir el doble, porque cada lugar da una estructura válida con los mismos átomos."
       ]
     },
     {
@@ -18,7 +18,7 @@
       "enunciado": "El cloro y el carbono se unen en el enlace Cl–C. ¿Qué tipo de enlace es? Datos: EN: Cl 3,16; C 2,55. ΔEN = EN del mayor − EN del menor. Guía de ΔEN: 1,7 o más suele ser iónico; menos de 1,7, covalente polar; 0, covalente apolar. Alternativas: A) Covalente polar   B) Metálico   C) Covalente apolar   D) Iónico",
       "respuesta": "A) Covalente polar",
       "pasos": [
-        "Resto las electronegatividades: 3,16 − 2,55.",
+        "Resto las electronegatividades, la mayor menos la menor: 3,16 − 2,55. La diferencia dice cuánto más jala uno que el otro.",
         "ΔEN = 0,61: covalente polar."
       ]
     },
@@ -28,7 +28,7 @@
       "enunciado": "En el NO₃⁻, el doble enlace puede ir en cualquiera de sus 3 enlaces N–O iguales. ¿Cuántas estructuras de resonancia tiene? Datos: NO₃⁻: un N–O doble en cada dibujo. Alternativas: A) 1   B) 4   C) 6   D) 3",
       "respuesta": "D) 3",
       "pasos": [
-        "Hay un dibujo por cada enlace donde puede ir el doble."
+        "Hay un dibujo por cada enlace donde puede ir el doble, porque cada lugar da una estructura válida con los mismos átomos."
       ]
     },
     {
@@ -37,7 +37,7 @@
       "enunciado": "El SO₃ tiene 3 estructuras de resonancia; en cada una, un S–O es doble. ¿Qué orden tiene cada S–O en la especie real? Datos: Orden de enlace: 1 en un simple, 2 en un doble, 3 en un triple. Orden promedio = pares compartidos en esos enlaces ÷ número de esos enlaces. Alternativas: A) 4/3   B) 3/2   C) 4   D) 2   E) 1",
       "respuesta": "A) 4/3",
       "pasos": [
-        "Los 4 pares compartidos se reparten entre 3 enlaces iguales.",
+        "Los 4 pares compartidos se reparten por igual entre 3 enlaces iguales, porque en la especie real ninguno es simple ni doble.",
         "4 ÷ 3 = 4/3"
       ]
     },
@@ -56,7 +56,7 @@
       "enunciado": "En el NO₂⁻, el doble enlace puede ir en cualquiera de sus 2 enlaces N–O iguales. ¿Cuántas estructuras de resonancia tiene? Datos: NO₂⁻: un N–O doble en cada dibujo. Alternativas: A) 1   B) 3   C) 4   D) 2",
       "respuesta": "D) 2",
       "pasos": [
-        "Hay un dibujo por cada enlace donde puede ir el doble."
+        "Hay un dibujo por cada enlace donde puede ir el doble, porque cada lugar da una estructura válida con los mismos átomos."
       ]
     },
     {
@@ -65,7 +65,7 @@
       "enunciado": "Piensa en una estructura de Lewis del CO₃²⁻. ¿Qué carga formal tiene el carbono central, con cuatro enlaces y sin pares libres? Datos: Carga formal = valencia − electrones de sus pares libres − enlaces que forma. Alternativas: A) −4   B) −2   C) +1   D) 0   E) +4",
       "respuesta": "D) 0",
       "pasos": [
-        "A la valencia le resto los electrones de sus pares libres y sus enlaces.",
+        "A la valencia le resto los electrones de sus pares libres, que son solo suyos, y uno por cada enlace, que es su mitad del par compartido.",
         "4 − 0 − 4 = 0"
       ]
     },
@@ -75,7 +75,7 @@
       "enunciado": "En el N₂, todos los átomos cumplen su octeto (el H, 2). ¿Cómo es el enlace entre los dos nitrógenos? Datos: Electrones de valencia: N 5. Octeto: 8 electrones alrededor de cada átomo (el H, 2). Alternativas: A) Simple: un par compartido   B) Iónico: uno le entrega electrones al otro   C) Doble: dos pares compartidos   D) Triple: tres pares compartidos",
       "respuesta": "D) Triple: tres pares compartidos",
       "pasos": [
-        "Con un triple, cada átomo llega a su meta."
+        "Con un triple, cada átomo llega a su meta, 8 o 2 si es hidrógeno, sin que sobre ni falte ningún electrón de valencia."
       ]
     }
   ]

@@ -153,17 +153,17 @@
   const elemTxt = els => els.map(s => `${s} (${clase(s)})`).join(' y ');
   const POR_QUE = {
     ionico: 'Se unen un metal y un no metal: el metal cede electrones al no metal, y quedan iones de carga opuesta que se atraen.',
-    covalente: 'Solo hay no metales, así que sus átomos se unen compartiendo pares de electrones.',
+    covalente: 'Solo hay no metales, y ninguno cede sus electrones con facilidad, así que sus átomos se unen compartiendo pares de electrones.',
     metalico: 'Es un metal solo: sus átomos sueltan electrones, que se mueven entre todos ellos como un mar común.',
   };
   const SI_TIPO = {
-    ionico: ['QM-IONICO-MAL', 'Sería iónico si se unieran un metal y un no metal.'],
-    covalente: ['EN5', 'Sería covalente si solo hubiera no metales, que comparten pares.'],
-    metalico: ['QM-TIPO-METAL', 'Sería metálico si hubiera un metal solo, sin ningún no metal.'],
+    ionico: ['QM-IONICO-MAL', 'Sería iónico si un metal le cediera electrones a un no metal.'],
+    covalente: ['EN5', 'Sería covalente si solo hubiera no metales, que comparten pares porque ninguno cede electrones.'],
+    metalico: ['QM-TIPO-METAL', 'Sería metálico si hubiera un metal solo; con un no metal al lado, el metal le cede electrones.'],
   };
   function casoTipo(r) {
     const [fo, els] = r.de(SUST_A), t = tipoPorElementos(els);
-    const malas = Object.keys(TIPO_TXT).filter(k => k !== t).map(k => [TIPO_TXT[k], SI_TIPO[k][0], `${SI_TIPO[k][1]} Aquí hay ${elemTxt(els)}.`]);
+    const malas = Object.keys(TIPO_TXT).filter(k => k !== t).map(k => [TIPO_TXT[k], SI_TIPO[k][0], `${SI_TIPO[k][1]} Aquí hay ${elemTxt(els)}, así que el enlace es ${TIPO_TXT[t].toLowerCase()}.`]);
     return {
       pregunta: `¿Qué tipo de enlace une las partículas del ${quien(fo, els)}?`,
       datos: [D.metales, D.noMetales, D.tipos],
@@ -185,16 +185,16 @@
   function casoPropiedades(r) {
     const [t, txt] = r.de(PROPS);
     const SI = {
-      ionico: ['QM-CONDUCE-IONICO', 'Sería iónico si condujera la corriente fundido o disuelto, pero nunca en estado sólido.'],
-      covalente: ['QM-PF-ALTO', 'Sería covalente molecular si fundiera a baja temperatura y no condujera la corriente.'],
-      metalico: ['QM-CONDUCE-METAL', 'Sería metálico si condujera la corriente también en estado sólido.'],
+      ionico: ['QM-CONDUCE-IONICO', 'Sería iónico si condujera solo fundido o disuelto: en el sólido, sus iones están fijos en la red y no llevan la corriente.'],
+      covalente: ['QM-PF-ALTO', 'Sería covalente molecular si fundiera a baja temperatura y no condujera: sus moléculas se separan con poco calor y no tienen carga.'],
+      metalico: ['QM-CONDUCE-METAL', 'Sería metálico si condujera también en estado sólido, gracias a los electrones que se mueven entre sus átomos.'],
     };
     return {
       pregunta: `${txt} ¿Qué tipo de enlace tiene?`,
       datos: D_PROPS,
       opciones: ops(TIPO_TXT[t], ...Object.keys(TIPO_TXT).filter(k => k !== t).map(k => [TIPO_TXT[k], SI[k][0], SI[k][1]]),
         ['No se puede saber sin su fórmula', 'QM-SIN-LEY', 'Sí se puede saber: la temperatura de fusión y la manera de conducir la corriente delatan el tipo de enlace.']),
-      solucion: { texto: { ionico: 'Conduce solo fundido o disuelto, porque recién ahí sus iones quedan libres para moverse.', metalico: 'Conduce en estado sólido porque tiene electrones que se mueven entre sus átomos.', covalente: 'Cambia de estado a baja temperatura y no conduce, porque está hecho de moléculas sin carga.' }[t],
+      solucion: { texto: { ionico: 'Conduce solo fundido o disuelto, porque recién ahí sus iones quedan libres para moverse. Funde a alta temperatura porque sus iones se atraen con fuerza.', metalico: 'Conduce en estado sólido porque tiene electrones que se mueven entre sus átomos; un sólido iónico o uno molecular no conducen así.', covalente: 'Cambia de estado a baja temperatura porque sus moléculas se separan con poco calor, y no conduce porque las moléculas no tienen carga.' }[t],
         ecuacion: [`enlace ${TIPO_TXT[t].toLowerCase()}`] },
     };
   }
@@ -207,16 +207,16 @@
   function casoDEN(r) {
     const [a, b] = r.baraja(r.de(PARES_DEN)), t = tipoDEN(a, b), d = dEN(a, b);
     const SI = {
-      ionico: ['QM-DEN-IONICO', 'Sería iónico si se unieran un metal y un no metal, con una ΔEN de 1,7 o más.'],
-      polar: ['QM-POL-IGUALES', 'Sería covalente polar si se unieran dos no metales distintos, con una ΔEN menor que 1,7.'],
-      apolar: ['QM-APOLAR-DIST', 'Sería apolar si los dos átomos jalaran igual el par, con una ΔEN de 0.'],
+      ionico: ['QM-DEN-IONICO', 'Sería iónico si se unieran un metal y un no metal, con una ΔEN de 1,7 o más: el metal le cedería su electrón al otro.'],
+      polar: ['QM-POL-IGUALES', 'Sería covalente polar si se unieran dos no metales distintos, con una ΔEN menor que 1,7: el par se correría hacia el que jala más.'],
+      apolar: ['QM-APOLAR-DIST', 'Sería apolar si los dos átomos jalaran igual el par, con una ΔEN de 0; aquí sus EN son distintas.'],
     };
     return {
       pregunta: a === b ? `¿Qué tipo de enlace une los dos átomos de la molécula ${a}₂?` : `¿Qué tipo de enlace hay entre ${nombre(a)} y ${nombre(b)} (${enlaceTxt(a, b)})?`,
       datos: [enLinea([...new Set([a, b])]), D.delta, D.guia],
       opciones: ops(TIPO_DEN[t], ...Object.keys(TIPO_DEN).filter(k => k !== t).map(k => [TIPO_DEN[k], SI[k][0], SI[k][1]]),
         ['Metálico', 'QM-TIPO-METAL', 'Sería metálico si los dos átomos fueran de un metal; aquí hay al menos un no metal.']),
-      solucion: { texto: a === b ? 'Los dos átomos son iguales y jalan igual el par, así que el par queda al medio.' : t === 'ionico' ? 'Se unen un metal y un no metal, y la ΔEN pasa de 1,7.' : 'Son dos no metales que jalan distinto el par, con una ΔEN menor que 1,7.',
+      solucion: { texto: a === b ? 'Los dos átomos son iguales y jalan igual el par, así que el par queda al medio y ninguno queda con carga.' : t === 'ionico' ? 'Se unen un metal y un no metal, y la ΔEN pasa de 1,7: el metal cede su electrón y quedan iones que se atraen.' : 'Son dos no metales que jalan distinto el par, con una ΔEN menor que 1,7: lo comparten, pero corrido hacia el de mayor EN.',
         ecuacion: ['ΔEN = ', Ne(f2(d)), `: ${TIPO_DEN[t].toLowerCase()}`] },
     };
   }
@@ -230,7 +230,7 @@
       opciones: ops(`El ${nombre(m)} (${m})`, [`El ${nombre(o)} (${o})`, 'QM-DELTA-SIGNO', `Sería así si el ${nombre(o)} tuviera la mayor EN. El par se corre hacia el ${nombre(m)}, que jala más.`],
         ['Ninguno: los dos comparten el par', 'QM-DELTA-CERO', 'Sería así si los dos átomos jalaran igual. Comparten el par, pero sus EN son distintas y el par se corre hacia uno.'],
         ['Los dos: el par está entre ellos', 'QM-DELTA-LOS-DOS', 'Sería así si el par quedara al medio. Está entre los dos, pero se corre hacia uno solo, el de mayor EN.']),
-      solucion: { texto: `El par se corre hacia el ${nombre(m)}, que jala más, así que el ${nombre(m)} queda con δ− y el ${nombre(o)}, con δ+.`,
+      solucion: { texto: `El par se corre hacia el ${nombre(m)}, que tiene la EN mayor y jala más. Por eso el ${nombre(m)} queda con δ−, un poco de carga negativa, y el ${nombre(o)}, del que se aleja el par, con δ+.`,
         ecuacion: [Ne(`EN (${m}) = ${enTxt(m)}`), ' > ', Ne(`EN (${o}) = ${enTxt(o)}`)] },
     };
   }
@@ -247,17 +247,17 @@
       enunciado: '¿Qué tipo de enlace une los átomos del cobre de un cable eléctrico?',
       datos: [D.metales, D.tipos],
       figura: probador('cobre', 'Un cable de cobre en el probador'),
-      solucion: [{ texto: 'Hay un solo elemento y es un metal: sus átomos sueltan electrones que se mueven entre todos. Por eso el cable conduce.' }],
+      solucion: [{ texto: 'Hay un solo elemento y es un metal, así que no hay un no metal que reciba sus electrones. Sus átomos los sueltan a un mar común, y esos electrones que se mueven entre todos son los que hacen que el cable conduzca.' }],
       respuesta: ['Metálico'] },
     { nivel: 1, titulo: 'El gas de Camisea',
       enunciado: 'El gas natural de Camisea es sobre todo metano, CH₄. ¿Qué tipo de enlace une sus átomos?',
       datos: [D.noMetales, D.tipos],
-      solucion: [{ texto: 'El carbono y el hidrógeno son no metales: comparten pares de electrones y forman moléculas.' }],
+      solucion: [{ texto: 'El carbono y el hidrógeno son no metales, y ninguno de los dos cede electrones al otro. Por eso comparten pares de electrones y forman moléculas de CH₄, sin iones.' }],
       respuesta: ['Covalente'] },
     { nivel: 1, titulo: 'La diferencia en el MgO',
       enunciado: '¿Cuánto vale la diferencia de electronegatividad, ΔEN, entre el magnesio y el oxígeno?',
       datos: [enLinea(['Mg', 'O']), D.delta],
-      solucion: [{ texto: 'A la EN mayor, la del oxígeno, le resto la menor, la del magnesio.', ecuacion: ['ΔEN = ', Ne('3,44'), ' − ', Ne('1,31'), ' = ', Ne('2,13')] }],
+      solucion: [{ texto: 'A la EN mayor, la del oxígeno, le resto la menor, la del magnesio, para que la diferencia salga positiva. Sale más de 1,7, como se espera cuando se unen un metal y un no metal.', ecuacion: ['ΔEN = ', Ne('3,44'), ' − ', Ne('1,31'), ' = ', Ne('2,13')] }],
       respuesta: ['ΔEN = ', Ne('2,13')] },
     { nivel: 1, titulo: 'La δ del H–Cl',
       enunciado: 'En el enlace H–Cl, ¿qué átomo queda con carga parcial negativa, δ−?',
@@ -292,8 +292,8 @@
       enunciado: 'El cobre conduce la corriente en estado sólido y la sal, no. ¿Qué tiene el cobre que la sal sólida no tiene?',
       datos: ['La corriente pasa si hay algo con carga que se pueda mover'],
       solucion: [
-        { texto: 'En el cobre, los átomos sueltan electrones a un mar común: esos electrones se mueven entre todos.' },
-        { texto: 'En la sal sólida también hay cargas, los iones, pero están fijos en sus lugares.' },
+        { texto: 'En el cobre, los átomos sueltan electrones a un mar común: esos electrones se mueven entre todos y llevan la corriente de un extremo al otro.' },
+        { texto: 'En la sal sólida también hay cargas, los iones, pero cada uno está fijo en su lugar de la red, atraído por sus vecinos. Como no se mueven, no llevan la corriente.' },
       ],
       respuesta: ['Electrones que se mueven libres'] },
     { nivel: 2, titulo: 'Tres enlaces del hidrógeno',
@@ -301,7 +301,7 @@
       datos: [enLinea(['H', 'Cl', 'O', 'N']), D.delta],
       solucion: [
         { texto: 'Calculo la ΔEN de cada enlace.', ecuacion: ['H–O: ', Ne('1,24'), SEP, 'H–Cl: ', Ne('0,96'), SEP, 'H–N: ', Ne('0,84')] },
-        { texto: 'Cuanto mayor es la diferencia, más se corre el par compartido y más polar es el enlace.' },
+        { texto: 'Cuanto mayor es la diferencia, más se corre el par compartido hacia uno de los dos átomos y más polar es el enlace. Por eso el orden sigue al de las ΔEN, de la mayor a la menor.' },
       ],
       respuesta: ['H–O > H–Cl > H–N'] },
     { nivel: 3, titulo: 'Cada sustancia con su enlace',
@@ -310,8 +310,8 @@
       datos: [D.metales, D.noMetales, D.tipos],
       solucion: [
         { texto: 'El KCl une un metal con un no metal: es iónico. El H₂O une dos no metales: es covalente. La plata es un metal solo, con enlace metálico.' },
-        { texto: ['La ', letra('A'), ' invierte los dos primeros. La ', letra('C'), ' cree que el agua es iónica por tener oxígeno.'] },
-        { texto: ['La ', letra('D'), ' llama metálico al KCl por tener un metal. La ', letra('E'), ' olvida que la plata es un metal.'] },
+        { texto: ['La ', letra('A'), ' invierte los dos primeros: llama covalente al KCl, que tiene un metal, e iónica al agua, que no lo tiene. La ', letra('C'), ' cree que el agua es iónica por tener oxígeno, pero el H y el O son no metales y comparten pares.'] },
+        { texto: ['La ', letra('D'), ' llama metálico al KCl por tener un metal, pero con el cloro al lado el potasio cede su electrón y forma iones. La ', letra('E'), ' olvida que la plata es un metal: sola, su enlace es metálico.'] },
       ],
       respuesta: [letra('B'), ', iónico, covalente y metálico'] },
     { nivel: 3, titulo: 'Tres sólidos en el laboratorio',
@@ -320,8 +320,8 @@
       datos: D_PROPS,
       solucion: [
         { texto: 'X funde a alta temperatura y conduce solo fundido, así que es iónico. Q funde bajo y no conduce: es covalente molecular. R conduce sólido, así que es metálico.' },
-        { texto: ['La ', letra('A'), ' y la ', letra('E'), ' toman a X por metálico, aunque sólido no conduce. La ', letra('B'), ' llama iónico a Q, que funde a 60 °C.'] },
-        { texto: ['La ', letra('C'), ' cambia a Q y a R: el que conduce sólido es el metal.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('E'), ' toman a X por metálico, pero un metal conduciría también sólido, y X solo conduce fundido. La ', letra('B'), ' llama iónico a Q, que funde a 60 °C: unos iones atados en red necesitan mucho más calor para separarse.'] },
+        { texto: ['La ', letra('C'), ' cambia a Q y a R. El que conduce sólido es el metal, y el que funde bajo sin conducir está hecho de moléculas.'] },
       ],
       respuesta: [letra('D'), ', X iónico, Q covalente, R metálico'] },
     { nivel: 3, titulo: 'El caso del HF',
@@ -331,9 +331,9 @@
       datos: [enLinea(['H', 'F']), D.guia, D.noMetales],
       solucion: [
         { texto: 'El hidrógeno y el flúor son no metales: comparten el par, que se corre mucho hacia el flúor.' },
-        { texto: 'La guía de 1,7 es una ayuda, no una ley: primero se mira qué elementos son.' },
-        { texto: ['La ', letra('B'), ' y la ', letra('E'), ' se guían solo por el corte de 1,7. La ', letra('C'), ' olvida que el H y el F jalan muy distinto.'] },
-        { texto: ['La ', letra('D'), ' toma al hidrógeno por metal porque encabeza el grupo 1.'] },
+        { texto: 'La guía de 1,7 es una ayuda, no una ley: primero se mira qué elementos son, y aquí no hay ningún metal que ceda su electrón.' },
+        { texto: ['La ', letra('B'), ' y la ', letra('E'), ' se guían solo por el corte de 1,7, pero el hidrógeno no le entrega su electrón al flúor: lo comparte. La ', letra('C'), ' olvida que el H y el F jalan muy distinto; apolar es solo cuando la ΔEN es 0.'] },
+        { texto: ['La ', letra('D'), ' toma al hidrógeno por metal porque encabeza el grupo 1, pero el hidrógeno es un no metal.'] },
       ],
       respuesta: [letra('A'), ', covalente polar'] },
     { nivel: 3, titulo: 'Verdadero o falso',
@@ -342,8 +342,8 @@
       datos: D_PROPS,
       solucion: [
         { texto: 'I es falsa: en la sal sólida los iones no se mueven. II es verdadera: dos cloros jalan igual. III es verdadera: los electrones del metal se mueven entre sus átomos.', ecuacion: ['FVV'] },
-        { texto: ['La ', letra('A'), ', la ', letra('B'), ' y la ', letra('D'), ' creen que la sal sólida conduce; la ', letra('B'), ' también corre el par del Cl₂ y la ', letra('D'), ' niega la III.'] },
-        { texto: ['La ', letra('C'), ' acierta con la sal, pero marca falsa la II, y el par del Cl₂ sí queda al medio.'] },
+        { texto: ['La ', letra('A'), ', la ', letra('B'), ' y la ', letra('D'), ' creen que la sal sólida conduce, pero sus iones están fijos en la red. La ', letra('B'), ' también corre el par del Cl₂, y la ', letra('D'), ' niega que el metal tenga electrones que se mueven.'] },
+        { texto: ['La ', letra('C'), ' acierta con la sal, pero marca falsa la II. El par del Cl₂ sí queda al medio, porque los dos cloros son iguales y jalan con la misma fuerza.'] },
       ],
       respuesta: [letra('E'), ', FVV'] },
     { nivel: 3, titulo: 'Dos elementos sin nombre',
@@ -353,7 +353,7 @@
       solucion: [
         { texto: 'X viene justo después del argón (Z = 18), así que está en el grupo 1 y es un metal. Q viene justo antes: está en el grupo 17 y es un no metal.', ecuacion: [Pz('Z = 19'), ': grupo 1', SEP, Pz('Z = 17'), ': grupo 17'] },
         { texto: 'X con Q une un metal con un no metal, así que el enlace es iónico. En Q₂ se unen dos átomos iguales de un no metal: covalente apolar.' },
-        { texto: ['La ', letra('A'), ' y la ', letra('E'), ' toman a X por no metal. La ', letra('B'), ' y la ', letra('D'), ' llaman iónico a Q₂, que no tiene metal.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('E'), ' toman a X por no metal, pero el grupo 1 es de metales. La ', letra('B'), ' y la ', letra('D'), ' llaman iónico a Q₂, que no tiene metal: dos átomos iguales de cloro comparten el par.'] },
       ],
       respuesta: [letra('C'), ', iónico y covalente apolar'] },
   ];
@@ -370,9 +370,9 @@
       tarjetas: [
         { titulo: 'El probador', texto: 'El probador tiene una pila, un foquito y dos cables. Si lo que tocan los cables deja pasar la corriente, el foquito prende. La corriente pasa cuando algo con carga eléctrica se puede mover.',
           pieza: 'quim-enlace', dibujo: probador('agua', 'Los cables tocan agua destilada') },
-        { titulo: 'Metales y no metales', texto: 'En la tabla, los metales están a la izquierda de la línea en escalera y los no metales, a la derecha. En la sal, NaCl, el sodio es metal y el cloro, no metal. La electronegatividad (EN) mide cuánto jala un átomo los electrones compartidos.' },
-        { titulo: 'Los electrones de afuera', texto: 'Los átomos se unen reacomodando sus electrones de valencia, los de su último nivel, y esa unión se llama enlace químico. Los átomos no se unen de la misma manera en todas las sustancias.' },
-        { titulo: 'Qué mirar', texto: 'En el juego tocas cinco materiales: un metal, un trozo de sal seca y tres vasos con agua. Anota cuáles prenden el foquito y cuáles no.' },
+        { titulo: 'Metales y no metales', texto: 'En la tabla periódica, los metales están a la izquierda de la línea en escalera y los no metales, a la derecha. En la sal, NaCl, el sodio es un metal y el cloro, un no metal. La electronegatividad (EN) dice cuánto jala un átomo los electrones que comparte: el flúor, con 3,98, es el que más jala.' },
+        { titulo: 'Los electrones de afuera', texto: 'Los átomos se unen reacomodando sus electrones de valencia, los de su último nivel, que son los que quedan más afuera y se encuentran con los del otro átomo. Esa unión se llama enlace químico, y no es igual en todas las sustancias: por eso un cable, un grano de sal y el agua se portan tan distinto.' },
+        { titulo: 'Qué mirar', texto: 'En el juego tocas cinco materiales: un metal, un trozo de sal seca y tres vasos con agua. Anota cuáles prenden el foquito y cuáles no, y compara la misma sal seca y disuelta: lo que cambie entre las dos te dirá algo de lo que hay dentro.' },
       ],
     },
     ejemplos: EJEMPLOS_TIPOS,
@@ -402,9 +402,9 @@
       voz: 'Piensa qué tiene carga y por qué no se mueve en la sal seca.',
       opciones: [
         { id: 'c', texto: 'Iones de sodio y de cloro alternados en filas', correcta: true },
-        { id: 'moleculas', texto: 'Moléculas sueltas, cada una con un sodio y un cloro', error: 'EN1', siFuera: 'Sería así si la fórmula NaCl contara moléculas, pero solo dice que hay un sodio por cada cloro. Cada ion queda rodeado de varios del otro.' },
-        { id: 'comparten', texto: 'Átomos de sodio y de cloro que comparten sus electrones', error: 'EN5', siFuera: 'Sería así si los dos fueran no metales, que comparten pares. El sodio es un metal, así que cede su electrón al cloro.' },
-        { id: 'neutros', texto: 'Átomos neutros de sodio y cloro, mezclados', error: 'EN2', siFuera: 'Sería así si no cambiaran al unirse. Antes eran neutros, pero si siguieran así, el agua con sal tampoco prendería el foquito.' },
+        { id: 'moleculas', texto: 'Moléculas sueltas, cada una con un sodio y un cloro', error: 'EN1', siFuera: 'Sería así si la fórmula NaCl contara moléculas, pero solo dice que hay un sodio por cada cloro. En el grano, cada ion queda rodeado de seis del otro, sin pareja fija; unas moléculas sin carga no prenderían el foquito.' },
+        { id: 'comparten', texto: 'Átomos de sodio y de cloro que comparten sus electrones', error: 'EN5', siFuera: 'Sería así si los dos fueran no metales, que comparten pares. El sodio es un metal: cede su electrón al cloro, y los dos quedan con carga. Esas cargas, sueltas en el agua, son las que prenden el foquito.' },
+        { id: 'neutros', texto: 'Átomos neutros de sodio y cloro, mezclados', error: 'EN2', siFuera: 'Sería así si no cambiaran al unirse. Un átomo neutro no tiene carga, así que no puede llevar la corriente: si la sal fuera de átomos neutros, el agua con sal tampoco prendería el foquito.' },
       ],
       dibujo: lupa([{ titulo: 'Grano de sal', rotulo: 'Por dentro: ?', forma: 'caja', particulas: [] }], { alt: 'Lupa sobre un grano de sal, todavía vacía: lo que hay dentro es lo que se pregunta.' }),
       revelar: lupa([CAJA_SAL], { alt: 'Lupa sobre un grano de sal (modelo): iones de sodio y de cloro alternados en filas.' }),
@@ -417,17 +417,17 @@
         alt: 'Tres lupas (modelo, no a escala): la sal seca con sus iones en filas, el agua con sal con los iones sueltos y el cobre con sus iones en un mar de electrones.' }).datos,
       voz: 'Miremos por dentro lo que probaste.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'En la sal seca, los iones Na⁺, chicos y positivos, y los Cl⁻, grandes y negativos, están fijos en filas que se repiten: una red.', ecuacion: ['Na', Cq('⁺'), ' Cl', Cq('⁻'), ' Na', Cq('⁺'), ' Cl', Cq('⁻'), ' …'] },
-        { estado: { corte: 2 }, texto: 'En el agua, los iones se separan y se mueven, así que llevan la corriente y el foquito prende.' },
-        { estado: { corte: 3 }, texto: 'En el cobre, los iones de cobre quedan dentro de un mar de electrones que se mueven entre todos: los puntitos violeta.', ecuacion: ['Cu', Cq('⁺'), ' + ', El('e⁻'), ' que se mueven'] },
-        { estado: { corte: 3 }, texto: 'El azúcar y el agua destilada están hechos de moléculas sin carga, así que el foquito no prende.' },
-        { estado: { corte: 3 }, texto: 'Entre no metales, los átomos comparten pares; si uno jala más, el enlace es polar y quedan cargas parciales, δ+ y δ−.', ecuacion: ['H', Cq('δ+'), '–Cl', Cq('δ−'), ': ', dENf, ' = 0,96'] },
+        { estado: { corte: 1 }, texto: 'En la sal seca, los iones Na⁺ (positivos) y Cl⁻ (negativos) están en filas que se repiten: una red. Cada ion atrae a sus vecinos de carga opuesta y queda fijo, así que no conduce.', ecuacion: ['Na', Cq('⁺'), ' Cl', Cq('⁻'), ' Na', Cq('⁺'), ' Cl', Cq('⁻'), ' …'] },
+        { estado: { corte: 2 }, texto: 'Al disolver la sal, el agua separa los iones de la red. Ya sueltos, los iones se mueven y llevan su carga de un cable al otro: por eso el foquito prende.' },
+        { estado: { corte: 3 }, texto: 'En el cobre, cada átomo suelta electrones de afuera y queda como ion. Esos electrones, los puntitos violeta, se mueven entre todos los iones como un mar, y por eso el metal conduce aun sólido.', ecuacion: ['Cu', Cq('⁺'), ' + ', El('e⁻'), ' que se mueven'] },
+        { estado: { corte: 3 }, texto: 'El azúcar y el agua destilada están hechos de moléculas, grupos de átomos unidos que no tienen carga. Aunque las moléculas se muevan, no llevan corriente, así que el foquito no prende.' },
+        { estado: { corte: 3 }, texto: 'Entre no metales, ninguno cede electrones: los átomos comparten pares. Si uno jala más, el par se le acerca y el enlace es polar: ese lado queda un poco negativo, δ−, y el otro, δ+.', ecuacion: ['H', Cq('δ+'), '–Cl', Cq('δ−'), ': ', dENf, ' = 0,96'] },
       ],
     },
     regla: {
-      texto: 'Un metal con un no metal forma enlace iónico: iones que se atraen en una red. Entre no metales, el enlace es covalente: comparten pares, y es polar si jalan distinto. Un metal solo forma enlace metálico, con un mar de electrones.',
+      texto: 'Un metal con un no metal forma enlace iónico: el metal cede electrones y los iones de carga opuesta se atraen. Entre no metales, el enlace es covalente: comparten pares, y es polar si uno jala más. Un metal solo forma enlace metálico: suelta electrones a un mar común. En el recuadro, cuanto mayor es la ΔEN, más iónico.',
       ecuacion: [dENf, ' ≥ 1,7: suele ser iónico', SEP, dENf, ' < 1,7: covalente polar', SEP, dENf, ' = 0: covalente apolar'],
-      condicion: 'primero se miran los elementos y la ΔEN, la diferencia de electronegatividad, se usa solo como guía: el HF, con 1,78, es covalente polar porque une dos no metales.',
+      condicion: 'primero se miran los elementos y la ΔEN, la diferencia de electronegatividad, se usa solo como guía. Si se usa sola, falla: el HF tiene 1,78 y es covalente polar, porque une dos no metales y ninguno cede su electrón.',
       voz: 'Primero mira los elementos; la ΔEN solo confirma.',
       dibujo: lupa([CAJA_SAL, CAJA_AGUA_SAL, CAJA_COBRE], { separacion: 18, alt: 'Las tres lupas: iones fijos en la sal seca, iones sueltos en el agua con sal y el cobre con su mar de electrones.' }),
     },
@@ -435,15 +435,15 @@
       pieza: 'quim-enlace',
       generar(s) {
         const [fo, els] = SUST_R[s % SUST_R.length], t = tipoPorElementos(els), de = fo === 'Ag' ? 'de la' : 'del';
-        const prop = { ionico: 'El resultado cuadra con una propiedad: un sólido iónico no conduce, pero fundido o disuelto sí.', covalente: 'El resultado cuadra: se forman moléculas sin carga, que no conducen la corriente.',
-          metalico: 'El resultado cuadra con una propiedad: un metal conduce la corriente en estado sólido.' }[t];
+        const prop = { ionico: 'El resultado cuadra con una propiedad: un sólido iónico no conduce porque sus iones están fijos, pero fundido o disuelto sí, porque ahí los iones se mueven.', covalente: 'El resultado cuadra: se forman moléculas sin carga, que no llevan la corriente aunque se muevan.',
+          metalico: 'El resultado cuadra con una propiedad: un metal conduce la corriente en estado sólido, porque sus electrones se mueven entre los átomos.' }[t];
         return {
           enunciado: `¿Qué tipo de enlace une las partículas ${de} ${quien(fo, els)}?`,
           datos: [D.metales, D.noMetales, D.tipos],
           pasos: [
             { tipo: 'pide', texto: `Piden decir si el enlace ${de} ${fo} es iónico, covalente o metálico.` },
             { tipo: 'datos', texto: els.length === 1 ? `La sustancia ${fo} tiene un solo elemento: ${elemTxt(els)}.` : `En el ${fo} hay ${elemTxt(els)}.` },
-            { tipo: 'regla', texto: 'Un metal con un no metal forma enlace iónico; solo no metales, enlace covalente, y un metal solo, enlace metálico.' },
+            { tipo: 'regla', texto: 'Se mira qué clase de elementos hay, porque eso dice qué hacen con sus electrones: un metal con un no metal forma enlace iónico; solo no metales, enlace covalente, y un metal solo, enlace metálico.' },
             { tipo: 'aplica', texto: POR_QUE[t], ecuacion: [`${fo}: enlace ${TIPO_TXT[t].toLowerCase()}`] },
             { tipo: 'sentido', texto: prop },
           ],
@@ -507,10 +507,10 @@
     return {
       pregunta: `¿Qué ion forma el ${nombre(s)} al unirse con ${met ? 'un no metal' : 'un metal'}?`,
       datos: [lugarTxt(s), D2.octeto],
-      opciones: ops(t(q), [t(-q), 'QM-ION-SIGNO', met ? 'Sería así si el metal recibiera electrones. Un metal entrega los suyos, así que queda con carga positiva.' : 'Sería así si el no metal entregara electrones. Un no metal los recibe, así que queda con carga negativa.'],
-        [met ? t(v - 8) : t(v), 'QM-ION-OCTETO', met ? `Sería así si recibiera ${8 - v} para llegar a 8, pero le es más fácil entregar ${v === 1 ? 'su único electrón' : `sus ${v} electrones`} de valencia.` : `Sería así si entregara sus ${v} electrones de valencia, pero le es más fácil recibir ${eTxt(8 - v)}.`],
-        [Math.abs(q) === 1 ? t(2 * q) : t(Math.sign(q)), 'QM-ION-UNO', `El signo está bien, pero la carga no: ${met ? 'entrega' : 'recibe'} ${eTxt(Math.abs(q))}, ${met ? Math.abs(q) === 1 ? 'su electrón de valencia' : 'sus electrones de valencia' : Math.abs(q) === 1 ? 'el que le falta para 8' : 'los que le faltan para 8'}.`]),
-      solucion: { texto: met ? `Entrega ${v === 1 ? 'su único electrón' : `sus ${v} electrones`} de valencia y queda con los electrones del gas noble anterior.` : `Recibe ${eTxt(8 - v)} y completa 8, como el gas noble que le sigue.`,
+      opciones: ops(t(q), [t(-q), 'QM-ION-SIGNO', met ? 'Sería así si el metal recibiera electrones. Un metal entrega los suyos, y al quedar con menos electrones que protones, su carga es positiva.' : 'Sería así si el no metal entregara electrones. Un no metal los recibe, y al quedar con más electrones que protones, su carga es negativa.'],
+        [met ? t(v - 8) : t(v), 'QM-ION-OCTETO', met ? `Sería así si recibiera ${8 - v} para llegar a 8, pero le cuesta menos entregar ${v === 1 ? 'su único electrón' : `sus ${v} electrones`} de valencia: así queda con el nivel de abajo, que ya está lleno.` : `Sería así si entregara sus ${v} electrones de valencia, pero le cuesta menos recibir ${eTxt(8 - v)} y completar 8 en su último nivel.`],
+        [Math.abs(q) === 1 ? t(2 * q) : t(Math.sign(q)), 'QM-ION-UNO', `El signo está bien, pero la carga no: ${met ? 'entrega' : 'recibe'} ${eTxt(Math.abs(q))}, ${met ? Math.abs(q) === 1 ? 'su electrón de valencia' : 'sus electrones de valencia' : Math.abs(q) === 1 ? 'el que le falta para 8' : 'los que le faltan para 8'}, y la carga del ion es ese número.`]),
+      solucion: { texto: met ? `Entrega ${v === 1 ? 'su único electrón' : `sus ${v} electrones`} de valencia y queda con los electrones del gas noble anterior. Como ahora tiene menos electrones que protones, su carga es positiva.` : `Recibe ${eTxt(8 - v)} y completa 8, como el gas noble que le sigue. Como ahora tiene más electrones que protones, su carga es negativa.`,
         ecuacion: [s, ' → ', `${s}`, Cq(cargaSup(q))] },
     };
   }
@@ -518,21 +518,21 @@
     const [m, x] = r.de(PARES_IA), F = formula(m, x), fo = (a, b) => `${m}${sub(a)}${x}${sub(b)}`;
     // Candidatos, cada uno con el error que lo produce; se quedan los tres primeros distintos de la correcta.
     const cand = [
-      [fo(1, 1), 'QM-FORM-UNO', `Sería así si un ${ionTxt(m)} y un ${ionTxt(x)} se anularan, pero sus cargas no suman cero.`],
+      [fo(1, 1), 'QM-FORM-UNO', `Sería así si un ${ionTxt(m)} y un ${ionTxt(x)} se anularan, pero sus cargas no suman cero: sobraría carga de uno de los dos, y el compuesto no sería neutro.`],
       // La forma sin simplificar va antes que la «inversa»: con cargas iguales (Mg²⁺ y O²⁻) las dos dan Mg₂O₂, que sí da 0.
-      [fo(F.qx, F.qm), 'QM-FORM-SIN-SIMPLIFICAR', 'La proporción está bien, pero la fórmula se simplifica: es la misma proporción, escrita con números menores.'],
+      [fo(F.qx, F.qm), 'QM-FORM-SIN-SIMPLIFICAR', 'La proporción está bien, pero la fórmula se simplifica. Una fórmula iónica solo dice en qué proporción están los iones, y esa proporción se escribe con los números enteros más chicos.'],
       [fo(F.qm, F.qx), 'QM-FORM-INVERSA', 'Ahí cada ion lleva su propia carga como subíndice, y así la carga total no da 0. El subíndice de cada uno es la carga del otro.'],
-      [fo(F.b, F.a), 'QM-FORM-INVERSA', 'Así la carga total no da 0. El subíndice de cada ion debe ser la carga del otro, ya simplificada.'],
-      [fo(1, 2), 'QM-FORM-CARGA', `Así la carga total no da 0: un ${ionTxt(m)} no alcanza para dos ${ionTxt(x)}.`],
-      [fo(2, 1), 'QM-FORM-CARGA', `Así la carga total no da 0: dos ${ionTxt(m)} son demasiados para un ${ionTxt(x)}.`],
-      [fo(2 * F.a, 2 * F.b), 'QM-FORM-SIN-SIMPLIFICAR', 'La proporción está bien, pero la fórmula se escribe con los números más chicos posibles.'],
+      [fo(F.b, F.a), 'QM-FORM-INVERSA', 'Así la carga total no da 0, porque los subíndices quedaron al revés. El subíndice de cada ion debe ser la carga del otro, ya simplificada.'],
+      [fo(1, 2), 'QM-FORM-CARGA', `Así la carga total no da 0: un ${ionTxt(m)} ${F.qm < 2 * F.qx ? `no alcanza para dos ${ionTxt(x)}` : `trae más carga de la que anulan dos ${ionTxt(x)}`}.`],
+      [fo(2, 1), 'QM-FORM-CARGA', `Así la carga total no da 0: dos ${ionTxt(m)} ${2 * F.qm > F.qx ? `traen más carga de la que anula un ${ionTxt(x)}` : `no alcanzan para un ${ionTxt(x)}`}.`],
+      [fo(2 * F.a, 2 * F.b), 'QM-FORM-SIN-SIMPLIFICAR', 'La proporción está bien, pero la fórmula se escribe con los números más chicos posibles: dice la proporción de los iones, no cuántos hay en el grano.'],
     ];
     const vistos = new Set([F.texto]), malas = cand.filter(([t]) => !vistos.has(t) && vistos.add(t)).slice(0, 3);
     return {
       pregunta: `¿Cuál es la fórmula del compuesto iónico que forman el ${nombre(m)} y el ${nombre(x)}?`,
       datos: [`Iones: ${ionTxt(m)} y ${ionTxt(x)}`, D2.cero],
       opciones: ops(F.texto, ...malas),
-      solucion: { texto: `Con ${F.a} ${ionTxt(m)} y ${F.b} ${ionTxt(x)}, la carga total da cero: ${F.a} · (+${F.qm}) + ${F.b} · (−${F.qx}) = 0.`, ecuacion: [Cq(ionTxt(m)), ' y ', Cq(ionTxt(x)), ` → ${F.texto}`] },
+      solucion: { texto: `Con ${F.a} ${ionTxt(m)} y ${F.b} ${ionTxt(x)}, la carga total da cero: ${F.a} · (+${F.qm}) + ${F.b} · (−${F.qx}) = 0. Por eso cada subíndice es la carga del otro ion, simplificada.`, ecuacion: [Cq(ionTxt(m)), ' y ', Cq(ionTxt(x)), ` → ${F.texto}`] },
     };
   }
   function casoTransfiere(r) {
@@ -540,21 +540,21 @@
     return {
       pregunta: `En el ${F.texto}, ¿cuántos electrones pasan en total del ${nombre(m)} al ${nombre(x)} por cada unidad de la fórmula?`,
       datos: [`Iones: ${ionTxt(m)} y ${ionTxt(x)}`],
-      opciones: ops(String(F.transfiere), [String(F.qm), 'QM-TRANSF-UNO', `Esa es la carga de un ${ionTxt(m)}, pero la fórmula tiene ${F.a} átomos de ${m} y cada uno entrega ${F.qm}.`],
+      opciones: ops(String(F.transfiere), [String(F.qm), 'QM-TRANSF-UNO', `Esa es la carga de un ${ionTxt(m)}, pero la fórmula tiene ${F.a} átomos de ${m} y cada uno entrega ${F.qm}: hay que contarlos todos.`],
         [String(F.a + F.b), 'QM-TRANSF-ATOMOS', 'Ese número cuenta los átomos de la fórmula. Se piden los electrones que entregan, entre todos, los átomos del metal.'],
         [String(F.qm + F.qx), 'QM-TRANSF-SUMA', 'Ese número suma las cargas de los dos iones. Se cuentan los electrones que entregan todos los átomos del metal, que son los que recibe el no metal.'],
         [String(2 * F.transfiere), 'QM-TRANSF-DOBLE', 'Ese número cuenta dos veces los mismos electrones: los que entrega el metal son los que recibe el no metal, no otros.']),
-      solucion: { texto: `Hay ${F.a} átomos de ${m} y cada uno entrega ${eTxt(F.qm)}.`, ecuacion: [`${F.a} · ${F.qm} = `, El(`${F.transfiere} e⁻`)] },
+      solucion: { texto: `Hay ${F.a} átomos de ${m} y cada uno entrega ${eTxt(F.qm)}, así que se multiplica. ${F.b === 1 ? `El ${x} recibe` : `Los ${F.b} átomos de ${x} reciben`} esos mismos electrones, sin contar ninguno dos veces.`, ecuacion: [`${F.a} · ${F.qm} = `, El(`${F.transfiere} e⁻`)] },
     };
   }
   const AFIRMA_I = [
-    ['El KBr sólido está hecho de moléculas.', false, 'es una red de iones K⁺ y Br⁻, sin moléculas'],
-    ['El Mg²⁺ tiene tantos electrones como el neón.', true, 'tiene 12 − 2 = 10 electrones, como el neón', ['Magnesio: Z = 12; neón: Z = 10']],
-    ['Un iónico sólido conduce la corriente.', false, 'solo conduce fundido o disuelto, cuando sus iones se mueven', [D_PROPS[0]]],
-    ['El CaCl₂ tiene dos Cl⁻ por cada Ca²⁺.', true, 'así la carga total da cero', [D2.cero]],
-    ['El oxígeno pierde dos electrones al formar su ion.', false, 'recibe dos electrones y queda como O²⁻', ['Oxígeno: grupo 16 (VIA), 6 electrones de valencia']],
-    ['Los compuestos iónicos funden a temperatura alta.', true, 'los iones se atraen fuerte en toda la red', [D_PROPS[0]]],
-    ['En el Na₂O cada sodio entrega un electrón.', true, 'el sodio tiene un solo electrón de valencia', ['Sodio: grupo 1 (IA), 1 electrón de valencia']],
+    ['El KBr sólido está hecho de moléculas.', false, 'es una red de iones K⁺ y Br⁻, sin moléculas: el potasio le cede su electrón al bromo'],
+    ['El Mg²⁺ tiene tantos electrones como el neón.', true, 'tiene 12 − 2 = 10 electrones, como el neón, ya que entregó sus 2 electrones de valencia', ['Magnesio: Z = 12; neón: Z = 10']],
+    ['Un iónico sólido conduce la corriente.', false, 'solo conduce fundido o disuelto, cuando sus iones quedan sueltos y se mueven; en el sólido están fijos', [D_PROPS[0]]],
+    ['El CaCl₂ tiene dos Cl⁻ por cada Ca²⁺.', true, 'el Ca²⁺ trae dos cargas positivas y cada Cl⁻ anula una, así que la carga total da cero', [D2.cero]],
+    ['El oxígeno pierde dos electrones al formar su ion.', false, 'el oxígeno tiene 6 electrones de valencia y le faltan 2 para 8, así que recibe dos y queda como O²⁻', ['Oxígeno: grupo 16 (VIA), 6 electrones de valencia']],
+    ['Los compuestos iónicos funden a temperatura alta.', true, 'cada ion atrae a todos los de carga opuesta que lo rodean, y separar esa red pide mucho calor', [D_PROPS[0]]],
+    ['En el Na₂O cada sodio entrega un electrón.', true, 'el sodio tiene un solo electrón de valencia, y por eso hacen falta dos sodios para darle dos al oxígeno', ['Sodio: grupo 1 (IA), 1 electrón de valencia']],
   ];
 
   // Ejemplos de la idea 2. Cuentas rehechas aparte (cuentas-a.js): K⁺ · S²⁻ (6 + 2 = 8) · Cl⁻ 8 puntos · Al 3 e⁻ ·
@@ -564,7 +564,7 @@
     { nivel: 1, titulo: 'El ion del potasio',
       enunciado: '¿Qué ion forma el potasio al unirse con un no metal?',
       datos: [lugarTxt('K'), D2.octeto],
-      solucion: [{ texto: 'Le es más fácil entregar su único electrón de valencia que recibir siete: queda con una carga positiva.', ecuacion: ['K → K', Cq('⁺'), ' + ', El('1 e⁻')] }],
+      solucion: [{ texto: 'Al potasio le cuesta menos entregar su único electrón de valencia que recibir siete. Al entregarlo, queda con un protón más que electrones, y su carga es positiva.', ecuacion: ['K → K', Cq('⁺'), ' + ', El('1 e⁻')] }],
       respuesta: [Cq('K⁺')] },
     { nivel: 1, titulo: 'El ion del azufre',
       enunciado: '¿Qué ion forma el azufre al unirse con un metal?',
@@ -575,12 +575,12 @@
       enunciado: 'En el símbolo de Lewis del ion Cl⁻, ¿cuántos puntos van alrededor del cloro?',
       datos: [lugarTxt('Cl'), 'Cada punto: un electrón de valencia'],
       figura: simb([[{ s: 'Cl', corchetes: true, carga: '⁻', oculto: true }]]),
-      solucion: [{ texto: 'El cloro tiene 7 electrones de valencia y, al volverse Cl⁻, recibió uno más.', ecuacion: ['7 + 1 = ', El('8')] }],
+      solucion: [{ texto: 'El cloro tiene 7 electrones de valencia y, al volverse Cl⁻, recibió uno más: los 8 puntos son su octeto completo, y el corchete con la carga dice que ya es un ion.', ecuacion: ['7 + 1 = ', El('8')] }],
       respuesta: [El('8 puntos')] },
     { nivel: 1, titulo: 'Lo que entrega el aluminio',
       enunciado: 'Al formar su ion, ¿cuántos electrones entrega cada átomo de aluminio?',
       datos: [lugarTxt('Al')],
-      solucion: [{ texto: 'Entrega sus 3 electrones de valencia y queda con los mismos electrones que el neón.', ecuacion: ['Al → Al', Cq('³⁺'), ' + ', El('3 e⁻')] }],
+      solucion: [{ texto: 'Entrega sus 3 electrones de valencia, porque le cuesta menos que recibir cinco, y queda con los mismos electrones que el neón. Por eso su ion es Al³⁺.', ecuacion: ['Al → Al', Cq('³⁺'), ' + ', El('3 e⁻')] }],
       respuesta: [El('3 electrones')] },
     { nivel: 1, titulo: 'Los cloros de un calcio',
       enunciado: 'En el compuesto del calcio con el cloro, ¿cuántos iones Cl⁻ hay por cada ion Ca²⁺?',
@@ -592,7 +592,7 @@
       datos: [lugarTxt('Na'), lugarTxt('O'), D2.cero],
       solucion: [
         { texto: 'El sodio forma Na⁺ y el oxígeno, O²⁻.', ecuacion: [Cq('Na⁺'), SEP, Cq('O²⁻')] },
-        { texto: 'Hacen falta dos Na⁺ para anular las dos cargas negativas de un O²⁻.', ecuacion: ['2 · (+1) + (−2) = 0 → Na₂O'] },
+        { texto: 'Cada sodio entrega un solo electrón, y el oxígeno necesita dos: hacen falta dos Na⁺ para anular las dos cargas negativas de un O²⁻.', ecuacion: ['2 · (+1) + (−2) = 0 → Na₂O'] },
       ],
       respuesta: ['Na₂O'] },
     { nivel: 2, titulo: 'El aluminio con el cloro',
@@ -608,8 +608,8 @@
       enunciado: 'En el Al₂O₃, ¿cuántos electrones pasan del aluminio al oxígeno por cada unidad de la fórmula?',
       datos: ['Iones: Al³⁺ y O²⁻'],
       solucion: [
-        { texto: 'Hay dos aluminios y cada uno entrega 3.', ecuacion: ['2 · 3 = ', El('6 e⁻')] },
-        { texto: 'Lo comprueba el otro lado: tres oxígenos reciben 2 cada uno.', ecuacion: ['3 · 2 = ', El('6 e⁻')] },
+        { texto: 'Hay dos aluminios y cada uno entrega 3, así que se multiplica.', ecuacion: ['2 · 3 = ', El('6 e⁻')] },
+        { texto: 'Lo comprueba el otro lado: tres oxígenos reciben 2 cada uno. Tiene que dar lo mismo, porque los electrones que salen son los que llegan.', ecuacion: ['3 · 2 = ', El('6 e⁻')] },
       ],
       respuesta: [El('6 electrones')] },
     { nivel: 2, titulo: 'El calcio con el bromo',
@@ -635,7 +635,7 @@
       solucion: [
         { texto: 'X viene dos lugares después del argón (Z = 18), así que está en el grupo 2 y es un metal. Q viene justo antes del argón: grupo 17.', ecuacion: [Pz('Z = 20'), ': X²⁺', SEP, Pz('Z = 17'), ': Q⁻'] },
         { texto: 'Para anular la carga de un X²⁺ hacen falta dos Q⁻.', ecuacion: ['(+2) + 2 · (−1) = 0 → XQ₂'] },
-        { texto: ['La ', letra('A'), ' y la ', letra('E'), ' invierten quién entrega. La ', letra('B'), ' junta uno de cada. La ', letra('D'), ' pone la carga al revés.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('E'), ' invierten quién entrega: el metal es X, y es X el que entrega. La ', letra('B'), ' junta uno de cada, y sobra una carga positiva. La ', letra('D'), ' pone los subíndices al revés: con dos X²⁺ y un Q⁻ sobran tres cargas.'] },
       ],
       respuesta: [letra('C'), ', XQ₂'] },
     { nivel: 3, titulo: 'El litio con el nitrógeno',
@@ -645,8 +645,8 @@
       solucion: [
         { texto: 'El litio forma Li⁺ y el nitrógeno, N³⁻: hacen falta tres Li⁺.', ecuacion: ['3 · (+1) + (−3) = 0 → Li₃N'] },
         { texto: 'Los tres litios entregan un electrón cada uno.', ecuacion: ['3 · 1 = ', El('3 e⁻')] },
-        { texto: ['La ', letra('A'), ' cuenta un solo litio. La ', letra('B'), ' cuenta los átomos de la fórmula. La ', letra('C'), ' cuenta dos veces lo que pasa.'] },
-        { texto: ['La ', letra('D'), ' cuenta los 8 puntos del N³⁻, no los que recibió.'] },
+        { texto: ['La ', letra('A'), ' cuenta un solo litio, pero la fórmula tiene tres. La ', letra('B'), ' cuenta los cuatro átomos de la fórmula, no los electrones. La ', letra('C'), ' cuenta dos veces los mismos: los 3 que salen de los litios son los 3 que llegan al nitrógeno.'] },
+        { texto: ['La ', letra('D'), ' cuenta los 8 puntos del N³⁻, pero 5 de ellos ya eran del nitrógeno: solo recibió 3.'] },
       ],
       respuesta: [letra('E'), ', ', El('3 electrones')] },
     { nivel: 3, titulo: 'Verdadero o falso',
@@ -655,8 +655,8 @@
       datos: [lugarTxt('Al'), lugarTxt('S')],
       solucion: [
         { texto: 'I es verdadera: el Al tiene 3 de valencia. II es falsa: el azufre recibe 2 y queda S²⁻. III es verdadera: dos aluminios entregan 6 y tres azufres los reciben.', ecuacion: ['2 · 3 = 3 · 2 = ', El('6 e⁻')] },
-        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' creen que el azufre recibe lo mismo que entrega el aluminio; la ', letra('D'), ' además niega la III.'] },
-        { texto: ['La ', letra('C'), ' invierte las tres. La ', letra('E'), ' duda del aluminio, que sí entrega 3.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' creen que el azufre recibe 3, lo mismo que entrega cada aluminio, pero al azufre le faltan solo 2 para 8. La ', letra('D'), ' además niega la III.'] },
+        { texto: ['La ', letra('C'), ' invierte las tres. La ', letra('E'), ' duda del aluminio, que sí entrega 3 porque tiene 3 electrones de valencia.'] },
       ],
       respuesta: [letra('B'), ', VFV'] },
     { nivel: 3, titulo: 'Un sólido iónico',
@@ -666,8 +666,8 @@
       datos: ['La corriente pasa si hay algo con carga que se pueda mover', 'Calcio (Ca): un metal; oxígeno (O): un no metal', 'En un sólido iónico, cada ion está atraído por todos los de carga opuesta que lo rodean'],
       solucion: [
         { texto: 'En el sólido los iones están fijos en la red; fundido o disuelto se mueven y llevan la corriente.' },
-        { texto: ['La ', letra('B'), ' le da al iónico lo que es del metal. La ', letra('C'), ' ve moléculas donde hay una red.'] },
-        { texto: ['La ', letra('D'), ' olvida que la red se suelta recién con mucho calor. La ', letra('E'), ' lo confunde con un covalente.'] },
+        { texto: ['La ', letra('B'), ' le da al iónico lo que es del metal: solo un metal conduce sólido, porque tiene electrones que se mueven. La ', letra('C'), ' ve moléculas de CaO donde hay una red de iones Ca²⁺ y O²⁻.'] },
+        { texto: ['La ', letra('D'), ' olvida que la red se suelta recién con mucho calor, muy por encima de 100 °C. La ', letra('E'), ' lo confunde con un covalente: el calcio es un metal y cede sus electrones, no los comparte.'] },
       ],
       respuesta: [letra('A'), ', conduce fundido o disuelto'] },
     { nivel: 3, titulo: 'Los iones del MgF₂',
@@ -676,8 +676,8 @@
       datos: ['Protones: magnesio 12, flúor 9; neón: Z = 10', D.carga],
       solucion: [
         { texto: 'Cuento los electrones de cada ion: el Mg²⁺ perdió 2 de sus 12 y el F⁻ ganó 1 sobre sus 9.', ecuacion: ['Mg²⁺: 12 − 2 = 10', SEP, 'F⁻: 9 + 1 = 10'] },
-        { texto: ['La ', letra('A'), ' olvida los que entregó. La ', letra('B'), ' cuenta los 8 de afuera, no todos. La ', letra('C'), ' los confunde con los del argón.'] },
-        { texto: ['La ', letra('E'), ' invierte quién entrega: el metal da sus dos electrones.'] },
+        { texto: ['La ', letra('A'), ' olvida los 2 electrones que entregó el magnesio. La ', letra('B'), ' cuenta solo los 8 de afuera del F⁻, pero tiene 2 más en el nivel de adentro. La ', letra('C'), ' los confunde con los del argón, que tiene 18.'] },
+        { texto: ['La ', letra('E'), ' invierte quién entrega: el magnesio es el metal y da sus dos electrones, uno a cada flúor.'] },
       ],
       respuesta: [letra('D'), ', 10 electrones cada uno'] },
   ];
@@ -694,10 +694,10 @@
       tarjetas: [
         { titulo: 'Un grano de sal', texto: 'La sal de mesa se forma con sodio, un metal, y cloro, un no metal. En cada grano hay más de un trillón de partículas de los dos, en una proporción fija.',
           pieza: 'quim-enlace', dibujo: OBJ('sal', { nombre: 'Sal en una cuchara' }) },
-        { titulo: 'Los gases nobles', texto: 'El neón, el argón y los demás gases nobles casi no reaccionan: tienen 8 electrones en su último nivel (el helio, 2). Al formar iones, muchos átomos quedan con esa misma cantidad.' },
-        { titulo: 'Puntos de Lewis', texto: 'Cada punto alrededor de un símbolo es un electrón de valencia: el sodio tiene 1 y el cloro, 7. Un ion va entre corchetes, con su carga arriba a la derecha.',
+        { titulo: 'Los gases nobles', texto: 'El neón, el argón y los demás gases nobles casi no reaccionan: tienen 8 electrones en su último nivel (el helio, 2). Esa cantidad es muy estable. Al formar iones, muchos átomos ganan o pierden electrones justo hasta quedar con ella.' },
+        { titulo: 'Puntos de Lewis', texto: 'Cada punto alrededor de un símbolo es un electrón de valencia: el sodio tiene 1 y el cloro, 7. Los electrones de adentro no se dibujan, porque no participan en el enlace. Un ion va entre corchetes, con su carga arriba a la derecha.',
           pieza: 'quim-enlace', dibujo: simb([[atomoL('Na'), atomoL('Cl')]]) },
-        { titulo: 'Qué mirar', texto: 'En el juego eliges un metal y un no metal. Cuenta cuántos electrones entrega cada átomo del metal y cuántos recibe cada átomo del no metal.' },
+        { titulo: 'Qué mirar', texto: 'En el juego eliges un metal y un no metal. Cuenta cuántos electrones entrega cada átomo del metal y cuántos recibe cada átomo del no metal: los electrones no se pierden en el camino, así que el total que sale es el total que llega.' },
       ],
     },
     ejemplos: EJEMPLOS_IONICO,
@@ -707,7 +707,7 @@
       mision: {
         texto: 'Arma un compuesto con dos átomos del metal por cada tres del no metal.',
         logrado: v => v.a === 'Al' && (v.b === 'O' || v.b === 'S'),
-        bien: 'Dos aluminios entregan 6 electrones y tres átomos del no metal reciben 6.',
+        bien: 'Dos aluminios entregan 6 electrones y tres átomos del no metal reciben 6: no sobra ninguno.',
       },
       voz: 'Lo que entrega el metal es lo que recibe el no metal.',
       leyenda: [
@@ -730,8 +730,8 @@
       voz: 'Piensa cuántos electrones entrega uno y cuántos pide el otro.',
       opciones: [
         { id: 'c', texto: 'Mg₃N₂', correcta: true },
-        { id: 'uno', texto: 'MgN', error: 'QM-FORM-UNO', siFuera: 'Sería así si las cargas se anularan uno a uno, pero +2 y −3 suman −1, no 0.' },
-        { id: 'inversa', texto: 'Mg₂N₃', error: 'QM-FORM-INVERSA', siFuera: 'Sería así si cada ion llevara su propia carga como subíndice, pero así da 2 · (+2) + 3 · (−3) = −5, no 0.' },
+        { id: 'uno', texto: 'MgN', error: 'QM-FORM-UNO', siFuera: 'Sería así si las cargas se anularan uno a uno, pero +2 y −3 suman −1, no 0: sobraría un electrón que ningún magnesio entregó.' },
+        { id: 'inversa', texto: 'Mg₂N₃', error: 'QM-FORM-INVERSA', siFuera: 'Sería así si cada ion llevara su propia carga como subíndice, pero así da 2 · (+2) + 3 · (−3) = −5, no 0. El subíndice de cada ion es la carga del otro.' },
         { id: 'no-calza', texto: 'Ninguna: no calzan', error: 'QM-FORM-NO-CALZA', siFuera: 'Sería así si solo pudieran unirse uno a uno. Con tres Mg y dos N, sí calzan: salen seis electrones y llegan seis.' },
       ],
       dibujo: simb([[atomoL('Mg'), '+', atomoL('N'), '→', '?']]),
@@ -746,18 +746,18 @@
         alt: 'El sodio entrega su electrón al cloro y quedan Na⁺ y Cl⁻ entre corchetes; abajo, un magnesio entrega dos electrones a dos cloros: MgCl₂.' },
       voz: 'Sigamos cada electrón que pasa.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'El sodio entrega su único electrón de valencia al cloro.', ecuacion: ['Na', El('•'), ' + Cl → Na', Cq('⁺'), ' + Cl', Cq('⁻')] },
-        { estado: { corte: 1 }, texto: 'Los dos iones quedan con 8 electrones en su último nivel, como un gas noble: eso dice la regla del octeto.', ecuacion: ['Na⁺: como el neón', SEP, 'Cl⁻: como el argón'] },
-        { estado: { corte: 3 }, texto: 'El magnesio entrega dos electrones, así que hacen falta dos cloros para recibirlos.', ecuacion: ['Mg', Cq('²⁺'), ' + 2 Cl', Cq('⁻'), ' → MgCl₂'] },
-        { estado: { corte: 3 }, texto: 'La fórmula junta los iones en la proporción de carga total cero.', ecuacion: ['(+2) + 2 · (−1) = 0'] },
-        { estado: { corte: 3 }, texto: 'En el sólido no hay moléculas: la fórmula solo dice en qué proporción están los iones de la red.' },
-        { estado: { corte: 3 }, texto: 'Por esa red, el sólido iónico funde a alta temperatura, se quiebra al golpearlo y conduce solo fundido o disuelto.' },
+        { estado: { corte: 1 }, texto: 'El sodio tiene un solo electrón de valencia y al cloro le falta uno para 8. El sodio se lo entrega: el sodio queda con carga +1 y el cloro, con −1.', ecuacion: ['Na', El('•'), ' + Cl → Na', Cq('⁺'), ' + Cl', Cq('⁻')] },
+        { estado: { corte: 1 }, texto: 'Los dos iones quedan con 8 electrones en su último nivel, como un gas noble: eso dice la regla del octeto. El Na⁺ se queda con el nivel de abajo, que ya estaba lleno.', ecuacion: ['Na⁺: como el neón', SEP, 'Cl⁻: como el argón'] },
+        { estado: { corte: 3 }, texto: 'El magnesio entrega dos electrones, pero cada cloro recibe solo uno, porque le falta uno para 8. Por eso hacen falta dos cloros.', ecuacion: ['Mg', Cq('²⁺'), ' + 2 Cl', Cq('⁻'), ' → MgCl₂'] },
+        { estado: { corte: 3 }, texto: 'La fórmula junta los iones en la proporción que da carga total cero, un Mg²⁺ por cada dos Cl⁻, porque un trozo de sólido no tiene carga.', ecuacion: ['(+2) + 2 · (−1) = 0'] },
+        { estado: { corte: 3 }, texto: 'En el sólido no hay moléculas: cada ion queda rodeado de varios de carga opuesta, y la fórmula solo dice en qué proporción están en la red.' },
+        { estado: { corte: 3 }, texto: 'Por esa red, el sólido iónico funde a alta temperatura, porque hay que separar muchos iones que se atraen. También se quiebra al golpearlo y conduce solo fundido o disuelto.' },
       ],
     },
     regla: {
-      texto: 'El metal entrega sus electrones de valencia y el no metal recibe los que le faltan para 8. La fórmula da carga total cero: dos Al³⁺ y tres O²⁻, Al₂O₃.',
+      texto: 'El metal entrega sus electrones de valencia y queda como ion positivo; el no metal recibe los que le faltan para 8 y queda negativo. Así los dos quedan con los electrones de un gas noble. Como los electrones que salen son los que llegan, la fórmula da carga total cero: dos Al³⁺ y tres O²⁻, Al₂O₃.',
       ecuacion: ['metal: ', El('pierde sus e⁻ de valencia'), SEP, 'no metal: ', El('gana hasta 8'), SEP, 'carga total = 0', SEP, '2 · (+3) + 3 · (−2) = 0 → Al₂O₃'],
-      condicion: 'se unen metales de los grupos 1, 2 y 13 con no metales de los grupos 15, 16 y 17.',
+      condicion: 'se unen metales de los grupos 1, 2 y 13 con no metales de los grupos 15, 16 y 17. Con otros metales, como el hierro o el cobre, la carga del ion no sale del grupo y hay que darla como dato.',
       voz: 'Cuenta lo que entrega y lo que recibe: deben ser iguales.',
       dibujo: simb(filasCompuesto('Al', 'O').filas, { transfiere: filasCompuesto('Al', 'O').transfiere }),
     },
@@ -772,10 +772,10 @@
           pasos: [
             { tipo: 'pide', texto: 'Piden la fórmula, es decir, cuántos iones de cada elemento hacen falta para que la carga total sea cero.' },
             { tipo: 'datos', texto: `El ${nombre(m)} tiene ${eTxt(F.qm)} de valencia, y al ${nombre(x)} le ${F.qx === 1 ? 'falta' : 'faltan'} ${F.qx} para llegar a 8.` },
-            { tipo: 'regla', texto: 'El metal entrega sus electrones de valencia y el no metal recibe los que le faltan para llegar a 8. La fórmula da carga total cero.' },
-            { tipo: 'cuentas', texto: `Los iones son ${ionTxt(m)} y ${ionTxt(x)}.`, ecuacion: [`${F.a} · (+${F.qm}) + ${F.b} · (−${F.qx}) = 0 → ${F.texto}`],
+            { tipo: 'regla', texto: 'El metal entrega sus electrones de valencia y el no metal recibe los que le faltan para llegar a 8; así, los dos quedan como un gas noble. Como los electrones que salen son los que llegan, la fórmula da carga total cero.' },
+            { tipo: 'cuentas', texto: `Los iones son ${ionTxt(m)} y ${ionTxt(x)}. Se busca cuántos de cada uno hacen que las cargas positivas anulen a las negativas.`, ecuacion: [`${F.a} · (+${F.qm}) + ${F.b} · (−${F.qx}) = 0 → ${F.texto}`],
               dibujo: simb(c.filas, { transfiere: c.transfiere }) },
-            { tipo: 'sentido', texto: `${F.a === 1 ? `El ${m} entrega` : `Los ${F.a} ${m} entregan`} ${eTxt(F.transfiere)}, y ${F.b === 1 ? `el ${x} recibe` : `los ${F.b} ${x} reciben`} esos mismos electrones (${F.b} · ${F.qx}).` },
+            { tipo: 'sentido', texto: `${F.a === 1 ? `El ${m} entrega` : `Los ${F.a} ${m} entregan`} ${eTxt(F.transfiere)}, y ${F.b === 1 ? `el ${x} recibe` : `los ${F.b} ${x} reciben`} esos mismos electrones (${F.b} · ${F.qx}). Así no sobra ni falta ningún electrón.` },
           ],
           respuesta: [F.texto],
         };
@@ -843,11 +843,11 @@
     return {
       pregunta: `¿Cuántos electrones hay que repartir en la estructura de Lewis del ${t}?`,
       datos: [valTxt(ats), D3.carga],
-      opciones: ops(String(n), q ? [String(sumaVal(ats)), 'EN4', 'Sumar los de valencia está bien, pero falta la carga del ion: un ion tiene electrones de más o de menos.'] : [String(ats.length - 1), 'EN4', 'Ese número cuenta los enlaces. Se piden los electrones de valencia que se reparten.'],
-        q ? [String(sumaVal(ats) + q), 'QM-NVAL-SIGNO', q > 0 ? 'Sería así si el catión hubiera ganado electrones. Los perdió, así que su carga se resta.' : 'Sería así si el anión hubiera perdido electrones. Los ganó, así que su carga se suma.'] : [String(8 * ats.filter(s => s !== 'H').length + 2 * ats.filter(s => s === 'H').length), 'QM-NVAL-OCTETOS', 'Ese número suma los octetos que se buscan. Lo que se reparte son los electrones de valencia que traen los átomos.'],
+      opciones: ops(String(n), q ? [String(sumaVal(ats)), 'EN4', 'Sumar los de valencia está bien, pero falta la carga. Un anión ganó electrones, que también se reparten, y un catión perdió algunos, que ya no están.'] : [String(ats.length - 1), 'EN4', 'Ese número cuenta los enlaces, que todavía no se conocen. Se piden los electrones de valencia que se reparten, y salen de sumar los de cada átomo.'],
+        q ? [String(sumaVal(ats) + q), 'QM-NVAL-SIGNO', q > 0 ? 'Sería así si el catión hubiera ganado electrones. Los perdió: cada carga positiva es un electrón de menos, así que su carga se resta.' : 'Sería así si el anión hubiera perdido electrones. Los ganó: cada carga negativa es un electrón de más, así que su carga se suma.'] : [String(8 * ats.filter(s => s !== 'H').length + 2 * ats.filter(s => s === 'H').length), 'QM-NVAL-OCTETOS', 'Ese número suma los octetos que se buscan. Lo que se reparte son los electrones de valencia que traen los átomos.'],
         [String(ats.length), 'EN4', 'Ese número cuenta los átomos, pero cada átomo aporta todos sus electrones de valencia, no uno.'],
         [String(n / 2), 'QM-LIBRES-ELECTRONES', 'Ese número cuenta pares, y se piden electrones: cada par tiene dos.']),
-      solucion: { texto: q ? `Sumo los electrones de valencia de todos los átomos y ${q > 0 ? 'resto' : 'sumo'} ${Math.abs(q)} por la carga del ion.` : 'Sumo los electrones de valencia de todos los átomos.', ecuacion: [`${sumaVal(ats)}${q ? ` ${q > 0 ? '−' : '+'} ${Math.abs(q)}` : ''} = `, El(`${n} e⁻`)] },
+      solucion: { texto: q ? `Sumo los electrones de valencia de todos los átomos y ${q > 0 ? 'resto' : 'sumo'} ${Math.abs(q)} por la carga del ion, porque ${q > 0 ? 'un catión perdió esos electrones' : 'un anión ganó esos electrones'}.` : 'Sumo los electrones de valencia de todos los átomos. Como la molécula no tiene carga, no hay nada que agregar ni quitar.', ecuacion: [`${sumaVal(ats)}${q ? ` ${q > 0 ? '−' : '+'} ${Math.abs(q)}` : ''} = `, El(`${n} e⁻`)] },
     };
   }
   // Pares libres del átomo central (molécula neutra con octeto, del motor de plantillas/enlace).
@@ -861,10 +861,10 @@
     return {
       pregunta: `En la estructura de Lewis del ${L.formula}, ¿cuántos pares libres tiene el átomo central, el ${c}?`,
       datos: [valTxt([c, ...L.ligandos.map(x => x.simbolo)]), D3.enlace, D3.meta],
-      opciones: ops(String(L.paresLibres), [String(4), 'QM-LIBRES-TODOS', `La meta de 8 está bien, pero ${lig === 4 ? 'sus 4 pares' : `${lig} de sus 4 pares`} están en los enlaces, así que no son libres.`],
-        [String(val(c) - lig), 'QM-LIBRES-ELECTRONES', `Ese número cuenta electrones, no pares: los ${val(c) - lig} electrones que le quedan van de dos en dos.`],
-        [String(L.paresLibres + lig), 'QM-LIBRES-TODOS', 'Ese número suma también los pares de los enlaces, que son compartidos y no libres.'], [String(L.paresLibres + 1), 'QM-LIBRES-UNO', 'Sobra un par: con él, el átomo central pasaría de 8 electrones.']),
-      solucion: { texto: val(c) === lig ? `El ${c} pone sus ${lig} electrones de valencia en ${lig} enlaces y no le queda ninguno libre.` : `El ${c} pone ${eTxt(lig)} en sus ${lig} enlaces, y los ${val(c) - lig} que le quedan forman ${pTxt(L.paresLibres)}.`, ecuacion: [`(${val(c)} − ${lig}) ÷ 2 = `, El(String(L.paresLibres)), `: ${pTxt(L.paresLibres)}`] },
+      opciones: ops(String(L.paresLibres), [String(4), 'QM-LIBRES-TODOS', `La meta de 8 está bien, pero ${lig === 4 ? 'sus 4 pares' : `${lig} de sus 4 pares`} están en los enlaces, así que no son libres: un par libre es el que no se comparte.`],
+        [String(val(c) - lig), 'QM-LIBRES-ELECTRONES', `Ese número cuenta electrones, no pares: los ${val(c) - lig} electrones que le quedan forman ${pTxt(L.paresLibres)}, porque cada par tiene dos.`],
+        [String(L.paresLibres + lig), 'QM-LIBRES-TODOS', 'Ese número suma también los pares de los enlaces, que son compartidos y no libres.'], [String(L.paresLibres + 1), 'QM-LIBRES-UNO', 'Sobra un par: con él, el átomo central pasaría de 8 electrones, y sus electrones de valencia no alcanzan para ese par.']),
+      solucion: { texto: val(c) === lig ? `El ${c} pone sus ${lig} electrones de valencia en ${lig} enlaces, uno en cada uno, y no le queda ninguno libre.` : `El ${c} pone un electrón en cada uno de sus ${lig} enlaces, y ${val(c) - lig === 2 ? 'los 2 que le quedan forman un par libre' : `los ${val(c) - lig} que le quedan, agrupados de dos en dos, forman ${pTxt(L.paresLibres)}`}.`, ecuacion: [`(${val(c)} − ${lig}) ÷ 2 = `, El(String(L.paresLibres)), `: ${pTxt(L.paresLibres)}`] },
     };
   }
   // El enlace entre dos átomos (simple, doble o triple), sin el N₂ de la predicción.
@@ -877,9 +877,9 @@
     return {
       pregunta: `¿Cómo es el enlace entre ${quien}?`,
       datos: [valTxt(ats), D3.meta],
-      opciones: ops(ORDEN_TXT[o], ...[1, 2, 3].filter(x => x !== o).map(x => [ORDEN_TXT[x], x < o ? 'QM-OCTETO-FALTA' : 'QM-OCTETO-SOBRA', x < o ? 'Con menos pares compartidos, a alguno de los dos átomos le faltarían electrones para su octeto.' : 'Con más pares compartidos, alguno de los dos átomos pasaría de su meta de electrones.']),
+      opciones: ops(ORDEN_TXT[o], ...[1, 2, 3].filter(x => x !== o).map(x => [ORDEN_TXT[x], x < o ? 'QM-OCTETO-FALTA' : 'QM-OCTETO-SOBRA', x < o ? 'Con menos pares compartidos, a alguno de los dos átomos le faltarían electrones para su octeto, porque no hay electrones de sobra para más pares libres.' : 'Con más pares compartidos, alguno de los dos átomos pasaría de su meta de electrones: 8, o 2 si es hidrógeno.']),
         ['Iónico: un átomo le entrega electrones al otro', 'EN5', 'Sería así si uno de los átomos fuera un metal. Aquí solo hay no metales, que comparten pares.']),
-      solucion: { texto: `Con ${parTxt(compartidos(k))} entre todos y ${pTxt(libres(k))}, cada átomo llega a su meta.`, ecuacion: [`${LEWIS[k].t}: ${2 * compartidos(k)} + ${2 * libres(k)} = `, El(`${valTotal(k)} e⁻`)] },
+      solucion: { texto: `Con ${parTxt(compartidos(k))} entre todos y ${pTxt(libres(k))}, cada átomo llega a su meta, 8 o 2 si es hidrógeno, y no sobra ningún electrón.`, ecuacion: [`${LEWIS[k].t}: ${2 * compartidos(k)} + ${2 * libres(k)} = `, El(`${valTotal(k)} e⁻`)] },
     };
   }
   function casoPares(r) {
@@ -888,19 +888,19 @@
     return {
       pregunta: `En la estructura de Lewis del ${LEWIS[k].t}, ¿cuántos pares compartidos y cuántos pares libres hay en total?`,
       datos: [valTxt(LEWIS[k].atomos.map(x => x.t)), D3.enlace, D3.meta],
-      opciones: ops(tx(c, l), [tx(LEWIS[k].enlaces.length, tot - LEWIS[k].enlaces.length), 'QM-ORDEN-SIMPLE', 'Contaste las uniones, pero un enlace doble o triple comparte más de un par.'],
-        [tx(c, 2 * l), 'QM-LIBRES-ELECTRONES', 'Los compartidos están bien, pero los libres se contaron como electrones, no como pares.'], [tx(l, c), 'QM-PARES-INVERSO', 'Son los mismos números, pero al revés: los compartidos son los de las rayas.'],
+      opciones: ops(tx(c, l), [tx(LEWIS[k].enlaces.length, tot - LEWIS[k].enlaces.length), 'QM-ORDEN-SIMPLE', 'Contaste las uniones, pero un enlace doble o triple comparte más de un par: hay que contar cada raya.'],
+        [tx(c, 2 * l), 'QM-LIBRES-ELECTRONES', 'Los compartidos están bien, pero los libres se contaron como electrones, no como pares: cada par libre tiene dos electrones.'], [tx(l, c), 'QM-PARES-INVERSO', 'Son los mismos números, pero al revés: los compartidos son los de las rayas, entre dos átomos, y los libres, los puntos de un solo átomo.'],
         [tx(c, tot), 'QM-PARES-TOTAL', 'Los compartidos están bien, pero los libres son solo los pares que sobran después de los enlaces.']),
-      solucion: { texto: `Los ${valTotal(k)} electrones de valencia forman ${tot} pares: ${c} van en los enlaces y el resto queda libre.`, ecuacion: [`${tot} − ${c} = `, El(String(l)), `: ${pTxt(l)}`] },
+      solucion: { texto: `Los ${valTotal(k)} electrones de valencia forman ${tot} pares: ${c} van en los enlaces, uno por cada raya, y el resto queda libre.`, ecuacion: [`${tot} − ${c} = `, El(String(l)), `: ${pTxt(l)}`] },
     };
   }
   const AFIRMA_L = [
-    ['El O₂ es un compuesto.', false, 'tiene un solo elemento, así que es una sustancia simple'],
-    ['El CO₂ tiene dos enlaces dobles.', true, 'con O=C=O, todos los átomos llegan a 8'],
-    ['En el H₂O, el oxígeno tiene dos pares libres.', true, 'le quedan 4 de sus 6 electrones, que son dos pares'],
-    ['En el HCl hay dos pares compartidos.', false, 'hay uno solo, el del enlace H–Cl'],
-    ['El hidrógeno queda con 8 electrones en el H₂.', false, 'su meta es 2, como el helio'],
-    ['El NH₃ tiene ocho electrones de valencia.', true, 'son 5 del N y 1 de cada H'],
+    ['El O₂ es un compuesto.', false, 'tiene un solo elemento, así que es una sustancia simple; un compuesto tiene dos elementos o más'],
+    ['El CO₂ tiene dos enlaces dobles.', true, 'con O=C=O, todos los átomos llegan a 8; con enlaces simples, el carbono quedaría con 4'],
+    ['En el H₂O, el oxígeno tiene dos pares libres.', true, 'el oxígeno usa 2 de sus 6 electrones en los enlaces y le quedan 4, que son dos pares'],
+    ['En el HCl hay dos pares compartidos.', false, 'hay uno solo, el del enlace H–Cl, ya que el hidrógeno solo admite 2 electrones'],
+    ['El hidrógeno queda con 8 electrones en el H₂.', false, 'su meta es 2, como el helio, ya que su único nivel se llena con 2'],
+    ['El NH₃ tiene ocho electrones de valencia.', true, 'son 5 del N y 1 de cada uno de los tres H'],
   ];
   const D_AFIRMA_L = [valTxt(['H', 'C', 'N', 'O', 'Cl']), D3.meta];
 
@@ -911,28 +911,28 @@
     { nivel: 1, titulo: 'Los electrones del agua',
       enunciado: '¿Cuántos electrones de valencia hay que repartir en la estructura de Lewis del H₂O?',
       datos: [valTxt(['H', 'O'])],
-      solucion: [{ texto: 'Sumo los del oxígeno y los de los dos hidrógenos.', ecuacion: ['6 + 2 · 1 = ', El('8 e⁻')] }],
+      solucion: [{ texto: 'Sumo los del oxígeno y los de los dos hidrógenos. Como la molécula no tiene carga, no se agrega ni se quita nada.', ecuacion: ['6 + 2 · 1 = ', El('8 e⁻')] }],
       respuesta: [El('8 electrones')] },
     { nivel: 1, titulo: 'Un catión de cinco átomos',
       enunciado: '¿Cuántos electrones hay que repartir en la estructura de Lewis del ion NH₄⁺?',
       datos: [valTxt(['N', 'H']), D3.carga],
-      solucion: [{ texto: 'Sumo los de valencia y resto 1: el catión perdió un electrón.', ecuacion: ['5 + 4 · 1 − 1 = ', El('8 e⁻')] }],
+      solucion: [{ texto: 'Sumo los de valencia y resto 1, porque la carga + dice que el catión perdió un electrón.', ecuacion: ['5 + 4 · 1 − 1 = ', El('8 e⁻')] }],
       respuesta: [El('8 electrones')] },
     { nivel: 1, titulo: 'Los pares del cloro',
       enunciado: 'En la estructura de Lewis del HCl, ¿cuántos pares libres tiene el cloro?',
       datos: [valTxt(['H', 'Cl']), D3.enlace],
       figura: lewisDib('HCl', { pares: [], textos: [{ x: 0.75, y: -0.75, t: '?' }] }),
-      solucion: [{ texto: 'El cloro pone 1 de sus 7 en el enlace; le quedan 6, que son 3 pares.', ecuacion: ['(7 − 1) ÷ 2 = ', El('3 pares libres')] }],
+      solucion: [{ texto: 'El cloro pone 1 de sus 7 electrones en el enlace con el hidrógeno; le quedan 6, que se agrupan de dos en dos: 3 pares.', ecuacion: ['(7 − 1) ÷ 2 = ', El('3 pares libres')] }],
       respuesta: [El('3 pares libres')] },
     { nivel: 1, titulo: 'Lo que comparte un doble',
       enunciado: '¿Cuántos electrones comparten dos átomos unidos por un enlace doble?',
       datos: [D3.enlace],
-      solucion: [{ texto: 'Un enlace doble se dibuja con dos rayas, que son dos pares compartidos.', ecuacion: ['2 · 2 = ', El('4 e⁻')] }],
+      solucion: [{ texto: 'Un enlace doble se dibuja con dos rayas, que son dos pares compartidos, y los dos átomos cuentan esos electrones como suyos.', ecuacion: ['2 · 2 = ', El('4 e⁻')] }],
       respuesta: [El('4 electrones')] },
     { nivel: 1, titulo: 'El ion de la tiza',
       enunciado: '¿Cuántos electrones hay que repartir en la estructura de Lewis del ion CO₃²⁻?',
       datos: [valTxt(['C', 'O']), D3.carga],
-      solucion: [{ texto: 'Sumo los de valencia y 2 más: el anión ganó dos electrones.', ecuacion: ['4 + 3 · 6 + 2 = ', El('24 e⁻')] }],
+      solucion: [{ texto: 'Sumo los de valencia y 2 más, porque la carga 2− dice que el anión ganó dos electrones.', ecuacion: ['4 + 3 · 6 + 2 = ', El('24 e⁻')] }],
       respuesta: [El('24 electrones')] },
     { nivel: 2, titulo: 'El oxígeno que respiras',
       enunciado: '¿Cómo es la estructura de Lewis del O₂? Di el tipo de enlace y cuántos pares libres tiene cada oxígeno.',
@@ -963,7 +963,7 @@
       datos: [valTxt(['C', 'N']), D3.carga, D3.meta],
       solucion: [
         { texto: 'Sumo los electrones de valencia y agrego 1 por la carga del anión.', ecuacion: ['4 + 5 + 1 = ', El('10 e⁻')] },
-        { texto: 'Con un triple enlace (6) y un par libre en cada átomo (4), los dos llegan a 8.' },
+        { texto: 'Con un triple enlace (6) y un par libre en cada átomo (4), los dos llegan a 8. Con un doble, los 10 electrones no alcanzarían.' },
       ],
       respuesta: [El('10 electrones'), '; enlace triple'] },
     { nivel: 2, titulo: 'Los pares del amoníaco',
@@ -971,7 +971,7 @@
       datos: [valTxt(['N', 'H']), D3.enlace],
       solucion: [
         { texto: 'Hay 8 electrones de valencia, que forman 4 pares.', ecuacion: ['5 + 3 · 1 = 8'] },
-        { texto: 'Tres pares van en los enlaces N–H; el que sobra es libre, en el nitrógeno.' },
+        { texto: 'Tres pares van en los enlaces N–H, uno por cada hidrógeno; el que sobra queda libre en el nitrógeno, que así llega a 8.' },
       ],
       respuesta: ['3 compartidos y ', El('1 libre')] },
     { nivel: 3, titulo: 'Los dos gases del aire',
@@ -983,7 +983,7 @@
         { texto: 'El N₂ tiene 10 electrones: con un triple (6) y un par libre en cada N, los dos llegan a 8.' },
         { texto: 'El O₂ tiene 12: los dos O llegan a 8 con un doble y dos pares libres en cada uno.' },
         { texto: ['La ', letra('A'), ' y la ', letra('B'), ' le dan al N₂ un doble: con 10 electrones, uno de los N quedaría con 6.'] },
-        { texto: ['La ', letra('C'), ' olvida que tienen un solo elemento. La ', letra('D'), ' cuenta electrones, no pares: son 2 pares por O.'] },
+        { texto: ['La ', letra('C'), ' olvida que tienen un solo elemento: son sustancias simples. La ', letra('D'), ' cuenta electrones, no pares: cada O tiene 4 electrones libres, que son 2 pares.'] },
       ],
       respuesta: [letra('E'), ', triple en el N₂ y doble en el O₂'] },
     { nivel: 3, titulo: 'La estructura del HCN',
@@ -993,8 +993,8 @@
       datos: [valTxt(['H', 'C', 'N']), D3.meta],
       solucion: [
         { texto: 'Hay 1 + 4 + 5 = 10 electrones. El enlace H–C usa 2, el C≡N usa 6 y el par que queda va libre en el N.', ecuacion: ['2 + 6 + 2 = ', El('10 e⁻')] },
-        { texto: ['La ', letra('B'), ' pondría un doble con el H, que solo admite 2. La ', letra('C'), ' necesitaría 14 electrones, y hay 10.'] },
-        { texto: ['La ', letra('D'), ' suma mal: son 10. La ', letra('E'), ' le da al hidrógeno 6 compartidos.'] },
+        { texto: ['La ', letra('B'), ' pondría un doble con el H, que solo admite 2 electrones, es decir, un solo enlace. La ', letra('C'), ' necesitaría 14 electrones, y hay 10.'] },
+        { texto: ['La ', letra('D'), ' suma mal: 1 + 4 + 5 da 10, no 12. La ', letra('E'), ' le da al hidrógeno 6 electrones compartidos, y su meta es 2.'] },
       ],
       respuesta: [letra('A'), ', triple C≡N'] },
     { nivel: 3, titulo: 'Dos moléculas con hidrógeno',
@@ -1003,8 +1003,8 @@
       datos: [valTxt(['H', 'P', 'S']), D3.enlace, D3.meta],
       solucion: [
         { texto: 'El P pone 3 de sus 5 electrones en enlaces, y el S, 2 de sus 6; lo que les queda va en pares.', ecuacion: ['P: (5 − 3) ÷ 2 = 1', SEP, 'S: (6 − 2) ÷ 2 = 2'] },
-        { texto: ['La ', letra('A'), ' cree que estas moléculas no tienen pares libres. La ', letra('B'), ' le da al S los mismos que al P.'] },
-        { texto: ['La ', letra('C'), ' los invierte. La ', letra('E'), ' cuenta electrones sueltos, no pares: 2 en el P y 4 en el S.'] },
+        { texto: ['La ', letra('A'), ' cree que no tienen pares libres, pero al P y al S les sobran electrones después de los enlaces. La ', letra('B'), ' le da al S los mismos que al P, aunque el S tiene un electrón más y un enlace menos.'] },
+        { texto: ['La ', letra('C'), ' los invierte. La ', letra('E'), ' cuenta electrones sueltos, no pares: 2 en el P y 4 en el S, que son 1 y 2 pares.'] },
       ],
       respuesta: [letra('D'), ', 1 y 2'] },
     { nivel: 3, titulo: 'Un anión de cinco átomos',
@@ -1013,8 +1013,8 @@
       datos: [valTxt(['S', 'O']), D3.carga],
       solucion: [
         { texto: 'Sumo los de valencia: el azufre y los cuatro oxígenos tienen 6 cada uno. Además, el anión ganó dos electrones, que se suman.', ecuacion: ['6 + 4 · 6 + 2 = ', El('32 e⁻')] },
-        { texto: ['La ', letra('A'), ' olvida la carga. La ', letra('B'), ' cuenta solo los cuatro oxígenos. La ', letra('D'), ' suma la carga dos veces.'] },
-        { texto: ['La ', letra('E'), ' resta la carga, como si fuera un catión.'] },
+        { texto: ['La ', letra('A'), ' olvida la carga. La ', letra('B'), ' cuenta solo los cuatro oxígenos y se olvida del azufre. La ', letra('D'), ' suma la carga dos veces.'] },
+        { texto: ['La ', letra('E'), ' resta la carga, como si fuera un catión, pero un anión ganó electrones: se suman.'] },
       ],
       respuesta: [letra('C'), ', ', El('32 electrones')] },
     { nivel: 3, titulo: 'Verdadero o falso',
@@ -1023,8 +1023,8 @@
       datos: D_AFIRMA_L,
       solucion: [
         { texto: 'I es falsa: el O₂ tiene un solo elemento. II es verdadera: O=C=O. III es verdadera: le quedan 4 electrones.', ecuacion: ['FVV'] },
-        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' llaman compuesto al O₂. La ', letra('C'), ' olvida los pares del oxígeno.'] },
-        { texto: ['La ', letra('E'), ' le pone enlaces simples al CO₂, que dejarían al C con 4.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' llaman compuesto al O₂, que tiene un solo elemento. La ', letra('C'), ' olvida los pares del oxígeno: le quedan 4 electrones, que son dos pares.'] },
+        { texto: ['La ', letra('E'), ' le pone enlaces simples al CO₂, que dejarían al carbono con solo 4 electrones.'] },
       ],
       respuesta: [letra('B'), ', FVV'] },
   ];
@@ -1041,9 +1041,9 @@
       tarjetas: [
         { titulo: 'El aire de la ventana', texto: 'De cada 100 partículas del aire, unas 78 son de nitrógeno y unas 21 de oxígeno. Cada una es una molécula de dos átomos iguales: N₂ u O₂.',
           pieza: 'quim-enlace', dibujo: OBJ('ventana', { nombre: 'El aire: moléculas de dos átomos' }) },
-        { titulo: 'Una cuenta dibujada', texto: 'Una estructura de Lewis reparte los electrones de valencia de todos los átomos: cada raya es un par compartido y cada par de puntos, un par libre.' },
-        { titulo: 'La meta de ocho', texto: 'Como en los iones, los átomos que comparten quedan con 8 electrones alrededor, contando los compartidos. El hidrógeno se conforma con 2.' },
-        { titulo: 'Qué mirar', texto: 'En el juego eliges una molécula. Cuenta sus electrones de valencia y busca dónde quedó cada uno: en las rayas o en los pares libres.' },
+        { titulo: 'Una cuenta dibujada', texto: 'Una estructura de Lewis es un dibujo que reparte los electrones de valencia de todos los átomos de una molécula. Cada raya entre dos átomos es un par compartido, que cuenta para los dos, y cada par de puntos sobre un átomo es un par libre, que es solo suyo.' },
+        { titulo: 'La meta de ocho', texto: 'Como en los iones, los átomos que comparten buscan quedar con 8 electrones alrededor, la cantidad estable de los gases nobles, y los compartidos cuentan para los dos. El hidrógeno se conforma con 2, como el helio, porque su único nivel se llena con 2.' },
+        { titulo: 'Qué mirar', texto: 'En el juego eliges una molécula. Cuenta sus electrones de valencia y busca dónde quedó cada uno: en las rayas o en los pares libres. Si la cuenta no da, es que falta o sobra algún electrón.' },
       ],
     },
     ejemplos: EJEMPLOS_LEWIS,
@@ -1073,9 +1073,9 @@
       voz: 'Cuenta cuántos tiene cada N alrededor en cada caso.',
       opciones: [
         { id: 'c', texto: 'Con un enlace triple y un par libre en cada N', correcta: true },
-        { id: 'doble', texto: 'Con un enlace doble y dos pares libres en cada N', error: 'QM-N2-DOBLE', siFuera: 'Sería así si hubiera 12 electrones, pero los dos nitrógenos solo traen 10.' },
-        { id: 'simple', texto: 'Con un enlace simple y tres pares libres en cada N', error: 'QM-OCTETO-FALTA', siFuera: 'Sería así si hubiera 14 electrones. Con los 10 que hay, a cada N le faltarían electrones para su octeto.' },
-        { id: 'no', texto: 'No se unen: cada N ya tiene sus electrones', error: 'QM-SIN-ENLACE', siFuera: 'Sería así si cada N ya tuviera 8. Tiene 5, así que le faltan 3, y los consigue compartiendo.' },
+        { id: 'doble', texto: 'Con un enlace doble y dos pares libres en cada N', error: 'QM-N2-DOBLE', siFuera: 'Sería así si hubiera 12 electrones, pero los dos nitrógenos solo traen 10. Un doble usa 4 y los cuatro pares libres, 8: harían falta 2 electrones que no hay.' },
+        { id: 'simple', texto: 'Con un enlace simple y tres pares libres en cada N', error: 'QM-OCTETO-FALTA', siFuera: 'Sería así si hubiera 14 electrones: 2 del enlace y 12 en los seis pares libres. Con los 10 que hay, a cada N le faltarían electrones para su octeto.' },
+        { id: 'no', texto: 'No se unen: cada N ya tiene sus electrones', error: 'QM-SIN-ENLACE', siFuera: 'Sería así si cada N ya tuviera 8. Tiene 5, así que le faltan 3, y los consigue compartiendo electrones con el otro nitrógeno.' },
       ],
       dibujo: { pieza: 'quim-molecula', datos: { atomos: LEWIS.N2.atomos, enlaces: [], pares: [], textos: [{ x: 0, y: -0.2, t: '?' }], escala: 62, alto: 170,
         alt: 'Dos átomos de nitrógeno, todavía sin enlace dibujado: cómo se unen es lo que se pregunta.' }, estado: {} },
@@ -1092,17 +1092,17 @@
         escala: 62, alto: 170, alt: 'Lewis del CO₂ paso a paso: dos enlaces simples, después los pares libres y al final dos enlaces dobles O=C=O.' },
       voz: 'Llevemos la cuenta de electrones en cada paso.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'En el CO₂, el carbono aporta 4 electrones de valencia y cada oxígeno, 6.', ecuacion: [El('4 + 6 + 6 = 16 e⁻')] },
-        { estado: { corte: 2 }, texto: 'Un enlace simple con cada oxígeno usa 4 electrones.', ecuacion: ['16 − 4 = 12 por repartir'] },
-        { estado: { corte: 3 }, texto: 'Los 12 que quedan van como pares libres en los oxígenos, y el carbono se queda con solo 4.', ecuacion: ['O: 8', SEP, 'C: 4, le faltan 4'] },
-        { estado: { corte: 4 }, texto: 'Cada oxígeno comparte un par más: quedan dos enlaces dobles y todos los átomos con 8.', ecuacion: ['O=C=O: 4 · 2 + 4 · 2 = 16'] },
-        { estado: { corte: 4 }, texto: 'Si faltan más, se comparte un tercer par: enlace triple, como en el HCN.' },
+        { estado: { corte: 1 }, texto: 'En el CO₂, el carbono aporta 4 electrones de valencia y cada oxígeno, 6. Esos 16 son todos los electrones que hay para repartir: ni uno más ni uno menos.', ecuacion: [El('4 + 6 + 6 = 16 e⁻')] },
+        { estado: { corte: 2 }, texto: 'El carbono va al centro, porque es el que necesita más enlaces. Un enlace simple con cada oxígeno usa 4 electrones, dos por cada raya.', ecuacion: ['16 − 4 = 12 por repartir'] },
+        { estado: { corte: 3 }, texto: 'Los 12 que quedan van como pares libres en los oxígenos, que así llegan a 8. Pero el carbono se queda con solo 4: le faltan 4 para su octeto.', ecuacion: ['O: 8', SEP, 'C: 4, le faltan 4'] },
+        { estado: { corte: 4 }, texto: 'Cada oxígeno pasa uno de sus pares libres a la unión con el carbono. Quedan dos enlaces dobles, y todos los átomos llegan a 8 sin usar ningún electrón nuevo.', ecuacion: ['O=C=O: 4 · 2 + 4 · 2 = 16'] },
+        { estado: { corte: 4 }, texto: 'Si un doble no alcanza, se comparte un tercer par: enlace triple, como en el HCN, donde el carbono y el nitrógeno comparten tres pares.' },
       ],
     },
     regla: {
-      texto: 'Suma los electrones de valencia y réstale la carga del ion. Une el átomo central con cada átomo por un enlace simple y completa los octetos con pares libres; si faltan electrones, usa enlaces dobles o triples.',
+      texto: 'Primero suma los electrones de valencia y réstale la carga del ion: un anión tiene electrones de más y un catión, de menos. Une el átomo central con cada átomo por un enlace simple y completa los octetos con pares libres. Si los electrones no alcanzan, convierte pares libres en enlaces dobles o triples.',
       ecuacion: [El('electrones a repartir'), ' = valencia − carga', SEP, 'CO₃²⁻: 4 + 3 · 6 + 2 = ', El('24'), SEP, 'cada raya: ', El('2 e⁻'), SEP, 'H: 2; los demás: 8'],
-      condicion: 'se trata de la mayoría de las moléculas, sobre todo de las que tienen átomos del periodo 2; las excepciones vienen en la idea siguiente.',
+      condicion: 'se trata de la mayoría de las moléculas, sobre todo de las que tienen átomos del periodo 2. Algunos átomos se quedan con menos de 8 o pasan de 8, y con ellos la regla falla: son las excepciones de la idea siguiente.',
       voz: 'Primero cuenta los electrones; después dibuja.',
       dibujo: lewisDib('CO2'),
     },
@@ -1116,7 +1116,7 @@
           pasos: [
             { tipo: 'pide', texto: `Piden dos números: los electrones de valencia del ${L.formula} y los pares libres del ${c}.` },
             { tipo: 'datos', texto: `El ${c} está al centro, unido a ${lig} átomos; tiene ${val(c)} electrones de valencia.` },
-            { tipo: 'regla', texto: 'Sumo los electrones de valencia. Cada enlace usa un electrón del átomo central, y lo que le queda va en pares libres.' },
+            { tipo: 'regla', texto: 'Sumo los electrones de valencia de todos los átomos. Cada enlace simple usa un electrón del átomo central y uno del átomo de afuera; lo que le queda al central va en pares libres, de dos en dos.' },
             { tipo: 'cuentas', texto: `${ats.map(val).join(' + ')} = ${L.electrones}. ${val(c) === lig ? `El ${c} usa sus ${lig} en los enlaces y no le queda ninguno.` : `El ${c} usa ${lig} y le quedan ${val(c) - lig}.`}`, ecuacion: [El(`${L.electrones} e⁻`), SEP, `(${val(c)} − ${lig}) ÷ 2 = `, El(`${L.paresLibres}`)] },
             { tipo: 'sentido', texto: L.paresLibres ? `El ${c} queda con ${2 * lig} electrones compartidos y ${2 * L.paresLibres} libres, que suman ${2 * lig + 2 * L.paresLibres}: su octeto.` : `El ${c} queda con ${2 * lig} electrones compartidos y ninguno libre: su octeto.` },
           ],
@@ -1180,11 +1180,11 @@
     return {
       pregunta: `En la estructura de Lewis del ${L.formula}, el átomo central, el ${L.central}, forma un enlace simple con cada ${L.ligandos[0].simbolo}. ¿Cuántos electrones lo rodean?`,
       datos: [valTxt([L.central, ...L.ligandos.map(x => x.simbolo)]), D4.libres, D4.cuenta],
-      opciones: ops(String(e), [String(8), 'QM-CENTRAL-OCHO', `Sería así si el ${L.central} cumpliera el octeto, pero ${e < 8 ? 'no llega a 8' : 'pasa de 8'}: cuenta 2 por cada enlace y 2 por cada par libre.`],
-        [String(n), 'QM-CENTRAL-ENLACES', 'Ese número cuenta los enlaces, pero cada enlace pone 2 electrones alrededor del átomo central.'],
+      opciones: ops(String(e), [String(8), 'QM-CENTRAL-OCHO', `Sería así si el ${L.central} cumpliera el octeto, pero ${e < 8 ? 'no llega a 8, porque tiene pocos electrones de valencia' : 'pasa de 8, porque es del periodo 3 en adelante'}: cuenta 2 por cada enlace y 2 por cada par libre.`],
+        [String(n), 'QM-CENTRAL-ENLACES', 'Ese número cuenta los enlaces, pero cada enlace es un par y pone 2 electrones alrededor del átomo central.'],
         [String(2 * n), L.paresLibres ? 'QM-CENTRAL-SIN-LIBRES' : 'QM-CENTRAL-ENLACES', L.paresLibres ? `Los enlaces están bien contados, pero el ${L.central} tiene además ${pTxt(L.paresLibres)}, ${L.paresLibres === 1 ? 'que suma' : 'y cada uno suma'} 2 electrones.` : 'Contar de dos en dos está bien; revisa cuántos enlaces forma el átomo central.'],
-        [String(e + 2), 'QM-CENTRAL-UNO', 'Sobran dos electrones: revisa cuántos pares libres tiene el átomo central.']),
-      solucion: { texto: `Alrededor del ${L.central} hay ${n} enlaces${L.paresLibres ? ` y ${pTxt(L.paresLibres)}` : ''}, y cada uno aporta 2 electrones.`, ecuacion: [`2 · ${n}${L.paresLibres ? ` + 2 · ${L.paresLibres}` : ''} = `, El(`${e} e⁻`)] },
+        [String(e + 2), 'QM-CENTRAL-UNO', 'Sobran dos electrones: revisa cuántos pares libres tiene el átomo central. Salen de los electrones de valencia que le quedan después de los enlaces.']),
+      solucion: { texto: `Alrededor del ${L.central} hay ${n} enlaces${L.paresLibres ? ` y ${pTxt(L.paresLibres)}` : ''}, y cada uno aporta 2 electrones, porque es un par. ${e < 8 ? 'Queda con menos de 8: su octeto es incompleto.' : 'Queda con más de 8: su octeto es expandido.'}`, ecuacion: [`2 · ${n}${L.paresLibres ? ` + 2 · ${L.paresLibres}` : ''} = `, El(`${e} e⁻`)] },
     };
   }
   const CLASE_X = { incompleto: 'Octeto incompleto: menos de 8', completo: 'Cumple el octeto: 8', expandido: 'Octeto expandido: más de 8', impar: 'Impar: un electrón sin pareja' };
@@ -1193,14 +1193,14 @@
   function casoClase(r) {
     const k = r.de(CLASIF_A), imp = IMPARES[k], t = imp ? 'impar' : M.lewis(k).octeto, fo = imp ? imp[0] : M.lewis(k).formula;
     const ats = imp ? imp[1] : [M.lewis(k).central, ...M.lewis(k).ligandos.map(x => x.simbolo)];
-    const SI = { incompleto: ['QM-CENTRAL-OCHO', 'Sería así si el átomo central quedara con menos de 8.'], completo: ['EN3', 'Sería así si el átomo central quedara con 8 justos.'],
-      expandido: ['QM-EXPANDE-N', 'Sería así si el átomo central pasara de 8.'], impar: ['QM-RADICAL-ION', 'Sería así si la especie tuviera un número impar de electrones.'] };
+    const SI = { incompleto: ['QM-CENTRAL-OCHO', 'Sería así si el átomo central quedara con menos de 8, por tener pocos electrones de valencia para compartir.'], completo: ['EN3', 'Sería así si el átomo central quedara con 8 justos, contando sus enlaces y sus pares libres.'],
+      expandido: ['QM-EXPANDE-N', 'Sería así si el átomo central pasara de 8, algo que solo pueden hacer los átomos del periodo 3 en adelante.'], impar: ['QM-RADICAL-ION', 'Sería así si la especie tuviera un número impar de electrones: entonces uno quedaría sin pareja.'] };
     const aqui = imp ? `Aquí hay ${sumaVal(ats)} electrones, un número impar.` : `Aquí el ${M.lewis(k).central} queda con ${M.lewis(k).electronesCentral}.`;
     return {
       pregunta: `¿Cómo queda el octeto del átomo central en el ${fo}?`,
       datos: [valTxt(ats), D4.cuenta, D4.expande],
       opciones: ops(CLASE_X[t], ...Object.keys(CLASE_X).filter(x => x !== t).map(x => [CLASE_X[x], SI[x][0], `${SI[x][1]} ${aqui}`])),
-      solucion: { texto: imp ? `Sus electrones de valencia suman ${ats.map(val).join(' + ')} = ${sumaVal(ats)}, un número impar, así que uno queda sin pareja.` : `El ${M.lewis(k).central} queda con ${M.lewis(k).electronesCentral} electrones.`,
+      solucion: { texto: imp ? `Sus electrones de valencia suman ${ats.map(val).join(' + ')} = ${sumaVal(ats)}, un número impar, así que no todos caben en pares y uno queda sin pareja.` : `El ${M.lewis(k).central} queda con ${M.lewis(k).electronesCentral} electrones alrededor, contando 2 por cada enlace y 2 por cada par libre suyo.`,
         ecuacion: [`${fo}: ${CLASE_X[t].split(':')[0].toLowerCase()}`] },
     };
   }
@@ -1213,9 +1213,9 @@
       pregunta: `El ${fo} se forma cuando ${como}. ¿Qué átomo pone los dos electrones del enlace dativo?`,
       datos: [D4.dativo, D3.meta],
       opciones: ops(`El ${nombre(pone)}`, [`El ${nombre(otro)}`, 'QM-DATIVO-ACEPTA', `Sería así si el ${nombre(otro)} tuviera el par libre. El ${nombre(otro)} recibe el par, y lo pone el ${nombre(pone)}, que sí tiene uno.`],
-        ['Cada uno pone un electrón', 'QM-DATIVO-UNO', 'Sería así en un enlace covalente común. En el dativo, un solo átomo pone los dos electrones del par.'],
+        ['Cada uno pone un electrón', 'QM-DATIVO-UNO', 'Sería así en un enlace covalente común. En el dativo, un solo átomo pone los dos electrones del par, porque el otro no tiene ninguno que poner.'],
         ['Ninguno: es un enlace iónico', 'EN5', 'Sería así si un átomo le entregara electrones al otro. Aquí comparten un par: es covalente, aunque lo ponga uno solo.']),
-      solucion: { texto: `El ${nombre(pone)} tiene un par libre y lo comparte entero.`, ecuacion: [`${pone} → ${otro}`] },
+      solucion: { texto: `El ${nombre(pone)} tiene un par libre y lo comparte entero con el ${nombre(otro)}, al que le faltaban dos electrones.`, ecuacion: [`${pone} → ${otro}`] },
     };
   }
   // Radicales: número impar de electrones de valencia.
@@ -1228,17 +1228,17 @@
     return {
       pregunta: `¿Cuál de estas especies es un radical libre: ${r.baraja([rad, ...no]).map(x => x[0]).join(', ')}?`,
       datos: [valTxt(ats), D3.carga, 'Radical libre: especie con un electrón sin pareja'],
-      opciones: ops(rad[0], ...no.map(x => [x[0], x[2] ? 'QM-RADICAL-ION' : 'QM-RADICAL-PAR', `El ${x[0]} tiene ${nE(x)} electrones, un número par, así que todos tienen pareja.${x[2] ? ' Tener carga no lo hace radical.' : ''}`])),
+      opciones: ops(rad[0], ...no.map(x => [x[0], x[2] ? 'QM-RADICAL-ION' : 'QM-RADICAL-PAR', `El ${x[0]} tiene ${nE(x)} electrones, un número par, así que todos tienen pareja.${x[2] ? ' Tener carga no lo hace radical: lo que cuenta es si sobra un electrón sin pareja.' : ''}`])),
       solucion: { texto: `El ${rad[0]} tiene ${rad[1].map(val).join(' + ')} = ${nE(rad)} electrones, un número impar, así que uno queda sin pareja.`, ecuacion: [El(`${nE(rad)} e⁻`), ': impar'] },
     };
   }
   const AFIRMA_X = [
-    ['En el BF₃, el boro queda con 6 electrones.', true, 'forma tres enlaces y no tiene pares libres'],
-    ['El nitrógeno puede tener 10 electrones alrededor.', false, 'es del periodo 2, y esos átomos no pasan de 8'],
-    ['En el SF₆, el azufre tiene 12 electrones alrededor.', true, 'forma seis enlaces de 2 electrones'],
-    ['El NO tiene un electrón sin pareja.', true, 'tiene 5 + 6 = 11 electrones'],
-    ['El OH⁻ es un radical libre.', false, 'tiene 6 + 1 + 1 = 8 electrones, todos en pares'],
-    ['En el NH₄⁺ hay un enlace dativo.', true, 'el N pone su par libre para el H⁺'],
+    ['En el BF₃, el boro queda con 6 electrones.', true, 'forma tres enlaces de 2 electrones y no tiene pares libres: solo trae 3 electrones de valencia'],
+    ['El nitrógeno puede tener 10 electrones alrededor.', false, 'es del periodo 2, y su último nivel, el segundo, solo admite 8 electrones'],
+    ['En el SF₆, el azufre tiene 12 electrones alrededor.', true, 'forma seis enlaces de 2 electrones, y el azufre, del periodo 3, puede pasar de 8'],
+    ['El NO tiene un electrón sin pareja.', true, 'tiene 5 + 6 = 11 electrones, un número impar, así que uno no puede tener pareja'],
+    ['El OH⁻ es un radical libre.', false, 'tiene 6 + 1 + 1 = 8 electrones, todos en pares; su carga no lo hace radical'],
+    ['En el NH₄⁺ hay un enlace dativo.', true, 'el N pone su par libre para el H⁺, que no trae electrones'],
   ];
   const D_AFIRMA_X = [valTxt(['H', 'B', 'N', 'O', 'F', 'S']), D4.cuenta, D4.expande];
 
@@ -1249,28 +1249,28 @@
     { nivel: 1, titulo: 'El boro se queda corto',
       enunciado: 'En el BF₃, el boro forma un enlace simple con cada flúor y no tiene pares libres. ¿Cuántos electrones lo rodean?',
       datos: [D4.cuenta],
-      solucion: [{ texto: 'El boro forma tres enlaces, de 2 electrones cada uno.', ecuacion: ['2 · 3 = ', El('6 e⁻'), ': menos de 8'] }],
+      solucion: [{ texto: 'El boro forma tres enlaces, de 2 electrones cada uno. Solo tiene 3 electrones de valencia, así que no le alcanzan para más enlaces ni para pares libres.', ecuacion: ['2 · 3 = ', El('6 e⁻'), ': menos de 8'] }],
       respuesta: [El('6 electrones')] },
     { nivel: 1, titulo: 'El azufre con seis flúor',
       enunciado: 'En el SF₆, el azufre forma un enlace simple con cada flúor y no tiene pares libres. ¿Cuántos electrones lo rodean?',
       datos: [D4.cuenta, D4.expande],
       figura: radial('SF6', { alt: 'Estructura de Lewis del SF₆: el azufre al centro con seis enlaces a flúor; cada flúor con tres pares libres.' }),
-      solucion: [{ texto: 'El azufre forma seis enlaces de 2 electrones cada uno; puede pasar de 8 porque es del periodo 3.', ecuacion: ['2 · 6 = ', El('12 e⁻')] }],
+      solucion: [{ texto: 'El azufre forma seis enlaces de 2 electrones cada uno. Puede pasar de 8 porque es del periodo 3: su último nivel admite más electrones que el de los átomos del periodo 2.', ecuacion: ['2 · 6 = ', El('12 e⁻')] }],
       respuesta: [El('12 electrones')] },
     { nivel: 1, titulo: 'Un gas del escape',
       enunciado: 'El NO sale del escape de los autos. ¿Tiene un electrón sin pareja?',
       datos: [valTxt(['N', 'O']), 'Radical libre: especie con un electrón sin pareja'],
-      solucion: [{ texto: 'Sumo sus electrones de valencia: un número impar no se puede repartir todo en pares.', ecuacion: ['5 + 6 = ', El('11'), ': impar'] }],
+      solucion: [{ texto: 'Sumo sus electrones de valencia: un número impar no se puede repartir todo en pares, así que uno queda sin pareja.', ecuacion: ['5 + 6 = ', El('11'), ': impar'] }],
       respuesta: ['Sí: es un radical libre'] },
     { nivel: 1, titulo: 'El berilio con dos cloros',
       enunciado: 'En el BeCl₂, el berilio forma un enlace simple con cada cloro y no tiene pares libres. ¿Cuántos electrones lo rodean?',
       datos: [D4.cuenta],
-      solucion: [{ texto: 'El berilio forma dos enlaces, de 2 electrones cada uno.', ecuacion: ['2 · 2 = ', El('4 e⁻'), ': menos de 8'] }],
+      solucion: [{ texto: 'El berilio tiene solo 2 electrones de valencia: forma dos enlaces, de 2 electrones cada uno, y no le queda nada para más.', ecuacion: ['2 · 2 = ', El('4 e⁻'), ': menos de 8'] }],
       respuesta: [El('4 electrones')] },
     { nivel: 1, titulo: 'Los enlaces del NH₄⁺',
       enunciado: 'El NH₄⁺ se forma cuando el NH₃ recibe un H⁺, que no trae electrones. ¿Cuántos de sus cuatro enlaces son dativos?',
       datos: [D4.dativo],
-      solucion: [{ texto: 'Los tres N–H del NH₃ ya estaban. El cuarto lo forma el par libre del N, que lo pone entero.' }],
+      solucion: [{ texto: 'Los tres N–H del NH₃ ya estaban, y en cada uno el N y el H pusieron un electrón. El cuarto lo forma el par libre del N, que lo pone entero: por eso ese es el dativo.' }],
       respuesta: ['Uno'] },
     { nivel: 2, titulo: 'El fósforo con cinco cloros',
       enunciado: 'En el PCl₅, el fósforo está unido a cinco cloros. ¿Cuántos electrones lo rodean y cuántos pares libres tiene?',
@@ -1301,7 +1301,7 @@
       datos: [D4.cuenta, D4.expande],
       solucion: [
         { texto: 'El xenón tiene dos enlaces y tres pares libres, de 2 electrones cada uno.', ecuacion: ['2 · 2 + 2 · 3 = ', El('10 e⁻')] },
-        { texto: 'Es un gas noble del periodo 5 que forma enlaces y pasa de 8: el octeto no es una ley.' },
+        { texto: 'Es un gas noble del periodo 5 que forma enlaces y pasa de 8: el octeto es una guía, no una ley.' },
       ],
       respuesta: [El('10 electrones')] },
     { nivel: 2, titulo: 'Tres moléculas, tres casos',
@@ -1317,8 +1317,8 @@
       datos: [valTxt(['S', 'Cl', 'Xe', 'F']), D4.expande],
       solucion: [
         { texto: 'Cada átomo central pone un electrón en cada enlace, y lo que le queda forma pares libres.', ecuacion: ['S: (6 − 4) ÷ 2 = 1', SEP, 'Cl: (7 − 3) ÷ 2 = 2', SEP, 'Xe: (8 − 4) ÷ 2 = 2'] },
-        { texto: ['La ', letra('A'), ' cree que con más de 8 no quedan pares. La ', letra('B'), ' cambia el azufre y el cloro.'] },
-        { texto: ['La ', letra('C'), ' supone un par para todos. La ', letra('E'), ' cuenta electrones sueltos, no pares, en el azufre (2) y en el xenón (4).'] },
+        { texto: ['La ', letra('A'), ' cree que con más de 8 no quedan pares, pero al central le sobran electrones después de los enlaces. La ', letra('B'), ' cambia el azufre y el cloro.'] },
+        { texto: ['La ', letra('C'), ' supone un par para todos, sin hacer la cuenta. La ', letra('E'), ' cuenta electrones sueltos, no pares, en el azufre (2) y en el xenón (4).'] },
       ],
       respuesta: [letra('D'), ', 1, 2 y 2'] },
     { nivel: 3, titulo: 'Un radical en la lista',
@@ -1327,8 +1327,8 @@
       datos: [valTxt(['H', 'O']), D3.carga],
       solucion: [
         { texto: 'Cuento los electrones de valencia de cada una.', ecuacion: ['OH: 6 + 1 = 7', SEP, 'OH⁻: 8', SEP, 'HO₂⁻: 14', SEP, 'H₂O₂: 14', SEP, 'H₂O: 8'] },
-        { texto: ['Solo el OH tiene un número impar. La ', letra('A'), ' y la ', letra('C'), ' son iones con todos sus electrones en pares.'] },
-        { texto: ['La ', letra('D'), ' y la ', letra('E'), ' tienen 14 y 8: números pares.'] },
+        { texto: ['Solo el OH tiene un número impar, así que solo a él le sobra un electrón sin pareja. La ', letra('A'), ' y la ', letra('C'), ' son iones: su carga agrega un electrón y deja todos en pares.'] },
+        { texto: ['La ', letra('D'), ' y la ', letra('E'), ' tienen 14 y 8: números pares, que se reparten todos en pares.'] },
       ],
       respuesta: [letra('B'), ', el OH'] },
     { nivel: 3, titulo: 'Verdadero o falso',
@@ -1337,8 +1337,8 @@
       datos: [D4.dativo, D4.cuenta],
       solucion: [
         { texto: 'I es verdadera: el N puso el par del cuarto enlace. II es falsa: ya formado, el dativo es igual a los otros tres. III es verdadera: cuatro enlaces dan 8.', ecuacion: ['VFV'] },
-        { texto: ['La ', letra('A'), ' y la ', letra('C'), ' creen que el dativo se distingue después; la ', letra('C'), ' además niega el octeto. La ', letra('B'), ' niega el dativo y el octeto.'] },
-        { texto: ['La ', letra('D'), ' niega el dativo: el cuarto par lo puso el nitrógeno.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('C'), ' creen que el dativo se distingue después, pero ya formado es igual a los otros. La ', letra('C'), ' además niega el octeto. La ', letra('B'), ' niega el dativo y el octeto.'] },
+        { texto: ['La ', letra('D'), ' niega el dativo, pero el cuarto par lo puso entero el nitrógeno.'] },
       ],
       respuesta: [letra('E'), ', VFV'] },
     { nivel: 3, titulo: 'El amoníaco y el boro',
@@ -1347,8 +1347,8 @@
       datos: [D4.dativo, valTxt(['N', 'B']), D4.cuenta],
       solucion: [
         { texto: 'El N del NH₃ tiene un par libre, y al B del BF₃ le faltan 2 para llegar a 8. El N pone ese par entero.', ecuacion: ['N → B: B con 6 + 2 = ', El('8 e⁻')] },
-        { texto: ['La ', letra('B'), ' invierte quién pone el par: el B no tiene pares libres. La ', letra('C'), ' lo trata como un enlace común.'] },
-        { texto: ['La ', letra('D'), ' olvida que se comparte el par. La ', letra('E'), ' suma de más: el B llega justo a 8.'] },
+        { texto: ['La ', letra('B'), ' invierte quién pone el par: el B no tiene pares libres que dar. La ', letra('C'), ' lo trata como un enlace común, pero el B no pone ningún electrón.'] },
+        { texto: ['La ', letra('D'), ' olvida que el par se comparte, no se entrega. La ', letra('E'), ' suma de más: el B tenía 6 y recibe 2, así que llega justo a 8.'] },
       ],
       respuesta: [letra('A'), ', el N pone su par'] },
     { nivel: 3, titulo: 'Quién no se expande',
@@ -1356,7 +1356,7 @@
       alternativas: ['P', 'S', 'N', 'Cl', 'Xe'],
       datos: [D4.expande, 'Periodo de cada uno: N, 2; P, S y Cl, 3; Xe, 5'],
       solucion: [
-        { texto: 'El nitrógeno es del periodo 2, así que a su alrededor caben solo 8 electrones.' },
+        { texto: 'El nitrógeno es del periodo 2, y su último nivel solo admite 8 electrones: a su alrededor no caben más.' },
         { texto: ['La ', letra('A'), ' (PCl₅), la ', letra('B'), ' (SF₆), la ', letra('D'), ' (ClF₃) y la ', letra('E'), ' (XeF₄) pasan de 8, como en las especies entre paréntesis.'] },
       ],
       respuesta: [letra('C'), ', el nitrógeno'] },
@@ -1374,9 +1374,9 @@
       tarjetas: [
         { titulo: 'El limpiador', texto: 'Muchos limpiadores de vidrios llevan amoníaco, NH₃, disuelto en agua. Ahí, parte del NH₃ recibe un ion H⁺ y se forma el ion NH₄⁺.',
           pieza: 'quim-enlace', dibujo: OBJ('limpiador', { nombre: 'Limpiador con amoníaco' }) },
-        { titulo: 'No siempre ocho', texto: 'La regla del octeto es una guía. El berilio, el boro y el aluminio pueden quedarse con menos de 8; el fósforo y el azufre, del periodo 3, pueden tener más.' },
-        { titulo: 'Un número impar', texto: 'Si una especie tiene un número impar de electrones de valencia, uno queda sin pareja. Esas especies se llaman radicales libres y reaccionan rápido.' },
-        { titulo: 'Qué mirar', texto: 'En el juego cuenta los electrones que rodean al átomo central: 2 por cada raya que lo toca y 2 por cada par libre suyo.' },
+        { titulo: 'No siempre ocho', texto: 'La regla del octeto es una guía, no una ley. El berilio, el boro y el aluminio tienen pocos electrones de valencia y pueden quedarse con menos de 8. El fósforo y el azufre, del periodo 3, son átomos más grandes y pueden tener más.' },
+        { titulo: 'Un número impar', texto: 'Si una especie tiene un número impar de electrones de valencia, no todos caben en pares y uno queda sin pareja. Esas especies se llaman radicales libres, y reaccionan rápido porque ese electrón suelto se empareja fácil con el de otra especie.' },
+        { titulo: 'Qué mirar', texto: 'En el juego cuenta los electrones que rodean al átomo central: 2 por cada raya que lo toca y 2 por cada par libre suyo. Después compara el total con 8.' },
       ],
     },
     ejemplos: EJEMPLOS_EXC,
@@ -1406,9 +1406,9 @@
       voz: 'Piensa si un enlace recuerda de dónde salió su par.',
       opciones: [
         { id: 'c', texto: 'Iguales los cuatro: no se sabe cuál fue el dativo', correcta: true },
-        { id: 'distinto', texto: 'Tres iguales y uno distinto, el dativo', error: 'QM-DATIVO-DISTINTO', siFuera: 'Sería así si el enlace recordara de dónde salió su par. Ya formado el ion, los cuatro pares se comparten igual.' },
-        { id: 'ionico', texto: 'El dativo es iónico, porque el H⁺ tenía carga', error: 'QM-DATIVO-IONICO', siFuera: 'Sería así si un átomo le entregara electrones al otro. Aquí el par se comparte, así que el enlace es covalente.' },
-        { id: 'debil', texto: 'El dativo es más débil: lo armó un solo átomo', error: 'QM-DATIVO-DEBIL', siFuera: 'Sería así si importara quién puso el par. Un par compartido une igual, venga de donde venga.' },
+        { id: 'distinto', texto: 'Tres iguales y uno distinto, el dativo', error: 'QM-DATIVO-DISTINTO', siFuera: 'Sería así si el enlace recordara de dónde salió su par. Ya formado el ion, los cuatro pares unen un N con un H de la misma manera, y no hay forma de saber cuál fue el dativo.' },
+        { id: 'ionico', texto: 'El dativo es iónico, porque el H⁺ tenía carga', error: 'QM-DATIVO-IONICO', siFuera: 'Sería así si un átomo le entregara electrones al otro. Aquí el par se comparte entre el N y el H, así que el enlace es covalente; la carga + es del ion entero.' },
+        { id: 'debil', texto: 'El dativo es más débil: lo armó un solo átomo', error: 'QM-DATIVO-DEBIL', siFuera: 'Sería así si importara quién puso el par. Un par compartido une igual, venga de donde venga: lo que une es que los dos átomos lo compartan.' },
       ],
       dibujo: { pieza: 'quim-molecula', datos: { atomos: [At('n', 'N', 0, 0), At('h1', 'H', 0, -1.1), At('h2', 'H', -1.1, 0), At('h3', 'H', 0, 1.1), At('h4', 'H', 1.1, 0)],
         enlaces: [Bo('n', 'h1'), Bo('n', 'h2'), Bo('n', 'h3'), { a: 'n', b: 'h4', orden: 1, discontinuo: true }], pares: [], textos: [{ x: 1.1, y: -0.6, t: '?' }, { x: 1.05, y: -1.15, t: '+', color: 'h', peso: 700 }], escala: 58, alto: 180,
@@ -1427,18 +1427,18 @@
         alt: 'El NH₃ con su par libre y un H⁺ al lado; después, el par del nitrógeno queda como cuarto enlace del NH₄⁺.' },
       voz: 'Sigamos el par libre del nitrógeno.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'El N del NH₃ tiene un par libre; el H⁺ no trae electrones.', ecuacion: ['NH₃ + ', Cq('H⁺')] },
-        { estado: { corte: 2 }, texto: 'El N pone su par entero para unirse al H⁺: ese enlace es dativo.', ecuacion: ['N → H', SEP, 'NH₄', Cq('⁺')] },
-        { estado: { corte: 2 }, texto: 'Ya formado, el dativo es igual a los otros tres N–H.', ecuacion: ['NH₄⁺: 4 enlaces iguales'] },
-        { estado: { corte: 2 }, texto: 'Así también se forma el H₃O⁺: el O del agua pone uno de sus pares libres.', ecuacion: ['H₂O + H⁺ → H₃O⁺'] },
-        { estado: { corte: 2 }, texto: 'Hay excepciones al octeto: el boro del BF₃ queda con 6 electrones, y el azufre del SF₆, con 12.', ecuacion: ['BF₃: ', El('6 e⁻'), SEP, 'SF₆: ', El('12 e⁻')] },
-        { estado: { corte: 2 }, texto: 'Con un número impar de electrones, uno queda sin pareja, y la especie es un radical libre.', ecuacion: ['NO: 5 + 6 = ', El('11 e⁻')] },
+        { estado: { corte: 1 }, texto: 'El N del NH₃ tiene un par libre, dos electrones que no usa en ningún enlace. El H⁺ es un hidrógeno sin su electrón: no trae nada para compartir.', ecuacion: ['NH₃ + ', Cq('H⁺')] },
+        { estado: { corte: 2 }, texto: 'El N pone su par entero para unirse al H⁺. Como un solo átomo puso los dos electrones, ese enlace se llama dativo.', ecuacion: ['N → H', SEP, 'NH₄', Cq('⁺')] },
+        { estado: { corte: 2 }, texto: 'Ya formado, el dativo es igual a los otros tres N–H: los cuatro son un par compartido entre un N y un H.', ecuacion: ['NH₄⁺: 4 enlaces iguales'] },
+        { estado: { corte: 2 }, texto: 'Así también se forma el H₃O⁺: el O del agua pone uno de sus dos pares libres para el H⁺.', ecuacion: ['H₂O + H⁺ → H₃O⁺'] },
+        { estado: { corte: 2 }, texto: 'Hay excepciones al octeto: el boro del BF₃ queda con 6 electrones, porque solo tiene 3 para compartir, y el azufre del SF₆, con 12, porque es del periodo 3.', ecuacion: ['BF₃: ', El('6 e⁻'), SEP, 'SF₆: ', El('12 e⁻')] },
+        { estado: { corte: 2 }, texto: 'Con un número impar de electrones, no todos pueden ir en pares: uno queda sin pareja, y la especie es un radical libre.', ecuacion: ['NO: 5 + 6 = ', El('11 e⁻')] },
       ],
     },
     regla: {
-      texto: 'En un enlace dativo, un solo átomo pone el par. Hay excepciones al octeto: Be, B y Al pueden quedar con menos de 8, y P, S, Cl y Xe, con más. Una especie con número impar de electrones es un radical.',
+      texto: 'En un enlace dativo, un solo átomo pone los dos electrones del par. El octeto tiene excepciones: Be, B y Al tienen pocos electrones de valencia y pueden quedar con menos de 8, y P, S, Cl y Xe, con más. Una especie con un número impar de electrones tiene uno sin pareja: es un radical.',
       ecuacion: ['dativo: un átomo pone los ', El('2 e⁻'), SEP, 'Be: ', El('4'), '; B y Al: ', El('6'), SEP, 'P: hasta ', El('10'), '; S: hasta ', El('12'), SEP, 'número impar: radical'],
-      condicion: 'el átomo que pasa de 8 es del periodo 3 en adelante, como P, S, Cl o Xe; los del periodo 2 nunca pasan de 8.',
+      condicion: 'el átomo que pasa de 8 es del periodo 3 en adelante, como P, S, Cl o Xe. Si es del periodo 2, como el N o el O, no puede pasar de 8, y una estructura que se lo pide está mal.',
       voz: 'El octeto es una guía: cuenta los electrones siempre.',
       dibujo: radial('PCl5', { alt: 'Estructura de Lewis del PCl₅: el fósforo con cinco enlaces, 10 electrones alrededor.' }),
     },
@@ -1453,9 +1453,9 @@
           pasos: [
             { tipo: 'pide', texto: `Piden cuántos electrones rodean al ${L.central} y si llegan justo a 8.` },
             { tipo: 'datos', texto: `El ${L.central} forma ${n} enlaces simples y tiene ${v} electrones de valencia: ${v === n ? 'no le queda ninguno libre' : `le quedan ${v - n}, que forman ${pTxt(L.paresLibres)}`}.`, ecuacion: [`(${v} − ${n}) ÷ 2 = `, El(String(L.paresLibres))] },
-            { tipo: 'regla', texto: 'Cuento 2 por cada enlace y 2 por cada par libre del átomo central. Si da menos de 8, el octeto es incompleto; si da más, es expandido.' },
+            { tipo: 'regla', texto: 'Cuento 2 por cada enlace y 2 por cada par libre del átomo central, porque cada uno es un par de electrones. Si da menos de 8, el octeto es incompleto; si da más, es expandido.' },
             { tipo: 'cuentas', texto: 'Sumo los electrones de los enlaces y de los pares libres.', ecuacion: [`2 · ${n}${L.paresLibres ? ` + 2 · ${L.paresLibres}` : ''} = `, El(`${e} e⁻`)] },
-            { tipo: 'sentido', texto: e > 8 ? `Pasa de 8, y puede hacerlo porque el ${L.central} es del periodo ${M.elemento(L.central).periodo}.` : e < 8 ? `No llega a 8: el ${L.central} se queda con el octeto incompleto.` : 'Son 8 justos, así que cumple el octeto.' },
+            { tipo: 'sentido', texto: e > 8 ? `Pasa de 8, y puede hacerlo porque el ${L.central} es del periodo ${M.elemento(L.central).periodo}.` : e < 8 ? `No llega a 8: el ${L.central} se queda con el octeto incompleto, porque tiene pocos electrones de valencia para compartir.` : 'Son 8 justos, así que cumple el octeto, como la mayoría de las moléculas.' },
           ],
           respuesta: [El(`${e} electrones`), `; ${e > 8 ? 'octeto expandido' : e < 8 ? 'octeto incompleto' : 'cumple el octeto'}`],
         };
@@ -1516,10 +1516,10 @@
     return {
       pregunta: `El ${fo} tiene ${cada}. ¿Qué orden tiene cada ${enl} en la especie real?`,
       datos: [D5.orden, D5.promedio],
-      opciones: ops(fr(tot, pos), ['2', 'QM-RES-UNO', 'Sería 2 si el doble enlace estuviera fijo. En la especie real, el doble se reparte entre todos esos enlaces.'],
-        ['1', 'QM-RES-UNO', 'Sería 1 si no hubiera ningún doble. Hay dobles, y se reparten entre todos esos enlaces.'],
-        [fr(tot, pos) === '4/3' ? '3/2' : '4/3', 'QM-RES-CUENTA', `Esa fracción es de otro reparto: aquí son ${tot} pares en ${pos} enlaces.`]),
-      solucion: { texto: `Los ${tot} pares compartidos se reparten por igual entre ${pos} enlaces.`, ecuacion: ['orden = ', { frac: [String(tot), String(pos)] }, colaFr(tot, pos)] },
+      opciones: ops(fr(tot, pos), ['2', 'QM-RES-UNO', 'Sería 2 si el doble enlace estuviera fijo en un solo lugar. En la especie real, el par extra se reparte entre todos esos enlaces, que quedan iguales.'],
+        ['1', 'QM-RES-UNO', 'Sería 1 si no hubiera ningún doble. Hay dobles en cada dibujo, y sus pares extra se reparten entre todos esos enlaces.'],
+        [fr(tot, pos) === '4/3' ? '3/2' : '4/3', 'QM-RES-CUENTA', `Esa fracción es de otro reparto: aquí son ${tot} pares en ${pos} enlaces, y el orden es pares entre enlaces.`]),
+      solucion: { texto: `Los ${tot} pares compartidos se reparten por igual entre ${pos} enlaces, porque en la especie real ninguno es simple ni doble: todos quedan iguales.`, ecuacion: ['orden = ', { frac: [String(tot), String(pos)] }, colaFr(tot, pos)] },
     };
   }
   function casoCuantas(r) {
@@ -1530,8 +1530,8 @@
       datos: [`${fo}: ${pos} enlaces ${enl}, uno de ellos doble en cada dibujo`],
       opciones: ops(String(pos), ['1', 'QM-RES-UNO', 'Sería así si el doble solo pudiera ir en un enlace. Puede ir en cualquiera de los enlaces iguales, y cada lugar da un dibujo válido.'],
         [String(pos + 1), 'QM-RES-POSICIONES', 'Ese número cuenta también el híbrido, que no es una estructura más: es el promedio de todas.'],
-        [String(2 * pos), 'QM-RES-POSICIONES', 'Ese número cuenta dos veces cada lugar donde puede ir el doble.']),
-      solucion: { texto: 'Hay un dibujo por cada enlace donde puede ir el doble.', ecuacion: [`${pos} estructuras`] },
+        [String(2 * pos), 'QM-RES-POSICIONES', 'Ese número cuenta dos veces cada lugar donde puede ir el doble: poner el doble en un enlace da un solo dibujo.']),
+      solucion: { texto: 'Hay un dibujo por cada enlace donde puede ir el doble, porque cada lugar da una estructura válida con los mismos átomos.', ecuacion: [`${pos} estructuras`] },
     };
   }
   const CON_RES = ['O₃', 'NO₃⁻', 'CO₃²⁻', 'NO₂⁻', 'SO₃'], SIN_RES = ['CO₂', 'H₂O', 'NH₃', 'CH₄', 'HCN', 'N₂', 'CH₂O'];
@@ -1540,8 +1540,8 @@
     return {
       pregunta: `¿Cuál de estas especies tiene estructuras de resonancia: ${r.baraja([si, ...no]).join(', ')}?`,
       datos: [D5.res],
-      opciones: ops(si, ...no.map(x => [x, conDoble.includes(x) ? 'QM-RES-CUALQUIERA' : 'QM-RES-SIMPLE', conDoble.includes(x) ? 'Sería así si sus enlaces múltiples pudieran ir en otro lugar. Tiene dobles o triples, pero solo caben en un sitio.' : 'Sería así si tuviera un doble que cambiar de lugar. Solo tiene enlaces simples, así que no hay un par que mover.'])),
-      solucion: { texto: `En el ${si}, el doble enlace puede ir en más de un lugar igual.`, ecuacion: [`${si}: resonancia`] },
+      opciones: ops(si, ...no.map(x => [x, conDoble.includes(x) ? 'QM-RES-CUALQUIERA' : 'QM-RES-SIMPLE', conDoble.includes(x) ? 'Sería así si sus enlaces múltiples pudieran ir en otro lugar igual. Tiene dobles o triples, pero solo caben en un sitio, así que tiene un solo dibujo.' : 'Sería así si tuviera un doble que cambiar de lugar. Solo tiene enlaces simples, así que no hay un par que mover.'])),
+      solucion: { texto: `En el ${si}, el doble enlace puede ir en más de un lugar igual, así que se dibuja de varias maneras válidas.`, ecuacion: [`${si}: resonancia`] },
     };
   }
   // Carga formal de un átomo en una estructura: [quién, valencia, electrones libres, enlaces, especie].
@@ -1556,21 +1556,21 @@
     return {
       pregunta: `En una estructura de resonancia del ${sp}, ¿qué carga formal tiene ${quien}?`,
       datos: [D5.cf],
-      opciones: ops(cfTxt(cf), [cfTxt(-cf || 1), cf ? 'QM-CF-SIGNO' : 'QM-CF-CARGA', cf ? 'La cuenta está bien, pero el signo va al revés: a la valencia se le resta lo que el átomo tiene.' : 'Sería así si el átomo tuviera electrones de más o de menos, pero tiene justo los suyos: queda en 0.'],
-        [cfTxt(v - l / 2 - b), 'QM-CF-PARES', 'Restar los libres está bien, pero se restan los electrones de los pares, no el número de pares.'],
-        [cfTxt(v - l - 2 * b), 'QM-CF-ENLACES', 'Restar los enlaces está bien, pero de cada enlace al átomo le toca un electrón, no dos.'],
+      opciones: ops(cfTxt(cf), [cfTxt(-cf || 1), cf ? 'QM-CF-SIGNO' : 'QM-CF-CARGA', cf ? 'La cuenta está bien, pero el signo va al revés: a la valencia se le resta lo que el átomo tiene. Si tiene más de lo que trajo, sale negativa.' : 'Sería así si el átomo tuviera electrones de más o de menos, pero tiene justo los suyos: queda en 0.'],
+        [cfTxt(v - l / 2 - b), 'QM-CF-PARES', 'Restar los libres está bien, pero se restan los electrones de los pares, no el número de pares: cada par tiene dos.'],
+        [cfTxt(v - l - 2 * b), 'QM-CF-ENLACES', 'Restar los enlaces está bien, pero de cada enlace al átomo le toca un electrón, no dos: el otro es del átomo vecino.'],
         CARGA_ESP[sp] ? [cfTxt(CARGA_ESP[sp]), 'QM-CF-CARGA', 'Esa es la carga del ion entero, y la carga formal se cuenta átomo por átomo.']
           : ['0', 'QM-CF-CARGA', 'Sería así si la carga formal fuera la de la molécula entera. Se cuenta átomo por átomo, y este no queda en 0.']),
-      solucion: { texto: 'A la valencia del átomo le resto los electrones de sus pares libres y sus enlaces.', ecuacion: [`${v} − ${l} − ${b} = `, Cq(cfTxt(cf))] },
+      solucion: { texto: 'A la valencia del átomo le resto los electrones de sus pares libres, que son solo suyos, y uno por cada enlace, que es su mitad del par compartido.', ecuacion: [`${v} − ${l} − ${b} = `, Cq(cfTxt(cf))] },
     };
   }
   const AFIRMA_R = [
-    ['En el NO₃⁻, el doble salta de un O a otro.', false, 'el ion real es el promedio de los dibujos'],
-    ['En la resonancia, los átomos no se mueven.', true, 'solo cambia dónde va un par'],
-    ['El O₃ tiene dos estructuras de resonancia.', true, 'el doble va a un lado o al otro del oxígeno central'],
-    ['El CO₂ tiene resonancia como el CO₃²⁻.', false, 'sus dos dobles no pueden ir en otro lugar'],
-    ['Los tres C–O del CO₃²⁻ miden igual.', true, 'cada uno tiene orden 4/3'],
-    ['El híbrido de resonancia es una estructura más.', false, 'es el promedio de todas'],
+    ['En el NO₃⁻, el doble salta de un O a otro.', false, 'los dibujos se alternan en el papel, y el ion real es un solo promedio que no cambia'],
+    ['En la resonancia, los átomos no se mueven.', true, 'solo cambia dónde va un par de electrones, y los átomos quedan en el mismo lugar en todos los dibujos'],
+    ['El O₃ tiene dos estructuras de resonancia.', true, 'el doble va a un lado o al otro del oxígeno central, y los dos dibujos son igual de válidos'],
+    ['El CO₂ tiene resonancia como el CO₃²⁻.', false, 'sus dos dobles ya ocupan los dos únicos enlaces C–O, así que no pueden ir en otro lugar'],
+    ['Los tres C–O del CO₃²⁻ miden igual.', true, 'cada uno tiene orden 4/3, el promedio de los tres dibujos'],
+    ['El híbrido de resonancia es una estructura más.', false, 'es el promedio de todas, y es lo que describe a la especie real'],
   ];
 
   // Ejemplos de la idea 5. Cuentas rehechas aparte (cuentas-a.js): O₃ 3 · 6 = 18 · CO₃²⁻ 3 posiciones · CF 6 − 6 − 1 = −1 ·
@@ -1580,35 +1580,35 @@
     { nivel: 1, titulo: 'Los electrones del ozono',
       enunciado: '¿Cuántos electrones hay que repartir en la estructura de Lewis del ozono, O₃?',
       datos: [valTxt(['O'])],
-      solucion: [{ texto: 'Son tres oxígenos, con 6 electrones de valencia cada uno.', ecuacion: ['3 · 6 = ', El('18 e⁻')] }],
+      solucion: [{ texto: 'Son tres oxígenos, con 6 electrones de valencia cada uno. Como la molécula no tiene carga, no se suma ni se resta nada.', ecuacion: ['3 · 6 = ', El('18 e⁻')] }],
       respuesta: [El('18 electrones')] },
     { nivel: 1, titulo: 'El orden de un doble',
       enunciado: '¿Qué orden tiene un enlace doble?',
       datos: [D5.orden],
-      solucion: [{ texto: 'El orden cuenta los pares compartidos: un doble comparte dos.' }],
+      solucion: [{ texto: 'El orden cuenta los pares que comparten dos átomos: un doble comparte dos pares, así que su orden es 2.' }],
       respuesta: ['Orden 2'] },
     { nivel: 1, titulo: 'Lo que cambia entre dibujos',
       enunciado: 'Entre dos estructuras de resonancia del O₃, ¿qué cambia: los átomos o un par de electrones?',
       datos: ['Resonancia: varias estructuras válidas de la misma especie'],
-      solucion: [{ texto: 'Los tres oxígenos quedan en su lugar; solo cambia de qué lado va el par que forma el doble enlace.' }],
+      solucion: [{ texto: 'Los tres oxígenos quedan en su lugar y los 18 electrones son los mismos; solo cambia de qué lado del oxígeno central va el par que forma el doble enlace.' }],
       respuesta: ['Solo un par de electrones'] },
     { nivel: 1, titulo: 'Los dibujos de la tiza',
       enunciado: '¿Cuántas estructuras de resonancia tiene el ion CO₃²⁻ de la tiza?',
       datos: ['CO₃²⁻: tres enlaces C–O; uno es doble en cada dibujo'],
       figura: triangular('C', 0),
-      solucion: [{ texto: 'El doble enlace puede ir con cualquiera de los tres oxígenos: un dibujo por cada uno.' }],
+      solucion: [{ texto: 'El doble enlace puede ir con cualquiera de los tres oxígenos: un dibujo por cada uno. Los tres valen igual, porque los tres oxígenos son iguales.' }],
       respuesta: ['3 estructuras'] },
     { nivel: 1, titulo: 'Un oxígeno con carga',
       enunciado: 'En una estructura del NO₃⁻, un oxígeno tiene un enlace simple y tres pares libres. ¿Qué carga formal tiene?',
       datos: [D5.cf, valTxt(['O'])],
-      solucion: [{ texto: 'El oxígeno tiene 6 electrones de valencia, 6 en sus pares libres y 1 enlace.', ecuacion: ['6 − 6 − 1 = ', Cq('−1')] }],
+      solucion: [{ texto: 'El oxígeno trajo 6 electrones de valencia; tiene 6 en sus pares libres y 1 más por su enlace. Tiene uno más de los que trajo, así que su carga formal es negativa.', ecuacion: ['6 − 6 − 1 = ', Cq('−1')] }],
       respuesta: ['Carga formal ', Cq('−1')] },
     { nivel: 2, titulo: 'El ozono promedio',
       enunciado: 'El O₃ tiene dos estructuras de resonancia: en cada una, un O–O es doble y el otro, simple. ¿Qué orden tiene cada O–O en el ozono real?',
       datos: [D5.orden, D5.promedio],
       solucion: [
         { texto: 'En cada dibujo hay 2 + 1 = 3 pares compartidos en los dos enlaces O–O.' },
-        { texto: 'En el ozono real, esos 3 pares se reparten por igual entre los dos enlaces.', ecuacion: ['orden = ', { frac: ['3', '2'] }, ' = 1,5'] },
+        { texto: 'Ninguno de los dos dibujos es el real: en el ozono real, esos 3 pares se reparten por igual entre los dos enlaces.', ecuacion: ['orden = ', { frac: ['3', '2'] }, ' = 1,5'] },
       ],
       respuesta: ['Orden 3/2 = 1,5'] },
     { nivel: 2, titulo: 'El nitrato promedio',
@@ -1616,7 +1616,7 @@
       datos: [D5.orden, D5.promedio],
       solucion: [
         { texto: 'En cada dibujo hay 2 + 1 + 1 = 4 pares compartidos en los tres enlaces.' },
-        { texto: 'En el ion real, esos 4 pares se reparten por igual entre los tres enlaces.', ecuacion: ['orden = ', { frac: ['4', '3'] }, ' ≈ 1,33'] },
+        { texto: 'Ninguno de los tres dibujos es el real: en el ion real, esos 4 pares se reparten por igual entre los tres enlaces.', ecuacion: ['orden = ', { frac: ['4', '3'] }, ' ≈ 1,33'] },
       ],
       respuesta: ['Orden 4/3 ≈ 1,33'] },
     { nivel: 2, titulo: 'El ion que deja el vinagre',
@@ -1632,7 +1632,7 @@
       datos: [D5.cf, valTxt(['N'])],
       solucion: [
         { texto: 'Un doble y dos simples son 4 enlaces.', ecuacion: ['2 + 1 + 1 = 4'] },
-        { texto: 'A su valencia le resto los electrones libres, que son 0, y los 4 enlaces.', ecuacion: ['5 − 0 − 4 = ', Cq('+1')] },
+        { texto: 'A su valencia le resto los electrones libres, que son 0, y los 4 enlaces. Tiene uno menos de los que trajo, así que su carga formal es positiva.', ecuacion: ['5 − 0 − 4 = ', Cq('+1')] },
       ],
       respuesta: ['Carga formal ', Cq('+1')] },
     { nivel: 2, titulo: 'Dos enlaces C–O',
@@ -1640,7 +1640,7 @@
       datos: [D5.largo],
       solucion: [
         { texto: 'Comparo los órdenes: 4/3 ≈ 1,33 es menor que 2.', ecuacion: ['4/3 < 2'] },
-        { texto: 'Con menos pares compartidos, el enlace es más largo.' },
+        { texto: 'Con menos pares compartidos, el enlace une con menos fuerza a los dos átomos, que quedan más separados: el enlace es más largo.' },
       ],
       respuesta: ['El C–O del CO₃²⁻'] },
     { nivel: 3, titulo: 'Los pares del N₂O',
@@ -1649,8 +1649,8 @@
       datos: [valTxt(['N', 'O']), D3.enlace, D3.meta],
       solucion: [
         { texto: 'El triple y el simple usan 6 + 2 = 8 electrones. Quedan 8, que son 4 pares: uno en el N de la punta y tres en el O.', ecuacion: ['16 − 8 = 8 → ', El('4 pares')] },
-        { texto: ['La ', letra('B'), ' cuenta electrones, no pares. La ', letra('C'), ' olvida los tres del oxígeno. La ', letra('D'), ' suma también el par del enlace simple.'] },
-        { texto: ['La ', letra('E'), ' cuenta solo los del oxígeno.'] },
+        { texto: ['La ', letra('B'), ' cuenta electrones, no pares: 8 electrones son 4 pares. La ', letra('C'), ' olvida los tres pares del oxígeno. La ', letra('D'), ' suma también el par del enlace simple, que es compartido.'] },
+        { texto: ['La ', letra('E'), ' cuenta solo los del oxígeno y olvida el par del N de la punta.'] },
       ],
       respuesta: [letra('A'), ', ', El('4 pares libres')] },
     { nivel: 3, titulo: 'Verdadero o falso',
@@ -1658,9 +1658,9 @@
       alternativas: ['VVV', 'FVV', 'VFV', 'FVF', 'VVF'],
       datos: [D5.res],
       solucion: [
-        { texto: 'I es falsa: los dibujos se alternan en el papel; el ion real es el promedio. II y III son verdaderas.', ecuacion: ['FVV'] },
-        { texto: ['La ', letra('A'), ', la ', letra('C'), ' y la ', letra('E'), ' creen que el ion salta entre dibujos.'] },
-        { texto: ['La ', letra('D'), ' cuenta un solo dibujo para el ozono.'] },
+        { texto: 'I es falsa: los dibujos se alternan en el papel, pero el ion real es un solo promedio que no cambia. II y III son verdaderas.', ecuacion: ['FVV'] },
+        { texto: ['La ', letra('A'), ', la ', letra('C'), ' y la ', letra('E'), ' creen que el ion salta entre dibujos, como si cada uno existiera un rato.'] },
+        { texto: ['La ', letra('D'), ' cuenta un solo dibujo para el ozono, pero el doble puede ir a cada lado del oxígeno central.'] },
       ],
       respuesta: [letra('B'), ', FVV'] },
     { nivel: 3, titulo: 'Tres enlaces carbono–oxígeno',
@@ -1669,7 +1669,7 @@
       datos: [D5.largo],
       solucion: [
         { texto: 'Los órdenes son 3, 2 y 4/3. El de menor orden es el más largo.', ecuacion: ['4/3 < 2 < 3 → CO₃²⁻ > CO₂ > CO'] },
-        { texto: ['La ', letra('A'), ' invierte el orden. La ', letra('B'), ' y la ', letra('E'), ' ponen mal el triple.'] },
+        { texto: ['La ', letra('A'), ' invierte el orden: el triple del CO es el más corto, no el más largo. La ', letra('B'), ' pone al CO en el medio, y la ', letra('E'), ' toma al doble del CO₂ por más largo que el enlace de orden 4/3.'] },
         { texto: ['La ', letra('D'), ' olvida que un enlace con más pares compartidos es más corto.'] },
       ],
       respuesta: [letra('C'), ', CO₃²⁻ > CO₂ > CO'] },
@@ -1679,7 +1679,7 @@
       datos: [D5.res, valTxt(['H', 'C', 'N', 'O']), D3.meta],
       solucion: [
         { texto: 'En el O₃, el doble enlace puede ir de un lado o del otro del oxígeno central.' },
-        { texto: ['La ', letra('A'), ' tiene dobles, pero fijos: no hay otro lugar. La ', letra('B'), ', la ', letra('C'), ' y la ', letra('E'), ' solo tienen enlaces simples.'] },
+        { texto: ['La ', letra('A'), ' tiene dobles, pero fijos: sus dos enlaces C–O ya son dobles y no hay otro lugar. La ', letra('B'), ', la ', letra('C'), ' y la ', letra('E'), ' solo tienen enlaces simples, sin un par que mover.'] },
       ],
       respuesta: [letra('D'), ', el O₃'] },
     { nivel: 3, titulo: 'Las cargas del ozono',
@@ -1688,7 +1688,7 @@
       datos: [D5.cf, valTxt(['O'])],
       solucion: [
         { texto: 'En cada oxígeno, a la valencia le resto los electrones libres y los enlaces.', ecuacion: ['6 − 4 − 2 = 0', SEP, '6 − 2 − 3 = +1', SEP, '6 − 6 − 1 = −1'] },
-        { texto: ['La ', letra('A'), ' cree que una molécula sin carga no tiene cargas formales. La ', letra('B'), ' y la ', letra('D'), ' las cambian de lugar.'] },
+        { texto: ['La ', letra('A'), ' cree que una molécula sin carga no tiene cargas formales, pero cada átomo se cuenta por separado. La ', letra('B'), ' y la ', letra('D'), ' las cambian de lugar.'] },
         { texto: ['La ', letra('C'), ' pone la −1 en el central, que tiene un solo par libre. Las tres cargas correctas suman 0, como la molécula.'] },
       ],
       respuesta: [letra('E'), ', 0, +1 y −1'] },
@@ -1706,8 +1706,8 @@
       tarjetas: [
         { titulo: 'La tiza', texto: 'La tiza de la pizarra está hecha de iones Ca²⁺ y CO₃²⁻. El ion CO₃²⁻ tiene un carbono al centro y tres oxígenos, con 24 electrones de valencia.',
           pieza: 'quim-enlace', dibujo: OBJ('tiza', { nombre: 'Una tiza: iones Ca²⁺ y CO₃²⁻' }) },
-        { titulo: 'Orden de enlace', texto: 'El orden de enlace cuenta cuántos pares comparten dos átomos: 1 en un simple, 2 en un doble y 3 en un triple. Un enlace doble es más corto que uno simple.' },
-        { titulo: 'Varias maneras', texto: 'A veces la misma especie se dibuja de varias maneras válidas que solo cambian dónde va un par. Esas son sus estructuras de resonancia.' },
+        { titulo: 'Orden de enlace', texto: 'El orden de enlace cuenta cuántos pares comparten dos átomos: 1 en un simple, 2 en un doble y 3 en un triple. Un enlace doble es más corto que uno simple, porque con más pares compartidos los dos átomos quedan más juntos.' },
+        { titulo: 'Varias maneras', texto: 'A veces la misma especie se puede dibujar de varias maneras válidas, con los átomos en el mismo lugar, que solo cambian dónde va un par de electrones. Esos dibujos se llaman estructuras de resonancia.' },
         { titulo: 'Qué mirar', texto: 'En el juego llevas el doble enlace del CO₃²⁻ a cada oxígeno. Fíjate qué cambia entre un dibujo y otro, y qué se queda en su lugar.' },
       ],
     },
@@ -1738,9 +1738,9 @@
       voz: 'Piensa qué describe el ion real, no el dibujo.',
       opciones: [
         { id: 'c', texto: 'Los tres iguales, de largo intermedio', correcta: true },
-        { id: 'uno', texto: 'Uno corto, el doble, y dos largos, los simples', error: 'QM-RES-UNO', siFuera: 'Sería así si un solo dibujo fuera el real. Los tres dibujos valen a la vez, y el ion real es su promedio.' },
-        { id: 'salta', texto: 'Cambian: el doble salta de un oxígeno a otro', error: 'EN6', siFuera: 'Sería así si el ion cambiara de un dibujo a otro. Los dibujos se alternan en el papel; el ion real no oscila.' },
-        { id: 'todos', texto: 'Los tres cortos, como dobles', error: 'QM-RES-TODOS', siFuera: 'Sería así si hubiera tres dobles, pero no alcanzan los electrones: en cada dibujo hay un solo doble.' },
+        { id: 'uno', texto: 'Uno corto, el doble, y dos largos, los simples', error: 'QM-RES-UNO', siFuera: 'Sería así si un solo dibujo fuera el real. Los tres dibujos valen igual, porque los tres oxígenos son iguales, y el ion real es su promedio.' },
+        { id: 'salta', texto: 'Cambian: el doble salta de un oxígeno a otro', error: 'EN6', siFuera: 'Sería así si el ion cambiara de un dibujo a otro. Los dibujos se alternan en el papel porque ninguno solo alcanza a describirlo; el ion real no oscila.' },
+        { id: 'todos', texto: 'Los tres cortos, como dobles', error: 'QM-RES-TODOS', siFuera: 'Sería así si hubiera tres dobles, pero no alcanzan los electrones: en cada dibujo hay un solo doble, y ese par extra se reparte entre los tres enlaces.' },
       ],
       dibujo: triangular('N', 0),
       revelar: triangular('N', null),
@@ -1760,17 +1760,17 @@
       })(),
       voz: 'Sigamos el par que cambia de lugar.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Este es un dibujo del CO₃²⁻, con el doble enlace arriba.', ecuacion: [El('4 + 3 · 6 + 2 = 24 e⁻')] },
-        { estado: { corte: 2 }, texto: 'Otro dibujo, igual de válido, lleva el doble a la izquierda.' },
+        { estado: { corte: 1 }, texto: 'Este es un dibujo del CO₃²⁻, con el doble enlace arriba. Reparte bien los 24 electrones, y todos los átomos llegan a 8.', ecuacion: [El('4 + 3 · 6 + 2 = 24 e⁻')] },
+        { estado: { corte: 2 }, texto: 'Otro dibujo, igual de válido, lleva el doble a la izquierda. Los tres oxígenos son iguales, así que no hay razón para preferir uno.' },
         { estado: { corte: 3 }, texto: 'Un tercero lo lleva a la derecha. Los átomos nunca se movieron: solo cambió de lugar un par.' },
-        { estado: { corte: 4 }, texto: 'El ion real es el promedio: el híbrido, con tres enlaces iguales.', ecuacion: ['orden = ', { frac: ['4 pares', '3 enlaces'] }, ' ≈ 1,33'] },
-        { estado: { corte: 4 }, texto: 'Cada C–O queda entre un simple y un doble.', ecuacion: ['1 < 4/3 < 2'] },
+        { estado: { corte: 4 }, texto: 'El ion real no es ninguno de los tres: es su promedio, el híbrido, con tres enlaces iguales. Cada uno se queda con un tercio del par extra.', ecuacion: ['orden = ', { frac: ['4 pares', '3 enlaces'] }, ' ≈ 1,33'] },
+        { estado: { corte: 4 }, texto: 'Cada C–O queda entre un simple y un doble: es más corto que un simple y más largo que un doble.', ecuacion: ['1 < 4/3 < 2'] },
       ],
     },
     regla: {
-      texto: 'Si varias estructuras de Lewis válidas solo difieren en dónde va un par, la especie real es un híbrido: los electrones se reparten y esos enlaces quedan iguales.',
+      texto: 'Si varias estructuras de Lewis válidas solo difieren en dónde va un par, ninguna describe sola la especie. La especie real es un híbrido, el promedio de todas: los electrones de ese par se reparten y esos enlaces quedan iguales. El orden de cada uno es el número de pares compartidos dividido entre el número de esos enlaces.',
       ecuacion: ['orden promedio = ', { frac: ['pares compartidos', 'número de enlaces'] }],
-      condicion: 'entre un dibujo y otro solo se mueven electrones, nunca átomos, entre enlaces iguales; un doble cuenta como un enlace, y la especie no salta entre dibujos.',
+      condicion: 'entre un dibujo y otro solo se mueven electrones, nunca átomos, entre enlaces iguales; un doble cuenta como un enlace. Si un átomo cambia de lugar, ya no es resonancia: es otra sustancia.',
       voz: 'Varios dibujos, una sola especie.',
       dibujo: triangular('C', null, { alt: 'Híbrido del CO₃²⁻: tres enlaces C–O iguales, cada uno de orden 4/3.' }),
     },
@@ -1786,7 +1786,7 @@
             { tipo: 'pide', texto: `Piden el orden de cada enlace ${enl} en el híbrido, la especie real.` },
             { tipo: 'datos', texto: `Hay ${pos} enlaces ${enl} iguales; en cada dibujo, uno es doble y ${pos - 1 === 1 ? 'el otro, simple' : `los otros ${pos - 1}, simples`}.`,
               ecuacion: [`pares en esos enlaces: 2 + ${Array(pos - 1).fill('1').join(' + ')} = ${tot}`] },
-            { tipo: 'regla', texto: 'En la especie real, el doble no está fijo: se reparte por igual, así que divido los pares compartidos entre los enlaces.' },
+            { tipo: 'regla', texto: 'En la especie real, el doble no está fijo en un enlace: su par extra se reparte por igual, así que divido los pares compartidos entre el número de esos enlaces.' },
             { tipo: 'cuentas', texto: `Reparto ${tot} pares entre ${pos} enlaces.`, ecuacion: ['orden = ', { frac: [String(tot), String(pos)] }, ` = ${frDec(tot, pos)}`], dibujo: TRI ? triangular(TRI, null) : undefined },
             { tipo: 'sentido', texto: `El orden queda entre 1, el de un simple, y 2, el de un doble: cada enlace ${enl} tiene algo de doble.`, ecuacion: [`1 < ${fr(tot, pos)} < 2`] },
           ],
@@ -1853,75 +1853,75 @@
         ejemplos: ['El que une al H y al O en el agua.', 'El que une los iones de la sal.', 'El que une los átomos de un cable de cobre.'], ver: ['enlace iónico', 'enlace covalente', 'enlace metálico'] },
       { termino: 'enlace iónico', formas: ['enlace iónico', 'enlaces iónicos', 'iónico', 'iónicos', 'iónica'],
         def: 'Atracción entre cationes y aniones que se forman cuando un metal cede electrones a un no metal.',
-        simple: 'Iones con cargas opuestas que se atraen, todos con todos.',
+        simple: 'Iones de carga opuesta que se atraen todos con todos, como en la sal.',
         ejemplos: ['El KBr: iones K⁺ y Br⁻.', 'El MgO: iones Mg²⁺ y O²⁻.', 'El CaF₂: un Ca²⁺ por cada dos F⁻.'], ver: ['catión', 'anión'] },
       { termino: 'enlace covalente', formas: ['enlace covalente', 'enlaces covalentes', 'covalente', 'covalentes'],
         def: 'Unión de dos átomos, casi siempre no metales, que comparten uno o más pares de electrones.',
-        simple: 'Dos átomos que se quedan juntos compartiendo electrones.',
+        simple: 'Dos átomos que se quedan juntos compartiendo electrones, como en el agua.',
         ejemplos: ['Cada H–O del agua.', 'El C–H del metano.', 'El Cl–Cl de la molécula de cloro.'], ver: ['par compartido'] },
       { termino: 'enlace metálico', formas: ['enlace metálico', 'enlaces metálicos', 'metálico', 'metálicos'],
         def: 'Unión de los átomos de un metal: sus cationes quedan en un mar de electrones que se mueven entre todos.',
-        simple: 'Átomos de un metal que sueltan electrones, y esos electrones se mueven entre todos.',
+        simple: 'Átomos de metal que sueltan electrones a un mar común, como en un cable.',
         ejemplos: ['El cobre de un cable.', 'El hierro de un clavo.', 'El aluminio del papel de cocina.'], ver: ['metal'] },
       { termino: 'carga parcial', simbolo: 'δ', formas: ['carga parcial', 'cargas parciales'],
         def: 'Carga menor que la de un ion en los extremos de un enlace polar; δ− donde se corre el par.',
-        simple: 'Un poquito de carga, menos que la de un ion.',
+        simple: 'Un poquito de carga en un lado de la unión, menos que un ion.',
         ejemplos: ['En el H–Cl: H con δ+ y Cl con δ−.', 'En el C–O: el O con δ−.', 'En el Cl–Cl no hay: jalan igual.'], ver: ['electronegatividad', 'par compartido'] },
       { termino: 'regla del octeto', formas: ['regla del octeto', 'octeto', 'octetos'],
         def: 'Tendencia de muchos átomos a quedar con 8 electrones en su último nivel al unirse, como un gas noble.',
-        simple: 'Quedar con ocho electrones en el último nivel, como un gas noble.',
+        simple: 'Quedar con ocho electrones en el último nivel, igual que el neón.',
         ejemplos: ['El K⁺ queda como el argón.', 'El O²⁻ queda como el neón.', 'El hidrógeno se conforma con 2, como el helio.'], ver: ['gas noble', 'electrones de valencia'] },
       { termino: 'compuesto iónico', formas: ['compuesto iónico', 'compuestos iónicos'],
         def: 'Sustancia formada por cationes y aniones en una red; su fórmula da la proporción con carga total cero.',
-        simple: 'Un sólido hecho de iones positivos y negativos juntos.',
+        simple: 'Un sólido de iones positivos y negativos, como la sal o la tiza.',
         ejemplos: ['El KBr.', 'El CaF₂: un Ca²⁺ por cada dos F⁻.', 'El Al₂O₃.'], ver: ['enlace iónico', 'red de iones'] },
       { termino: 'red de iones', formas: ['red de iones', 'redes de iones'],
         def: 'Orden de cationes y aniones que se repite en las tres direcciones; cada ion, rodeado de los de carga opuesta.',
-        simple: 'Iones ordenados en filas, que se repiten en todas las direcciones.',
+        simple: 'Iones ordenados en filas que se repiten, como huevos en cajones apilados.',
         ejemplos: ['En el KBr, cada K⁺ rodeado de seis Br⁻.', 'En el CaO, Ca²⁺ y O²⁻ alternados.', 'La de un cristal de sal.'], ver: ['compuesto iónico'] },
       { termino: 'estructura de Lewis', formas: ['estructura de Lewis', 'estructuras de Lewis'],
         def: 'Dibujo de una molécula o ion con sus enlaces como rayas y sus pares sin compartir como puntos.',
-        simple: 'Un dibujo que reparte los electrones de valencia entre los átomos.',
+        simple: 'Un dibujo con rayas y puntos que muestra dónde quedó cada electrón de valencia.',
         ejemplos: ['H–Cl con tres pares en el cloro.', 'O=C=O con dos pares en cada oxígeno.', 'NH₃ con un par en el nitrógeno.'], ver: ['par libre', 'símbolo de Lewis'] },
       { termino: 'par libre', formas: ['par libre', 'pares libres', 'par sin compartir'],
         def: 'Par de electrones de valencia de un átomo que no forma parte de ningún enlace.',
-        simple: 'Dos electrones de un átomo que no se comparten.',
+        simple: 'Dos electrones que un átomo guarda para sí, sin compartirlos con otro.',
         ejemplos: ['El oxígeno del agua tiene dos.', 'El nitrógeno del NH₃ tiene uno.', 'El carbono del CH₄ no tiene.'], ver: ['estructura de Lewis'] },
       { termino: 'enlace múltiple', formas: ['enlace múltiple', 'enlaces múltiples', 'enlace doble', 'enlaces dobles', 'enlace triple', 'enlaces triples'],
         def: 'Enlace en el que dos átomos comparten dos pares (doble) o tres pares (triple) de electrones.',
-        simple: 'Dos átomos que comparten más de un par de electrones.',
+        simple: 'Dos átomos que comparten dos o tres pares, como en el O₂.',
         ejemplos: ['O=C=O: dos enlaces dobles.', 'H–C≡N: un enlace triple.', 'El O₂: un enlace doble.'], ver: ['enlace covalente'] },
       { termino: 'enlace dativo', formas: ['enlace dativo', 'enlaces dativos', 'dativo', 'dativos', 'enlace coordinado'],
         def: 'Enlace covalente cuyo par compartido sale entero de uno de los dos átomos.',
-        simple: 'Un enlace en el que un solo átomo pone el par.',
+        simple: 'Una unión en la que un solo átomo pone los dos electrones del par.',
         ejemplos: ['El cuarto N–H del NH₄⁺.', 'El tercer O–H del H₃O⁺.', 'El N–B del H₃N–BF₃.'], ver: ['par libre', 'enlace covalente'] },
       { termino: 'octeto incompleto', formas: ['octeto incompleto'],
         def: 'Caso del átomo central que queda con menos de 8 electrones alrededor, como el berilio y el boro.',
-        simple: 'Un átomo que se queda con menos de ocho.',
+        simple: 'Un átomo que se queda con menos de ocho, como el boro del BF₃.',
         ejemplos: ['El Be del BeCl₂: 4.', 'El B del BF₃: 6.', 'El Al del AlCl₃: 6.'], ver: ['regla del octeto'] },
       { termino: 'octeto expandido', formas: ['octeto expandido'],
         def: 'Caso del átomo central, del periodo 3 en adelante, que queda con más de 8 electrones alrededor.',
-        simple: 'Un átomo que llega a tener más de ocho.',
+        simple: 'Un átomo grande que llega a más de ocho, como el azufre del SF₆.',
         ejemplos: ['El P del PCl₅: 10.', 'El S del SF₆: 12.', 'El Xe del XeF₄: 12.'], ver: ['regla del octeto'] },
       { termino: 'radical libre', formas: ['radical libre', 'radicales libres', 'radical', 'radicales'],
         def: 'Especie con un número impar de electrones de valencia: uno queda sin pareja. Suele reaccionar rápido.',
-        simple: 'Una partícula con un electrón que se quedó sin pareja.',
+        simple: 'Una partícula con un electrón sin pareja, que por eso reacciona rápido.',
         ejemplos: ['El NO: 11 electrones.', 'El NO₂: 17 electrones.', 'El OH sin carga: 7 electrones.'], ver: ['electrón desapareado'] },
       { termino: 'resonancia', formas: ['resonancia', 'estructuras de resonancia', 'estructura de resonancia'],
         def: 'Caso de una especie que tiene varias estructuras de Lewis válidas que solo cambian dónde va un par.',
-        simple: 'Una misma especie que se puede dibujar de varias maneras.',
+        simple: 'Una misma especie que se puede dibujar de varias maneras, sin mover sus átomos.',
         ejemplos: ['El O₃: dos dibujos.', 'El CO₃²⁻: tres dibujos.', 'El NO₂⁻: dos dibujos.'], ver: ['híbrido de resonancia'] },
       { termino: 'híbrido de resonancia', formas: ['híbrido de resonancia', 'híbrido'],
         def: 'La especie real cuando hay resonancia: el promedio de sus estructuras, con los pares repartidos.',
-        simple: 'El promedio de todos los dibujos: así es de verdad.',
+        simple: 'El promedio de los dibujos, como la mula: no alterna entre caballo y burro.',
         ejemplos: ['El del O₃: dos O–O iguales.', 'El del CO₃²⁻: tres C–O iguales.', 'El del NO₂⁻: dos N–O iguales.'], ver: ['resonancia', 'orden de enlace'] },
       { termino: 'orden de enlace', formas: ['orden de enlace', 'órdenes de enlace'],
         def: 'Número de pares que comparten dos átomos: 1 en el simple, 2 en el doble, 3 en el triple.',
-        simple: 'Cuántos pares comparten dos átomos.',
+        simple: 'Cuántos pares comparten dos átomos: 1 en un simple, 2 en un doble.',
         ejemplos: ['C–H: 1.', 'O=O: 2.', 'N≡N: 3.'], ver: ['enlace múltiple'] },
       { termino: 'carga formal', formas: ['carga formal', 'cargas formales'],
         def: 'Cuenta de un átomo dentro de una estructura: valencia menos electrones de sus pares libres menos enlaces.',
-        simple: 'La carga que le toca a un átomo en un dibujo de Lewis.',
+        simple: 'Los electrones que trajo un átomo, menos los que tiene en el dibujo.',
         ejemplos: ['El O del H₂O: 0.', 'Un O con un enlace y tres pares: −1.', 'El N del NH₄⁺: +1.'], ver: ['estructura de Lewis'] },
     ],
     laboratorio: [
@@ -1935,7 +1935,7 @@
         dibujo: v => dibujoMesa(v),
         lectura: v => [`${v.a}–${v.b}: ${TIPO_MESA[tipoMesa(v.a, v.b)]}; según la guía de `, dENf, `, ${guiaDice(dEN(v.a, v.b))}`],
         invitaciones: [
-          { texto: 'Arma un enlace donde el par quede justo al medio.', logrado: v => tipoMesa(v.a, v.b) === 'apolar', bien: 'Dos átomos iguales jalan igual: covalente apolar.' },
+          { texto: 'Arma un enlace donde el par quede justo al medio.', logrado: v => tipoMesa(v.a, v.b) === 'apolar', bien: 'Dos átomos iguales jalan igual el par, así que queda al medio: covalente apolar.' },
           { texto: 'Busca el par con la mayor diferencia de electronegatividad.', logrado: v => dEN(v.a, v.b) === MAX_MESA, bien: 'El metal más a la izquierda con el no metal que más jala forma iones.' },
           { texto: 'Encuentra un metal con un no metal que la guía de 1,7 no llame iónico.', logrado: v => tipoMesa(v.a, v.b) === 'ionico' && dEN(v.a, v.b) < 1.7,
             bien: 'Es una guía: un metal y un no metal forman iones aun por debajo de 1,7.' },

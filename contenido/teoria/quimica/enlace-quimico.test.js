@@ -371,6 +371,21 @@ test('auditoría: la EN va con dos decimales («2,20») y «Ahora tú» de la re
 
 // Verificación de la pasada de redacción (26 nov): un grano de sal tiene del orden de 10¹⁸ iones (un trillón), no
 // «billones» (10¹²).
+test('verificación 27 nov: la explicación QM-FORM-CARGA dice bien si falta o sobra carga del metal (AlF₂ sobra, Li₂N falta), en 400 semillas', () => {
+  const ion = def.ideas[1];
+  let vistas = 0;
+  for (let s = 0; s < SEMILLAS; s++) {
+    const a = ion.ahoraTu.generar(s), m = plano(a.pregunta).match(/que forman el (\S+) y el (\S+)\?$/); if (!m) continue;
+    const [x, y] = [NOM[m[1]], NOM[m[2]]];
+    for (const o of a.opciones.filter(o => o.error === 'QM-FORM-CARGA')) {
+      const at = atomosDe(o.texto).atomos, carga = at.filter(z => z === x).length * qIon(x) + at.filter(z => z === y).length * qIon(y);
+      const dice = /no alcanzan? para/.test(o.siFuera) ? -1 : /más carga de la que anula/.test(o.siFuera) ? 1 : 0;
+      assert.equal(dice, Math.sign(carga), `${o.texto}: ${o.siFuera}`);
+      vistas++;
+    }
+  }
+  assert.ok(vistas > 20, `solo ${vistas} explicaciones QM-FORM-CARGA`);
+});
 test('redacción: el grano de sal del «Lee» no dice «billones»', () => {
   const lee = def.ideas.flatMap(i => (i.lee && i.lee.tarjetas) || []).map(t => plano(t.texto)).join(' ');
   assert.ok(/grano/.test(lee) && !/billones/.test(lee));
