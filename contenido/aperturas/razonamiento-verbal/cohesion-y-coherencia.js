@@ -57,8 +57,8 @@
         ', y si no lo trae, no podrá subir al bus». ',
         'Antes de «lo» hay dos palabras que pueden ir con él, «apoderado» y «DNI», porque las dos son masculinas y están en singular.'],
       ['A la primera, casi todos leen el aviso como si «lo» fuera el DNI, porque es el documento que el colegio pide siempre que hay una salida. ',
-        'Una mamá que esa mañana no puede acompañar a su hija, en cambio, puede entender que lo que falta es el apoderado, y que su hija se quedará sin excursión aunque lleve el DNI en la mochila. ',
-        'Elegir la palabra que está más cerca de «lo» no resuelve la duda, porque nada en el aviso dice que haya que leerlo así, y esa mamá preocupada no lo va a leer así.'],
+        'Un alumno que llega con su papá y se olvidó el DNI, en cambio, puede leer que «lo» es el apoderado y creer que igual subirá al bus, porque ya lo trajo. ',
+        'Las dos lecturas respetan la gramática del aviso, y nada en sus palabras dice cuál de las dos quiso el colegio.'],
       ['El aviso no tiene una sola falta, y aun así falla porque el «lo» del final no queda amarrado a una sola de las dos palabras que lo preceden. ',
         'Esos amarres entre las palabras de un texto se llaman cohesión, y son, junto con la coherencia, el tema de esta unidad.'],
     ],
@@ -72,7 +72,7 @@
       seLleva: 'Un texto sin una sola falta puede entenderse de dos maneras si una palabra como «lo» puede referirse a dos cosas que se nombraron antes.',
       alcance: 'Sí (marco de lectura de PISA 2025, deducción propia: integrar la información de varias oraciones y detectar una ambigüedad o un conflicto en el texto).',
       choque: 'El aviso se lee como «si no trae el DNI»; el texto también deja leer «si no trae al apoderado», porque «lo» concuerda con las dos palabras.',
-      atajo: 'Elegir la palabra más cercana a «lo» (el DNI), regla que el aviso no da y que la idea 2 desmiente con su misión (sin usar sus palabras). Que el aviso no tenga faltas no lo salva: es justamente el choque.',
+      atajo: 'Que el aviso no tenga faltas no lo salva: es justamente el choque. El atajo de elegir la palabra más cercana a «lo» ya no se descarta en el texto, para no quitarle fuerza al distractor de la Predice de la idea 2 («la directora, que se nombra justo antes»).',
       porVerificar: [
         'Ninguno de memoria: el aviso es propio y el dato es la concordancia de «lo» con «apoderado» y con «DNI» (masculino singular), que se ve en el texto.',
         'Que «a su apoderado» lleve la preposición «a» si se escribe el nombre y que el pronombre «lo» la borre (por eso el aviso admite las dos lecturas): gramática general, por cotejar con la Nueva gramática si se cita en clase.',
@@ -83,6 +83,7 @@
         'La pregunta se puede intentar con el texto: repetir el nombre («Si no trae el DNI…») o cambiar el orden. La clase la retoma en la idea 3 (repetir, sustituir o callar) sin que la apertura dé la respuesta.',
         'El aviso es invento propio y se lee como tal; no copia avisos reales ni textos de examen.',
         'Figura: el mismo aviso y los mismos dos objetos en los dos paneles; cambia solo cuántas flechas salen de «lo».',
+        'Doble revisión (27 nov): dos cambios en el párrafo 2. Primero, la mamá que no puede acompañar a su hija leía «lo» como el apoderado y temía que la hija se quedara sin excursión, pero el aviso ya exige ir con el apoderado en la primera parte, así que esa lectura no le cambia nada: el riesgo verdadero de la ambigüedad es el contrario, el de un alumno que va con su papá, olvidó el DNI y cree que igual sube. Ahora el ejemplo es ese. Segundo, el pendiente del distractor: la oración que descartaba «la palabra que está más cerca de «lo»» le quitaba fuerza a la opción «A la directora, que se nombra justo antes» de la Predice de la idea 2, y se quitó; en su lugar, el párrafo dice que las dos lecturas respetan la gramática y que el aviso no dice cuál quiso el colegio.',
       ],
     },
   };

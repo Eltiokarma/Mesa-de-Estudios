@@ -47,7 +47,7 @@
   };
   const svg = `<svg viewBox="0 0 520 380" width="520" height="380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <line x1="260" y1="12" x2="260" y2="370" style="stroke:var(--line)" stroke-width="2"/>
-    ${panel(0, 'Lo que predice', 88, 'casi todo', ['Mirando la cara:', 'casi siempre se nota'])}
+    ${panel(0, 'Lo que predice', 80, 'la mayoría', ['Mirando la cara,', 'la mentira se nota'])}
     ${panel(260, 'Lo que se mide', 54, '54', ['Mirando la cara:', 'casi como una moneda'])}
   </svg>`;
 
@@ -58,7 +58,7 @@
       ['Cuando en tu casa se acaba la gaseosa de la refrigeradora y cada hermano jura que no fue él, lo primero que haces es mirarles la cara. ',
         'En cientos de experimentos, miles de personas vieron videos de gente que mentía o decía la verdad y tuvieron que decir cuál era cuál: ',
         cara('acertaron 54 de cada 100 veces'), ', y tirando una moneda habrían acertado 50.'],
-      ['Casi todo el mundo cree que la mentira se nota, que quien miente se pone nervioso, se toca la cara o esquiva la mirada, y que fijándose bien se le descubre casi siempre. ',
+      ['Casi todo el mundo cree que la mentira se nota, que quien miente se pone nervioso, se toca la cara o esquiva la mirada, y que fijándose bien se le descubre la mayoría de las veces. ',
         'En una encuesta hecha en 58 países, la señal más nombrada fue la de esquivar la mirada, pero en los experimentos esa señal no sirve, porque los mentirosos miran a los ojos tanto como los demás.'],
       ['La cara casi no delata a nadie, y en la vida real tampoco hay una manera segura de saber quién miente, porque se puede mentir con una historia que no choca con nada. ',
         'En los acertijos de verdades y mentiras de esta unidad, en cambio, cada persona dice siempre la verdad o miente siempre. Con esa regla se descubre quién miente sin ver ninguna cara, solo con lo que dice cada uno.'],
@@ -66,9 +66,9 @@
     figura: {
       antes: 2,
       svg,
-      alt: 'Dos dibujos de barras con la misma escala, de 0 a 100 aciertos. Lo que predice la creencia común: mirando la cara se acierta casi siempre, mucho más que tirando una moneda, que acierta 50. Lo que se mide: mirando la cara se acierta 54 de cada 100 veces, casi lo mismo que la moneda.',
+      alt: 'Dos dibujos de barras con la misma escala, de 0 a 100 aciertos. Lo que predice la creencia común: mirando la cara se acierta la mayoría de las veces, mucho más que tirando una moneda, que acierta 50. Lo que se mide: mirando la cara se acierta 54 de cada 100 veces, casi lo mismo que la moneda.',
     },
-    pregunta: 'Imagina que cada hermano de la gaseosa dice siempre la verdad o miente siempre, y que solo te mandan mensajes. ¿Qué revisarías en lo que escribe cada uno para descubrir quién miente?',
+    pregunta: 'En un juego por mensajes, cada jugador dice siempre la verdad o miente siempre, y nadie ve la cara de los demás. ¿Qué revisarías en lo que escribe cada uno para descubrir quién miente?',
     ficha: {
       seLleva: 'Mirando la cara, casi nadie descubre una mentira: se acierta poco más que tirando una moneda. En un acertijo, donde cada uno dice siempre la verdad o miente siempre, lo que dicen basta para saber quién miente.',
       alcance: 'Parcial (deducción propia con el marco de Matemática PISA 2022: razonamiento matemático; la lógica de veraces y mentirosos no es contenido PISA, pero el dato medido es de incertidumbre y datos).',
@@ -81,11 +81,12 @@
         'Los experimentos casi siempre son de adultos que juzgan videos o grabaciones de desconocidos, no de hermanos que se conocen; el texto dice «gente que mentía», sin afirmar que con conocidos pase igual.',
       ],
       notas: [
-        'La barra de «Lo que predice» no es un dato: dibuja la creencia de que «se nota casi siempre» y lleva el rótulo «casi todo», sin número. La de «Lo que se mide» y la de la moneda sí son datos.',
+        'La barra de «Lo que predice» no es un dato: dibuja la creencia de que «se nota casi siempre» y lleva el rótulo «la mayoría», sin número. La de «Lo que se mide» y la de la moneda sí son datos.',
         'La pregunta se puede intentar con el párrafo 3: revisar si lo que escribe uno choca con lo que escribe otro o con lo que se sabe. No dice que en un par que se contradice uno mienta (eso es de la idea 3) ni pide suponer tarjetas (idea 1).',
         'Se evitan los nombres de la unidad (Ana, Beto, Ciro, Rosa, Eva, Fito, Gaby, Hugo) y las frases de sus respuestas; la prueba común lo comprueba.',
         'Para Gerson: el párrafo 3 nombra la salida (lo que dice la persona, cuando choca con otra frase o con un hecho) y no da ningún método.',
         'Revisión del Escribidor Escribano (27 nov, otro agente): el párrafo 3, la pregunta y seLleva prometían que a quien miente «lo delata lo que dice», como si las técnicas de la unidad sirvieran para descubrir mentiras en la vida real. No es así: alguien puede mentir sin contradecirse, y los acertijos funcionan porque cada personaje miente siempre o dice siempre la verdad. Ahora el párrafo 3 lo dice (en dos oraciones, para no pasar de 40 palabras), la pregunta pone esa regla a los hermanos y seLleva separa la vida real del acertijo. El párrafo 2 pasó de «Casi todos creemos» a «Casi todo el mundo cree». Datos: el 54 %, los 206 documentos y los 24 483 jueces de Bond y DePaulo, y los 58 países de la encuesta (estudio 1 del Global Deception Research Team), se confirmaron en fuentes secundarias y en el resumen de PubMed el 27 nov; el desglose 47 % y 61 % sigue de memoria.',
+        'Doble revisión (27 nov): el dato y la creencia hablan del mismo caso (mirar la cara para saber si alguien miente), y el 54 frente al 50 de la moneda es medido. Dos cambios. La pregunta ponía a los hermanos de la gaseosa a mentir siempre, y convertir a la familia del alumno en mentirosos fijos no hace falta: ahora la regla es de un juego por mensajes, con jugadores. Y la creencia se dibujaba como «casi todo» (barra en 88), más de lo que se sabe que la gente cree; ahora dice «la mayoría de las veces» (barra en 80, sin número), que es lo que muestran los estudios de confianza: la gente cree que acierta bastante más que una moneda. El pie del panel dice «Mirando la cara, la mentira se nota», la voz de la creencia popular.',
       ],
     },
   };

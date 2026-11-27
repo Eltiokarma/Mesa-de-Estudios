@@ -64,10 +64,10 @@
         'Saltó varias veces sin alcanzarlas y se fue diciendo que no las quería, porque de todos modos estaban verdes. ',
         'En toda la fábula no aparece ninguna persona: solo hay una zorra, una parra y unas uvas que nadie llega a probar.'],
       ['Si te preguntan de qué trata, lo primero que sale es «de una zorra que quería unas uvas», porque la zorra está en cada oración y es la que hace todo. ',
-        'Con esa respuesta, la fábula sería un texto sobre la vida de los zorros, como los de un libro de ciencias, y eso no cuadra con una zorra que habla. ',
-        'Buscar la oración que resume la fábula tampoco funciona, porque esta versión no trae al final una moraleja que lo diga.'],
+        'Esa respuesta cuenta bien lo que pasa, pero no dice por qué alguien se tomaría el trabajo de contarlo durante tantos siglos. ',
+        'En los libros del colegio, la fábula suele terminar con una moraleja que lo explica, y esta versión no la trae, como tampoco la traen los textos de un examen.'],
       ['La fábula habla de una zorra, pero lo que dice es sobre las personas: cuenta lo que hace alguien que no consigue algo y prefiere decir que nunca lo quiso. ',
-        'Por eso la zorra puede aparecer en cada oración sin que la fábula trate de la vida de los zorros. ',
+        'Por eso la zorra puede aparecer en cada oración sin que la fábula trate de los zorros. ',
         'Esta unidad trata del tema y de la idea principal de un texto, y de cómo encontrarlos aunque ninguna oración los diga.'],
     ],
     figura: {
@@ -91,6 +91,7 @@
         'Revisión del Escribidor Escribano (27 nov): el párrafo 3 decía «Para saber de qué trata un texto no basta con ver quién aparece en cada oración, porque hay que preguntarse qué dice el texto entero», que es la regla de la idea 2 (la idea principal es lo que afirma todo el texto); ahora dice el choque del caso: la zorra aparece en cada oración y la fábula no trata de los zorros. En el párrafo 2, «la oración que lo resume» tenía un «lo» sin referente claro; ahora dice «la oración que resume la fábula».',
         'Contenido, para Gerson: la fábula es de Esopo, griego, y no del Perú; es un relato universal. Se eligió porque el choque (el personaje no es el tema) se entiende sin saber el tema; si se prefiere un texto peruano, haría falta otro relato que todos conozcan.',
         'Figura: la misma escena en los dos paneles; en «Lo que dice» se agrega la silueta de una persona detrás de la zorra.',
+        'Doble revisión (27 nov), pendiente de la fábula: se queda. La fábula de Esopo es de un griego, pero es un relato que se cuenta en la primaria peruana y su choque (el personaje que aparece en cada oración no es el tema) se entiende sin saber el tema. Lo que se cambió es el párrafo 2: decía que con la respuesta «de una zorra que quería unas uvas» la fábula sería «un texto sobre la vida de los zorros, como los de un libro de ciencias», una lectura que ningún alumno hace, porque todos saben que una fábula enseña algo. Ahora el párrafo 2 dice lo cierto: esa respuesta cuenta lo que pasa y no dice por qué se cuenta, y lo que se lo diría, la moraleja, no está en esta versión ni suele estar en los textos de examen. Así el quitar la moraleja deja de ser un arreglo escondido: se dice, y se dice para qué sirve. En el párrafo 3, «la vida de los zorros» pasó a «los zorros».',
       ],
     },
   };

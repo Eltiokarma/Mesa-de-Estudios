@@ -32,20 +32,24 @@
   };
   const pie = (cx, l) => l.map((t, i) => `<text x="${cx}" y="${356 + i * 26}" text-anchor="middle" font-size="22" style="fill:var(--muted)">${t}</text>`).join('');
 
-  // Los mismos dos mensajes en los dos paneles. A la izquierda, una sola balanza pareja para los dos; a la derecha, cada
-  // mensaje con su balanza, inclinada hacia lo que va después del «pero».
+  // Los mismos dos mensajes en los dos paneles (doble revisión, 27 nov). A la izquierda, lo que se entiende al leerlos,
+  // que es la intuición correcta: uno quita las ganas y el otro las da. A la derecha, por qué: cada mensaje con su balanza,
+  // inclinada hacia lo que va después del «pero».
+  const efecto = (cx, y, t) => `<text x="${cx}" y="${y}" text-anchor="middle" font-size="19" font-weight="800" fill="currentColor">${t}</text>`;
   const svg = `<svg viewBox="0 0 520 400" width="520" height="400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <line x1="260" y1="12" x2="260" y2="390" style="stroke:var(--line)" stroke-width="2"/>
     <text x="130" y="30" text-anchor="middle" font-size="24" font-weight="800" fill="currentColor">Lo que se entiende</text>
-    ${globo(130, 50, 'rica', 'cara')}${globo(130, 112, 'cara', 'rica')}
-    ${balanza(130, 222, 0, 1.15)}
-    ${pie(130, ['Los dos mensajes', 'dicen lo mismo'])}
+    ${globo(130, 50, 'rica', 'cara')}
+    ${efecto(130, 150, 'Mejor no vamos')}
+    ${globo(130, 196, 'cara', 'rica')}
+    ${efecto(130, 296, 'Vale la pena ir')}
+    ${pie(130, ['Cada mensaje', 'recomienda otra cosa'])}
     <text x="390" y="30" text-anchor="middle" font-size="24" font-weight="800" fill="currentColor">Lo que dice</text>
     ${globo(390, 50, 'rica', 'cara')}
     ${balanza(390, 132, 14, 0.8)}
     ${globo(390, 196, 'cara', 'rica')}
     ${balanza(390, 278, -14, 0.8)}
-    ${pie(390, ['Pesa lo que va', 'al final'])}
+    ${pie(390, ['Pesa lo que va', 'después del «pero»'])}
   </svg>`;
 
   return {
@@ -54,34 +58,35 @@
     parrafos: [
       ['En el grupo de WhatsApp del salón, alguien pregunta adónde ir a comer después del desfile, y dos compañeros responden sobre la misma cevichería del barrio. ',
         'Uno escribe «Es ', rica('rica'), ', pero ', cara('cara'), '» y el otro, «Es ', cara('cara'), ', pero ', rica('rica'), '». ',
-        'Léele los dos mensajes a alguien de tu casa y pregúntale con cuál de los dos le darían más ganas de ir a la cevichería.'],
-      ['Si cuentas lo que dice cada mensaje, los dos traen los mismos datos: la comida es rica y el precio es alto. ',
-        'Con esa cuenta, los mensajes valen lo mismo, como una suma en la que el orden de los números no cambia el resultado, y el «pero» uniría dos datos igual que una «y». ',
-        'Tampoco es cuestión de tono, porque un mensaje escrito no lleva la voz de quien lo manda, y estos dos no tienen ni un emoji que los distinga.'],
-      ['Con los mismos datos, el primer mensaje deja la idea de que no vale la pena ir, y el segundo, la de que sí. ',
-        'El «pero» de los dos mensajes no se limita a juntar los datos, porque hace pesar más el que viene después. ',
+        'Seguro que al leerlos ya sentiste la diferencia: el primero te quita las ganas de ir a la cevichería y el segundo te las da.'],
+      ['Los dos mensajes, sin embargo, traen los mismos datos, porque en los dos la comida es rica y el precio es alto. ',
+        'Tampoco los distingue el tono, porque un mensaje escrito no lleva la voz de quien lo manda, y estos dos no tienen ni un emoji. ',
+        'Lo único que cambia es el orden de las dos palabras alrededor del «pero».'],
+      ['El «pero» no se limita a juntar los datos, porque hace pesar más el que viene después, y por eso cada mensaje recomienda otra cosa. ',
+        'Lo que sentiste sirve también al escribir: si quieres animar a alguien, dejas lo bueno para después del «pero», y si quieres advertirle, lo malo. ',
         'Las palabras que dicen cómo se une una idea con otra se llaman conectores, y de ellas trata esta unidad.'],
     ],
     figura: {
       antes: 2,
       svg,
-      alt: 'Dos dibujos con los mismos dos mensajes: «Es rica, pero cara» y «Es cara, pero rica». Lo que se entiende: una sola balanza pareja, porque los dos traen los mismos datos y dirían lo mismo. Lo que dice cada mensaje: la balanza del primero se inclina hacia el precio y la del segundo hacia el sabor, hacia lo que va después del pero.',
+      alt: 'Dos dibujos con los mismos dos mensajes: «Es rica, pero cara» y «Es cara, pero rica». Lo que se entiende: el primero dice mejor no vamos y el segundo, vale la pena ir. Lo que dice cada mensaje: la balanza del primero se inclina hacia el precio y la del segundo hacia el sabor, hacia lo que va después del pero.',
     },
     pregunta: 'Si un tercer compañero escribiera «Es rica y cara», ¿su mensaje te ayudaría a decidir si vas o no a la cevichería?',
     ficha: {
       seLleva: 'Un conector no solo une dos ideas, también dice cuál pesa más: por eso «rica, pero cara» y «cara, pero rica» traen los mismos datos y no recomiendan lo mismo.',
       alcance: 'Sí (marco de lectura de PISA 2025, deducción propia: integrar y relacionar las partes de un texto; el conector como pista de la relación entre ideas).',
-      choque: 'Los dos mensajes traen los mismos datos y, si solo se suman, dicen lo mismo; el primero desanima y el segundo anima a ir.',
-      atajo: 'Leer el «pero» como una «y» que suma datos (el orden no importaría), y la explicación trampa del tono, que no existe en un mensaje escrito sin emojis.',
+      choque: 'Sin choque fabricado (apertura-pisa.md, punto 7): el alumno ya siente que el primer mensaje desanima y el segundo anima; lo que se le muestra es que los datos son los mismos y que la diferencia la hace el «pero», que pone el peso en lo que va después.',
+      atajo: 'La explicación trampa del tono, que no existe en un mensaje escrito sin emojis. Leer el «pero» como una «y» ya no se le atribuye al alumno en el texto: aparece solo en la pregunta, como el mensaje de un tercero.',
       porVerificar: [
         'Que «pero» oriente la conclusión hacia el segundo miembro (lo que va después pesa más): es la orientación argumentativa de Anscombre y Ducrot y la recogen las gramáticas del español; falta la cita con página (por ejemplo, la Nueva gramática de la RAE, capítulo de la coordinación adversativa).',
-        'Que la persona a la que se le leen los mensajes elija el segundo: es lo esperado por lo anterior, no una encuesta propia.',
+        'Que casi cualquiera sienta que el primer mensaje desanima y el segundo anima: es lo esperado por lo anterior, no una encuesta propia; el texto lo dice como «seguro que ya sentiste», que el alumno comprueba al leer.',
       ],
       notas: [
         'Revisión del Escribidor Escribano (27 nov): en el párrafo 1, «pregúntale después de cuál de los dos» se podía leer como «después de cuál mensaje»; ahora dice «pregúntale con cuál de los dos». El párrafo 3 abría con una oración de 39 palabras que juntaba el resultado y la causa con el molde «no solo une dos ideas: hace…»; ahora son dos oraciones, el resultado y lo que hace el «pero» en estos dos mensajes, dicho del caso y no como regla general de los conectores (la regla de la idea 1 es nombrar la relación antes de elegir el conector, y eso no se adelanta).',
         'El párrafo 1 propone la prueba (leer los mensajes a alguien de la casa) en lugar de afirmar un resultado que no se midió; el párrafo 3 da el resultado como lo que dejan los mensajes, que es lo que se puede comprobar leyéndolos.',
         'El párrafo 3 dice qué hace el «pero» (hace pesar más lo que viene después): es lo que el alumno se lleva y adelanta el sentido de la idea 1 (la relación decide el conector), sin la frase de su misión ni el caso de Mateo.',
         'La pregunta se puede intentar con el texto: con «y» los dos datos pesan igual y el mensaje no recomienda nada. La clase la retoma para presentar las clases de conectores (suma frente a contraste).',
+        'Doble revisión (27 nov), reescrita: el párrafo 2 decía que, si se cuentan los datos, los dos mensajes «valen lo mismo, como una suma», y que el «pero» uniría igual que una «y». Nadie lee así un mensaje de WhatsApp: cualquier alumno siente la diferencia a la primera, así que el choque era forzado. La idea es intuitiva y útil, y ahora la apertura la usa como intuición correcta (punto 7): el párrafo 1 dice lo que el alumno ya sintió, el párrafo 2 muestra que los datos y el tono no cambian, y el párrafo 3 dice qué hace el «pero» y dónde sirve al escribir (dejar lo bueno o lo malo para después del «pero»). La figura cambió a la izquierda: en vez de una balanza pareja (la lectura que nadie hace), cada mensaje con lo que se entiende («Mejor no vamos», «Vale la pena ir»); la derecha, con las balanzas inclinadas, sigue igual. No toca la Predice de la idea 1 (Mateo y el «sin embargo»).',
       ],
     },
   };

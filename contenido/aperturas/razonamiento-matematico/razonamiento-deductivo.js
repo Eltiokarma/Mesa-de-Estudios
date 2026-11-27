@@ -71,7 +71,7 @@
       ['Rosa tiene 31 años, estudió ingeniería electrónica en la UNI y desde niña desarmaba radios para ver cómo funcionaban. ',
         'Con esos datos, ¿qué te parece más probable: que Rosa ', banco('trabaje en un banco'), ', o que ', banco('trabaje en un banco'), ' y además ',
         robot('dicte talleres de robótica'), ' los sábados? ',
-        'En 1983, los psicólogos Amos Tversky y Daniel Kahneman le hicieron una pregunta como esta, con otra persona y otros oficios, a un grupo de universitarios de Canadá, y unos 85 de cada 100 eligieron la segunda opción.'],
+        'En 1983, los psicólogos Amos Tversky y Daniel Kahneman le hicieron una pregunta como esta, con otra persona y otras opciones, a un grupo de universitarios de Canadá, y unos 85 de cada 100 eligieron la segunda opción.'],
       ['La elección se siente razonable, porque la segunda opción encaja con lo que sabes de Rosa y la primera no encaja con nada. ',
         'Con esa idea, la opción de banco y robótica le ganaría a la de banco, y mientras más detalles de la historia coinciden, más segura parece la apuesta.'],
       ['Sin embargo, toda persona que ', banco('trabaja en un banco'), ' y ', robot('dicta robótica'), ' también trabaja en un banco, así que el grupo de la segunda opción cabe entero dentro del de la primera y no puede ser más grande. ',
@@ -90,7 +90,7 @@
       atajo: 'La idea de que más detalles que coinciden dan más pruebas, que es la que hace caer; y la de que las dos opciones valen lo mismo porque «las dos pueden pasar», que no ve que una cabe dentro de la otra. Sin probabilidad formal: el dibujo de los grupos (Venn) basta, y es lo que la idea 3 trabaja después.',
       porVerificar: [
         'El experimento: Tversky y Kahneman, «Extensional versus intuitive reasoning: The conjunction fallacy in probability judgment», Psychological Review 90 (1983). De memoria: la versión de dos opciones del problema de Linda se hizo con 142 estudiantes de la Universidad de Columbia Británica (Canadá), y el 85 % eligió la conjunción. Confirmar el número de estudiantes, el porcentaje y la universidad en el artículo. Revisión (27 nov): el 85 % se confirmó en una fuente secundaria (Charness, Karni y Levin, que citan la p. 297 del artículo); los 142 estudiantes no, así que el texto ya no da ese número y dice «unos 85 de cada 100».',
-        'El caso de Rosa es propio (la persona, la UNI y los oficios), hecho para que el alumno lo reconozca; no es el del experimento, que usaba a «Linda», cajera de banco y feminista. El texto lo dice: «con otra persona y otros oficios».',
+        'El caso de Rosa es propio (la persona, la UNI y los oficios), hecho para que el alumno lo reconozca; no es el del experimento, que usaba a «Linda», cajera de banco y feminista. El texto lo dice: «con otra persona y otras opciones».',
       ],
       notas: [
         'La figura dibuja cada opción como un grupo de personas: en «Lo que predice», el tamaño del grupo es lo probable que se siente; en «Lo que se mide», es el grupo real. Así el choque se ve sin números de probabilidad.',
@@ -98,6 +98,7 @@
         'Para Gerson: el párrafo 3 dice por qué la segunda opción no puede ser mayor (el grupo cabe dentro del otro). Es la salida del choque y lo que sostiene seLleva; no adelanta la regla de los aros (idea 3) ni ningún «Ningún… es…».',
         'El parentesco, que también es de la unidad, no aparece en la apertura: forzarlo en el mismo choque lo volvía otro tema.',
         'Revisión del Escribidor Escribano (27 nov, otro agente): el párrafo 2 decía que la segunda opción sería más probable «que solo trabaje en un banco». Ese «solo» cambia la primera opción por «banco y no robótica», y con esa lectura la segunda sí podría ser más probable, que es justo lo que el choque niega; ahora compara «banco y robótica» con «banco». Se quitó el número de estudiantes, que no está confirmado, y «lo que sabemos de Rosa» pasó a «lo que sabes», de tú.',
+        'Doble revisión (27 nov): las cuentas cuadran (las dos opciones hablan de la misma Rosa, y el grupo de banco y robótica cabe en el de banco), y el error es real: es la falacia de la conjunción, medida en el experimento que se cita. Rosa no es un estereotipo que hiera: es una ingeniera, y lo que hace caer es que la historia encaja, no un prejuicio sobre ella. Único cambio: «otros oficios» pasó a «otras opciones», porque en el experimento original la segunda opción no era un oficio (Linda era «cajera de banco y feminista»).',
       ],
     },
   };

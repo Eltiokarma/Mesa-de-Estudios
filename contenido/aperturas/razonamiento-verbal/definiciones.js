@@ -60,13 +60,13 @@
 
   return {
     unidad: 'razonamiento-verbal.definiciones',
-    titulo: '¿Por qué la araña no es un insecto, si es tan pequeña como una hormiga?',
+    titulo: '¿Por qué la araña no es un insecto, si es un bicho pequeño como la hormiga?',
     parrafos: [
       ['Cuando aparece una araña en el rincón del baño, es común llamarla insecto, igual que a la hormiga de la cocina o a la mosca. ',
         'El diccionario de la Real Academia define al insecto como un animal con un par de antenas y ', seis('seis patas'), ', y deja fuera a la araña. ',
         'Para comprobarlo no hace falta un laboratorio: si cuentas las patas de una araña, encuentras ', ocho('ocho'), ', dos más que las de una hormiga.'],
       ['La idea que se usa en la casa es que un insecto es un bicho pequeño, de los que caminan por el suelo o vuelan cerca de la comida. ',
-        'Con esa idea, la araña entra sin problema, porque es tan pequeña como una hormiga y también se mete por las rendijas. ',
+        'Con esa idea, la araña entra sin problema, porque es pequeña como la hormiga y también se mete por las rendijas. ',
         'Tampoco sirve pensar que los insectos son los bichos con alas, porque la hormiga obrera no tiene alas y es un insecto de todos modos.'],
       ['La araña y la hormiga se parecen en el tamaño, pero la definición de «insecto» no mira el tamaño del bicho ni el lugar donde vive. ',
         'Mira sus patas, que se pueden contar, y por eso la araña queda fuera aunque viva en la misma casa que la hormiga. ',
@@ -93,6 +93,7 @@
         'Revisión del Escribidor Escribano (27 nov): el párrafo 3 decía «Los junta por un rasgo que tienen todos los insectos y ningún otro bicho», que enunciaba la regla de las ideas 1 y 2 (rasgo que separa, presente en todos los casos); ahora dice «Mira sus patas, que se pueden contar». El cierre pasó de «de las definiciones, de cómo se arma una» (aposición que se lee como lista) a «de las definiciones y de cómo se arma una».',
         'La pregunta se puede intentar con el texto: hay que contarle las patas, y como el ciempiés tiene muchas, queda fuera. La clase la retoma para presentar el rasgo que separa.',
         'Figura: los mismos tres bichos en los dos paneles; cambia solo la caja (bichos pequeños o seis patas). El turquesa marca lo que entra y el naranja lo que se cuela, como en la leyenda de la idea 1.',
+        'Doble revisión (27 nov): el choque es justo (los mismos tres bichos y una sola regla que cambia, el tamaño o las patas), el error es real (llamar insecto a la araña es de uso común) y la cuenta cuadra: ocho patas son dos más que seis. Único cambio: el título y el párrafo 2 decían que la araña es «tan pequeña como una hormiga», y muchas arañas de casa son bastante más grandes que una hormiga; ahora dicen que es un bicho pequeño, como la hormiga.',
       ],
     },
   };

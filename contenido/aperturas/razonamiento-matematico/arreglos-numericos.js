@@ -74,10 +74,10 @@
     unidad: 'razonamiento-matematico.arreglos-numericos',
     titulo: '¿Cómo sabe el lector de la caja que leyó mal un código de barras?',
     parrafos: [
-      ['En la caja del supermercado, el lector pasa su luz sobre las barras de cada producto y pita cuando reconoce las 13 cifras impresas debajo, que en muchos productos peruanos empiezan con 775. ',
+      ['En la caja del supermercado, el lector pasa su luz sobre las barras de cada producto y pita cuando reconoce en ellas las 13 cifras que van impresas debajo, que en muchos productos peruanos empiezan con 775. ',
         'Si una mancha o una arruga hace que confunda una sola de esas cifras, el lector no pita, y la cajera tiene que pasar el producto otra vez o teclear el código.'],
-      ['Parece que el lector no tendría cómo darse cuenta, porque no sabe qué producto le pusieron delante y lo único que ve son barras. ',
-        'Con 13 cifras cualesquiera, una cifra mal leída solo daría otro código, y el lector registraría otro producto o uno que no existe, sin enterarse de que se equivocó.'],
+      ['Lo primero que se piensa es que el lector busca el código en la lista de productos de la tienda y que avisa cuando no lo encuentra. ',
+        'Esa lista no basta, porque una cifra mal leída puede dar justo el código de otro producto de la tienda, y con 13 cifras cualesquiera el lector registraría ese otro producto sin enterarse de que se equivocó.'],
       ['Lo que el lector usa es que las 13 cifras no son libres, porque ', ultima('la última'), ' se calcula con una cuenta a partir de las otras 12, y si una cifra cambia, la cuenta deja de cuadrar. ',
         'En los cuadrados mágicos y en los demás arreglos numéricos de esta unidad pasa algo parecido, porque sus números también tienen que cumplir una cuenta y no se pueden elegir todos a gusto.'],
     ],
@@ -91,7 +91,7 @@
       seLleva: 'Cuando unos números tienen que cumplir una cuenta, no son todos libres: la última cifra de un código de barras la deciden las otras 12, y por eso el lector de la caja descubre una cifra mal leída.',
       alcance: 'Parcial (deducción propia con el marco de Matemática PISA 2022: cantidad y razonamiento con números en un contexto real; los cuadrados mágicos como técnica de examen no son contenido PISA).',
       choque: 'Se cree que el lector, que solo ve barras, registraría otro producto con una cifra mal leída; en la caja, no pita, porque la cuenta de las 13 cifras no cuadra.',
-      atajo: 'La explicación de que el lector compara con la lista de productos de la tienda: el código de una cifra cambiada falla la cuenta antes de buscar nada, y un lector suelto, sin ninguna lista, tampoco lo acepta. Se descarta en la ficha y no en el texto, para no alargar el párrafo 2.',
+      atajo: 'La explicación de que el lector compara con la lista de productos de la tienda, que es lo primero que diría un alumno: una cifra cambiada puede dar el código de otro producto que sí está en la lista, y entonces la lista no avisa. Ahora se descarta en el párrafo 2.',
       porVerificar: [
         'Que los códigos de los productos hechos en el Perú empiecen con 775 (prefijo GS1 del Perú, de memoria).',
         'La cifra de control del EAN-13: se suman las cifras de los lugares impares, más tres veces las de los lugares pares (de las 12 primeras), y la última es lo que falta para llegar al siguiente múltiplo de diez. Con 775123456789 la suma da 128 y la cifra es 2. Cambiar una sola cifra cambia siempre la suma en algo que no es múltiplo de diez (1 y 3 no tienen factores comunes con 10), así que el error se detecta siempre. Cálculo propio; confirmar con la norma GS1.',
@@ -103,6 +103,7 @@
         'La pregunta compara el código con una boleta (los dos tienen un número que se calcula con los demás) y se puede pensar sin la teoría: el precio tapado es el total menos los otros precios. Es la misma obligación de la que vive la unidad, sin usar un objeto de la unidad.',
         'Revisión del Escribidor Escribano (27 nov, otro agente): la pregunta hablaba de un cuadrado de 3 × 3 con filas de igual suma y preguntaba si hay casillas obligadas por las demás. Es el objeto de la idea 4, y empujar a responder «sí, hay casillas fijas» le resta a dos distractores de la unidad: «Cualquiera de los nueve» (Predice de la idea 4, el centro) y «No se sabe sin las otras casillas» (idea 5); ahora pregunta por una boleta. La última oración del párrafo 3 decía que la obligación «es la que permite resolverlos», que ya es el método de la unidad; se recortó. El 775 se presentaba como ejemplo de las 13 cifras («como el 775»), cuando es su comienzo.',
         'Para Gerson: el párrafo 3 explica el mecanismo del código (la última cifra sale de una cuenta) sin dar la cuenta, y pasa a los cuadrados mágicos con una frase general. Es la salida del choque y lo que sostiene seLleva.',
+        'Doble revisión (27 nov): el choque es justo (el mismo código, con la misma cifra manchada, en los dos paneles) y la cuenta de la cifra de control se rehízo: con 775123456789, las cifras impares suman 7 + 5 + 2 + 4 + 6 + 8 = 32 y las pares, 7 + 1 + 3 + 5 + 7 + 9 = 32, que por 3 dan 96; 32 + 96 = 128, y falta 2 para 130. Dos cambios. El párrafo 2 decía que el lector «no tendría cómo darse cuenta, porque lo único que ve son barras», una idea que casi nadie tiene: lo que diría un alumno es que el lector busca el código en la lista de la tienda. Ahora el párrafo 2 parte de esa idea real y dice por qué no basta (la cifra mal leída puede dar el código de otro producto que sí está en la lista). Y el párrafo 1 decía que el lector reconoce «las 13 cifras impresas debajo», cuando lee las barras, no las cifras; ahora reconoce en las barras las cifras que van impresas debajo.',
       ],
     },
   };

@@ -51,7 +51,7 @@
         'Sin embargo, un bloque de 2 × 2 casillas también es un cuadrado, igual que uno de 3 × 3 o el tablero entero, y si se cuentan los de todos los tamaños, el tablero tiene ',
         grande('204 cuadrados'), '.'],
       ['La idea más directa es contarlos uno por uno sobre el tablero, pero así es fácil equivocarse, porque los cuadrados grandes se montan unos sobre otros y uno se salta alguno o lo cuenta dos veces. ',
-        'La regla de tres tampoco sirve: un tablero de 2 × 2 tiene 5 cuadrados, y como el de 8 × 8 tiene 16 veces más casillas, tendría 80, que no es la cuenta.'],
+        'Quien ya sospecha la trampa suele sumar el tablero entero a las casillas y responder 65, pero se olvida de los bloques de 2 × 2, de 3 × 3 y de todos los tamaños intermedios.'],
       ['El 204 sale de contar primero tableros chicos, ver cómo crece la cuenta cuando se agrega una fila y una columna, y seguir así hasta el de 8 × 8. ',
         'Llegar así, desde los casos chicos, a un caso grande que no se puede contar a mano es el razonamiento inductivo, el tema de esta unidad.'],
     ],
@@ -65,7 +65,7 @@
       seLleva: 'Lo que se ve primero no siempre es todo lo que hay: un tablero de ajedrez esconde 204 cuadrados, y para contarlos sin perderse se empieza por tableros chicos y se busca cómo crece la cuenta.',
       alcance: 'Parcial (deducción propia con el marco de Matemática PISA 2022: cambio y relaciones, generalizar un patrón; la inducción de examen, con sucesiones de figuras, no es contenido PISA).',
       choque: 'La primera respuesta es 64 cuadrados (las casillas); contando los de todos los tamaños, el tablero tiene 204.',
-      atajo: 'Contar uno por uno sobre el tablero, que se pierde porque los cuadrados se montan; y la regla de tres desde el tablero de 2 × 2 (5 cuadrados, 16 veces más casillas, 80), que no da la cuenta. Ninguno de los dos reemplaza a contar tableros chicos y ver cómo crece la cuenta.',
+      atajo: 'Contar uno por uno sobre el tablero, que se pierde porque los cuadrados se montan; y sumar el tablero entero a las casillas (65), la respuesta de quien ya sospecha la trampa, que se olvida de los tamaños intermedios. Ninguno de los dos reemplaza a contar tableros chicos y ver cómo crece la cuenta.',
       porVerificar: [
         'Ningún dato sale de memoria: 204 = 64 + 49 + 36 + 25 + 16 + 9 + 4 + 1 (en un tablero de 8 × 8 hay (9 − k)² cuadrados de lado k), y el de 2 × 2 tiene 4 + 1 = 5. Cálculo propio.',
         'Que «64» sea la primera respuesta: es la cuenta de las casillas y la que daría casi cualquiera, pero no hay datos de alumnos.',
@@ -76,6 +76,7 @@
         'La pregunta se responde contando a mano en un tablero chico (9 + 4 + 1 = 14) y es el primer paso de la inducción: el alumno empieza a ver qué agrega cada tamaño. No es ninguna Predice de la unidad.',
         'Para Gerson: el párrafo 3 dice cómo se llega al 204 (casos chicos, ver cómo crece, seguir), sin dar la regla de los cuadrados. Es el método del tema, como el «averiguar qué le pasa a una cantidad» de la pizza.',
         'Revisión del Escribidor Escribano (27 nov, otro agente): el párrafo 2 decía que contar uno por uno «es la que más falla», una comparación sin dato; ahora dice que así es fácil equivocarse. La última oración enunciaba el método de la unidad («encontrar la regla en los casos chicos, comprobar por qué vale y usarla…»), y «comprobar por qué vale» es la regla de la idea 2 («Tres casos no prueban»); se recortó para que quede el choque y el nombre del tema.',
+        'Doble revisión (27 nov): el choque es justo, porque las dos cuentas hablan del mismo tablero y el párrafo 1 dice qué se cuenta antes de dar el 204 (204 = 64 + 49 + 36 + 25 + 16 + 9 + 4 + 1, recalculado). El párrafo 2 descartaba la regla de tres desde el tablero de 2 × 2 (16 veces más casillas, 80 cuadrados), una cuenta que ningún alumno haría con cuadrados: era un muñeco de paja. Ahora descarta el 65 (casillas más el tablero entero), que es la segunda respuesta que da casi cualquiera cuando sospecha la trampa (de la experiencia común con este acertijo, sin datos de alumnos).',
       ],
     },
   };

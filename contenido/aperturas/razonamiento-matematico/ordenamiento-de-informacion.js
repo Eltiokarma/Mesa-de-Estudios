@@ -81,8 +81,8 @@
         'Cualquiera que haya jugado sabe lo que pasa con la tercera pareja: ', gana('el papel le gana a la piedra'), ', porque la envuelve, ',
         'y ninguna de las tres manos les gana a las otras dos.'],
       ['Cuando ordenas cosas, piensas en cadena: si Rocío es más alta que Sara y Sara es más alta que Tania, Rocío es más alta que Tania, aunque nunca las hayas visto juntas. ',
-        'Con esa costumbre, la piedra le ganaría a la tijera, la tijera al papel y, por la cadena, ', gana('la piedra al papel'), ', así que las tres quedarían en fila, de la más fuerte a la más débil. ',
-        'Probar otro orden tampoco salva la fila, porque en cualquier fila en que cada mano le gane a la siguiente, la última le gana a la primera.'],
+        'Si esa misma cadena se usara en el juego, como la piedra le gana a la tijera y la tijera al papel, ', gana('la piedra le ganaría al papel'), ', y las tres quedarían en fila. ',
+        'Tú sabes que en el juego no es así, y probar otro orden tampoco salva la fila, porque en cualquier fila en que cada mano le gane a la siguiente, la última le gana a la primera.'],
       ['La cadena funciona con estaturas porque «más alta que» pasa de una persona a otra, y con piedra, papel o tijera no funciona porque «le gana a» no pasa: lo que se forma no es una fila, sino una ronda. ',
         'Los problemas de ordenamiento de información dan pistas como «llegó antes que», «vive más arriba que» o «se sienta a la derecha de», y esta unidad trata de cómo armar con ellas la fila, el edificio o la mesa.'],
     ],
@@ -108,6 +108,7 @@
         'Para Gerson: la ronda del juego roza el ordenamiento circular (ideas 5 y 6), pero no dice nada de derechas ni de sillas frente a frente.',
         'Revisión del Escribidor Escribano (27 nov, otro agente): la primera oración ponía 20 palabras de marco antes del verbo («En piedra, papel o tijera, el juego con el que…, la piedra le gana»); ahora presenta el juego y después da las reglas. El párrafo 2 hablaba en primera del plural («ordenamos», «pensamos», «hayamos medido»); ahora va de tú, como el resto de la app. Contenido, para Gerson: el párrafo 3 dice que las tres manos forman «una ronda» y no una fila, y la misma unidad enseña después a ordenar gente en una mesa redonda. No se contradicen (en la mesa, la relación es «a la derecha de», no «le gana a»), pero un alumno podría creer que lo que está en ronda no se puede ordenar; si pasa en el lector en frío, la idea 5 puede recordarlo en su Lee.',
         'La pregunta se responde con el párrafo 3, que ya dice que «más alta que» pasa de una persona a otra. Es fácil a propósito, como la del pan en la pizza; no se cambió.',
+        'Doble revisión (27 nov): el párrafo 2 decía que, «con esa costumbre», la piedra le ganaría al papel, como si el alumno lo fuera a creer, y nadie que haya jugado lo cree: era un muñeco de paja. Ahora el párrafo 2 dice que eso es lo que daría la cadena si se usara en el juego, y que el alumno ya sabe que no es así; el choque queda entre la regla de la cadena, que sí usa a diario y le sirve con estaturas, y un caso que conoce de memoria. El panel «Lo que predice» ya era la predicción de la cadena, no del alumno, y no cambia.',
       ],
     },
   };
