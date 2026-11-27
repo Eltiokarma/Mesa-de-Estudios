@@ -337,3 +337,21 @@ test('redacción: magnetita, molécula del juego, tiza y el 22,4 L/mol del papel
   const p10 = require('../../../plantillas/mol-composicion/papel.json').problemas.find(p => p.id === 'p10');
   assert.match(p10.enunciado, /22,4 L por mol/);
 });
+test('verificación 27 nov: regla de las leyes, Lee del porcentaje y la sal sin agua que pasa de 100 %', () => {
+  const l = idea('leyes-ponderales'), r = plano(l.regla.texto);
+  // Las leyes son anteriores a la teoría atómica: la regla las enuncia y después dice que los átomos las explican.
+  assert.ok(!/no cambia, porque los átomos/.test(r) && /Los átomos lo explican/.test(r), r);
+  // El caso del agua (11 g de H en 100 g) delataba la Predice del CH₄: más átomos de H no es más masa.
+  const c = idea('composicion-formula-empirica'), lee = JSON.stringify(c.lee);
+  assert.ok(!/agua hay unos 11 g de hidrógeno/.test(lee), lee);
+  let vistas = 0;
+  for (let s = 0; s < 400; s++) {
+    const a = c.ahoraTu.generar(s); if (!/es agua\?$/.test(plano(a.pregunta))) continue;
+    for (const o of a.opciones.filter(o => o.error === 'QM-HIDRATO-ANHIDRA')) {
+      const pasa = +plano(o.texto).replace(',', '.').replace(/\s*%/, '') > 100;
+      assert.equal(/no puede pasar de 100 %/.test(o.siFuera), pasa, `${plano(a.pregunta)} ${plano(o.texto)}: ${o.siFuera}`);
+      if (pasa) vistas++;
+    }
+  }
+  assert.ok(vistas > 0, 'ninguna semilla dio una sal sin agua de más de 100 %');
+});

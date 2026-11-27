@@ -122,3 +122,16 @@ test('cierre: masas sin «=», N con su glosa, el Dato de la empírica completo 
       const v = 100 * +m[1].replace(',', '.') / +m[2].replace(',', '.'), r = +m[4].replace(',', '.'); assert.equal(m[3], Math.abs(v - r) < 1e-9 ? '=' : '≈', `${d}: ${t}`); }
   }
 });
+test('verificación 27 nov: si la alternativa de la sal sin agua pasa de 100 % (MgSO₄·7H₂O, 105 %), su explicación dice que eso ya delata el error', () => {
+  let vistas = 0;
+  for (let s = 0; s < 3000; s++) {
+    const p = gen.generar(s, { idea: 'composicion-formula-empirica' }); if (p._datos.tipo !== 'agua-hidrato') continue;
+    for (const a of p.alternativas.filter(a => a.error && a.error.id === 'QM-HIDRATO-ANHIDRA')) {
+      const pasa = +a.valor.replace(',', '.').replace(/\s*%/, '') > 100;
+      assert.equal(/no puede pasar de 100 %/.test(a.error.explicacion), pasa, `${p._datos.f} ${a.valor}: ${a.error.explicacion}`);
+      assert.ok(a.error.explicacion.split(/\s+/).length <= 30, a.error.explicacion);
+      if (pasa) vistas++;
+    }
+  }
+  assert.ok(vistas > 0);
+});

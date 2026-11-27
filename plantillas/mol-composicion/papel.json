@@ -1,6 +1,6 @@
 {
   "titulo": "Mol, masa molar y composición: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. n = m/M (más gramos, más moles; si te sale al revés, invertiste la fórmula). Un mol tiene 6,02 × 10²³ partículas: fíjate si son moléculas o átomos. En la masa molar, cada masa atómica va multiplicada por su subíndice. Para una fórmula empírica, compara moles, no gramos: divide cada masa entre su masa atómica, luego entre el menor, y si sale 1,5 multiplica todo por 2. 22,4 L/mol solo vale para gases en condiciones normales. Masas atómicas: H = 1, C = 12, N = 14, O = 16, Mg = 24, S = 32, Cl = 35,5, Ca = 40, Fe = 56, Ba = 137.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. n = m/M: más gramos dan más moles, y si te sale al revés, invertiste la fórmula. Un mol tiene 6,02 × 10²³ partículas, así que fíjate si se cuentan moléculas o átomos. En la masa molar, cada masa atómica va multiplicada por su subíndice. Para una fórmula empírica se comparan moles, no gramos, porque los subíndices cuentan átomos: divide cada masa entre su masa atómica, luego entre el menor, y si sale 1,5 multiplica todo por 2. El valor 22,4 L/mol solo vale para gases en condiciones normales. Masas atómicas: H 1; C 12; N 14; O 16; Mg 24; S 32; Cl 35,5; Ca 40; Fe 56; Ba 137.",
   "problemas": [
     {
       "id": "p1",
@@ -8,9 +8,9 @@
       "enunciado": "¿Cuántos átomos de hidrógeno hay en 34 g de amoníaco (NH₃)? (masas atómicas: N 14; H 1. Nₐ = 6,02 × 10²³)",
       "respuesta": "3,612 × 10²⁴ átomos de H.",
       "pasos": [
-        "Masa molar del NH₃: 14 + 3 · 1 = 17 g/mol.",
-        "Moles: n = m/M = 34/17 = 2 mol de NH₃. Más gramos deben dar más moles: si te sale 17/34 = 0,5, invertiste la fórmula.",
-        "Moléculas: 2 · 6,02 × 10²³ = 1,204 × 10²⁴ moléculas de NH₃.",
+        "La masa molar del NH₃ suma un N y tres H: 14 + 3 · 1 = 17 g/mol.",
+        "Cada mol de NH₃ pesa 17 g, así que en 34 g hay n = m/M = 34/17 = 2 mol. Más gramos deben dar más moles: si te sale 17/34 = 0,5, invertiste la fórmula.",
+        "Cada mol trae 6,02 × 10²³ moléculas, así que 2 mol traen 2 · 6,02 × 10²³ = 1,204 × 10²⁴ moléculas de NH₃.",
         "Cada molécula tiene 3 átomos de H: 3 · 1,204 × 10²⁴ = 3,612 × 10²⁴ átomos de H. Fíjate siempre si te piden moléculas o átomos."
       ],
       "verificar": [
@@ -36,9 +36,9 @@
       "enunciado": "¿Cuántos gramos pesan 1,204 × 10²⁴ moléculas de dióxido de carbono (CO₂)? (masas atómicas: C 12; O 16)",
       "respuesta": "88 g.",
       "pasos": [
-        "Moles: 1,204 × 10²⁴ / 6,02 × 10²³ = 2 mol.",
-        "Masa molar del CO₂: 12 + 2 · 16 = 44 g/mol (el O va con su subíndice 2).",
-        "Masa: 2 · 44 = 88 g."
+        "Como cada mol trae 6,02 × 10²³ moléculas, se divide entre ese número: 1,204 × 10²⁴ / 6,02 × 10²³ = 2 mol.",
+        "La masa molar del CO₂ es 12 + 2 · 16 = 44 g/mol, con el O contado dos veces por su subíndice.",
+        "Cada mol pesa 44 g, así que 2 mol pesan 2 · 44 = 88 g."
       ],
       "verificar": [
         {
@@ -58,7 +58,7 @@
       "preguntas": [
         {
           "id": "p2a",
-          "enunciado": "Se tienen 1,204 × 10²⁴ moléculas de dióxido de carbono (CO₂). Usa C = 12, O = 16 y Nₐ = 6,02 × 10²³.",
+          "enunciado": "Se tienen 1,204 × 10²⁴ moléculas de dióxido de carbono (CO₂). Usa las masas atómicas C 12 y O 16, y Nₐ = 6,02 × 10²³.",
           "pregunta": "¿Cuántos gramos pesan?",
           "unidad": "g",
           "decimales": 2,
@@ -67,7 +67,7 @@
             {
               "id": "ES18-sin-subindice",
               "respaldo": "documentado",
-              "explicacion": "Sumaste un solo O: 12 + 16 = 28. El O lleva subíndice 2: 12 + 2 · 16 = 44 g/mol.",
+              "explicacion": "Sumaste un solo O: 12 + 16 = 28. El subíndice 2 dice que la molécula tiene dos O, así que M = 12 + 2 · 16 = 44 g/mol.",
               "fn": "moles",
               "args": [28, { "moleculas": 1.204e+24 }],
               "campo": "gramos",
@@ -76,7 +76,7 @@
             {
               "id": "ES7-formula-invertida",
               "respaldo": "documentado",
-              "explicacion": "Dividiste la masa molar entre los moles. La masa es moles por masa molar: m = n · M = 2 · 44.",
+              "explicacion": "Dividiste la masa molar entre los moles. Si un mol pesa 44 g, dos moles pesan el doble: la masa es m = n · M = 2 · 44.",
               "fn": "moles",
               "args": ["CO2", { "moleculas": 1.204e+24 }],
               "campo": "masaInvertida",
@@ -129,7 +129,7 @@
             {
               "id": "AT4-promedio-simple",
               "respaldo": "parcial",
-              "explicacion": "Sacaste el promedio simple. Hay muchos más átomos de boro-11: cada masa se pesa con su abundancia, 10 · 0,2 + 11 · 0,8.",
+              "explicacion": "Sacaste el promedio simple, que valdría si los dos isótopos abundaran igual. Hay cuatro átomos de boro-11 por cada boro-10, así que cada masa se pesa con su abundancia: 10 · 0,2 + 11 · 0,8.",
               "fn": "promedio",
               "args": [[{ "masa": 10, "abundancia": 20 }, { "masa": 11, "abundancia": 80 }]],
               "campo": "simple",
@@ -138,7 +138,7 @@
             {
               "id": "AT4-abundancias-cruzadas",
               "respaldo": "hipotesis",
-              "explicacion": "Cruzaste las abundancias. El 80 % es del boro-11: el promedio queda más cerca de 11.",
+              "explicacion": "Cruzaste las abundancias: el 80 % es del boro-11, no del boro-10. Como el boro-11 es el que más abunda, el promedio queda más cerca de 11.",
               "fn": "promedio",
               "args": [[{ "masa": 10, "abundancia": 80 }, { "masa": 11, "abundancia": 20 }]],
               "campo": "ponderado",
@@ -154,8 +154,8 @@
       "enunciado": "¿Qué porcentaje en masa de nitrógeno tiene el nitrato de amonio (NH₄NO₃)? (masas atómicas: N 14; H 1; O 16)",
       "respuesta": "35 %.",
       "pasos": [
-        "Cuenta los átomos de toda la fórmula: 2 N, 4 H y 3 O.",
-        "Masa molar: 2 · 14 + 4 · 1 + 3 · 16 = 28 + 4 + 48 = 80 g/mol.",
+        "Primero cuenta los átomos de toda la fórmula: hay 2 N, uno en el NH₄ y otro en el NO₃, 4 H y 3 O.",
+        "La masa molar suma cada masa atómica por sus átomos: 2 · 14 + 4 · 1 + 3 · 16 = 28 + 4 + 48 = 80 g/mol.",
         "% de N = 28/80 · 100 = 35 %. Si cuentas un solo N, sale 14/80 = 17,5 %: hay dos N en la fórmula, uno en NH₄ y otro en NO₃."
       ],
       "verificar": [
@@ -173,7 +173,7 @@
       "preguntas": [
         {
           "id": "p4a",
-          "enunciado": "El nitrato de amonio tiene la fórmula NH₄NO₃. Usa N = 14, H = 1 y O = 16.",
+          "enunciado": "El nitrato de amonio tiene la fórmula NH₄NO₃. Usa las masas atómicas N 14, H 1 y O 16.",
           "pregunta": "¿Qué porcentaje en masa de nitrógeno tiene?",
           "unidad": "%",
           "decimales": 2,
@@ -182,7 +182,7 @@
             {
               "id": "ES18-un-solo-N",
               "respaldo": "parcial",
-              "explicacion": "Contaste un solo N arriba. La fórmula tiene dos, uno en NH₄ y otro en NO₃: 28/80.",
+              "explicacion": "Contaste un solo N arriba, pero la fórmula tiene dos, uno en el NH₄ y otro en el NO₃, y los dos pesan: el nitrógeno pone 28 g de cada 80 g.",
               "fn": "composicion",
               "args": [
                 "NH4NO3"
@@ -193,7 +193,7 @@
             {
               "id": "ES18-sin-subindices",
               "respaldo": "documentado",
-              "explicacion": "Sumaste cada elemento una vez: 14 + 1 + 16 = 31. Cada masa va por su subíndice: la masa molar es 80 g/mol.",
+              "explicacion": "Sumaste cada elemento una vez: 14 + 1 + 16 = 31. Cada masa va por sus átomos en la fórmula, porque cada átomo pesa: la masa molar es 80 g/mol.",
               "fn": "composicion",
               "args": [
                 "NH4NO3"
@@ -211,7 +211,7 @@
       "enunciado": "¿Cuántos gramos de hierro se pueden obtener de 80 g de óxido férrico (Fe₂O₃)? (masas atómicas: Fe 56; O 16)",
       "respuesta": "56 g de Fe.",
       "pasos": [
-        "Masa molar del Fe₂O₃: 2 · 56 + 3 · 16 = 112 + 48 = 160 g/mol.",
+        "La masa molar del Fe₂O₃ es 2 · 56 + 3 · 16 = 112 + 48 = 160 g/mol.",
         "En 160 g hay 112 g de Fe: el hierro es 112/160 = 70 % de la masa.",
         "En 80 g: 0,70 · 80 = 56 g de Fe (y 24 g de O). La proporción es la misma en cualquier muestra del compuesto (ley de Proust)."
       ],
@@ -240,7 +240,7 @@
       "preguntas": [
         {
           "id": "p5a",
-          "enunciado": "Se tienen 80 g de óxido férrico (Fe₂O₃). Usa Fe = 56 y O = 16.",
+          "enunciado": "Se tienen 80 g de óxido férrico (Fe₂O₃). Usa las masas atómicas Fe 56 y O 16.",
           "pregunta": "¿Cuántos gramos de hierro se pueden obtener?",
           "unidad": "g",
           "decimales": 2,
@@ -249,7 +249,7 @@
             {
               "id": "ES18-sin-subindices",
               "respaldo": "documentado",
-              "explicacion": "Sumaste 56 + 16 = 72, sin subíndices. En Fe₂O₃ hay 112 g de Fe en 160 g: el hierro es el 70 %.",
+              "explicacion": "Sumaste 56 + 16 = 72, sin subíndices, pero el Fe₂O₃ tiene dos Fe y tres O. En 160 g hay 112 g de Fe, así que el hierro es el 70 % de la masa.",
               "fn": "masasElementos",
               "args": ["FeO", 80],
               "campo": "Fe",
@@ -258,7 +258,7 @@
             {
               "id": "ES-otro-elemento",
               "respaldo": "hipotesis",
-              "explicacion": "Esa es la masa del oxígeno. El hierro es 112 de cada 160 g: 0,7 · 80.",
+              "explicacion": "Esa es la masa del oxígeno, la parte que no es hierro. El hierro es 112 g de cada 160 g, así que en 80 g hay 0,7 · 80.",
               "fn": "masasElementos",
               "args": ["Fe2O3", 80],
               "campo": "O",
@@ -274,10 +274,10 @@
       "enunciado": "Un hidrocarburo tiene 80 % de carbono y 20 % de hidrógeno en masa. Su masa molar es 30 g/mol. Halla su fórmula empírica y su fórmula molecular.",
       "respuesta": "Empírica CH₃; molecular C₂H₆.",
       "pasos": [
-        "Toma 100 g: 80 g de C y 20 g de H. Pasa a moles: 80/12 = 6,67 mol de C y 20/1 = 20 mol de H.",
-        "Divide entre el menor: C = 1 y H = 20/6,67 = 3. Fórmula empírica: CH₃ (masa 15).",
+        "Toma 100 g, así cada porcentaje es una masa: 80 g de C y 20 g de H. Pasa a moles: 80/12 = 6,67 mol de C y 20/1 = 20 mol de H.",
+        "Divide entre el menor, 6,67: C = 1 y H = 20/6,67 = 3. La fórmula empírica es CH₃, de masa 15.",
         "No compares las masas: 80 a 20 es 4 a 1, pero eso no es la razón de átomos (un átomo de C pesa 12 veces más que uno de H).",
-        "Molecular: 30/15 = 2, así que se duplica todo: C₂H₆ (etano)."
+        "La masa molar, 30 g/mol, es 30/15 = 2 veces la de la empírica, así que se duplica todo: C₂H₆, el etano."
       ],
       "verificar": [
         {
@@ -308,7 +308,7 @@
       "preguntas": [
         {
           "id": "p6a",
-          "enunciado": "Un hidrocarburo tiene 80 % de carbono y 20 % de hidrógeno en masa. Su masa molar es 30 g/mol. Usa C = 12 y H = 1.",
+          "enunciado": "Un hidrocarburo tiene 80 % de carbono y 20 % de hidrógeno en masa. Su masa molar es 30 g/mol. Usa las masas atómicas C 12 y H 1.",
           "pregunta": "¿Cuál es su fórmula empírica?",
           "decimales": 2,
           "correcta": { "fn": "empirica", "args": [{ "C": 80, "H": 20 }], "campo": "formula", "valor": "CH3" },
@@ -316,7 +316,7 @@
             {
               "id": "ES16-razon-de-masas",
               "respaldo": "documentado",
-              "explicacion": "Comparaste gramos: 80 a 20 es 4 a 1. Un C pesa 12 veces más que un H; en moles, 6,67 a 20 es 1 a 3.",
+              "explicacion": "Comparaste gramos: 80 a 20 es 4 a 1. Pero un C tiene 12 veces la masa de un H, así que hay menos átomos de C que lo que dicen los gramos: en moles es 1 a 3.",
               "fn": "empirica",
               "args": [{ "C": 80, "H": 20 }],
               "campo": "porMasas",
@@ -325,7 +325,7 @@
             {
               "id": "ES-molecular-por-empirica",
               "respaldo": "hipotesis",
-              "explicacion": "Esa es la fórmula molecular. La empírica es la proporción más simple de átomos: C₂H₆ se simplifica a CH₃.",
+              "explicacion": "Esa es la fórmula molecular. La empírica es la proporción más simple de átomos: C₂H₆ se simplifica a CH₃ dividiendo entre 2.",
               "fn": "molecular",
               "args": ["CH3", 30],
               "campo": "formula",
@@ -341,8 +341,8 @@
       "enunciado": "Al quemar 2,4 g de magnesio se obtiene un óxido que contiene 1,6 g de oxígeno. ¿Cuál es la fórmula empírica del óxido? (masas atómicas: Mg 24; O 16)",
       "respuesta": "MgO.",
       "pasos": [
-        "Moles de Mg: 2,4/24 = 0,1 mol. Moles de O: 1,6/16 = 0,1 mol.",
-        "Razón 1 a 1: la fórmula empírica es MgO.",
+        "Los subíndices cuentan átomos, así que cada masa se pasa a moles: 2,4/24 = 0,1 mol de Mg y 1,6/16 = 0,1 mol de O.",
+        "Hay los mismos moles de los dos, razón 1 a 1, así que la fórmula empírica es MgO.",
         "La razón de masas (2,4 a 1,6, o 3 a 2) daría Mg₃O₂, que no es la fórmula: hay que comparar moles."
       ],
       "verificar": [
@@ -366,10 +366,10 @@
       "enunciado": "Un óxido de hierro tiene 72,4 % de hierro y 27,6 % de oxígeno en masa. Halla su fórmula empírica. (masas atómicas: Fe 56; O 16)",
       "respuesta": "Fe₃O₄.",
       "pasos": [
-        "En 100 g: 72,4/56 ≈ 1,293 mol de Fe y 27,6/16 = 1,725 mol de O.",
+        "En 100 g hay 72,4 g de Fe y 27,6 g de O; en moles, 72,4/56 ≈ 1,293 mol de Fe y 27,6/16 = 1,725 mol de O.",
         "Divide entre el menor: Fe = 1 y O = 1,725/1,293 ≈ 1,33.",
         "1,33 no es entero y no se redondea (daría FeO). Como 1,33 ≈ 4/3, se multiplica todo por 3: Fe = 3 y O = 4. Fórmula: Fe₃O₄ (la magnetita).",
-        "Regla: si sale 1,5, multiplica por 2; si sale 1,33 o 1,67, por 3; si sale 1,25, por 4. Los datos de laboratorio vienen redondeados, así que 4,003 cuenta como 4."
+        "La regla es esta: si sale 1,5, multiplica por 2; si sale 1,33 o 1,67, por 3; si sale 1,25, por 4. Los datos de laboratorio vienen redondeados, así que 4,003 cuenta como 4."
       ],
       "verificar": [
         {
@@ -390,7 +390,7 @@
       "preguntas": [
         {
           "id": "p8a",
-          "enunciado": "Un óxido de hierro tiene 72,4 % de hierro y 27,6 % de oxígeno en masa. Usa Fe = 56 y O = 16.",
+          "enunciado": "Un óxido de hierro tiene 72,4 % de hierro y 27,6 % de oxígeno en masa. Usa las masas atómicas Fe 56 y O 16.",
           "pregunta": "¿Cuál es su fórmula empírica?",
           "decimales": 2,
           "correcta": { "fn": "empirica", "args": [{ "Fe": 72.4, "O": 27.6 }], "campo": "formula", "valor": "Fe3O4" },
@@ -398,7 +398,7 @@
             {
               "id": "ES16-redondear-sin-multiplicar",
               "respaldo": "parcial",
-              "explicacion": "Redondeaste 1,33 a 1. Si sale 1,33, multiplica todo por 3: Fe = 3 y O = 4.",
+              "explicacion": "Redondeaste 1,33 a 1, pero 1,33 no es casi un entero: es 4/3. Si sale 1,33, multiplica todo por 3: Fe = 3 y O = 4.",
               "fn": "empirica",
               "args": [{ "Fe": 72.4, "O": 27.6 }],
               "campo": "redondeando",
@@ -423,10 +423,10 @@
       "enunciado": "Se calientan 2,44 g de cloruro de bario hidratado (BaCl₂·xH₂O) hasta que pierde toda el agua. Quedan 2,08 g de BaCl₂ anhidro. Halla x. (masas atómicas: Ba 137; Cl 35,5; H 1; O 16)",
       "respuesta": "x = 2: la fórmula es BaCl₂·2H₂O.",
       "pasos": [
-        "Agua perdida: 2,44 − 2,08 = 0,36 g.",
-        "Moles de BaCl₂: masa molar 137 + 2 · 35,5 = 208 g/mol; 2,08/208 = 0,01 mol.",
-        "Moles de agua: 0,36/18 = 0,02 mol.",
-        "x = 0,02/0,01 = 2. La razón de masas (0,36/2,08 ≈ 0,17) no dice cuántas moléculas de agua hay por cada BaCl₂."
+        "El agua que se fue es la diferencia de masas: 2,44 − 2,08 = 0,36 g.",
+        "El BaCl₂ tiene masa molar 137 + 2 · 35,5 = 208 g/mol, así que los 2,08 g son 2,08/208 = 0,01 mol.",
+        "El agua pesa 18 g/mol, así que los 0,36 g son 0,36/18 = 0,02 mol.",
+        "Hay 0,02 mol de agua por cada 0,01 mol de BaCl₂, así que x = 0,02/0,01 = 2. La razón de masas (0,36/2,08 ≈ 0,17) no dice cuántas moléculas de agua hay por cada BaCl₂."
       ],
       "verificar": [
         {
@@ -453,7 +453,7 @@
       "preguntas": [
         {
           "id": "p9a",
-          "enunciado": "Se calientan 2,44 g de cloruro de bario hidratado (BaCl₂·xH₂O) hasta que pierde toda el agua. Quedan 2,08 g de BaCl₂ anhidro. Usa Ba = 137, Cl = 35,5, H = 1 y O = 16.",
+          "enunciado": "Se calientan 2,44 g de cloruro de bario hidratado (BaCl₂·xH₂O) hasta que pierde toda el agua. Quedan 2,08 g de BaCl₂ anhidro. Usa las masas atómicas Ba 137, Cl 35,5, H 1 y O 16.",
           "pregunta": "¿Cuánto vale x?",
           "decimales": 2,
           "correcta": { "fn": "hidrato", "args": ["BaCl2", 2.08, 0.36], "campo": "x", "valor": 2 },
@@ -461,7 +461,7 @@
             {
               "id": "ES16-razon-de-masas",
               "respaldo": "documentado",
-              "explicacion": "Dividiste gramos: 0,36/2,08. x cuenta moléculas: compara moles, 0,02 de agua por 0,01 de BaCl₂.",
+              "explicacion": "Dividiste gramos: 0,36/2,08. Pero x cuenta moléculas de agua por cada unidad de BaCl₂, y esas pesan distinto: compara moles, 0,02 de agua por 0,01 de BaCl₂.",
               "fn": "hidrato",
               "args": ["BaCl2", 2.08, 0.36],
               "campo": "porMasas",
@@ -486,9 +486,9 @@
       "enunciado": "¿Qué volumen ocupan 8,8 g de dióxido de carbono (CO₂) en condiciones normales (1 atm y 0 °C)? ¿Y 3,6 g de agua líquida (densidad 1 g/mL)? (masas atómicas: C 12; O 16; H 1; un gas en condiciones normales ocupa 22,4 L por mol)",
       "respuesta": "El CO₂ ocupa 4,48 L; el agua, 3,6 mL.",
       "pasos": [
-        "Moles de CO₂: 8,8/44 = 0,2 mol. Un gas en condiciones normales ocupa 22,4 L por mol: 0,2 · 22,4 = 4,48 L.",
-        "Moles de agua: 3,6/18 = 0,2 mol, los mismos que de CO₂. Pero el agua es líquida: el 22,4 L/mol no vale.",
-        "Volumen del agua: masa/densidad = 3,6 g / (1 g/mL) = 3,6 mL. Unas 1200 veces menos que el gas con los mismos moles."
+        "El CO₂ pesa 44 g/mol, así que 8,8 g son 8,8/44 = 0,2 mol. Un gas en condiciones normales ocupa 22,4 L por mol: 0,2 · 22,4 = 4,48 L.",
+        "El agua pesa 18 g/mol, así que 3,6 g son 3,6/18 = 0,2 mol, los mismos que de CO₂. Pero el agua es líquida, y el 22,4 L/mol solo vale para gases.",
+        "El volumen del agua sale de la masa entre la densidad: 3,6 g / (1 g/mL) = 3,6 mL. Es unas 1200 veces menos que el gas con los mismos moles, porque en el líquido las moléculas están juntas."
       ],
       "verificar": [
         {
