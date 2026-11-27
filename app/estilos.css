@@ -648,6 +648,47 @@ input[type=file]{font:inherit;max-width:100%}
 .puerta.principal{background:var(--ink);color:var(--bg);box-shadow:0 5px 0 var(--brand)}
 .puerta.principal .d{color:color-mix(in srgb,var(--bg) 84%,var(--ink))}
 
+/* Apertura de la unidad (docs/metodo/apertura-pisa.md, app/apertura.js): el choque que abre el tema. En celular va
+   arriba de las puertas (plegable desde la segunda visita); desde 900 px, a la izquierda, con las puertas en una
+   columna a la derecha. La figura usa los colores de variables de la unidad (regla 4) y la tinta del tema. */
+.apertura-hueco{min-height:88px;margin-top:20px}
+.apertura{margin-top:20px;background:var(--card);border:2px solid var(--borde);border-radius:24px;box-shadow:0 5px 0 var(--plataforma);padding:16px 18px}
+.apertura>summary{list-style:none;cursor:pointer;display:grid;gap:6px;min-height:44px}
+.apertura>summary::-webkit-details-marker{display:none}
+.apertura>summary:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:12px}
+.ap-et{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.ap-titulo{color:var(--ink);font-family:var(--font-r);font-size:21px;line-height:1.25;margin:0;text-wrap:balance}
+.ap-abrir{justify-self:start;display:inline-flex;align-items:center;gap:8px;min-height:44px;font-weight:700;font-size:15px;color:var(--brand)}
+.ap-abrir>span{text-decoration:underline;text-underline-offset:3px}
+.ap-abrir::after{content:'›';display:inline-block;width:1em;text-align:center;font-size:18px;line-height:1;transform:rotate(90deg)}
+.apertura[open] .ap-abrir::after{transform:rotate(-90deg)}
+.apertura .ap-cerrar,.apertura[open] .ap-leer{display:none}
+.apertura[open] .ap-cerrar{display:inline}
+.ap-cuerpo{margin-top:8px;font-size:17px;line-height:1.55}
+.ap-cuerpo>p{margin:0 0 12px;max-width:65ch}
+.ap-fig{margin:4px 0 16px;padding:12px;border:1.5px solid var(--line);border-radius:16px;background:var(--bg)}
+.ap-svg svg{display:block;width:100%;height:auto;max-height:min(420px,60vh);font-family:var(--font)}
+.ap-fig figcaption{margin-top:8px;font-size:14px;line-height:1.4;color:var(--muted)}
+.ap-ec{margin:0 0 14px}
+.ap-ec p{margin:0}
+/* Fondo de la página y borde rosa: las fichas de color de la pregunta (109,5°) quedan sobre un fondo con contraste
+   en los dos temas (el turquesa sobre el rosa daba 4,2:1 en claro y 2,8:1 sobre el lavanda del oscuro). */
+.ap-pregunta{margin-top:4px;padding:12px 14px;border-radius:16px;background:var(--bg);border:2px solid var(--acento);color:var(--ink)}
+.ap-pregunta p{margin:0}
+.ap-pregunta .ap-preg-et{font-weight:800;font-size:14px;margin-bottom:4px}
+@media (min-width:900px){
+  body[data-ruta="unidad"] #app:has(.con-apertura)>*{max-width:1080px}
+  .u-portada.con-apertura{display:grid;grid-template-columns:minmax(0,1fr) 288px;gap:24px;align-items:start;margin-top:20px}
+  .con-apertura .apertura-hueco,.con-apertura .apertura{margin-top:0}
+  .con-apertura .apertura{padding:24px 28px}
+  .con-apertura .apertura>summary{cursor:default}
+  .con-apertura .ap-abrir{display:none}
+  .con-apertura .ap-titulo{font-size:26px}
+  .con-apertura .puertas{grid-template-columns:1fr;margin-top:0;position:sticky;top:24px}
+  .con-apertura .puerta{min-height:0;display:grid;grid-template-columns:28px minmax(0,1fr);column-gap:12px;align-items:center;padding:12px 14px}
+  .con-apertura .puerta .ic-puerta{margin:0;grid-row:span 2}
+}
+
 /* Dentro de la unidad: cabecera compacta con el dibujo chico. */
 .unidad-cab{display:grid;grid-template-columns:auto 64px minmax(0,1fr);gap:12px;align-items:center;border:2px solid var(--borde);border-radius:24px;box-shadow:0 5px 0 var(--plat);padding:10px 14px;margin-bottom:18px}
 .unidad-cab .volver{margin:0}

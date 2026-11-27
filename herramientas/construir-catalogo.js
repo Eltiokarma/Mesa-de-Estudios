@@ -43,6 +43,12 @@ function leerTeoria(u) {
   return x;
 }
 const teoriaDe = u => { const x = leerTeoria(u); return x ? x.r : {}; };
+// Apertura de la unidad (docs/metodo/apertura-pisa.md): si existe contenido/aperturas/<curso>/<unidad>.js, la unidad
+// trae apertura: '/contenido/aperturas/…'. La portada la carga y el service worker la guarda.
+const aperturaDe = u => {
+  const [curso, slug] = u.id.split('.'), rel = `contenido/aperturas/${curso}/${slug}.js`;
+  return fs.existsSync(path.join(RAIZ, rel)) ? { apertura: `/${rel}` } : {};
+};
 
 // Glosario de un curso (nucleo/glosario.js): los términos que define cada unidad, en el orden del curso, y en qué
 // unidades aparece cada uno. La app lo lee de app/datos/glosario/<curso>.json.
@@ -73,7 +79,7 @@ function construir() {
       unidades: c.unidades.map(u => Object.assign({
         id: u.id, nombre: u.nombre, temas: u.temas, universidades: u.universidades,
         potencial_visual: u.potencial_visual, grado: u.grado, requiere: u.requiere, plantillas: u.plantillas,
-      }, teoriaDe(u))),
+      }, teoriaDe(u), aperturaDe(u))),
     }));
   // Cuántos términos del glosario del curso aparecen en cada unidad (los propios y los que vienen de otra): la app
   // muestra el chip «Glosario» solo si hay alguno.

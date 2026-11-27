@@ -534,6 +534,7 @@ function vUnidad(id, sub) {
       <div class="nivel-u">${nv.nivel > 0 || (nv.nivel === 0 && primeraVisita < hoy()) ? `<span class="tag nivel-${nv.nivel}">${esc(nv.nombre)}</span>` : ''}${nv.falta ? `<span class="sub">${esc(nv.nivel < 1 ? `Para empezar: ${nv.falta.charAt(0).toLowerCase()}${nv.falta.slice(1)}` : nv.falta)}</span>` : ''}</div>
       <button type="button" class="marca-vista${marcada ? ' on' : ''}" data-ver aria-pressed="${marcada}"><span class="caja-v" aria-hidden="true">${marcada ? '✓' : ''}</span>${marcada ? 'La marqué como estudiada' : 'Ya la estudié por mi cuenta'}</button>
     </header>
+    <div class="u-portada${u.apertura ? ' con-apertura' : ''}">${u.apertura ? '<div class="apertura-hueco"></div>' : ''}
     <nav class="puertas aparece" aria-label="Qué hacer en esta unidad">
       ${puerta('teoria', u.teoria ? textoTeoria(u) : 'En preparación', !!u.teoria)}
       ${u.teoria ? `<a class="puerta puerta-laboratorio" href="#/unidad/${esc(id)}/teoria/laboratorio">${iconoPuerta('laboratorio')}<span class="t">Laboratorio</span><span class="d">Juega libre, sin preguntas</span></a>` : ''}
@@ -541,12 +542,29 @@ function vUnidad(id, sub) {
       ${puerta('examen', gens ? (ex ? `Último: ${ex.ultimo.aciertos} de ${ex.ultimo.total}` : `${N_EXAMEN} preguntas tipo examen`) : 'En preparación')}
       ${u.teoria ? puerta('entrada', textoPruebaTema(u)) : ''}
       ${puerta('pregunta', 'Para tu profesor')}
-    </nav>`;
+    </nav></div>`;
+  if (u.apertura) pintarApertura(u);
   $app.querySelector('[data-ver]').onclick = () => {
     est.marcadas = est.marcadas || {};
     if (est.marcadas[id]) delete est.marcadas[id]; else { est.marcadas[id] = hoy(); marcarDia(); }
     ixAvance = null; guardar(); vUnidad(id);
   };
+}
+
+// Apertura de la unidad (docs/metodo/apertura-pisa.md; app/apertura.js): se carga después de pintar la portada, para que
+// los botones estén desde el primer momento. En celular va abierta la primera vez y plegada después (est.aperturas
+// guarda el día en que se mostró por primera vez). Si no carga, el hueco se va y la portada queda como siempre.
+function pintarApertura(u) {
+  const h = location.hash, hueco = () => $app.querySelector('.apertura-hueco');
+  Promise.all([modulo('apertura'), script(u.apertura)]).then(() => {
+    const def = (window.Aperturas || {})[u.id];
+    if (location.hash !== h || !hueco()) return;
+    if (!def) return hueco().remove();
+    est.aperturas = est.aperturas && typeof est.aperturas === 'object' ? est.aperturas : {};
+    const primera = !est.aperturas[u.id];
+    Apertura.pintar(hueco(), def, { abierta: primera });
+    if (primera) { est.aperturas[u.id] = hoy(); guardar(); }
+  }, () => { if (hueco()) hueco().remove(); });
 }
 
 // Cabecera de las páginas dentro de una unidad: volver a la unidad, su dibujo chico y el título de la sección.
@@ -1337,6 +1355,8 @@ const MODULOS = {
   // Repaso de hoy: lo mismo que el examen más su pantalla (nucleo/repaso.js ya viene con el inicio).
   // Teoría interactiva: el lector; él mismo carga el kit, nucleo/teoria.js, las piezas y el archivo de la unidad.
   teoria: ['/app/teoria.js'],
+  // Apertura de la portada de la unidad (el archivo de cada unidad se carga aparte: u.apertura).
+  apertura: ['/nucleo/ecuacion.js', '/app/apertura.js'],
   repaso: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js', '/nucleo/lectura.js', '/nucleo/papel-opciones.js', '/app/lectura.js', '/app/repaso.js'],
 };
 const scripts = {};
