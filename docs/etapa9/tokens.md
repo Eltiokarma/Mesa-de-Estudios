@@ -91,3 +91,4 @@ contra los límites semanales de los planes.
 | aperturas álgebra (6) | doble revisión (choques honestos) | 188 738 | 5 min 46 s | 29 herramientas |
 | aperturas trigonometría (6) | doble revisión (choques honestos) | 198 604 | 6 min | 26 herramientas |
 | aperturas RM y verbal (12) | doble revisión (choques honestos) | 206 167 | 8 min 15 s | 34 herramientas |
+| aperturas geometría (7) | doble revisión (choques honestos) | 205 864 | 8 min 48 s | 44 herramientas |
