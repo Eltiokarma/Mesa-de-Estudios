@@ -785,3 +785,28 @@ test('laboratorio: mismo A y distinto Z se llaman isóbaros, y la nube presenta 
   const p = def.laboratorio.find(m => m.id === 'nube-orbital').invitaciones.find(x => /eje z/.test(x.texto));
   assert.match(p.bien, /ψ es la onda del electrón/);
 });
+
+// Verificador de la segunda pasada (27 nov). (1) Configuración tras el kriptón: la solución decía «se llenan el 5s, el 4d
+// y el 5p» también con 1 a 12 electrones, que no llegan al 5p (ni al 4d con 1 o 2). (2) Cromo y cobre: la solución dice
+// cuál de los dos queda medio lleno y cuál lleno. (3) Los porqués del verdadero o falso no encadenan dos «:». (4) La
+// condición de la idea 4 no dice que todo ion se acomoda de otra forma: un anión sigue el orden de llenado (regla 5).
+test('segunda pasada: tras el kriptón se nombran solo los subniveles con electrones; Cr y Cu; V/F sin dos «:»', () => {
+  const vistos = { kr: 0, cr: 0, cu: 0, vf: 0 };
+  for (const I of def.ideas) for (let s = 0; s < SEMILLAS; s++) {
+    const c = I.ahoraTu.generar(s), t = plano(c.solucion.texto), ok = c.opciones.find(o => o.correcta);
+    if (/^Después de los 36 del kriptón/.test(t)) {
+      const subs = plano(ok.texto).replace(/^\[Kr\]\s*/, '').split(/\s+/).map(x => x.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+$/, ''));
+      assert.deepEqual(t.match(/\b\d[spdf]\b/g), subs, `${s}: ${t} / ${plano(ok.texto)}`);
+      vistos.kr++;
+    }
+    if (/^Por el orden de llenado sería/.test(t)) {
+      const cr = /3d⁵/.test(plano(ok.texto));
+      assert.match(t, cr ? /medio lleno, con 5/ : /lleno, con 10/, `${s}: ${t}`);
+      vistos[cr ? 'cr' : 'cu']++;
+    }
+    for (const r of c.razones || []) { assert.ok((r.match(/:/g) || []).length <= 1, `${s}: ${r}`); vistos.vf++; }
+  }
+  assert.ok(Object.values(vistos).every(n => n > 0), JSON.stringify(vistos));
+  assert.doesNotMatch(def.ideas[3].regla.condicion, /si es un ion\b/);
+  assert.match(def.ideas[4].regla.texto, /anión recibe sus electrones extra en el orden de llenado/);
+});

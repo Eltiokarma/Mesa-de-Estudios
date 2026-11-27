@@ -26,7 +26,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Una de las tres partículas del átomo tiene carga positiva. ¿Qué partícula es y dónde está? Datos: Protón: carga +1. Neutrón: sin carga, con casi la misma masa que el protón. Electrón: carga −1; el protón pesa unas 1836 veces más. Alternativas: A) Protón, en el núcleo   B) Neutrón, en el núcleo   C) Electrón, en el núcleo   D) Protón, fuera del núcleo",
+      "enunciado": "Una de las tres partículas del átomo tiene carga positiva. ¿Qué partícula es y dónde está? Datos: Protón: carga +1. Neutrón: sin carga, con casi la misma masa que el protón. Electrón: carga −1; el protón tiene unas 1836 veces su masa. Alternativas: A) Protón, en el núcleo   B) Neutrón, en el núcleo   C) Electrón, en el núcleo   D) Protón, fuera del núcleo",
       "respuesta": "A) Protón, en el núcleo",
       "pasos": [
         "La que tiene carga positiva es el protón.",
@@ -46,11 +46,11 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Se dan varias afirmaciones sobre las partículas de un átomo. ¿Cuál de estas afirmaciones es incorrecta? Datos: Protón: carga +1. Neutrón: sin carga, con casi la misma masa que el protón. Electrón: carga −1; el protón pesa unas 1836 veces más. Alternativas: A) Los electrones se mueven fuera del núcleo.   B) Casi toda la masa del átomo está en el núcleo.   C) Casi toda la masa del átomo está en sus electrones.   D) Los protones y los neutrones están en el núcleo.",
+      "enunciado": "Se dan varias afirmaciones sobre las partículas de un átomo. ¿Cuál de estas afirmaciones es incorrecta? Datos: Protón: carga +1. Neutrón: sin carga, con casi la misma masa que el protón. Electrón: carga −1; el protón tiene unas 1836 veces su masa. Alternativas: A) Los electrones se mueven fuera del núcleo.   B) Casi toda la masa del átomo está en el núcleo.   C) Casi toda la masa del átomo está en sus electrones.   D) Los protones y los neutrones están en el núcleo.",
       "respuesta": "C) Casi toda la masa del átomo está en sus electrones.",
       "pasos": [
         "La afirmación «Casi toda la masa del átomo está en sus electrones» es falsa: el electrón es la partícula más liviana, y la masa está en el núcleo.",
-        "Las otras son verdaderas."
+        "Las otras afirmaciones son verdaderas."
       ]
     },
     {
@@ -66,7 +66,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Una de las tres partículas del átomo no tiene carga. ¿Qué partícula es y dónde está? Datos: Protón: carga +1. Neutrón: sin carga, con casi la misma masa que el protón. Electrón: carga −1; el protón pesa unas 1836 veces más. Alternativas: A) Neutrón, fuera del núcleo   B) Neutrón, en el núcleo   C) Electrón, fuera del núcleo   D) Protón, fuera del núcleo",
+      "enunciado": "Una de las tres partículas del átomo no tiene carga. ¿Qué partícula es y dónde está? Datos: Protón: carga +1. Neutrón: sin carga, con casi la misma masa que el protón. Electrón: carga −1; el protón tiene unas 1836 veces su masa. Alternativas: A) Neutrón, fuera del núcleo   B) Neutrón, en el núcleo   C) Electrón, fuera del núcleo   D) Protón, fuera del núcleo",
       "respuesta": "B) Neutrón, en el núcleo",
       "pasos": [
         "La que no tiene carga es el neutrón.",

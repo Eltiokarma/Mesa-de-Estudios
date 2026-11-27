@@ -94,7 +94,7 @@
     reaccion: 'Una reacción química depende de los electrones',
     proton: 'Protón: carga +1',
     neutron: 'Neutrón: sin carga, con casi la misma masa que el protón',
-    electron: 'Electrón: carga −1; el protón pesa unas 1836 veces más',
+    electron: 'Electrón: carga −1; el protón tiene unas 1836 veces su masa',
   };
   const zDe = zs => [...new Set(zs)].sort((a, b) => a - b).map(z => `Z del ${NOMBRE[z]} = ${z}`);
 
@@ -137,9 +137,9 @@
       const otros = ['p', 'n', 'e'].filter(x => x !== k), k2 = rng.elegir(otros), k3 = otros.find(x => x !== k2);
       const c = combo(k, true);
       const errores = [
-        t(combo(k, false).clave, combo(k, false).texto, P0.malLugar, `Bien: es el ${P0.nom.toLowerCase()}. Pero está ${P0.lugar}, no ${P0.otro}.`),
-        t(combo(k2, true).clave, combo(k2, true).texto, d.error, `Bien el lugar del ${PART[k2].nom.toLowerCase()}: ${PART[k2].lugar}. Pero no es la partícula que ${d.txt}: mira la carga y la masa de cada una.`),
-        t(combo(k3, false).clave, combo(k3, false).texto, PART[k3].malLugar, `Bien buscar entre las tres partículas. Pero el ${PART[k3].nom.toLowerCase()} ${d.neg}, y además está ${PART[k3].lugar}.`),
+        t(combo(k, false).clave, combo(k, false).texto, P0.malLugar, `Es el ${P0.nom.toLowerCase()}, bien elegido, pero no está ${P0.otro}: está ${P0.lugar}. Los protones y los neutrones forman el núcleo, y los electrones se mueven alrededor.`),
+        t(combo(k2, true).clave, combo(k2, true).texto, d.error, `El ${PART[k2].nom.toLowerCase()} sí está ${PART[k2].lugar}, pero no es la partícula que ${d.txt}. Mira en los datos la carga y la masa de cada partícula: solo una cumple lo que pide el enunciado.`),
+        t(combo(k3, false).clave, combo(k3, false).texto, PART[k3].malLugar, `El ${PART[k3].nom.toLowerCase()} ${d.neg}, así que no es la partícula que se busca; además, está ${PART[k3].lugar}, no ${PART[k3].otro}.`),
       ];
       return cerrar({ enunciado: [`Una de las tres partículas del átomo ${d.txt}.`], pregunta: ['¿Qué partícula es y dónde está?'],
         datos, alternativas: P.armarTexto({ correcta: c, errores, rng }), valor: c.clave,
@@ -151,12 +151,12 @@
     const otras = rng.barajar(AFIRMA.filter(a => a.v !== busca)).slice(0, 3);
     const c = { clave: `donde:${meta.id}`, texto: meta.txt };
     const errores = otras.map(a => (busca
-      ? t(`donde:${a.id}`, a.txt, a.error, `Bien buscar la que describe el átomo. Pero esta es falsa: ${a.por}.`)
-      : t(`donde:${a.id}`, a.txt, a.niega, `Bien desconfiar de cada afirmación. Pero esta es verdadera: ${a.por}.`)));
+      ? t(`donde:${a.id}`, a.txt, a.error, `Esta afirmación es falsa, porque ${a.por}. Se pedía la que describe bien el átomo.`)
+      : t(`donde:${a.id}`, a.txt, a.niega, `Esta afirmación es verdadera, porque ${a.por}. Se pedía la falsa, así que hay que buscar otra.`)));
     return cerrar({ enunciado: ['Se dan varias afirmaciones sobre las partículas de un átomo.'],
       pregunta: [busca ? '¿Cuál de estas afirmaciones es correcta?' : '¿Cuál de estas afirmaciones es incorrecta?'],
       datos, alternativas: P.armarTexto({ correcta: c, errores, rng }), valor: c.clave,
-      solucion: [[`La afirmación «${meta.txt.replace(/\.$/, '')}» es ${busca ? 'verdadera' : 'falsa'}: ${meta.por}.`], [busca ? 'Las otras son falsas.' : 'Las otras son verdaderas.']],
+      solucion: [[`La afirmación «${meta.txt.replace(/\.$/, '')}» es ${busca ? 'verdadera' : 'falsa'}: ${meta.por}.`], [busca ? 'Las otras afirmaciones son falsas: cada una confunde el lugar, la carga o la masa de una partícula.' : 'Las otras afirmaciones son verdaderas.']],
       _datos: { tipo: 'donde', nivel: 1, sub, ids: [meta.id, ...otras.map(a => a.id)] } });
   }
 
@@ -176,10 +176,10 @@
       const es = rng.elegir(['isotopos', 'isotopos', 'isobaros', 'isobaros', 'isotonos', 'isotonos', 'nada']);
       const [a, b] = rng.barajar(rng.elegir(PARES[es])), [z1, a1] = a, [z2, a2] = b, n1 = a1 - z1, n2 = a2 - z2;
       const NO = {
-        isotopos: { id: 'QM-NUCLIDO-ISOTOPO', ex: `Bien comparar los núcleos. Pero isótopos tendrían el mismo Z, y aquí Z es ${z1} y ${z2}.` },
-        isobaros: { id: 'QM-NUCLIDO-ISOBARO', ex: `Bien comparar los núcleos. Pero isóbaros tendrían el mismo A, y aquí A es ${a1} y ${a2}.` },
-        isotonos: { id: 'QM-NUCLIDO-ISOTONO', ex: `Bien comparar los núcleos. Pero isótonos tendrían el mismo N, y aquí N es ${n1} y ${n2}.` },
-        nada: { id: 'QM-NUCLIDO-NADA', ex: `Bien buscar diferencias. Pero compara Z, A y N uno por uno: ${es === 'isotopos' ? `Z es ${z1} en los dos` : es === 'isobaros' ? `A es ${a1} en los dos` : `N es ${n1} en los dos`}.` },
+        isotopos: { id: 'QM-NUCLIDO-ISOTOPO', ex: `Para ser isótopos tendrían que tener el mismo Z, es decir, ser el mismo elemento. Aquí Z es ${z1} y ${z2}, así que son elementos distintos.` },
+        isobaros: { id: 'QM-NUCLIDO-ISOBARO', ex: `Para ser isóbaros tendrían que tener el mismo A, la misma suma de protones y neutrones. Aquí A es ${a1} y ${a2}.` },
+        isotonos: { id: 'QM-NUCLIDO-ISOTONO', ex: `Para ser isótonos tendrían que tener el mismo N, que sale de A − Z. Aquí N es ${n1} y ${n2}.` },
+        nada: { id: 'QM-NUCLIDO-NADA', ex: `Sería así si Z, A y N fueran distintos en los dos, pero uno coincide: ${es === 'isotopos' ? `Z es ${z1} en los dos` : es === 'isobaros' ? `A es ${a1} en los dos` : `N es ${n1} en los dos`}.` },
       };
       const c = { clave: `nuc:${es}`, texto: NOM_REL[es] };
       const errores = Object.keys(NOM_REL).filter(k => k !== es).map(k => t(`nuc:${k}`, NOM_REL[k], NO[k].id, NO[k].ex));
@@ -196,9 +196,9 @@
     if (rng.moneda()) {
       const c = { clave: 'iso:igual:pe', texto: 'Los protones y los electrones' };
       const errores = [
-        t('iso:igual:n', 'Los neutrones', 'QM-ISOTOPO-N', `Bien buscar lo que comparten. Pero los neutrones son justo lo que cambia: ${a[1] - z} y ${b[1] - z}.`),
-        t('iso:igual:a', 'El número de masa', 'QM-ISOTOPO-A', `Bien mirar los números del símbolo. Pero el número de masa cambia: ${a[1]} y ${b[1]}.`),
-        t('iso:igual:nada', 'Nada: son elementos distintos', 'QM-ISOTOPO-ELEMENTO', `Bien notar que no son iguales. Pero los dos tienen Z = ${z}: son ${nom}.`),
+        t('iso:igual:n', 'Los neutrones', 'QM-ISOTOPO-N', `Buscar lo que comparten está bien, pero los neutrones son justo lo que distingue a dos isótopos: aquí son ${a[1] - z} y ${b[1] - z}.`),
+        t('iso:igual:a', 'El número de masa', 'QM-ISOTOPO-A', `El número de masa cambia entre dos isótopos, ${a[1]} y ${b[1]}, porque cambian sus neutrones.`),
+        t('iso:igual:nada', 'Nada: son elementos distintos', 'QM-ISOTOPO-ELEMENTO', `Serían elementos distintos si cambiara Z, pero los dos tienen Z = ${z}: los dos son ${nom}, y solo cambian sus neutrones.`),
       ];
       return cerrar({ variables: usa('Z', 'e', 'N'), enunciado: ['El ', x1, ' y el ', x2, ` son átomos neutros del ${nom}.`],
         pregunta: ['¿Qué tienen igual estos dos átomos?'], datos: [`Z del ${nom} = ${z}`, D.masa, D.neutro],
@@ -209,10 +209,10 @@
     }
     const c = { clave: 'iso:reacciona:igual', texto: 'Iguales: tienen los mismos electrones' };
     const errores = [
-      t('iso:reacciona:n', 'Distintas: tienen distintos neutrones', 'QM-ISOTOPO-REACCIONA', 'Bien: sus neutrones son distintos. Pero las reacciones las deciden los electrones, y son los mismos.'),
-      t('iso:reacciona:uno', 'Solo reacciona el más liviano', 'QM-ISOTOPO-UNO', 'Bien notar que uno tiene más masa. Pero los dos tienen los mismos electrones, así que los dos reaccionan igual.'),
-      t('iso:reacciona:elem', 'Distintas: son elementos distintos', 'QM-ISOTOPO-ELEMENTO', `Bien notar que no son el mismo núclido. Pero los dos tienen Z = ${z}: son ${nom}.`),
-      t('iso:reacciona:masa', 'Distintas: el más pesado reacciona más rápido', 'QM-ISOTOPO-REACCIONA', 'Bien comparar sus masas. Pero la masa del núcleo no decide la reacción: la deciden los electrones.'),
+      t('iso:reacciona:n', 'Distintas: tienen distintos neutrones', 'QM-ISOTOPO-REACCIONA', 'Es cierto que sus neutrones son distintos. Pero los neutrones están en el núcleo, y en una reacción solo participan los electrones, que son los mismos.'),
+      t('iso:reacciona:uno', 'Solo reacciona el más liviano', 'QM-ISOTOPO-UNO', 'Es cierto que uno tiene más masa. Pero esa masa extra está en el núcleo, y una reacción solo mueve electrones; como tienen los mismos, los dos reaccionan igual.'),
+      t('iso:reacciona:elem', 'Distintas: son elementos distintos', 'QM-ISOTOPO-ELEMENTO', `No son el mismo núclido, pero sí el mismo elemento: los dos tienen Z = ${z}, así que los dos son ${nom}.`),
+      t('iso:reacciona:masa', 'Distintas: el más pesado reacciona más rápido', 'QM-ISOTOPO-REACCIONA', 'Es cierto que sus masas son distintas. Pero la masa del núcleo no decide la reacción: la deciden los electrones, que en los dos son los mismos.'),
     ];
     return cerrar({ variables: usa('Z', 'e'), enunciado: ['El ', x1, ' y el ', x2, ` son átomos neutros del ${nom}.`],
       pregunta: ['¿Cómo son sus reacciones químicas, comparadas?'], datos: [`Z del ${nom} = ${z}`, D.reaccion, D.neutro],
@@ -229,9 +229,9 @@
     if (zx === zy || zx < 1 || zx > 36 || zx === 7 || (Math.sign(qx) === Math.sign(qy) && Math.abs(qx) === Math.abs(qy))) return null;
     const y = ion(zy, qy), X = `X${carga(qx)}`;
     const malos = [
-      { valor: ey, id: 'QM-ISO-Z', ex: `Bien: X también tiene ${ey} electrones. Pero X tiene carga ${signo(qx)}: su Z no es igual a sus electrones. Así sale ${ey}.` },
-      { valor: ey - qx, id: 'QM-CARGA-SIGNO', ex: `Bien partir de ${ey} electrones. Pero revisa el signo: carga = Z − e⁻, así que Z = e⁻ + carga. Así sale ${ey - qx}.` },
-      { valor: zy + qx, id: 'QM-ISO-NEUTRO', ex: `Bien usar la carga de X. Pero el ${y} no tiene ${zy} electrones: tiene ${ey}. Así sale ${zy + qx}.` },
+      { valor: ey, id: 'QM-ISO-Z', ex: `Es cierto que X también tiene ${ey} electrones. Pero X tiene carga ${signo(qx)}, así que su Z no es igual a sus electrones: hay que sumarles la carga. Así sale ${ey}.` },
+      { valor: ey - qx, id: 'QM-CARGA-SIGNO', ex: `Partir de ${ey} electrones está bien, pero el signo va al revés. Como carga = Z − e⁻, Z es los electrones más la carga. Así sale ${ey - qx}.` },
+      { valor: zy + qx, id: 'QM-ISO-NEUTRO', ex: `Usar la carga de X está bien. Pero el ${y} ya no tiene ${zy} electrones, como el átomo neutro: tiene ${ey}. Así sale ${zy + qx}.` },
     ].filter((m, i, l) => m.valor > 0 && m.valor <= 36 && m.valor !== zx && l.findIndex(o => o.valor === m.valor) === i);
     if (malos.length < 3) return null;
     const enun = ['El ion ', X, ' es isoelectrónico con el ', y, ' (', v('Z', `Z = ${zy}`), ').'];
@@ -256,10 +256,10 @@
     const ya = nuclido(z1, a1), dz = z2 - z1;
     if (sub === 'isobaros') {
       const errores = [
-        e(n1, 'QM-NUCLIDO-ISOTONO', `Bien que los dos núclidos se parezcan. Pero los isóbaros tienen el mismo A, no el mismo N: ${n1} son los neutrones del otro. Así salen ${n1}.`),
-        e(a1, 'QM-NEUTRONES', `Bien que el A sea ${a1} en los dos. Pero A junta protones y neutrones: falta quitar los ${z2} protones. Así salen ${a1}.`),
-        e(n1 + dz, 'QM-NUCLIDO-SIGNO', `Bien partir de los ${n1} neutrones y de la diferencia de ${Math.abs(dz)} protones. Pero va al revés: con ${dz > 0 ? 'más' : 'menos'} protones y el mismo A, hay ${dz > 0 ? 'menos' : 'más'} neutrones. Así salen ${n1 + dz}.`),
-        e(z2, 'AT4', `Bien los ${z2} protones del otro núcleo. Pero no siempre hay tantos neutrones como protones: usa A. Así salen ${z2}.`),
+        e(n1, 'QM-NUCLIDO-ISOTONO', `Copiaste los neutrones del otro núclido, como si fueran isótonos. Los isóbaros comparten A, no N, así que los neutrones salen de A − Z. Así salen ${n1}.`),
+        e(a1, 'QM-NEUTRONES', `Es cierto que el A es ${a1} en los dos. Pero A junta protones y neutrones, así que falta quitar los ${z2} protones. Así salen ${a1}.`),
+        e(n1 + dz, 'QM-NUCLIDO-SIGNO', `Partir de los ${n1} neutrones y de la diferencia de ${Math.abs(dz) === 1 ? '1 protón' : `${Math.abs(dz)} protones`} está bien, pero va al revés: con ${dz > 0 ? 'más' : 'menos'} protones y el mismo A, hay ${dz > 0 ? 'menos' : 'más'} neutrones. Así salen ${n1 + dz}.`),
+        e(z2, 'AT4', `Esos son los ${z2} protones del otro núcleo. No siempre hay tantos neutrones como protones: los neutrones salen de A − Z. Así salen ${z2}.`),
       ];
       return cerrar({ variables: usa('Z', 'N'), enunciado: ['El ', ya, ' tiene ', v('Z', `Z = ${z1}`), `. Un núclido del ${NOMBRE[z2]} (`, v('Z', `Z = ${z2}`), ') es isóbaro del ', ya, '.'],
         pregunta: ['¿Cuántos ', v('N', 'neutrones'), ` tiene ese núclido del ${NOMBRE[z2]}?`], datos: [D.familias, D.masa],
@@ -269,10 +269,10 @@
     }
     if (sub === 'isotonos') {
       const errores = [
-        e(a1, 'QM-NUCLIDO-ISOBARO', `Bien que los dos núclidos se parezcan. Pero isótonos tienen el mismo N, no el mismo A. Así sale A = ${a1}.`),
-        e(n1, 'QM-NEUTRONES', `Bien: tiene ${n1} neutrones, como el ${ya}. Pero A suma también los protones. Así sale ${n1}.`),
-        e(a1 - dz, 'QM-NUCLIDO-SIGNO', `Bien partir de A = ${a1} y de la diferencia de ${Math.abs(dz)} protones. Pero va al revés: con ${dz > 0 ? 'más' : 'menos'} protones y los mismos neutrones, A ${dz > 0 ? 'sube' : 'baja'}. Así sale ${a1 - dz}.`),
-        e(z2 + z1, 'QM-NUCLIDO-ISOTOPO', `Bien sumar protones y neutrones. Pero el otro sumando es N = ${n1}, no el Z del ${ya}. Así sale ${z2 + z1}.`),
+        e(a1, 'QM-NUCLIDO-ISOBARO', `Copiaste el A del otro núclido, como si fueran isóbaros. Los isótonos comparten N, no A, así que A se arma con su propio Z. Así sale A = ${a1}.`),
+        e(n1, 'QM-NEUTRONES', `Es cierto que tiene ${n1} neutrones, como el ${ya}. Pero A suma también los protones, así que falta agregar su Z. Así sale ${n1}.`),
+        e(a1 - dz, 'QM-NUCLIDO-SIGNO', `Partir de A = ${a1} y de la diferencia de ${Math.abs(dz) === 1 ? '1 protón' : `${Math.abs(dz)} protones`} está bien, pero va al revés: con ${dz > 0 ? 'más' : 'menos'} protones y los mismos neutrones, A ${dz > 0 ? 'sube' : 'baja'}. Así sale ${a1 - dz}.`),
+        e(z2 + z1, 'QM-NUCLIDO-ISOTOPO', `Sumar protones y neutrones está bien, pero sumaste el Z del ${ya} en vez de sus neutrones, N = ${n1}. Así sale ${z2 + z1}.`),
       ];
       return cerrar({ variables: usa('Z', 'N'), enunciado: ['El ', ya, ' tiene ', v('Z', `Z = ${z1}`), `. Un núclido del ${NOMBRE[z2]} (`, v('Z', `Z = ${z2}`), ') es isótono del ', ya, '.'],
         pregunta: [`¿Cuál es el número de masa de ese núclido del ${NOMBRE[z2]}?`], datos: [D.familias, D.masa],
@@ -283,10 +283,10 @@
     }
     const da = a2 - a1;
     const errores = [
-      e(n1, 'QM-ISOTOPO-N', `Bien que sean del mismo elemento. Pero los isótopos no tienen los mismos neutrones: eso es lo que cambia. Así salen ${n1}.`),
-      e(a2, 'QM-NEUTRONES', `Bien leer A = ${a2}. Pero A junta protones y neutrones: falta quitar los ${z1} protones. Así salen ${a2}.`),
-      e(n1 - da, 'QM-NUCLIDO-SIGNO', `Bien usar la diferencia de ${Math.abs(da)} en A. Pero va al revés: el de A ${da > 0 ? 'mayor' : 'menor'} tiene ${da > 0 ? 'más' : 'menos'} neutrones. Así salen ${n1 - da}.`),
-      e(z1, 'AT4', `Bien los ${z1} protones, que no cambian. Pero no siempre hay tantos neutrones como protones: usa A. Así salen ${z1}.`),
+      e(n1, 'QM-ISOTOPO-N', `Es cierto que son del mismo elemento. Pero dos isótopos no tienen los mismos neutrones: es justo lo que cambia entre ellos. Así salen ${n1}.`),
+      e(a2, 'QM-NEUTRONES', `Leer A = ${a2} está bien. Pero A junta protones y neutrones, así que falta quitar los ${z1} protones. Así salen ${a2}.`),
+      e(n1 - da, 'QM-NUCLIDO-SIGNO', `Usar la diferencia de ${Math.abs(da)} en A está bien, pero va al revés: como Z no cambia, el de A ${da > 0 ? 'mayor' : 'menor'} tiene ${da > 0 ? 'más' : 'menos'} neutrones. Así salen ${n1 - da}.`),
+      e(z1, 'AT4', `Esos son los ${z1} protones, que no cambian entre isótopos. Pero no siempre hay tantos neutrones como protones: los neutrones salen de A − Z. Así salen ${z1}.`),
     ];
     const nom = NOMBRE[z1];
     return cerrar({ variables: usa('Z', 'N'), enunciado: ['El ', ya, ' tiene ', v('N', `${n1} neutrones`), `. El ${nom}-${a2} es otro isótopo del ${nom}.`],
@@ -303,15 +303,15 @@
   function tMasaIon(rng) {
     const [z, a, q] = rng.elegir(IONES), el = z - q, n = a - z;
     const errores = [
-      e(el + n, 'QM-CARGA-E', `Bien sumar los ${n} neutrones. Pero el ion tiene carga, así que sus protones no son sus ${el} electrones. Así sale ${el + n}.`),
-      e(el - q + n, 'QM-CARGA-SIGNO', `Bien usar la carga y los neutrones. Pero el signo va al revés: carga = Z − e⁻. Así sale ${el - q + n}.`),
-      e(z, 'QM-NEUTRONES', `Bien los protones: Z = ${z}. Pero falta sumar los ${n} neutrones, porque A = Z + N. Así sale ${z}.`),
-      e(a + el, 'QM-SUMA-TODO', `Bien Z y N. Pero A cuenta solo el núcleo, así que los ${el} electrones no se suman. Así sale ${a + el}.`),
+      e(el + n, 'QM-CARGA-E', `Sumar los ${n} neutrones está bien. Pero ${el} son los electrones, y como el ion tiene carga, sus protones no son ${el}. Así sale ${el + n}.`),
+      e(el - q + n, 'QM-CARGA-SIGNO', `Usar la carga y los neutrones está bien, pero el signo va al revés: como carga = Z − e⁻, Z es los electrones más la carga. Así sale ${el - q + n}.`),
+      e(z, 'QM-NEUTRONES', `Los protones están bien: Z = ${z}. Pero A cuenta todo el núcleo, así que falta sumar los ${n} neutrones. Así sale ${z}.`),
+      e(a + el, 'QM-SUMA-TODO', `Z y N están bien. Pero A cuenta solo el núcleo, y los electrones están afuera y casi no tienen masa, así que los ${el} no se suman. Así sale ${a + el}.`),
     ];
     return cerrar({ variables: usa('Z', 'N', 'e', 'q'), enunciado: ['Un ion X tiene carga ', v('q', qTxt(q)), ', ', v('e', `${el} electrones`), ' y ', v('N', `${n} neutrones`), '.'],
       pregunta: ['¿Cuál es su número de masa A?'], datos: [D.carga, D.masa],
       alternativas: numericas(rng, a, errores), valor: a,
-      solucion: [['Primero los protones: ', v('Z', 'Z'), ' = ', v('e', String(el)), ' + (', v('q', signo(q)), ') = ', v('Z', String(z)), '.'],
+      solucion: [['Primero los protones, que salen de la carga: ', v('Z', 'Z'), ' = ', v('e', String(el)), ' + (', v('q', signo(q)), ') = ', v('Z', String(z)), '.'],
         ['A = ', v('Z', String(z)), ' + ', v('N', String(n)), ` = ${a}.`]],
       _datos: { tipo: 'masa-ion', nivel: 3, Z: z, A: a, carga: q } });
   }

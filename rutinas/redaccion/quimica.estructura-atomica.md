@@ -137,3 +137,156 @@ La B del ejemplo 15 de la idea 2 («su átomo ya era neutro») es correcta.
 compartidas `configuracion-ubicacion` 91/91, `atomo-y-tabla` 76/76); validador con `calidad: 2` en 200 semillas: 0;
 `papel-reglas.js`: nada de estas plantillas; `ecuaciones-ancho`: queda solo el corte de la regla de la idea 4.
 `teoria.test.js` (última corrida): 163 de 164; la unidad pasa, y la única falla es `quimica/mol-y-composicion.js`, otra unidad en obra. La prueba del glosario, que en una corrida anterior fallaba por `app/datos/glosario/*.json` desfasado, ya pasa.
+## Segunda pasada: explica (27 nov)
+
+Gerson vio la unidad en la app y dijo que los textos seguían cortos y sin mucho significado. Esta pasada siguió el punto 4
+de `docs/metodo/unidad/redaccion-delegada.md` («Explica, no solo pules») con los topes nuevos del punto 6. Solo texto:
+ningún número, respuesta, distractor, dato, dibujo, color ni letra cambió, y `calidad: 2` se queda.
+
+Archivos: `contenido/teoria/quimica/estructura-atomica.js` y la práctica propia, `plantillas/particulas-nucleo/generador.js`
+y `plantillas/niveles-orbitales/generador.js`, con su `papel.json` regenerado (`herramientas/papel-generador.js`; mismos 8
+problemas). Las plantillas compartidas no se tocaron y no se corrió `npm run catalogo`.
+
+### Qué cambió, por tipo
+
+1. **Reglas (6).** Cada una dice ahora por qué vale lo que dice: el ion sigue siendo el mismo elemento porque Z no cambia
+   (idea 1); cada modelo cambió porque apareció una evidencia que el anterior no explicaba (idea 2); el piso n tiene n
+   pasillos (idea 3); el 4s va antes que el 3d porque cuesta menos, y el Cr y el Cu quedan así porque es más estable
+   (idea 4); el catión pierde primero los electrones más alejados del núcleo (idea 5); los electrones solos no se anulan
+   y por eso un imán atrae a la especie (idea 6).
+2. **«Vale si» (6).** Cada condición dice además qué pasa cuando no se cumple: en un proceso nuclear sí cambia el
+   elemento; fuera de su época el modelo falla; un ion o un átomo excitado se acomoda de otra forma; con la convención
+   contraria cambian los signos del último electrón.
+3. **Lee y Mira.** Las tarjetas agregan el porqué (casi toda la masa está en el núcleo; un modelo se cambia si un
+   resultado no cuadra; los dos de un cuarto tienen espín opuesto porque dos electrones nunca tienen la misma dirección
+   completa). Los 36 pasos de «Mira» dicen qué cambia y por qué («el cuarto ya no encuentra una caja vacía, así que se
+   aparea…»).
+4. **Predice: los 18 `siFuera`.** Cada uno nombra el razonamiento equivocado, dice por qué falla y qué había que mirar.
+5. **«Así se resuelve».** Los pasos dicen por qué se hace cada cosa. El verdadero o falso de la idea 2 se partió en un
+   paso por afirmación (juntas pasaban de 50 palabras), y el «sentido» ya no dice «con una sola letra cambiada, ya sería
+   otra alternativa», que no explicaba nada.
+6. **«Ahora tú»: unas 150 explicaciones de alternativas, en las seis ideas.** Se dejó el molde «X está bien. Pero Y.» y
+   cada explicación dice qué hizo el alumno («le quitaste la carga», «seguiste por pisos», «contaste uno de más»), por qué
+   no vale y qué se debió mirar. La evidencia que lleva a cada modelo (idea 2) dice ahora qué explicó cada científico y qué
+   pide la evidencia dada; el relleno de las cuentas vecinas sigue igual.
+7. **Los 90 ejemplos.** Las explicaciones de las alternativas incorrectas nombran el error y su causa («como si el ion
+   fuera neutro», «olvida que el Ca²⁺ ya perdió dos»), y los pasos secos dicen qué significa el resultado.
+8. **Glosario (18 `simple`).** Cada uno con un ejemplo o una imagen de todos los días, dentro de las 14 palabras: «el
+   carbono de un lápiz tiene seis», «como piso, pasillo y cuarto», «como un pasajero sin compañero». Ninguno delata una
+   predicción (las pruebas de lo previo pasan).
+9. **Práctica.** Las dos plantillas ya no abren cada explicación con «Bien X.»: se rehicieron las 38 de
+   `particulas-nucleo` y las 45 de `niveles-orbitales` con el mismo criterio, conservando el «Así sale…» que la prueba exige.
+   En un dato de `particulas-nucleo` quedaba un «el protón pesa unas 1836 veces más»: pasa a masa.
+10. **Concordancias que salían rotas en algunas semillas:** «quedan 1 electrón solo», «los mismos 1 electrones» (hidrógeno),
+   «la diferencia de 1 protones», «salen 1», «mostrarlos» con un solo electrón.
+
+### Seis ejemplos de antes y después
+
+**Regla, idea 1.**
+- Antes: «Z decide el elemento, y A suma protones y neutrones. Los isótopos tienen el mismo Z y reaccionan igual (¹²C y
+  ¹⁴C); los isóbaros, el mismo A (¹⁴C y ¹⁴N); los isótonos, el mismo N (¹³C y ¹⁴N), y los isoelectrónicos, los mismos
+  electrones.»
+- Después: «Z, que cuenta los protones, decide el elemento: un átomo que gana o pierde electrones sigue siendo ese
+  elemento, pero queda con carga: es un ion. Los isótopos tienen el mismo Z y reaccionan igual (¹²C y ¹⁴C); los isóbaros,
+  el mismo A (¹⁴C y ¹⁴N); los isótonos, el mismo N (¹³C y ¹⁴N), y los isoelectrónicos, los mismos electrones.»
+
+**Regla, idea 5.**
+- Antes: «Un anión suma electrones en el orden de llenado. Un catión pierde primero los de mayor n (4s antes que 3d) y, a
+  igual n, los de mayor ℓ (5p antes que 5s).»
+- Después: «Un anión recibe sus electrones extra en el orden de llenado, como si siguiera llenando el hotel. Un catión
+  pierde primero los de mayor n (4s antes que 3d), que son los más alejados del núcleo, y, a igual n, los de mayor ℓ (5p
+  antes que 5s).»
+
+**«Vale si», idea 4.**
+- Antes: «Vale si el átomo es neutro y está en su estado de menor energía.»
+- Después: «Vale si el átomo es neutro y está en su estado de menor energía; si es un ion o recibió energía, sus
+  electrones se acomodan de otra forma.»
+
+**`siFuera` de Predice, idea 2 (la opción «Electrones en órbitas fijas»).**
+- Antes: «Las órbitas fijas son de Bohr, dos años después, y tratan de los electrones, así que no explican por qué unas
+  alfas rebotan.»
+- Después: «Las órbitas fijas son del modelo de Bohr, de dos años después, y hablan de los electrones. Un electrón tiene
+  muy poca masa para hacer rebotar una alfa, así que las órbitas no explican el rebote.»
+
+**Explicación de alternativas, idea 1, ejemplo 12 («Número de masa de un ion»).**
+- Antes: «La A suma electrones y neutrones: 24 + 30. La C resta la carga en vez de sumarla: 22 + 30.»
+- Después: «La A suma electrones y neutrones, 24 + 30, como si el ion fuera neutro. La C resta la carga en vez de
+  sumarla, 22 + 30, aunque un ion positivo tiene más protones que electrones.»
+
+**Explicación de alternativa en «Ahora tú», idea 2 (evidencia «Unas pocas alfas rebotan…», opción Thomson).**
+- Antes: «Thomson propuso electrones dentro de una esfera positiva. Esa idea respondía a otra evidencia, no a esta.»
+- Después: «Thomson propuso electrones dentro de una esfera positiva para explicar los rayos catódicos. Esta evidencia
+  habla de un rebote, y solo una carga positiva concentrada hace rebotar a una alfa.»
+
+### Comprobaciones
+
+- `estructura-atomica.test.js`: 31 de 31 (la unidad declara `calidad: 2`; el validador completo queda en cero). Validador
+  simulando `calidad: 2` con 200 semillas: cero.
+- `particulas-nucleo` 34 de 34 y `niveles-orbitales` 31 de 31; las compartidas `configuracion-ubicacion` y `atomo-y-tabla`,
+  167 de 167.
+- `teoria.test.js`: 163 de 164. La única falla es «glosario … archivos de la app al día», porque cambiaron 18 `simple` y
+  no se corrió `npm run catalogo` (lo corre la sesión al integrar).
+- `ecuaciones-ancho` (servidor propio en el puerto 4262, cerrado al terminar): queda solo el corte de la regla de la
+  idea 4 tras una flecha, que viene de antes.
+- Un barrido de 400 semillas por idea y 600 por plantilla buscando plurales rotos, «undefined», «NaN» y espacios dobles:
+  quedan solo falsos positivos.
+
+### Para el auditor
+
+1. **Afirmaciones nuevas que conviene confirmar** (son ciertas a nivel escolar, pero son mías): «un electrón tiene muy
+   poca masa para hacer rebotar una alfa» (idea 2); «los electrones de la capa de valencia son los que participan en las
+   reacciones» (idea 4, Lee); «el 4s… son los más externos o más alejados del núcleo» (idea 5, regla, Mira y pasos), que
+   simplifica la razón real del orden de salida; «3d⁵ y 3d¹⁰ son más estables» como causa de la excepción del Cr y el Cu;
+   en el «Lee» de la idea 3, «dos electrones nunca tienen la dirección completa igual» (Pauli, sin nombrarlo).
+2. **Condiciones nuevas de «Vale si»:** idea 4 («si es un ion o recibió energía, sus electrones se acomodan de otra
+   forma») e idea 5 («si recibió energía, algún electrón puede estar en un subnivel más alto»). Conviene ver que no
+   choquen con lo que el examen da por supuesto.
+3. **Dalton y el agua:** el primer borrador de «Mira» (idea 2) ponía de ejemplo «dos de hidrógeno por uno de oxígeno en
+   el agua» como explicación de Dalton, pero Dalton escribía el agua como HO. Se cambió por «nunca en pedazos de átomo».
+4. **`casoDesap`, distractor «todos»:** con el cromo (4s¹ 3d⁵) la explicación vieja decía «algunos ya van en pareja», y
+   eso es falso porque no hay ningún par. Ahora, si el último subnivel no pasa de una flecha por caja, la explicación dice
+   que otro subnivel también tiene electrones solos.
+5. **Sigue de antes:** la ecuación de la regla de la idea 4 se parte tras una flecha a 390 px.
+6. **Glosario en la app:** al integrar hace falta `npm run catalogo` para que `app/datos/glosario/quimica.json` recoja
+   los 18 `simple` nuevos.
+
+## Verificación de la segunda pasada (27 nov)
+
+Verificador de cierre. Se leyeron todas las oraciones nuevas (teoría en 60 semillas por idea; `particulas-nucleo` y
+`niveles-orbitales` en 120) contra HEAD y se resolvieron las notas.
+
+**Datos, opciones y respuestas contra HEAD (200 semillas por idea, más las 500 a 505):** iguales. Solo cambian el texto,
+el V/F de «Así se resuelve» de la idea 2 partido en un paso por afirmación (las mismas respuestas) y, en
+`particulas-nucleo`, el dato «el protón pesa unas 1836 veces más» → «tiene unas 1836 veces su masa» (mismo número).
+
+**Corregido (con prueba que falla con la versión del redactor, en `estructura-atomica.test.js`):**
+- **Configuración tras el kriptón (idea 4, «Ahora tú»).** La solución decía «se llenan el 5s, el 4d y el 5p» con 1 a 12
+  electrones, que no llegan al 5p (con 1 o 2, ni al 4d). Venía de antes; ahora nombra solo los subniveles que reciben
+  electrones: «quedan 3 electrones, que van al 5s y al 4d…»; «queda 1 electrón, que va al 5s, el más barato».
+- **Cromo y cobre (idea 4).** La solución decía «queda medio lleno o lleno» para los dos; ahora dice cuál: «medio lleno,
+  con 5» (Cr) o «lleno, con 10» (Cu).
+- **Condición de la idea 4.** «Si es un ion…, sus electrones se acomodan de otra forma» chocaba con la regla 5 (un anión
+  sigue el orden de llenado). Ahora: «si perdió electrones o recibió energía, sus electrones pueden quedar de otra forma».
+  (Con «catión» la idea 5 dejaba de estrenar esa palabra y el validador de calidad 2 fallaba.)
+- **Porqués del V/F (idea 2):** dos encadenaban dos «:» («es uno de sus postulados: los átomos…»); ahora «es uno de sus
+  postulados, y para él también tenían la misma masa» y «es su idea central, y entre dos niveles no hay lugares
+  intermedios».
+- Sin prueba, de lengua: «Sale 1 electrón: primero los del 4s…» (Cu⁺) → «Sale 1 electrón, y sale del 4s, que está en el
+  nivel más alto; el 3d no se toca.»; en `niveles-orbitales`, «no tiene mₗ = +1: su ℓ es menor» → «…, porque su ℓ es menor».
+
+**Notas del redactor, confirmadas (cierto en química escolar):** «los del 4s son los más externos, los más alejados del
+núcleo» es la regla de los libros y del examen (salen primero los de mayor n; la razón fina, de energías del ion, no se
+pide); «3d⁵ y 3d¹⁰ son más estables» es la explicación escolar de Cr y Cu; un electrón tiene muy poca masa para
+desviar una alfa (la alfa tiene unas 7300 veces su masa, también cierto); los de valencia son los que participan en las
+reacciones; «dos electrones nunca tienen la dirección completa igual» (Pauli); la condición de la idea 5 no choca con el
+examen. Dalton y el agua: bien quitado.
+
+**Comprobación:** `estructura-atomica.test.js` 32/32; `particulas-nucleo`, `niveles-orbitales`, `configuracion-ubicacion`
+y `atomo-y-tabla` en verde; validador con `calidad: 2` en 200 semillas: 0; `papel-generador.js --revisar`: al día;
+`papel-reglas.js`: nada de estas plantillas (solo `quimica-conceptos p2`, compartida, sin tocar).
+
+`contenido/teoria/teoria.test.js`: 163 de 164; la única falla, «glosario … archivos de la app al día», espera a
+`npm run catalogo`.
+
+Archivos de esta verificación: `contenido/teoria/quimica/estructura-atomica.js`, `contenido/teoria/quimica/estructura-atomica.test.js`,
+`plantillas/niveles-orbitales/generador.js`.
