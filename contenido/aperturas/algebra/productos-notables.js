@@ -45,7 +45,8 @@
     titulo: '¿Por qué agrandar un cuarto un metro más pide cada vez más mayólica?',
     parrafos: [
       ['La mayólica del piso se compra por metro cuadrado, y un cuarto cuadrado de ', antes('3 m'), ' de lado lleva 9 m². ',
-        'Si el cuarto se agranda ', nuevo('1 m'), ' por lado, hasta 4 m, el maestro de obra pide 16 m², es decir, 7 m² más por un solo metro de lado. ',
+        'Si el cuarto se agranda ', nuevo('1 m'), ' por lado, hasta 4 m, el maestro de obra pide 16 m², así que por un solo metro de lado hacen falta:',
+        { linea: ['16 m² − 9 m² = 7 m²'] },
         'Si después se agranda otro metro, hasta 5 m, pide 9 m² más, y el metro siguiente pide 11 m² más.'],
       ['Un metro de lado parece siempre el mismo metro, así que es fácil esperar que cada metro nuevo pida la misma mayólica extra que el primero, ',
         nuevo('7 m²'), ' cada vez. ',
@@ -69,6 +70,7 @@
         'Los 7, 9 y 11 m² son cálculo (16 − 9, 25 − 16, 36 − 25), no una compra medida.',
       ],
       notas: [
+        'Tercera pasada (27 nov): la resta «16 m², es decir, 7 m² más» del párrafo 1 salió a su línea (16 m² − 9 m² = 7 m²). Los 9 m² y 11 m² de los metros siguientes quedan como datos en la oración. Sin palabras de doble sentido («cuarto» solo es la habitación).',
         'Doble revisión (27 nov): la versión anterior ponía como predicción que el metro nuevo pide solo 1 m², es decir, (3 + 1)² = 3² + 1². Con un piso de verdad delante nadie cuenta así (el mismo texto admitía que basta multiplicar 4 por 4), así que era un muñeco de paja. Ahora la predicción es la de un alumno real, «el mismo metro, la misma mayólica» (7 m² cada vez), y lo medido es el mismo caso con los mismos números: 7, 9 y 11 m². La figura pasó de dos pisos de mayólicas a dos gráficos de barras con la misma escala, sin dibujar las franjas ni la esquina (siguen siendo de la idea 1). La pregunta ahora pide la cifra de 8 m a 9 m (17 m²), que se saca siguiendo la serie o con la resta; antes preguntaba «más o menos», que el choque ya respondía. Que un alumno espere lo mismo cada vez es deducción propia (ilusión de linealidad), por probar con alumnos.',
         'Revisión del Escribidor Escribano (27 nov): «el metro nuevo no cabe en una esquina» era ambiguo y ahora dice que lo nuevo no es un cuadradito de 1 m² en la esquina; se partieron las oraciones de 43 y 41 palabras y la pregunta quedó en una sola («y por qué» sobraba). Para Gerson: el párrafo 3 dice que (3 + 1)² no es 3² + 1², que es el choque en una oración y no la fórmula; si se lee como regla, se puede quitar.',
         'La figura no parte lo nuevo en dos franjas y una esquina: esa partición es el corazón de la idea 1 y su misión, y no se dibuja aquí.',

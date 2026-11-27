@@ -66,6 +66,7 @@
         'Las frecuencias (1, 3, 3 y 1 de cada 8) son las probabilidades teóricas de monedas parejas; con lanzamientos reales salen cerca, no exactas. Falta un registro propio (por ejemplo, 200 lanzamientos de un salón) si se quiere decir «se mide» con datos.',
       ],
       notas: [
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido.',
         'Doble revisión (27 nov): el choque es honesto (las mismas tres monedas en la predicción y en lo medido, y la idea de que todos los resultados son igual de probables es un error real y estudiado, el sesgo de equiprobabilidad de Lecoutre, de memoria). Solo cambió «salen en apenas 1 de cada 8» por «salen más o menos en 1 de cada 8», y lo mismo con 3 de cada 8: con lanzamientos de verdad las frecuencias se acercan a esas fracciones, no las clavan, y el texto ahora es cierto tal como se lee.',
         'Revisión del Escribidor Escribano (27 nov): el título decía «casi nunca salen las tres en cara», exagerado para 1 de cada 8; ahora nombra el choque con el dato (una cara sale tres veces más seguido que tres caras).',
         'Tres monedas y no cuatro: con cuatro, el seis de «dos caras» sería la respuesta de la misión de la idea 1. Por eso tampoco aparece (a + b)³ con sus coeficientes ni la suma de coeficientes de la idea 4.',

@@ -71,6 +71,7 @@
         'Que la familiar pese lo de cuatro personales es cálculo (el área crece con el cuadrado del ancho), no una pesada propia; vale si el grosor de la masa y los ingredientes por centímetro cuadrado son los mismos.',
       ],
       notas: [
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido.',
         'Doble revisión (27 nov): las cuentas cuadran (al doble de ancho, cuatro veces el área: 40² entre 20² da 4) y la predicción de la regla de tres directa (dos personales) es el error real de linealidad que comete el alumno; la expectativa y lo medido hablan de las mismas dos pizzas. Solo se cambió el arranque de la última oración del párrafo 3, «Por eso», que repetía el «por eso» de la oración anterior; ahora dice «Así que».',
         'Segunda versión (27 nov): Gerson rechazó la primera, que era el ejemplo del skill (la talla del niño). Esta busca un hecho propio, que un alumno de 5.º entiende sin saber el tema, y deja una oración para llevarse (seLleva).',
         'La pregunta compara pares (largo del pan y tajadas, ancho de la pizza y pizza) y se puede responder con el párrafo 3: el pan crece solo a lo largo. La clase recoge esa respuesta para presentar la proporcionalidad directa.',

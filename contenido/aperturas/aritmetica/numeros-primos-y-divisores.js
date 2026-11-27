@@ -75,6 +75,7 @@
         'Ninguno: las maneras de 18 (2, 3, 6 y 9) y que 19 es primo se comprobaron con cálculo.',
       ],
       notas: [
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido.',
         'Doble revisión (27 nov): el título decía «¿Por qué un alumno más puede arruinar todos los grupos de trabajo?» y el cuerpo contaba un salón de 36 alumnos al que llegaba un alumno nuevo. Gerson advirtió que pone a una persona como el problema y puede hacer sentir mal al alumno nuevo. Ahora el reparto es de chupetines para las sorpresas de un cumpleaños (18 y 19), la misma idea sin nadie que «sobre». Se cambiaron también los números: el 37 era un boleto de la Predice 1, y la apertura le adelantaba al alumno que 37 no se agrupa de ninguna manera; 18, 19, 20 y 21 no aparecen en ninguna Predice ni misión (se probó antes 42 y 43, pero 42 trae el 14, acierto de la misión 5). El párrafo 3 ahora dice dónde sirve la idea (elegir una cantidad para repartir), y el seLleva lo recoge.',
         'Las maneras de 18 se cuentan sin la bolsita de 1 ni la de 18 (cuatro: 2, 3, 6 y 9); el texto lo dice con «varias bolsitas con más de un chupetín» para 18 y con «salvo que pongas uno por bolsita o todos en una sola» para 19.',
         'La palabra «primo» aparece solo al final, en el nombre del tema, y no se le pega al 19: eso lo decide el alumno en la idea 1.',

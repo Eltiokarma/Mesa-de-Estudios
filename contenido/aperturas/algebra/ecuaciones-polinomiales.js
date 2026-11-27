@@ -58,7 +58,8 @@
     titulo: '¿Por qué una caja honda y una caja plana, hechas con la misma cartulina, guardan lo mismo?',
     parrafos: [
       ['Para armar una caja sin tapa con un cuadrado de cartulina de 20 cm de lado, se corta un cuadradito igual en cada esquina y se doblan los cuatro bordes hacia arriba. ',
-        'Con cortes de ', corte('5 cm'), ' sale una caja honda de 10 cm de ancho y 5 cm de alto, que se llena con medio litro de arroz, es decir, 500 cm³. ',
+        'Con cortes de ', corte('5 cm'), ' sale una caja honda de 10 cm de ancho y 5 cm de alto, que se llena con medio litro de arroz, una cantidad que en centímetros cúbicos se escribe así:',
+        { linea: ['0,5 L = 500 cm³'] },
         'Con cortes de unos ', corte('1,9 cm'), ' sale una caja plana de unos 16,2 cm de ancho, y en ella también cabe el medio litro de arroz.'],
       ['Lo esperable es que un corte más grande dé una caja más honda y, por eso, de más capacidad, de modo que para medio litro habría un solo corte posible. ',
         'Con esa idea en la cabeza, quien busca la caja de medio litro probando cortes con la calculadora se detiene al encontrar el de 5 cm, convencido de que no hay otro.'],
@@ -82,6 +83,7 @@
         'Que la cartulina se pueda doblar en bordes de 1,9 cm sin romperse es de memoria.',
       ],
       notas: [
+        'Tercera pasada (27 nov): la equivalencia «medio litro, es decir, 500 cm³» del párrafo 1 salió a su línea (0,5 L = 500 cm³) y la oración termina en dos puntos antes de ella. La pregunta repite «un litro, es decir, de 1000 cm³», pero no se toca porque esta pasada no cambia preguntas. Sin palabras de doble sentido («grado» solo es el de la ecuación).',
         'Revisión del Escribidor Escribano (27 nov): el párrafo 3 decía que la capacidad «primero sube y después baja», que es casi la respuesta de la pregunta guía (hay un máximo); ahora deja la pista (gana altura, pierde fondo) y el choque (un corte chico y uno grande guardan lo mismo). «Suele parar» era una generalización sin dato y ahora es «se detiene», atado a la idea del párrafo.',
         'La pregunta se puede intentar con el párrafo 3: si la capacidad sube y después baja, hay un máximo, y si ese máximo no llega a 1000 cm³, ningún corte sirve (no llega: unos 593 cm³). El alumno que no lo ve puede probar cortes. Abre la idea de que una ecuación puede tener menos soluciones reales que su grado sin responder la Predice de la idea 1.',
         'La tercera raíz de la cúbica (unos 13,1 cm) no cabe en la cartulina; la apertura no la nombra, y la unidad la recoge cuando cuenta raíces y grado.',
