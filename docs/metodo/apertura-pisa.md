@@ -44,8 +44,26 @@ Un archivo por unidad, aparte de la teoría (para no chocar con quien edita la t
 - La figura tiene dos paneles con sus rótulos «Lo que predice» y «Lo que se mide» y pasa por la pieza o el SVG sin NaN.
 - No delata: la apertura no contiene la respuesta de ninguna Predice ni misión de la unidad (misma comprobación que el
   glosario y Lee).
-- La ficha está completa; `porVerificar` lista los datos de memoria.
+- La ficha está completa (`seLleva` incluido); `porVerificar` lista los datos de memoria.
 - Sin `ficha` visible en la app.
+
+## Lo que el alumno se lleva (Gerson, 27 nov, después del piloto)
+
+Gerson leyó el piloto: «al leer la introducción, el estudiante debe llevarse algo a casa; de geometría molecular no se
+llevarían nada»; el choque de la hibridación («el s y el p fallan») no quedaba claro; «la pregunta guía también debe
+de ser muy clara»; y los ejemplos del skill eran ejemplos, no textos para poner. Por eso, además del skill:
+
+1. **Algo para llevarse.** Al terminar la apertura, el alumno puede decir en una oración propia qué aprendió del mundo,
+   aunque todavía no sepa el tema: «la forma de una molécula decide si se mezcla con el agua», «la regla de tres solo
+   sirve si las dos cantidades crecen juntas a la par». Esa oración va en la ficha como `seLleva` y el texto la deja
+   clara sin enunciar la regla de la unidad.
+2. **Un choque que un alumno de 5.º entienda solo.** Con cosas que ve o que ya estudió en el colegio, no con un modelo
+   que todavía no tiene (orbitales, hibridación). Si para ver el choque hay que saber el tema, el choque está mal elegido.
+3. **La pregunta guía es clara y se puede pensar.** Una sola pregunta, de una línea o dos, sobre algo del texto o de la
+   imagen, que el alumno pueda intentar responder con lo que sabe (aunque se equivoque). Nada de preguntas que solo
+   entiende quien ya leyó la teoría.
+4. **Texto propio.** Los ejemplos del skill (la talla del niño, el metano) muestran el método; no se copian ni se
+   adaptan. Cada apertura busca su propio hecho cotidiano.
 
 ## Revisión del Escribidor Escribano (Gerson, 27 nov)
 
@@ -57,7 +75,7 @@ si ve un problema de contenido, lo anota en la ficha. Sin esa revisión, la aper
 
 ## Piloto
 
-Tres unidades antes de las 158: `aritmetica.magnitudes-proporcionales` y `quimica.geometria-molecular` (los dos
-ejemplos aprobados del skill: magnitudes proporcionales e hibridación, adaptados a lo que la unidad enseña) y
-`fisica.vectores` (el caso de prueba de la tabla del atajo). Capturas a 390 y 1280 px para Gerson; si las aprueba, se
+Tres unidades antes de las 158: `aritmetica.magnitudes-proporcionales`, `quimica.geometria-molecular` y
+`fisica.vectores`. La primera versión (27 nov) partió de los ejemplos del skill y Gerson la rechazó por lo de arriba;
+la segunda se escribe desde cero con los cuatro puntos. Capturas a 390 y 1280 px para Gerson; si las aprueba, se
 escribe una por unidad, curso por curso.
