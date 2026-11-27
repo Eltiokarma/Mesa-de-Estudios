@@ -99,6 +99,7 @@
         'El parentesco, que también es de la unidad, no aparece en la apertura: forzarlo en el mismo choque lo volvía otro tema.',
         'Revisión del Escribidor Escribano (27 nov, otro agente): el párrafo 2 decía que la segunda opción sería más probable «que solo trabaje en un banco». Ese «solo» cambia la primera opción por «banco y no robótica», y con esa lectura la segunda sí podría ser más probable, que es justo lo que el choque niega; ahora compara «banco y robótica» con «banco». Se quitó el número de estudiantes, que no está confirmado, y «lo que sabemos de Rosa» pasó a «lo que sabes», de tú.',
         'Doble revisión (27 nov): las cuentas cuadran (las dos opciones hablan de la misma Rosa, y el grupo de banco y robótica cabe en el de banco), y el error es real: es la falacia de la conjunción, medida en el experimento que se cita. Rosa no es un estereotipo que hiera: es una ingeniera, y lo que hace caer es que la historia encaja, no un prejuicio sobre ella. Único cambio: «otros oficios» pasó a «otras opciones», porque en el experimento original la segunda opción no era un oficio (Linda era «cajera de banco y feminista»).',
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. «Grupo» va como grupo de personas del experimento (párrafo 1) y como conjunto (párrafo 3), en párrafos distintos y con el mismo sentido de base.',
       ],
     },
   };

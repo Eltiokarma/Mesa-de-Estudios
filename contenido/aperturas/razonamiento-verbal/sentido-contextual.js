@@ -72,6 +72,7 @@
         'La pregunta se puede intentar con el texto: «leve» y «grave» dicen cuánto peligro hay; «estable» solo dice que no cambia.',
         'Figura: dos gráficas con la misma escala; cambia solo la línea. El carmín marca el nivel «grave» y el turquesa, al paciente estable.',
         'Doble revisión (27 nov): sin cambios. El parte y la gráfica hablan del mismo paciente, y la mala lectura («estable» como «ya está bien») es real, porque es el sentido de la palabra en la calle. Sobre si puede herir: el paciente es una persona famosa sin nombre, nadie es culpable de nada y el texto no hace bromas con la enfermedad; lo que deja es útil para quien tenga a un familiar internado, porque le enseña a leer el parte sin tranquilizarse de más ni asustarse de más.',
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. El doble sentido de «estable» es el objeto de la apertura y está a propósito; «parte» es siempre el parte médico, nunca una porción.',
       ],
     },
   };

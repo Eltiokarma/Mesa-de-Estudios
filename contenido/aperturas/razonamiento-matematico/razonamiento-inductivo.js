@@ -51,7 +51,9 @@
         'Sin embargo, un bloque de 2 × 2 casillas también es un cuadrado, igual que uno de 3 × 3 o el tablero entero, y si se cuentan los de todos los tamaños, el tablero tiene ',
         grande('204 cuadrados'), '.'],
       ['La idea más directa es contarlos uno por uno sobre el tablero, pero así es fácil equivocarse, porque los cuadrados grandes se montan unos sobre otros y uno se salta alguno o lo cuenta dos veces. ',
-        'Quien ya sospecha la trampa suele sumar el tablero entero a las casillas y responder 65, pero se olvida de los bloques de 2 × 2, de 3 × 3 y de todos los tamaños intermedios.'],
+        'Quien ya sospecha la trampa suele sumarles a las casillas el tablero entero, y responde así:',
+        { linea: [casilla('64'), ' + ', grande('1'), ' = 65'] },
+        'Esa respuesta deja fuera los bloques de 2 × 2, de 3 × 3 y de todos los tamaños intermedios.'],
       ['El 204 sale de contar primero tableros chicos, ver cómo crece la cuenta cuando se agrega una fila y una columna, y seguir así hasta el de 8 × 8. ',
         'Llegar así, desde los casos chicos, a un caso grande que no se puede contar a mano es el razonamiento inductivo, el tema de esta unidad.'],
     ],
@@ -77,6 +79,7 @@
         'Para Gerson: el párrafo 3 dice cómo se llega al 204 (casos chicos, ver cómo crece, seguir), sin dar la regla de los cuadrados. Es el método del tema, como el «averiguar qué le pasa a una cantidad» de la pizza.',
         'Revisión del Escribidor Escribano (27 nov, otro agente): el párrafo 2 decía que contar uno por uno «es la que más falla», una comparación sin dato; ahora dice que así es fácil equivocarse. La última oración enunciaba el método de la unidad («encontrar la regla en los casos chicos, comprobar por qué vale y usarla…»), y «comprobar por qué vale» es la regla de la idea 2 («Tres casos no prueban»); se recortó para que quede el choque y el nombre del tema.',
         'Doble revisión (27 nov): el choque es justo, porque las dos cuentas hablan del mismo tablero y el párrafo 1 dice qué se cuenta antes de dar el 204 (204 = 64 + 49 + 36 + 25 + 16 + 9 + 4 + 1, recalculado). El párrafo 2 descartaba la regla de tres desde el tablero de 2 × 2 (16 veces más casillas, 80 cuadrados), una cuenta que ningún alumno haría con cuadrados: era un muñeco de paja. Ahora descarta el 65 (casillas más el tablero entero), que es la segunda respuesta que da casi cualquiera cuando sospecha la trampa (de la experiencia común con este acertijo, sin datos de alumnos).',
+        'Tercera pasada (27 nov): el párrafo 2 decía, en la oración, que se suma «el tablero entero a las casillas» para «responder 65»; ahora esa suma va en su línea (64 en naranja, las casillas; 1 en turquesa, el tablero entero; = 65) y la oración que sigue dice qué deja fuera. La suma 64 + 49 + … + 1 = 204 no se escribe, porque la apertura no da la regla de los cuadrados. Sin palabras de doble sentido («cuenta» es siempre conteo).',
       ],
     },
   };

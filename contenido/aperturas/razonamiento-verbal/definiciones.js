@@ -94,6 +94,7 @@
         'La pregunta se puede intentar con el texto: hay que contarle las patas, y como el ciempiés tiene muchas, queda fuera. La clase la retoma para presentar el rasgo que separa.',
         'Figura: los mismos tres bichos en los dos paneles; cambia solo la caja (bichos pequeños o seis patas). El turquesa marca lo que entra y el naranja lo que se cuela, como en la leyenda de la idea 1.',
         'Doble revisión (27 nov): el choque es justo (los mismos tres bichos y una sola regla que cambia, el tamaño o las patas), el error es real (llamar insecto a la araña es de uso común) y la cuenta cuadra: ocho patas son dos más que seis. Único cambio: el título y el párrafo 2 decían que la araña es «tan pequeña como una hormiga», y muchas arañas de casa son bastante más grandes que una hormiga; ahora dicen que es un bicho pequeño, como la hormiga.',
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. La diferencia de patas (ocho, dos más que seis) queda como dato en la oración, sin cuenta escrita.',
       ],
     },
   };

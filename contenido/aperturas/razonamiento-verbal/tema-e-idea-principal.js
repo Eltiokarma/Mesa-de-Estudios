@@ -92,6 +92,7 @@
         'Contenido, para Gerson: la fábula es de Esopo, griego, y no del Perú; es un relato universal. Se eligió porque el choque (el personaje no es el tema) se entiende sin saber el tema; si se prefiere un texto peruano, haría falta otro relato que todos conozcan.',
         'Figura: la misma escena en los dos paneles; en «Lo que dice» se agrega la silueta de una persona detrás de la zorra.',
         'Doble revisión (27 nov), pendiente de la fábula: se queda. La fábula de Esopo es de un griego, pero es un relato que se cuenta en la primaria peruana y su choque (el personaje que aparece en cada oración no es el tema) se entiende sin saber el tema. Lo que se cambió es el párrafo 2: decía que con la respuesta «de una zorra que quería unas uvas» la fábula sería «un texto sobre la vida de los zorros, como los de un libro de ciencias», una lectura que ningún alumno hace, porque todos saben que una fábula enseña algo. Ahora el párrafo 2 dice lo cierto: esa respuesta cuenta lo que pasa y no dice por qué se cuenta, y lo que se lo diría, la moraleja, no está en esta versión ni suele estar en los textos de examen. Así el quitar la moraleja deja de ser un arreglo escondido: se dice, y se dice para qué sirve. En el párrafo 3, «la vida de los zorros» pasó a «los zorros».',
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. «Trata de» se usa siempre como «habla de»; «verdes» es siempre sin madurar.',
       ],
     },
   };

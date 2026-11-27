@@ -76,6 +76,7 @@
         'La pregunta se puede intentar con el texto: hay que averiguar cuál es la ciudad más poblada de Bolivia, y no basta saber dónde está el Gobierno. Muestra que cambiar la relación cambia la respuesta.',
         'Contenido, para Gerson: el tema es de geografía y leyes de otro país. Si se prefiere un ejemplo del Perú, habría que buscar uno donde dos relaciones del mismo par lleven a respuestas distintas.',
         'Doble revisión (27 nov): sin cambios. El par de arriba es el mismo en los dos paneles y cambia una sola cosa, la relación que se copia; el error es real (un alumno peruano tiende a dar La Paz por capital de Bolivia, y en Juliaca La Paz es la ciudad boliviana conocida), y Sucre como capital está en el artículo 6 de la Constitución de 2009. No pone a nadie como el problema.',
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. «Capital» es siempre la ciudad, nunca el dinero, y «par» es siempre el par de la analogía.',
       ],
     },
   };

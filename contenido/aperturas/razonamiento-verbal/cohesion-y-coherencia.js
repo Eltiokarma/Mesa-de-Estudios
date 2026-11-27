@@ -84,6 +84,7 @@
         'El aviso es invento propio y se lee como tal; no copia avisos reales ni textos de examen.',
         'Figura: el mismo aviso y los mismos dos objetos en los dos paneles; cambia solo cuántas flechas salen de «lo».',
         'Doble revisión (27 nov): dos cambios en el párrafo 2. Primero, la mamá que no puede acompañar a su hija leía «lo» como el apoderado y temía que la hija se quedara sin excursión, pero el aviso ya exige ir con el apoderado en la primera parte, así que esa lectura no le cambia nada: el riesgo verdadero de la ambigüedad es el contrario, el de un alumno que va con su papá, olvidó el DNI y cree que igual sube. Ahora el ejemplo es ese. Segundo, el pendiente del distractor: la oración que descartaba «la palabra que está más cerca de «lo»» le quitaba fuerza a la opción «A la directora, que se nombra justo antes» de la Predice de la idea 2, y se quitó; en su lugar, el párrafo dice que las dos lecturas respetan la gramática y que el aviso no dice cuál quiso el colegio.',
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. «Falta» es siempre error de escritura, y «salida», la excursión.',
       ],
     },
   };
