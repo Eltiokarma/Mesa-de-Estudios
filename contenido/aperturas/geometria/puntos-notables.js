@@ -1,8 +1,8 @@
 /*
  * Apertura de «Puntos notables del triángulo» (docs/metodo/apertura-pisa.md; criterio en docs/metodo/entrada-pisa.md).
- * El choque es un experimento con papel: tres dobleces hechos a mano (cada esquina doblada por la mitad, lado sobre
- * lado) se cruzan en un solo punto, aunque tres rectas cualesquiera casi nunca lo hagan; y los dobleces de esquina
- * sobre esquina se cruzan en otro punto, así que el triángulo no tiene un solo centro. Lo que el alumno se lleva va en
+ * El choque es un experimento con papel: los tres dobleces de lado sobre lado (cada esquina doblada por la mitad) se
+ * cruzan en un punto que parece el centro, y los dobleces de esquina sobre esquina se cruzan en otro punto, así que el
+ * triángulo no tiene un solo centro (doble revisión, 27 nov). Lo que el alumno se lleva va en
  * ficha.seLleva. Se eligieron los dobleces de lado sobre lado porque se cruzan siempre dentro del papel: los de esquina
  * sobre esquina pueden cruzarse fuera, que es la Predice de la idea 2. No se adelanta la Predice de la idea 1 (el punto
  * de equilibrio, a 8 cm de A en una mediana de 12 cm: aquí no hay medianas ni equilibrio), la de la idea 3 (la pileta
@@ -29,17 +29,24 @@
     const t = ((q[0] - p[0]) * ey - (q[1] - p[1]) * ex) / den;
     return [p[0] + t * d[0], p[1] + t * d[1]];
   };
-  // Doblez de la esquina i: la recta hacia el incentro, girada `g` grados en «Lo que predice» (hecho a mano, sin cruzarse).
-  const doblez = (i, g) => {
-    const a = Math.atan2(I[1] - V[i][1], I[0] - V[i][0]) + g * Math.PI / 180;
+  // Doblez de la esquina i (lado sobre lado): la recta de la esquina hacia el incentro, hasta el lado de enfrente.
+  const doblez = i => {
+    const a = Math.atan2(I[1] - V[i][1], I[0] - V[i][0]);
     return [V[i], corte(i, [Math.cos(a), Math.sin(a)])];
   };
-  const GIROS = [4, 3.5, 4.5];
-  // Cruce de dos rectas (cada una dada por dos puntos).
-  const cruce = ([p1, p2], [p3, p4]) => {
-    const d = (p1[0] - p2[0]) * (p3[1] - p4[1]) - (p1[1] - p2[1]) * (p3[0] - p4[0]);
-    const a = p1[0] * p2[1] - p1[1] * p2[0], b = p3[0] * p4[1] - p3[1] * p4[0];
-    return [(a * (p3[0] - p4[0]) - (p1[0] - p2[0]) * b) / d, (a * (p3[1] - p4[1]) - (p1[1] - p2[1]) * b) / d];
+  // Circuncentro: el punto que queda a la misma distancia de las tres esquinas (cruce de los dobleces de esquina sobre esquina).
+  const O = (() => {
+    const [[ax, ay], [bx, by], [cx, cy]] = V, d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by));
+    const a2 = ax * ax + ay * ay, b2 = bx * bx + by * by, c2 = cx * cx + cy * cy;
+    return [(a2 * (by - cy) + b2 * (cy - ay) + c2 * (ay - by)) / d, (a2 * (cx - bx) + b2 * (ax - cx) + c2 * (bx - ax)) / d];
+  })();
+  // Doblez de esquina sobre esquina para el lado j (de V[j] a V[j+1]): pasa por el punto medio del lado y por `hacia`.
+  // En «Lo que se mide», `hacia` es O y el doblez es perpendicular al lado; en «Lo que predice» se dibuja yendo al
+  // mismo punto que los otros dobleces, que es lo que se espera. Se dibuja larga y se recorta con el papel.
+  const doblez2 = (j, hacia) => {
+    const p = V[j], q = V[(j + 1) % 3], m = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2];
+    const dx = hacia[0] - m[0], dy = hacia[1] - m[1], n = Math.hypot(dx, dy);
+    return [m, [m[0] + dx / n * 400, m[1] + dy / n * 400]];
   };
   // Marca de esquina partida en dos: dos arcos chicos iguales, uno a cada lado del doblez.
   const marca = (i, x0) => {
@@ -54,57 +61,56 @@
     return arco(a1, am, r) + arco(am, a2, r - 5);
   };
   const panel = (x0, titulo, predice, pie) => {
-    const cx = x0 + 130, P = ([x, y]) => `${r1(x0 + x)} ${r1(y)}`;
-    const ds = [0, 1, 2].map(i => doblez(i, predice ? GIROS[i] : 0));
-    const lineas = ds.map(([p, q]) => `<line x1="${r1(x0 + p[0])}" y1="${r1(p[1])}" x2="${r1(x0 + q[0])}" y2="${r1(q[1])}" stroke="currentColor" stroke-width="2.5" stroke-dasharray="8 5"/>`).join('');
-    let centro;
-    if (predice) {
-      const c = [cruce(ds[0], ds[1]), cruce(ds[1], ds[2]), cruce(ds[2], ds[0])];
-      centro = `<path d="M${c.map(P).join('L')}Z" style="fill:var(--muted)" fill-opacity=".55" stroke="currentColor" stroke-width="1.5"/>`;
-    } else {
-      centro = `<circle cx="${r1(x0 + I[0])}" cy="${r1(I[1])}" r="6" fill="currentColor"/>`;
-    }
+    const cx = x0 + 130, P = ([x, y]) => `${r1(x0 + x)} ${r1(y)}`, id = predice ? 'papel-p' : 'papel-m';
+    const linea = ([p, q], estilo) => `<line x1="${r1(x0 + p[0])}" y1="${r1(p[1])}" x2="${r1(x0 + q[0])}" y2="${r1(q[1])}" ${estilo}/>`;
+    const lado = [0, 1, 2].map(i => linea(doblez(i), 'stroke="currentColor" stroke-width="2.5" stroke-dasharray="8 5"')).join('');
+    const esquina = [0, 1, 2].map(j => linea(doblez2(j, predice ? I : O), 'style="stroke:var(--muted)" stroke-width="3.5" stroke-dasharray="2 6" stroke-linecap="round"')).join('');
+    const punto = (c, estilo) => `<circle cx="${r1(x0 + c[0])}" cy="${r1(c[1])}" r="7" ${estilo}/>`;
+    const puntos = predice ? punto(I, 'fill="currentColor"')
+      : punto(I, 'fill="currentColor"') + punto(O, 'style="fill:var(--card);stroke:currentColor" stroke-width="3"');
     return `<text x="${cx}" y="32" text-anchor="middle" font-size="24" font-weight="800" fill="currentColor">${titulo}</text>
+      <clipPath id="${id}"><path d="M${V.map(P).join('L')}Z"/></clipPath>
       <path d="M${V.map(P).join('L')}Z" style="fill:var(--card)" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
-      ${predice ? '' : [0, 1, 2].map(i => marca(i, x0)).join('')}
-      ${lineas}${centro}
+      ${[0, 1, 2].map(i => marca(i, x0)).join('')}
+      ${lado}<g clip-path="url(#${id})">${esquina}</g>${puntos}
       ${pie.map((l, i) => `<text x="${cx}" y="${340 + i * 26}" text-anchor="middle" font-size="21" style="fill:var(--muted)">${l}</text>`).join('')}`;
   };
   const svg = `<svg viewBox="0 0 520 384" width="520" height="384" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <line x1="260" y1="12" x2="260" y2="374" style="stroke:var(--line)" stroke-width="2"/>
-    ${panel(0, 'Lo que predice', true, ['Tres dobleces a mano:', 'un triangulito'])}
-    ${panel(260, 'Lo que se mide', false, ['Tres dobleces a mano:', 'un solo punto'])}
+    ${panel(0, 'Lo que predice', true, ['Dos clases de doblez:', 'un solo centro'])}
+    ${panel(260, 'Lo que se mide', false, ['Dos clases de doblez:', 'dos puntos distintos'])}
   </svg>`;
 
   return {
     unidad: 'geometria.puntos-notables',
-    titulo: '¿Por qué tres dobleces hechos a mano en un triángulo de papel se cruzan en un solo punto?',
+    titulo: '¿Dónde queda el centro de un triángulo de papel?',
     parrafos: [
       'Recorta un triángulo de papel con los tres lados distintos y dobla cada esquina por la mitad, de modo que uno de sus lados quede justo encima del otro. ' +
-        'Marca bien cada doblez y desdobla, hasta que en el papel queden tres rayas de doblez, una por esquina. ' +
-        'Las tres rayas se cruzan en un mismo punto, sin dejar ningún triangulito entre ellas, aunque el triángulo sea chueco y los dobleces se hagan a mano.',
-      'Tres rectas trazadas a mano casi nunca pasan por un mismo punto, porque lo normal es que se corten de dos en dos y dejen un triangulito en el medio. ' +
-        'Se podría pensar que las rayas se cruzan en un punto porque ese punto es el centro del triángulo, pero si en otro triángulo igual llevas cada esquina encima de otra, los tres dobleces nuevos también apuntan a un solo punto, y ese punto no es el mismo.',
-      'Dos clases de dobleces en el mismo papel dan dos puntos de cruce distintos, así que la palabra «centro» no alcanza para un triángulo. ' +
+        'Al desdoblar quedan tres rayas de doblez, una por esquina, y las tres se cruzan en un mismo punto, que parece el centro del triángulo.',
+      'Lo natural es pensar que un triángulo tiene un solo centro, como un círculo, y que otra manera pareja de doblarlo llevaría al mismo sitio. ' +
+        'Pruébalo con una copia del mismo triángulo: dobla de modo que una esquina quede encima de otra, y repite con cada par de esquinas. ' +
+        'Los tres dobleces nuevos también se cruzan en un solo punto, pero ese punto no es el mismo: queda en otro sitio.',
+      'Un mismo triángulo tiene por lo menos dos puntos que podrían llamarse su centro, y cada uno sale de una clase distinta de doblez. ' +
         'Esos puntos, dónde caen y qué tiene de especial cada uno, son el tema de esta unidad: los puntos notables del triángulo.',
     ],
     figura: {
       antes: 2,
       svg,
-      alt: 'Dos dibujos del mismo triángulo de papel con las tres rayas de doblez que parten cada esquina por la mitad. Lo que predice: como tres rectas hechas a mano, se cortan de dos en dos y dejan un triangulito en el medio. Lo que se mide: las tres pasan por un solo punto.',
+      alt: 'Dos dibujos del mismo triángulo de papel, con los dobleces de lado sobre lado en raya y los de esquina sobre esquina en puntos. Lo que predice: las dos clases de doblez llegan al mismo centro. Lo que se mide: los dobleces de lado sobre lado se cruzan en un punto y los de esquina sobre esquina, en otro.',
     },
     pregunta: 'Si el triángulo de papel tuviera sus tres lados iguales, ¿crees que el cruce de los dobleces de lado sobre lado y el de los dobleces de esquina sobre esquina quedarían separados o en el mismo sitio?',
     ficha: {
-      seLleva: 'En cualquier triángulo, ciertas tres rectas se cruzan siempre en un solo punto, aunque tres rectas cualesquiera casi nunca lo hagan, y por eso un triángulo tiene más de un centro.',
+      seLleva: 'Un triángulo no tiene un solo centro: dos maneras parejas de doblarlo dan dos puntos de cruce distintos, y cada uno tiene su nombre.',
       alcance: 'Parcial, por deducción propia (espacio y forma: comprobar una regularidad con un experimento y buscar su razón).',
-      choque: 'Tres dobleces hechos a mano deberían dejar un triangulito, como tres rectas cualesquiera, y pasan por un solo punto.',
-      atajo: '«Todos pasan por el centro del triángulo»: se descarta porque los dobleces de esquina sobre esquina también se cruzan en un punto, y es otro. Por qué se cruzan no se dice: es el tema.',
+      choque: 'Se espera que un triángulo tenga un solo centro, como un círculo, y dos clases de doblez dan dos puntos distintos en el mismo papel.',
+      atajo: '«Todos los dobleces pasan por el centro del triángulo»: se descarta porque los dobleces de esquina sobre esquina se cruzan en otro punto. Por qué cada clase de doblez se cruza en un solo punto no se dice: es el tema.',
       porVerificar: [
         'Que con dobleces hechos con cuidado las tres rayas se crucen a simple vista en un punto (dentro de un milímetro, más o menos): es lo que dice la geometría (las bisectrices se cortan en el incentro), no una medición propia con papel.',
-        'Que los dobleces de esquina sobre esquina (las mediatrices) también «apunten» a un punto: en un triángulo con una esquina abierta (obtusa), ese punto queda fuera del papel y hay que prolongar las rayas. El texto dice «apuntan» para no adelantar la Predice de la idea 2, que pregunta justo eso.',
+        'Que los dobleces de esquina sobre esquina (las mediatrices) se crucen en un punto: en un triángulo con una esquina abierta (obtusa), ese punto queda fuera del papel y hay que prolongar las rayas. El texto dice «en otro sitio», sin «del papel», porque el alumno recorta un triángulo cualquiera; no dice dentro ni fuera, para no adelantar la Predice de la idea 2, que pregunta justo eso. El triángulo de la figura tiene las tres esquinas agudas.',
       ],
       notas: [
-        'La figura es el mismo triángulo en los dos paneles. En «Lo que predice», cada doblez está girado unos 4° respecto del de verdad, como si se hubiera hecho a mano sin que coincidan, y deja un triangulito sombreado. En «Lo que se mide», las tres rayas pasan por el incentro y las esquinas llevan dos arcos iguales en carmín (cada una partida por la mitad).',
+        'La figura es el mismo triángulo en los dos paneles, con las esquinas partidas por la mitad (dos arcos iguales en carmín) y los dobleces de lado sobre lado en raya. Los de esquina sobre esquina van en puntos grises: en «Lo que predice» se dibujan yendo al mismo punto (lo que se espera, no lo que pasa); en «Lo que se mide» son las mediatrices de verdad y se cruzan en el circuncentro, un punto hueco aparte del incentro.',
+        'Doble revisión (27 nov): la versión anterior ponía como predicción que tres dobleces a mano dejarían un triangulito, como tres rectas cualesquiera. Nadie que dobla un triángulo espera eso: lo que espera es que se crucen en el centro, y eso pasa. El choque honesto es el otro, que ya estaba en el párrafo 3: hay más de un centro. Ahora el título, la figura, el párrafo 2 y la ficha cuentan ese choque, con el mismo triángulo y solo la clase de doblez cambiada. Se quitó «aunque los dobleces se hagan a mano», que prometía un cruce exacto que un doblez a mano no da.',
         'Respuesta de la pregunta: en el triángulo de lados iguales, los dos puntos coinciden. La idea 6 (la recta de Euler) y su misión trabajan el caso de dos lados iguales, en que los centros quedan en una recta sin juntarse; la pregunta no lo toca.',
         'Revisión del Escribidor Escribano (27 nov): «estas rayas coinciden» decía que las rayas son la misma raya; lo que coincide es el cruce. El párrafo 3 enunciaba la regla de la unidad («cada centro es el punto donde se cruzan tres rectas de una misma clase»); ahora deja el choque del caso, dos cruces en un mismo papel. La pregunta tenía un inciso apretado («el de cada clase de doblez»); ahora nombra las dos clases.',
       ],

@@ -68,9 +68,9 @@
         'Las rayas de cemento que separan las hileras se ven inclinadas, unas abiertas hacia un lado y otras hacia el otro, como si fueran cuñas. ',
         'Con una regla se mide otra cosa: entre dos rayas vecinas hay ', tramo('20 cm'), ' en un extremo de la pared y ', tramo('20 cm'),
         ' en el otro, el alto de una mayólica.'],
-      ['Lo que ves te dice que las rayas no son paralelas, y lo primero que se le ocurre a cualquiera es culpar al albañil por haber puesto chuecas las hileras. ',
+      ['Lo que ves te dice que las rayas no son paralelas, como si las hileras se hubieran puesto chuecas. ',
         'Pero la regla marca la misma distancia en toda la pared, y si tapas las mayólicas de arriba y de abajo con dos hojas de papel, la raya que queda a la vista se ve derecha.'],
-      ['La explicación más aceptada es que el ojo no ve cada raya sola, sino junto con las mayólicas que tiene al lado, y el contraste entre las negras y las blancas desvía la raya. ',
+      ['La pared está derecha y es el ojo el que la ve torcida: la explicación más aceptada es que ve cada raya junto con las mayólicas de al lado, y el contraste entre negras y blancas la desvía. ',
         'Por eso, en geometría, que dos rectas se vean paralelas o que un ángulo se vea grande no prueba nada, y los problemas de examen avisan que el dibujo no está a escala. ',
         'Medir tramos de recta y ángulos, y razonar con esas medidas, es el tema de esta primera unidad: segmentos y ángulos.'],
     ],
@@ -84,7 +84,7 @@
       seLleva: 'A simple vista, dos rectas paralelas pueden parecer inclinadas, así que para saber si lo son, o cuánto se abre un ángulo, hay que medir y no confiar en el ojo.',
       alcance: 'Parcial, por deducción propia (espacio y forma: interpretar una figura y comprobar con medidas).',
       choque: 'Las rayas de cemento se ven inclinadas, como cuñas, y la regla marca 20 cm entre dos rayas vecinas en los dos extremos de la pared.',
-      atajo: 'Culpar al albañil (las hileras estarían chuecas), que la regla descarta porque la distancia es la misma en toda la pared; tapar las mayólicas vecinas deja ver la raya derecha. No hay un atajo de cálculo: el choque es entre la vista y la medida.',
+      atajo: 'Que las hileras se pusieron chuecas, que la regla descarta porque la distancia es la misma en toda la pared; tapar las mayólicas vecinas deja ver la raya derecha. No hay un atajo de cálculo: el choque es entre la vista y la medida.',
       porVerificar: [
         'Es la ilusión de la «pared del café». Verificado en la web (27 nov): Richard L. Gregory y Priscilla Heard, «Border locking and the Café Wall illusion», Perception 8 (1979), pp. 365-380; la vio Steve Simpson, de su laboratorio, en un café al pie de St Michael\'s Hill, en Bristol. Una versión anterior la describió Hugo Münsterberg en 1894. La explicación de Gregory y Heard (el «border locking») no está cerrada: por eso el párrafo 3 dice «la explicación más aceptada». La ilusión solo aparece si el cemento tiene un gris entre el de las dos mayólicas, como en la figura.',
         'Que tapar las hileras vecinas haga ver derecha la raya: la ilusión depende del contraste de las mayólicas a los dos lados de la raya y del gris del cemento; por comprobar con la figura en papel.',
@@ -95,6 +95,7 @@
         'La ilusión necesita que el cemento sea de un gris intermedio entre las dos mayólicas: se usa var(--muted) con tinta y el color de la tarjeta, que funciona en el tema claro y en el oscuro. Revisar que se vea a 390 px (la captura de la ficha).',
         'La pregunta se puede intentar sin teoría (medir la distancia en varios sitios, o cruzar las dos rayas con un hilo y comparar las esquinas que se forman) y lleva a la idea 5, sin dar su Predice.',
         'Revisión del Escribidor Escribano (27 nov, otro agente): el párrafo 3 daba como hecho la causa de la ilusión («el ojo… lo engaña»), que los especialistas aún discuten; ahora dice «la explicación más aceptada». Su segunda oración enunciaba una regla de método («la geometría no se fía de la vista»); ahora deja el choque del caso: verse paralelas o verse grande no prueba nada.',
+        'Doble revisión (27 nov): el párrafo 2 decía que «lo primero que se le ocurre a cualquiera es culpar al albañil». Ponía a una persona como la causa de algo que no hizo, y Gerson pidió que ningún ejemplo culpe a nadie; ahora dice «como si las hileras se hubieran puesto chuecas». El párrafo 3 abre diciendo en corto que la pared está derecha y el ojo la ve torcida, antes de la explicación. El choque se queda: la ilusión es real y fuerte, no un muñeco de paja, y la regla mide el mismo caso con las mismas rayas.',
       ],
     },
   };
