@@ -85,3 +85,5 @@ contra los límites semanales de los planes.
 | aperturas química (8) | revisión del Escribidor Escribano | 220 248 | 6 min 40 s | 38 herramientas |
 | aperturas álgebra (7) | revisión del Escribidor Escribano (rehízo 2) | 253 292 | 11 min | 42 herramientas |
 | aperturas razonamiento matemático (6) | revisión del Escribidor Escribano | 217 041 | 6 min 42 s | 37 herramientas |
+| aperturas geometría (7) | infraestructura de captura y escritura | 360 861 | 28 min 15 s | 67 herramientas |
+| aperturas física (10) | revisión del Escribidor Escribano | 217 508 | 8 min 50 s | 47 herramientas |
