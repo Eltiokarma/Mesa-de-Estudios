@@ -113,11 +113,11 @@
   function erroresEO(f, x) {
     const n = atomos(f.split('^')[0])[x], z = cargaDe(f), s0 = conocidos(f, x), bien = eoDe(f, x), suma = val => s0 + n * val, out = [];
     const parte = { 2: 'la mitad', 3: 'la tercera parte', 4: 'la cuarta parte' }[n] || `1/${n}`;
-    if (n > 1) out.push(err('QM-OX-TOTAL', sg(n * bien), `Sería así si te pidieran el total: los ${n} ${x} juntos aportan ${sg(n * bien)}, y cada uno aporta ${parte}.`));
-    if (n > 1 && n !== bien) out.push(err('QM-OX-SUBINDICE', sg(n), `Sería así si el subíndice fuera el EO, pero el ${n} cuenta átomos. Con ${sg(n)}, la suma daría ${sg(suma(n))}.`));
-    if (z !== 0 && Number.isInteger(-s0 / n)) out.push(err('NO4', sg(-s0 / n), `Sería así si la especie fuera neutra: con ${sg(-s0 / n)}, la suma da 0. Pero su carga es ${sg(z)}.`));
-    out.push(err('QM-OX-SIGNO', sg(-bien), `Sería así con el signo contrario. El número está bien, pero con ${sg(-bien)} la suma daría ${sg(suma(-bien))} y no ${sg(z)}.`));
-    for (const d of [2, -2, 1]) out.push(err('QM-OX-SUMA', sg(bien + d), `Con ${sg(bien + d)}, la suma de los EO daría ${sg(suma(bien + d))} y no ${sg(z)}, que es la carga.`));
+    if (n > 1) out.push(err('QM-OX-TOTAL', sg(n * bien), `Sería así si te pidieran el total: los ${n} ${x} juntos aportan ${sg(n * bien)}. La pregunta es por cada átomo, y cada uno aporta ${parte} de ese total.`));
+    if (n > 1 && n !== bien) out.push(err('QM-OX-SUBINDICE', sg(n), `Sería así si el subíndice fuera el EO, pero el ${n} solo cuenta cuántos átomos de ${x} hay. Con ${sg(n)} cada uno, la suma daría ${sg(suma(n))} y no ${sg(z)}, la carga.`));
+    if (z !== 0 && Number.isInteger(-s0 / n)) out.push(err('NO4', sg(-s0 / n), `Sería así si la especie fuera neutra: con ${sg(-s0 / n)}, la suma da 0. Pero es un ion con carga ${sg(z)}, y en un ion la suma de los EO tiene que dar su carga, no 0.`));
+    out.push(err('QM-OX-SIGNO', sg(-bien), `Sería así con el signo contrario. Los demás átomos aportan ${sg(s0)}, y para llegar a ${sg(z)} el ${x} tiene que aportar ${bien > 0 ? 'positivo' : 'negativo'}: con ${sg(-bien)}, la suma daría ${sg(suma(-bien))}.`));
+    for (const d of [2, -2, 1]) out.push(err('QM-OX-SUMA', sg(bien + d), `Con ${sg(bien + d)}, la suma de los EO daría ${sg(suma(bien + d))} y no ${sg(z)}, que es la carga. Revisa cuánto aporta cada elemento: su EO por su número de átomos.`));
     return out.filter(e => e.texto !== sg(bien) && Math.abs(+e.texto.replace('−', '-')) <= 8);
   }
   function casoEO(rng, lista) {
@@ -125,7 +125,7 @@
     return { correcta: sg(bien), _datos: { f, x },
       enunciado: [`Piensa en la especie ${bonita(f)}${n > 1 ? `, que tiene ${n} átomos de ${x}` : ''}.`], pregunta: ['¿Qué ', v('EO', 'estado de oxidación (EO)'), ` tiene ${n > 1 ? 'cada' : 'el'} ${x}?`],
       datos: datosEO(f, x), errores: erroresEO(f, x),
-      solucion: [[`Los demás átomos suman ${sg(conocidos(f, x))} y la carga es ${sg(cargaDe(f))}, así que ${n > 1 ? `los ${n} ${x} aportan` : `el ${x} aporta`} lo que falta.`], [`${n > 1 ? `${n} · ` : ''}`, v('EO', 'EO'), ` ${sg(conocidos(f, x))} = ${sg(cargaDe(f))} → `, v('EO', 'EO'), ` = ${sg(bien)}`]] };
+      solucion: [[`Los demás átomos suman ${sg(conocidos(f, x))} y la carga es ${sg(cargaDe(f))}, así que ${n > 1 ? `los ${n} ${x} aportan juntos` : `el ${x} aporta`} lo que falta para llegar a la carga${n > 1 ? ', y cada uno se lleva una parte igual' : ''}.`], [`${n > 1 ? `${n} · ` : ''}`, v('EO', 'EO'), ` ${sg(conocidos(f, x))} = ${sg(cargaDe(f))} → `, v('EO', 'EO'), ` = ${sg(bien)}`]] };
   }
   const CUAL = { S: ['CaSO3', 'K2SO4', 'H2S', 'S8'], Cl: ['HClO3', 'KClO4', 'KCl', 'Cl2O3'], N: ['KNO2', 'N2O5', 'NH3', 'N2O'], C: ['H2CO3', 'C2O4^2-', 'CH4', 'CO'] };
   const eoCual = (f, x) => (Object.keys(atomos(f.split('^')[0])).length === 1 ? 0 : x === 'Cl' && f === 'KCl' ? -1 : eoDe(f, x));
@@ -134,8 +134,8 @@
     return { correcta: bonita(meta), _datos: { x, meta, lista },
       enunciado: [`Compara estas especies: ${conY(lista.map(bonita))}.`], pregunta: ['¿En cuál el ', x, ' tiene ', v('EO', 'EO'), ` ${sg(vm)}?`],
       datos: [...new Set(lista.flatMap(f => Object.keys(atomos(f.split('^')[0])).filter(s => s !== x && FIJO_TXT[s]).map(s => FIJO_TXT[s])))].concat([FORMULA_EO, 'En un elemento sin combinar, el EO es 0']),
-      errores: lista.filter(f => f !== meta).map(f => err('QM-OX-CUAL', bonita(f), `Sería así si el ${x} del ${bonita(f)} tuviera ${sg(vm)}, pero ahí la cuenta da ${sg(eoCual(f, x))}.`)),
-      solucion: [[`Haz la cuenta en cada especie. El ${x} tiene ${conY(lista.map(f => `${sg(eoCual(f, x))} en el ${bonita(f)}`))}.`]] };
+      errores: lista.filter(f => f !== meta).map(f => err('QM-OX-CUAL', bonita(f), `Sería así si el ${x} del ${bonita(f)} tuviera ${sg(vm)}, pero con esos vecinos la cuenta da ${sg(eoCual(f, x))}: el EO de un elemento cambia según con quién se une.`)),
+      solucion: [[`Haz la cuenta en cada especie, porque el mismo elemento cambia de EO según sus vecinos. El ${x} tiene ${conY(lista.map(f => `${sg(eoCual(f, x))} en el ${bonita(f)}`))}.`]] };
   }
 
   // ---- Idea 2: óxidos y sus tres nombres ----
@@ -153,11 +153,11 @@
     return { correcta: st, _datos: { f },
       enunciado: [`Piensa en el óxido ${bonita(f)}. El ${el} puede tener EO ${ws.map(sg).join(' y ')}.`], pregunta: ['¿Cuál es su nombre Stock?'],
       datos: ['EO del O: −2', 'Stock: «óxido de» + elemento + su EO en romanos entre paréntesis', 'Romanos: I 1, II 2, III 3, IV 4'],
-      errores: [ne > 1 && ne !== w ? err('QM-ROMANO', `óxido de ${el}(${ROM[ne]})`, `Sería así si el romano contara átomos: el ${ROM[ne]} contaría los ${ne} átomos. Pero el romano es el EO, ${sg(w)}.`) : null,
-        no > 1 && no !== w ? err('QM-ROMANO-O', `óxido de ${el}(${ROM[no]})`, `Sería así si el romano contara los ${no} oxígenos, pero el romano es el EO del ${el}, que es ${sg(w)}.`) : null,
-        ot ? err('QM-OX-SUMA', ot[4], `Ese es el otro óxido del ${el}, el ${bonita(ot[0])}, con EO ${sg(ot[2])}.`) : null,
-        err('QM-ROMANO-UNO', `óxido de ${el}`, `El nombre va sin romano solo si el elemento tiene un solo EO, y el ${el} tiene dos.`),
-        err('QM-SISTEMA', tr, 'Ese es el nombre tradicional: nombra la misma sustancia, pero con otro sistema.')],
+      errores: [ne > 1 && ne !== w ? err('QM-ROMANO', `óxido de ${el}(${ROM[ne]})`, `Sería así si el romano contara átomos: el ${ROM[ne]} contaría los ${ne} átomos. Pero el romano es el EO de cada uno, ${sg(w)}; los átomos ya se ven en la fórmula.`) : null,
+        no > 1 && no !== w ? err('QM-ROMANO-O', `óxido de ${el}(${ROM[no]})`, `Sería así si el romano contara los ${no} oxígenos. Los oxígenos los cuenta el prefijo de la sistemática; el romano de la Stock es el EO del ${el}, que es ${sg(w)}.`) : null,
+        ot ? err('QM-OX-SUMA', ot[4], `Ese es el otro óxido del ${el}, el ${bonita(ot[0])}, con EO ${sg(ot[2])}. El romano cambia con el EO, y aquí la cuenta da ${sg(w)}.`) : null,
+        err('QM-ROMANO-UNO', `óxido de ${el}`, `Sería así si el ${el} tuviera un solo EO. Tiene dos, así que forma dos óxidos, y sin el romano no se sabría de cuál hablas.`),
+        err('QM-SISTEMA', tr, 'Ese es el nombre tradicional, que dice el EO con una terminación. Nombra la misma sustancia, pero la Stock lo dice con un romano entre paréntesis.')],
       solucion: [[`${no > 1 ? `Los ${num(no)} O aportan` : 'El O aporta'} ${sg(-2 * no)}, así que el ${el} tiene ${sg(w)}.`], [`${bonita(f)}: ${st}`]] };
   }
   function tradOxido(rng) {
@@ -165,10 +165,10 @@
     return { correcta: tr, _datos: { f },
       enunciado: [`Piensa en el óxido ${bonita(f)}. El ${el} puede tener EO ${ws.map(sg).join(' y ')}.`], pregunta: ['¿Cuál es su nombre tradicional?'],
       datos: ['EO del O: −2', 'Tradicional, elemento con dos EO: -⁠oso para el menor e -⁠ico para el mayor'],
-      errores: [ot ? err('QM-OSO-ICO', ot[5], `La raíz está bien, pero ${w === Math.max(...ws) ? '-⁠oso es del EO menor' : '-⁠ico es del EO mayor'}, y aquí el ${el} tiene ${sg(w)}.`) : null,
-        err('QM-SISTEMA', st, 'Ese es el nombre Stock: nombra la misma sustancia, pero con otro sistema.'),
-        err('QM-ROMANO-UNO', `óxido de ${el}`, 'Sin terminación ni romano, el nombre no dice cuál de los dos óxidos es.')],
-      solucion: [[`El ${el} tiene ${sg(w)}, el ${w === Math.max(...ws) ? 'mayor' : 'menor'} de sus dos EO, así que lleva ${w === Math.max(...ws) ? '-⁠ico' : '-⁠oso'}.`], [`${bonita(f)}: ${tr}`]] };
+      errores: [ot ? err('QM-OSO-ICO', ot[5], `Sería así si el ${el} tuviera su EO ${w === Math.max(...ws) ? 'menor' : 'mayor'}. La raíz está bien, pero aquí tiene ${sg(w)}, ${w === Math.max(...ws) ? 'el mayor, que lleva -⁠ico' : 'el menor, que lleva -⁠oso'}: es el óxido con ${w === Math.max(...ws) ? 'más' : 'menos'} oxígeno.`) : null,
+        err('QM-SISTEMA', st, 'Ese es el nombre Stock, con el EO en romanos. Nombra la misma sustancia, pero la tradicional dice el EO con -⁠oso o -⁠ico, sin romano.'),
+        err('QM-ROMANO-UNO', `óxido de ${el}`, 'Sería así si el metal tuviera un solo EO. Tiene dos, y sin terminación ni romano el nombre no dice cuál de los dos óxidos es.')],
+      solucion: [[`El ${el} tiene ${sg(w)}, el ${w === Math.max(...ws) ? 'mayor' : 'menor'} de sus dos EO, así que lleva ${w === Math.max(...ws) ? '-⁠ico, la terminación del óxido con más oxígeno' : '-⁠oso, la terminación del óxido con menos oxígeno'}.`], [`${bonita(f)}: ${tr}`]] };
   }
   function formulaOxido(rng) {
     const o = rng.elegir(OXIDOS), [f, el, w, , st] = o, at = atomos(f), sim = Object.keys(at).find(s => s !== 'O'), g = (a, b) => (b ? g(b, a % b) : a);
@@ -176,10 +176,10 @@
     const carga = (a, b) => sg(a * w - 2 * b);
     return { correcta: bonita(f), _datos: { f },
       enunciado: [`Piensa en el ${st}.`], pregunta: ['¿Cuál es su fórmula?'], datos: ['EO del O: −2', 'La fórmula junta los átomos hasta carga 0, con los números más chicos', 'Romanos: I 1, II 2, III 3, IV 4'],
-      errores: [err('QM-SIMPLIFICA', sin, `Sería así sin simplificar: la fórmula ${sin} es neutra, pero se escribe con los números más chicos.`),
-        inv ? err('QM-FORM-CRUCE', inv, `Con esa fórmula, la carga queda en ${carga(w / g(w, 2), 2 / g(w, 2))}, porque los números van al revés.`) : null,
-        err('QM-FORM-UNO', uno, `Un ${sim} con ${num(w)} O deja carga ${carga(1, w)} y no 0.`),
-        err('NO2', bonita(`${sim}O2`), `Un ${sim} con dos O deja carga ${carga(1, 2)} y no 0.`)],
+      errores: [err('QM-SIMPLIFICA', sin, `Sería así si no se simplificara. El ${sin} es neutro, pero la fórmula de un óxido se escribe con los números más chicos que dan carga 0.`),
+        inv ? err('QM-FORM-CRUCE', inv, `Sería así si cada número se quedara con su propio átomo. Con esa fórmula, la carga queda en ${carga(w / g(w, 2), 2 / g(w, 2))} y no en 0: el EO de cada átomo pasa a ser el subíndice del otro.`) : null,
+        err('QM-FORM-UNO', uno, `Sería así si el romano contara oxígenos. Un ${sim} con ${num(w)} O deja carga ${carga(1, w)} y no 0, porque cada O aporta −2.`),
+        err('NO2', bonita(`${sim}O2`), `Sería así si el metal tuviera +4. Un ${sim} con dos O deja carga ${carga(1, 2)} y no 0, porque cada O aporta −2.`)],
       solucion: [[`Con ${num(at[sim])} ${sim} de ${sg(w)} y ${num(at.O)} O de −2, la carga da 0.`], [bonita(f)]] };
   }
 
@@ -190,9 +190,9 @@
     return { correcta: bien, _datos: { s, q },
       enunciado: [`Piensa en el peróxido de ${n}. El ${s} tiene EO ${sg(q)}.`], pregunta: ['¿Cuál es su fórmula?'],
       datos: ['Peróxido: tiene el ion O₂²⁻, dos O unidos, cada uno con EO −1', 'Un ion de varios átomos no se parte: el O₂²⁻ va entero'],
-      errores: q === 1 ? [err('QM-PEROX-SIMPL', bonita(`${s}O`), 'Sería así si el peróxido se simplificara. La proporción uno a uno está bien, pero el ion O₂²⁻ va entero.'), err('QM-FUNCION', bonita(`${s}2O`), 'Ese es el óxido, con el O en −2; el peróxido lleva dos O unidos.'),
-        err('NO2', bonita(`${s}2O4`), 'Dos iones O₂²⁻ con dos cationes de +1 dejan carga −2 y no 0.')]
-        : [err('QM-FUNCION', bonita(`${s}O`), 'Ese es el óxido, con el O en −2; el peróxido lleva dos O unidos.'), err('NO2', bonita(`${s}2O2`), 'Dos cationes de +2 con un O₂²⁻ dejan carga +2 y no 0.'), err('NO2', bonita(`${s}O4`), 'Dos iones O₂²⁻ con un catión de +2 dejan carga −2 y no 0.')],
+      errores: q === 1 ? [err('QM-PEROX-SIMPL', bonita(`${s}O`), 'Sería así si el peróxido se simplificara. La proporción uno a uno está bien, pero el ion O₂²⁻ va entero: partirlo dejaría un O suelto.'), err('QM-FUNCION', bonita(`${s}2O`), 'Sería así si pidieran el óxido, con un O en −2. El peróxido tiene más oxígeno: lleva dos O unidos, el ion O₂²⁻.'),
+        err('NO2', bonita(`${s}2O4`), 'Dos iones O₂²⁻ con dos cationes de +1 dejan carga −2 y no 0: sobra negativo, porque cada ion necesita dos cationes de +1.')]
+        : [err('QM-FUNCION', bonita(`${s}O`), 'Sería así si pidieran el óxido, con un O en −2. El peróxido tiene más oxígeno: lleva dos O unidos, el ion O₂²⁻.'), err('NO2', bonita(`${s}2O2`), 'Dos cationes de +2 con un O₂²⁻ dejan carga +2 y no 0: sobra positivo, porque un solo catión de +2 ya compensa el ion.'), err('NO2', bonita(`${s}O4`), 'Dos iones O₂²⁻ con un catión de +2 dejan carga −2 y no 0: sobra negativo, porque el catión solo compensa un ion.')],
       solucion: [[`${q === 1 ? 'Dos' : 'Un'} ${s} y un O₂²⁻ dejan carga 0, y el ion O₂²⁻ no se parte.`], [bien]] };
   }
   const HIDRA = [['HCl', 'clor', 'cloruro'], ['HBr', 'brom', 'bromuro'], ['HI', 'yod', 'yoduro'], ['HF', 'fluor', 'fluoruro'], ['H2S', 'sulf', 'sulfuro'], ['H2Se', 'selen', 'seleniuro']];
@@ -202,18 +202,18 @@
     return { correcta: bien, _datos: { f },
       enunciado: [`El ${bonita(f)} está disuelto en agua: es ${bonita(f)}(ac).`], pregunta: ['¿Cómo se llama?'],
       datos: ['Hidrácido: ácido + raíz del no metal + -⁠hídrico', `Raíz: ${raiz}-`, 'Sin agua, el gas: el no metal con -⁠uro + «de hidrógeno»'],
-      errores: [err('QM-HIDRACIDO-GAS', `${uro} de hidrógeno`, 'Ese es el nombre del gas sin agua; disuelto en agua, el compuesto es un ácido.'),
-        err('QM-HIDR-ICO', `ácido ${TILDE[raiz]}ico`, 'Sería así si el ácido tuviera oxígeno, porque -⁠ico es de un ácido con oxígeno. Este ácido no lo tiene.'), err('QM-HIDR-ICO', `ácido ${raiz === 'sulf' ? 'sulfur' : raiz}oso`, 'Sería así si el ácido tuviera oxígeno, porque -⁠oso es de un ácido con oxígeno. Este ácido no lo tiene.')],
-      solucion: [['Es un ácido sin oxígeno, así que se nombra con «ácido», la raíz del no metal y -⁠hídrico.'], [`${bonita(f)}(ac): ${bien}`]] };
+      errores: [err('QM-HIDRACIDO-GAS', `${uro} de hidrógeno`, 'Ese es el nombre del gas, sin agua. Disuelto en agua, el compuesto suelta iones H⁺ y se vuelve un ácido, así que cambia de nombre: «ácido», la raíz y -⁠hídrico.'),
+        err('QM-HIDR-ICO', `ácido ${TILDE[raiz]}ico`, 'Sería así si el ácido tuviera oxígeno, porque -⁠ico es de los ácidos con oxígeno. Este no lo tiene, y -⁠hídrico lo dice: es un ácido de hidrógeno y un no metal.'), err('QM-HIDR-ICO', `ácido ${raiz === 'sulf' ? 'sulfur' : raiz}oso`, 'Sería así si el ácido tuviera oxígeno, porque -⁠oso es de los ácidos con oxígeno. Este no lo tiene, y -⁠hídrico lo dice: es un ácido de hidrógeno y un no metal.')],
+      solucion: [['Es un ácido sin oxígeno, así que se nombra con «ácido», la raíz del no metal y -⁠hídrico, que viene de hidrógeno.'], [`${bonita(f)}(ac): ${bien}`]] };
   }
   const RAROS = [['LiH', 'H', -1], ['KH', 'H', -1], ['AlH3', 'H', -1], ['BaH2', 'H', -1], ['K2O2', 'O', -1], ['CaO2', 'O', -1], ['Li2O2', 'O', -1], ['MgO2', 'O', -1]];
   function eoRaro(rng) {
     const [f, x, bien] = rng.elegir(RAROS), at = atomos(f), otroEl = Object.keys(at).find(s => s !== x), aporta = FIJO[otroEl] * at[otroEl], nx = at[x];
     return { correcta: sg(bien), _datos: { f, x },
       enunciado: [`Piensa en el compuesto ${bonita(f)}, que es neutro.`], pregunta: ['¿Qué ', v('EO', 'EO'), ` tiene cada ${x}?`], datos: [FIJO_TXT[otroEl], FORMULA_EO],
-      errores: [err(x === 'H' ? 'QM-OX-H' : 'QM-OX-O', x === 'H' ? '+1' : '−2', `Sería así si el ${x} tuviera su EO de siempre, pero con ese valor la suma daría ${sg(aporta + nx * (x === 'H' ? 1 : -2))} y no 0.`),
-        err('QM-OX-CERO', '0', `Sería así si el ${x} estuviera sin combinar. Aquí está unido, y con 0 la suma daría ${sg(aporta)}.`), err(x === 'H' ? 'QM-OX-SUMA' : 'QM-OX-SIGNO', x === 'H' ? '−2' : '+1', `Con ese valor, la suma daría ${sg(aporta + nx * (x === 'H' ? -2 : 1))} y no 0.`),
-        ...[-3, 2, 3].map(w => err('QM-OX-SUMA', sg(w), `Con ${sg(w)}, la suma daría ${sg(aporta + nx * w)} y no 0.`))],
+      errores: [err(x === 'H' ? 'QM-OX-H' : 'QM-OX-O', x === 'H' ? '+1' : '−2', `Sería así si el ${x} tuviera su EO de siempre, pero con ese valor la suma daría ${sg(aporta + nx * (x === 'H' ? 1 : -2))} y no 0. ${x === 'H' ? 'Junto a un metal, el H gana el electrón que el metal cede.' : 'En un peróxido, los dos O unidos se reparten el −2.'}`),
+        err('QM-OX-CERO', '0', `Sería así si el ${x} estuviera sin combinar, como en el ${x}₂. Aquí está unido a otro elemento, y con 0 la suma daría ${sg(aporta)}.`), err(x === 'H' ? 'QM-OX-SUMA' : 'QM-OX-SIGNO', x === 'H' ? '−2' : '+1', `${x === 'H' ? 'Sería así si el H pudiera ganar dos electrones, pero solo le cabe uno más.' : 'Sería así si el O cediera electrones, pero junto a un metal los gana.'} Con ese valor, la suma daría ${sg(aporta + nx * (x === 'H' ? -2 : 1))} y no 0.`),
+        ...[-3, 2, 3].map(w => err('QM-OX-SUMA', sg(w), `Con ${sg(w)}, la suma daría ${sg(aporta + nx * w)} y no 0. Haz la cuenta con lo que aporta el otro elemento.`))],
       solucion: [[`El ${otroEl} aporta ${sg(aporta)}, así que ${nx > 1 ? `los ${num(nx)} ${x} deben aportar` : `el ${x} debe aportar`} ${sg(-aporta)}.`], [v('EO', 'EO'), ` = ${sg(bien)}`]] };
   }
 
@@ -224,11 +224,11 @@
     return { correcta: bien, _datos: { s, q },
       enunciado: [`El ${n} tiene EO ${sg(q)}.`], pregunta: ['¿Cuál es la fórmula de su hidróxido?'],
       datos: ['Hidróxido: un OH⁻ (carga −1) por cada unidad de EO del metal, entre paréntesis si se repite'],
-      errores: [q > 1 ? err('NO1', bonita(`${s}OH${q}`), `Los ${num(q)} OH están bien, pero sin paréntesis el ${q} toca solo al H.`) : err('NO2', bonita(`${s}(OH)2`), 'Dos OH⁻ con +1 dejan carga −1 y no 0.'),
-        q > 1 ? err('NO2', bonita(`${s}OH`), `Un solo OH⁻ deja carga ${sg(q - 1)} y no 0.`) : null,
-        err('QM-FUNCION', bonita(q === 1 ? `${s}2O` : q === 2 ? `${s}O` : `${s}2O${q}`), 'Ese es el óxido del metal; el hidróxido lleva OH⁻.'),
-        err('QM-FUNCION', bonita(q === 1 ? `${s}H` : `${s}H${q}`), 'Ese sería el hidruro, que no tiene oxígeno; el hidróxido lleva OH⁻.')],
-      solucion: [[`${q === 1 ? 'Hace falta un OH⁻' : `Hacen falta ${num(q)} OH⁻`} para compensar ${sg(q)}.`], [bien]] };
+      errores: [q > 1 ? err('NO1', bonita(`${s}OH${q}`), `Los ${num(q)} OH están bien, pero sin paréntesis el ${q} toca solo al H: serían un O y ${q} H. El paréntesis hace que el ${q} multiplique al grupo entero.`) : err('NO2', bonita(`${s}(OH)2`), 'Dos OH⁻ con +1 dejan carga −1 y no 0: con EO +1 basta un OH⁻.'),
+        q > 1 ? err('NO2', bonita(`${s}OH`), `Un solo OH⁻ deja carga ${sg(q - 1)} y no 0. Cada OH⁻ aporta −1, así que hacen falta tantos como el EO.`) : null,
+        err('QM-FUNCION', bonita(q === 1 ? `${s}2O` : q === 2 ? `${s}O` : `${s}2O${q}`), 'Sería así si pidieran el óxido, el paso anterior. El hidróxido es lo que sale cuando ese óxido se junta con agua, y lleva grupos OH⁻.'),
+        err('QM-FUNCION', bonita(q === 1 ? `${s}H` : `${s}H${q}`), 'Sería así si pidieran el hidruro, el metal solo con H. El hidróxido lleva también oxígeno: grupos OH⁻.')],
+      solucion: [[`${q === 1 ? 'Hace falta un OH⁻' : `Hacen falta ${num(q)} OH⁻`} para compensar ${sg(q)}, porque cada OH⁻ aporta −1.`], [bien]] };
   }
   // [elemento, EO, fórmula del oxácido, nombre, óxido, fórmula sin simplificar]
   const OXAC = [['Br', 5, 'HBrO3', 'ácido brómico', 'Br2O5', 'H2Br2O6'], ['I', 7, 'HIO4', 'ácido peryódico', 'I2O7', 'H2I2O8'], ['Se', 6, 'H2SeO4', 'ácido selénico', 'SeO3', null],
@@ -242,11 +242,11 @@
     return { correcta: bonita(f), _datos: { f, w, e },
       enunciado: [`Piensa en el ${nom}, que tiene el ${e} con EO ${sg(w)}.`], pregunta: ['¿Cuál es su fórmula?'],
       datos: ['Oxácido: óxido ácido + H₂O; se suman los átomos y se simplifica si se puede', `Su óxido: ${bonita(ox)}`, 'EO del O: −2; del H: +1'],
-      errores: [sin ? err('QM-SIMPLIFICA', bonita(sin), 'Sería así sin simplificar. La suma del óxido y el agua está bien, pero falta dividir entre 2.') : null,
-        dosH ? err('QM-OXACIDO-H', dosH, `Sería así si todo oxácido llevara 2 H, pero con esa fórmula la suma de los EO daría ${sg(sumaEO(2, w, at.O))} y no 0.`) : null,
-        unH ? err('QM-OXACIDO-H', unH, `Con un solo H, la suma de los EO daría ${sg(sumaEO(1, w, at.O))} y no 0.`) : null,
-        err('QM-FUNCION', bonita(ox), 'Ese es el óxido ácido, y todavía falta sumarle el agua.'),
-        err('QM-OXACIDO-O', bonita(`H${at.H > 1 ? at.H : ''}${e}O${at.O + 1}`), `Con un O de más, la suma de los EO daría ${sg(sumaEO(at.H, w, at.O + 1))} y no 0.`)],
+      errores: [sin ? err('QM-SIMPLIFICA', bonita(sin), 'Sería así sin simplificar. La suma del óxido y el agua está bien, pero todos los números son pares, y falta dividirlos entre 2.') : null,
+        dosH ? err('QM-OXACIDO-H', dosH, `Sería así si todo oxácido llevara 2 H, pero con esa fórmula la suma de los EO daría ${sg(sumaEO(2, w, at.O))} y no 0. El número de H sale de sumar el agua.`) : null,
+        unH ? err('QM-OXACIDO-H', unH, `Sería así si todo oxácido llevara un solo H. Con esa fórmula, la suma de los EO daría ${sg(sumaEO(1, w, at.O))} y no 0: el número de H sale de sumar el agua.`) : null,
+        err('QM-FUNCION', bonita(ox), 'Sería así si el ácido fuera el óxido solo. El oxácido sale de sumarle agua al óxido, así que lleva también hidrógeno.'),
+        err('QM-OXACIDO-O', bonita(`H${at.H > 1 ? at.H : ''}${e}O${at.O + 1}`), `Sería así si el no metal tuviera un EO mayor. Con un O de más, la suma de los EO daría ${sg(sumaEO(at.H, w, at.O + 1))} y no 0.`)],
       solucion: [[`El ${bonita(ox)} con agua da ${bonita(sin || f)}${sin ? `, que se simplifica a ${bonita(f)}` : ''}.`]] };
   }
   const ESTADOS_NM = { Br: [1, 3, 5, 7], I: [1, 3, 5, 7], Cl: [1, 3, 5, 7], Se: [4, 6], S: [4, 6], N: [3, 5] };
@@ -256,8 +256,8 @@
     return { correcta: nom, _datos: { f, w, e },
       enunciado: [`Piensa en el oxácido ${bonita(f)}.`], pregunta: ['¿Cómo se llama?'],
       datos: [`EO del ${e} en sus oxácidos: ${conY(ESTADOS_NM[e].map(sg))}`, ESTADOS_NM[e].length === 4 ? 'Con cuatro EO: hipo-⁠…-⁠oso, -⁠oso, -⁠ico, per-…-⁠ico' : 'Con dos EO: -⁠oso el menor e -⁠ico el mayor', 'EO del O: −2; del H: +1'],
-      errores: otros.map(x => err('QM-OSO-ICO', nombreDe(e, x), `Ese es el nombre del oxácido con EO ${sg(x)}, y aquí el ${e} tiene ${sg(w)}.`)),
-      solucion: [[`Con ${sg(w)} en el ${e}, la suma de los EO da 0, y ese EO decide el nombre.`], [`${bonita(f)}: ${nom}`]] };
+      errores: otros.map(x => err('QM-OSO-ICO', nombreDe(e, x), `Ese es el nombre del oxácido con EO ${sg(x)}, y aquí el ${e} tiene ${sg(w)}. Cada EO lleva su terminación, así que primero se hace la cuenta.`)),
+      solucion: [[`Con ${sg(w)} en el ${e}, la suma de los EO da 0, y ese EO decide la terminación del nombre.`], [`${bonita(f)}: ${nom}`]] };
   }
 
   // ---- Idea 5: sales ----
@@ -270,9 +270,9 @@
     return { correcta: n, _datos: { a },
       enunciado: [`El ${nac}, ${bonita(ac)}, suelta sus H⁺ y deja el anión ${bonita(a)}.`], pregunta: ['¿Cómo se llama ese anión?'],
       datos: ['Anión de un ácido: -⁠hídrico → -⁠uro; -⁠oso → -⁠ito; -⁠ico → -⁠ato (hipo- y per- se quedan)'],
-      errores: [err('QM-ITO-ATO', rev, 'La terminación sí cambia, pero aquí va al revés: -⁠oso pasa a -⁠ito, e -⁠ico pasa a -⁠ato.'),
-        err('QM-URO', n.replace(/(ito|ato)$/, 'uro'), 'La terminación -⁠uro es de los aniones sin oxígeno, y este anión tiene oxígeno.'), err('QM-SIN-CAMBIO', raiz, 'Ese es el adjetivo del ácido, y el anión cambia esa terminación.')],
-      solucion: [[`El ${nac} termina en ${raiz.endsWith('oso') ? '-⁠oso, que pasa a -⁠ito' : '-⁠ico, que pasa a -⁠ato'}.`], [`${bonita(a)}: ${n}`]] };
+      errores: [err('QM-ITO-ATO', rev, 'La terminación sí cambia, pero aquí va al revés: el ácido -⁠oso, con menos oxígeno, da -⁠ito, y el ácido -⁠ico, con más, da -⁠ato.'),
+        err('QM-URO', n.replace(/(ito|ato)$/, 'uro'), 'Sería así si el anión no tuviera oxígeno. La terminación -⁠uro es de los aniones que vienen de un hidrácido, como el cloruro del HCl, y este anión tiene oxígeno.'), err('QM-SIN-CAMBIO', raiz, 'Sería así si el anión se llamara igual que su ácido. Al soltar los H⁺, la terminación cambia, y así se distingue del ácido.')],
+      solucion: [[`El ${nac} termina en ${raiz.endsWith('oso') ? '-⁠oso, que pasa a -⁠ito' : '-⁠ico, que pasa a -⁠ato'}. La raíz y el prefijo, si lo hay, quedan iguales.`], [`${bonita(a)}: ${n}`]] };
   }
   // Cationes: [fórmula, nombre Stock del catión, carga]
   const CATIONES = [['Mg', 'magnesio', 2], ['Ba', 'bario', 2], ['Zn', 'zinc', 2], ['Cu', 'cobre(II)', 2], ['Fe', 'hierro(II)', 2], ['K', 'potasio', 1], ['Al', 'aluminio', 3]];
@@ -294,9 +294,9 @@
       enunciado: [`Piensa en el ${s.nombre}.`], pregunta: ['¿Cuál es su fórmula?'],
       datos: ['La sal junta fichas enteras de catión y anión hasta carga 0, con los números más chicos', 'Un ion de varios átomos va entre paréntesis si se repite', `Iones: ${c[0]}${c[2] > 1 ? SUPS[c[2]] : ''}⁺ y ${bonita(a)}`],
       errores: [romp && romp !== bien ? err('QM-POLI', romp, `Las cantidades están bien, pero sin paréntesis el ${s.na} multiplica solo al último átomo del anión, y el resto del ion queda una sola vez.`) : null,
-        uno !== bien ? err('NO2', uno, `Un ion de cada uno deja carga ${sg(c[2] - s.qa)} y no 0.`) : null,
-        inv ? err('NO1', inv, `Esa proporción está al revés: la carga queda en ${sg(s.na * c[2] - s.nc * s.qa)}.`) : null,
-        err('QM-SIMPLIFICA', bonita(`${c[0]}${2 * s.nc}(${s.cuerpo})${2 * s.na}`), 'Esa fórmula es neutra, pero no tiene la proporción más chica: se simplifica.')],
+        uno !== bien ? err('NO2', uno, `Sería así si las dos cargas fueran del mismo tamaño. Un ion de cada uno deja carga ${sg(c[2] - s.qa)} y no 0, así que hay que juntar más del ion de carga menor.`) : null,
+        inv ? err('NO1', inv, `Esa proporción está al revés: la carga queda en ${sg(s.na * c[2] - s.nc * s.qa)}. El ion de carga mayor es el que va menos veces.`) : null,
+        err('QM-SIMPLIFICA', bonita(`${c[0]}${2 * s.nc}(${s.cuerpo})${2 * s.na}`), 'Sería así si no se simplificara. Esa fórmula es neutra, pero la de una sal usa la proporción más chica de iones, y aquí los dos números se dividen entre 2.')],
       solucion: [[`${num(s.nc, true)} ${c[0]} y ${num(s.na)} ${bonita(a)} dejan carga 0.`], [bien]] };
   }
   function nombreSal(rng) {
@@ -304,16 +304,16 @@
     return { correcta: s.nombre, _datos: { c: c[0], a: A[0] },
       enunciado: [`La sal ${bonita(s.f)} tiene el anión ${bonita(A[0])}, que viene del ${A[3]}.`], pregunta: ['¿Cuál es su nombre Stock?'],
       datos: ['Anión de un ácido: -⁠hídrico → -⁠uro; -⁠oso → -⁠ito; -⁠ico → -⁠ato (hipo- y per- se quedan)', 'Nombre de la sal: el anión + «de» + el catión (con su EO en romanos si tiene dos)'],
-      errores: [err('QM-ITO-ATO', `${A[4]} de ${c[1]}`, 'La raíz está bien, pero la terminación va al revés: -⁠oso pasa a -⁠ito, e -⁠ico pasa a -⁠ato.'),
-        err('QM-URO', `${A[1].replace(/(ito|ato)$/, 'uro')} de ${c[1]}`, 'La terminación -⁠uro es de los aniones sin oxígeno, y este anión tiene oxígeno.'),
-        err('QM-SIN-CAMBIO', `${A[3].replace('ácido ', '')} de ${c[1]}`, 'Ese es el adjetivo del ácido; en la sal, el anión cambia su terminación.')],
-      solucion: [[`El anión es ${A[1]} y el catión es ${c[1]}.`], [`${bonita(s.f)}: ${s.nombre}`]] };
+      errores: [err('QM-ITO-ATO', `${A[4]} de ${c[1]}`, 'La raíz está bien, pero la terminación va al revés: el ácido -⁠oso, con menos oxígeno, da -⁠ito, y el ácido -⁠ico, con más, da -⁠ato.'),
+        err('QM-URO', `${A[1].replace(/(ito|ato)$/, 'uro')} de ${c[1]}`, 'Sería así si el anión no tuviera oxígeno. La terminación -⁠uro es de los aniones que vienen de un hidrácido, y este anión tiene oxígeno.'),
+        err('QM-SIN-CAMBIO', `${A[3].replace('ácido ', '')} de ${c[1]}`, 'Sería así si el anión se llamara igual que su ácido. En la sal, el anión cambia la terminación, y así se distingue del ácido.')],
+      solucion: [[`El anión es ${A[1]} y el catión es ${c[1]}. El nombre dice primero el anión y después, con «de», el catión.`], [`${bonita(s.f)}: ${s.nombre}`]] };
   }
 
   // ---- Idea 6: sales ácidas, básicas e hidratadas ----
   const SALES6 = [['KHCO3', 'ácida'], ['NaHSO4', 'ácida'], ['CaHPO4', 'ácida'], ['Ba(OH)Cl', 'básica'], ['Al(OH)SO4', 'básica'], ['Ca(OH)Cl', 'básica'],
     ['FeSO4·7H2O', 'hidratada'], ['BaCl2·2H2O', 'hidratada'], ['Na2SO4·10H2O', 'hidratada'], ['K2SO4', 'neutra'], ['CaCO3', 'neutra'], ['MgCl2', 'neutra']];
-  const SI_CLASE = { ácida: 'Sería ácida si su anión conservara un H, como el HCO₃⁻.', básica: 'Sería básica si llevara OH⁻ además del anión.',
+  const SI_CLASE = { ácida: 'Sería ácida si su anión conservara un H, como el HCO₃⁻, que todavía puede soltar como H⁺.', básica: 'Sería básica si llevara OH⁻ además del anión, como una base.',
     hidratada: 'Sería hidratada si tuviera agua tras el punto (·nH₂O).', neutra: 'Sería neutra si solo tuviera catión y anión.' };
   function claseSal(rng) {
     const [f, cl] = rng.elegir(SALES6);
@@ -321,7 +321,7 @@
       enunciado: [`Piensa en la sal ${bonita(f)}.`], pregunta: ['¿Qué clase de sal es?'],
       datos: ['Sal ácida: su anión conserva H. Sal básica: lleva OH⁻ además del anión. Sal hidratada: agua tras un punto (·nH₂O)', 'Sal neutra: solo un catión y un anión'],
       errores: ['ácida', 'básica', 'hidratada', 'neutra'].filter(k => k !== cl).map(k => err('QM-CLASE-SAL', `Sal ${k}`, SI_CLASE[k])),
-      solucion: [[`${{ ácida: 'Su anión conserva un H', básica: 'Lleva OH⁻ además del anión', hidratada: 'Tiene moléculas de agua tras el punto', neutra: 'Solo tiene catión y anión' }[cl]}, así que es una sal ${cl}.`]] };
+      solucion: [[`${{ ácida: 'Su anión conserva un H del ácido, que todavía puede soltar como H⁺', básica: 'Lleva OH⁻ además del anión, como una base', hidratada: 'Tiene moléculas de agua tras el punto, enteras y sin carga', neutra: 'Solo tiene catión y anión, sin H ni OH⁻ de más' }[cl]}, así que es una sal ${cl}.`]] };
   }
   const HIDRATOS = ['FeSO4·7H2O', 'BaCl2·2H2O', 'CoCl2·6H2O', 'Na2SO4·10H2O', 'MgSO4·7H2O', 'Na2CO3·10H2O', 'CuSO4·5H2O'];
   function oxigenosHidrato(rng) {
@@ -329,9 +329,9 @@
     return { correcta: String(bien), _datos: { f },
       enunciado: [`Piensa en una unidad de ${bonita(f)}.`], pregunta: ['¿Cuántos átomos de oxígeno tiene?'],
       datos: ['El ·nH₂O son n moléculas de agua enteras por cada unidad de la sal', 'El número delante del H₂O multiplica sus dos H y su O'],
-      errores: [os ? err('QM-HIDRATO-CUENTA', String(os), `Esos son los O de la sal, y falta el O de cada una de las ${n} aguas.`) : null,
-        err('QM-HIDRATO-CUENTA', String(n), os ? `Esos son los O del agua, y faltan los ${os} de la sal.` : 'Esos son los O del agua, y la sal no tiene oxígeno.'),
-        err('QM-HIDRATO-CUENTA', String(os + 1), `Sería así con una sola agua, pero el ${n} multiplica su O.`), err('QM-HIDRATO-CUENTA', String(os + 3 * n), 'Sería así si contaras los tres átomos de cada agua, pero cada una tiene un solo O.')],
+      errores: [os ? err('QM-HIDRATO-CUENTA', String(os), `Sería así si el agua no contara. Esos son los O de la sal, pero cada una de las ${n} aguas trae su propio O.`) : null,
+        err('QM-HIDRATO-CUENTA', String(n), os ? `Sería así si solo contaras el agua. Esos son los O de las aguas, y faltan los ${os} de la sal, que va delante del punto.` : 'Esos son los O del agua, y la sal no tiene oxígeno.'),
+        err('QM-HIDRATO-CUENTA', String(os + 1), `Sería así con una sola agua. El ${n} delante del H₂O cuenta moléculas enteras, así que multiplica también su O.`), err('QM-HIDRATO-CUENTA', String(os + 3 * n), 'Sería así si contaras los tres átomos de cada agua, pero la pregunta es por los O, y cada H₂O tiene dos H y un solo O.')],
       solucion: [[`${os ? `La sal tiene ${os} O,` : 'La sal no tiene O,'} y cada una de las ${n} aguas tiene uno.`], [`${os} + ${n} = ${bien}`]] };
   }
 

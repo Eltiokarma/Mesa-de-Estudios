@@ -9,7 +9,7 @@
       "enunciado": "Piensa en la especie K₂MnO₄. ¿Qué estado de oxidación (EO) tiene el Mn? Datos: EO del K: +1 (grupo 1). EO del O: −2. Σ n · EO = carga de la especie (0 si es neutra); n: número de átomos de cada elemento. Alternativas: A) +8   B) +7   C) +6   D) +4",
       "respuesta": "C) +6",
       "pasos": [
-        "Los demás átomos suman −6 y la carga es 0, así que el Mn aporta lo que falta.",
+        "Los demás átomos suman −6 y la carga es 0, así que el Mn aporta lo que falta para llegar a la carga.",
         "EO −6 = 0 → EO = +6"
       ]
     },
@@ -29,7 +29,7 @@
       "enunciado": "El cobalto tiene EO +3. ¿Cuál es la fórmula de su hidróxido? Datos: Hidróxido: un OH⁻ (carga −1) por cada unidad de EO del metal, entre paréntesis si se repite. Alternativas: A) CoH₃   B) CoOH   C) Co(OH)₃   D) Co₂O₃   E) CoOH₃",
       "respuesta": "C) Co(OH)₃",
       "pasos": [
-        "Hacen falta tres OH⁻ para compensar +3.",
+        "Hacen falta tres OH⁻ para compensar +3, porque cada OH⁻ aporta −1.",
         "Co(OH)₃"
       ]
     },
@@ -39,7 +39,7 @@
       "enunciado": "Piensa en el óxido FeO. El hierro puede tener EO +2 y +3. ¿Cuál es su nombre tradicional? Datos: EO del O: −2. Tradicional, elemento con dos EO: -⁠oso para el menor e -⁠ico para el mayor. Alternativas: A) óxido de hierro(II)   B) óxido de hierro   C) óxido ferroso   D) óxido férrico",
       "respuesta": "C) óxido ferroso",
       "pasos": [
-        "El hierro tiene +2, el menor de sus dos EO, así que lleva -⁠oso.",
+        "El hierro tiene +2, el menor de sus dos EO, así que lleva -⁠oso, la terminación del óxido con menos oxígeno.",
         "FeO: óxido ferroso"
       ]
     },
@@ -59,7 +59,7 @@
       "enunciado": "Piensa en la especie C₂O₄²⁻, que tiene 2 átomos de C. ¿Qué estado de oxidación (EO) tiene cada C? Datos: EO del O: −2. Σ n · EO = carga de la especie (0 si es neutra); n: número de átomos de cada elemento. Alternativas: A) +3   B) +1   C) +4   D) +5   E) +2",
       "respuesta": "A) +3",
       "pasos": [
-        "Los demás átomos suman −8 y la carga es −2, así que los 2 C aportan lo que falta.",
+        "Los demás átomos suman −8 y la carga es −2, así que los 2 C aportan juntos lo que falta para llegar a la carga, y cada uno se lleva una parte igual.",
         "2 · EO −8 = −2 → EO = +3"
       ]
     },
@@ -69,7 +69,7 @@
       "enunciado": "Piensa en el oxácido HClO. ¿Cómo se llama? Datos: EO del Cl en sus oxácidos: +1, +3, +5 y +7. Con cuatro EO: hipo-⁠…-⁠oso, -⁠oso, -⁠ico, per-…-⁠ico. EO del O: −2; del H: +1. Alternativas: A) ácido perclórico   B) ácido cloroso   C) ácido clórico   D) ácido hipocloroso",
       "respuesta": "D) ácido hipocloroso",
       "pasos": [
-        "Con +1 en el Cl, la suma de los EO da 0, y ese EO decide el nombre.",
+        "Con +1 en el Cl, la suma de los EO da 0, y ese EO decide la terminación del nombre.",
         "HClO: ácido hipocloroso"
       ]
     },

@@ -185,3 +185,10 @@ test('redacción: QM-POLI sin subíndices pegados; el Stock de un hidróxido no 
   for (const i of def.ideas) for (const e of i.ejemplos) if (/hidróxido|\(OH\)|NaOH/.test(e.enunciado) && /Stock/.test(e.enunciado)) { hid++; assert.ok(!(e.datos || []).some(d => /«óxido de»/.test(plano(d))), e.titulo); }
   assert.ok(poli > 20 && hid > 20, `${poli} QM-POLI, ${hid} hidróxidos`);
 });
+test('verificación 27 nov: la regla 1 no dice que lo cedido se gana dentro de la especie (en un ion sobra o falta: es su carga), y per- no se glosa «por encima»', () => {
+  const r1 = plano(def.ideas[0].regla.texto);
+  assert.ok(!/los gana otro de la misma especie/.test(r1), r1);
+  assert.ok(/no se compensa es la carga/.test(r1), r1);
+  const todo = JSON.stringify(def.ideas.map(i => [i.lee, i.predice, i.mira, i.regla]));
+  assert.ok(!/per-?,? \(?«por encima»/i.test(todo), 'per- no significa «por encima»: marca el EO más alto');
+});
