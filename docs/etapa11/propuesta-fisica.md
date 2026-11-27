@@ -10,7 +10,7 @@ La unidad publicada contiene cinco ideas: aceleracion-al-centro, graficas-mas, p
 
 La ficha del catálogo abarca movimiento periódico y oscilatorio, ecuaciones y gráficas del MAS, resorte horizontal y vertical, péndulo simple y energía. Esos temas se conservarán. Los dos resortes en serie y en paralelo serán una extensión acotada de la idea 4, no una séptima idea.
 
-Se usa como modelo de tono Trabajo, energía y potencia, con calidad 2. De su auditoría se toman especialmente las correcciones sobre constantes omitidas, números ocultamente redondeados, cancelaciones sin explicar, rótulos cruzados por líneas y controles que no coincidían con el dibujo. Se conserva su nomenclatura energética: energía cinética, potencial elástica y mecánica, con E y los subíndices C, PE y M. No se copiarán sus cadenas antiguas de fórmulas ni sus colores sin revisar el contexto de esta unidad.
+La actualización del encargo del 27 nov toma como modelo de redacción `fisica.movimiento-parabolico-y-circular`, en especial su primera regla. Cada explicación dirá qué significan los términos, por qué se aplica la relación y un caso reconocible. Se conservan las lecciones de Trabajo y energía sobre constantes, redondeos, despejes y rótulos, y su nomenclatura energética: E con los subíndices C, PE y M.
 
 **Instrucción actual que prevalece:** los recuadros Datos no darán fórmulas, despejes, atajos ni relaciones que resuelvan lo pedido. Contendrán entradas, unidades, condiciones, equivalencias necesarias y, cuando corresponda, valores trigonométricos. Las relaciones se desarrollarán en Mira y La regla, y se aplicarán en los pasos de resolución. Esta decisión sustituye la práctica de los documentos antiguos que sugerían poner fórmulas en Datos; no se presenta como un conflicto pendiente.
 
@@ -181,7 +181,7 @@ Al cambiar las predicciones de los cinco identificadores existentes y añadir un
 
 Estas comprobaciones son compromisos de implementación, no resultados obtenidos en esta propuesta.
 
-La comprobación del entorno ha encontrado un bloqueo EACCES al abrir el servidor en localhost. Todavía no se han obtenido ni inspeccionado capturas de esta unidad. La revisión visual queda pendiente de disponer de un servidor accesible; las comprobaciones de geometría y HTML no la sustituyen.
+El servidor HTTP local devuelve EACCES. Se comprobó una alternativa sin red: Chrome ejecuta los archivos reales de la app y Playwright responde a sus solicitudes desde el checkout. Permite capturar los momentos y medir las ecuaciones a 390 px sin modificar herramientas ni código del producto. El informe de cierre distingue estas capturas de una prueba de despliegue, sincronización o service worker.
 
 ## 7. Datos del mundo y fuentes
 
@@ -212,7 +212,7 @@ La introducción vuelve a explicar signos y origen. Antes de usar ω o φ se rec
 
 La idea 4 amplía el resorte vertical sin repetir toda la unidad de Trabajo y energía. La idea 5 limita expresamente el péndulo simple y evita identificar su aceleración tangencial con la aceleración total. La idea 6 retoma las energías del curso, solo en horizontal. Esta unidad no depende de que Gravitación o Impulso y choques hayan sido integradas ni incorpora cambios de sus ramas.
 
-Fluidos será una unidad posterior independiente. No se adelantan aquí presión, empuje ni oscilaciones de cuerpos flotantes.
+La siguiente unidad de la cola es Ondas mecánicas (etapa 19): reutiliza amplitud, período, frecuencia y fase, pero allí se distinguirá el movimiento de cada partícula de la propagación. Después sigue Fluidos (etapa 12), independiente; aquí no se adelantan presión, empuje ni oscilaciones de cuerpos flotantes.
 
 ## 9. Decisiones tomadas (Gerson revisa después)
 
@@ -224,4 +224,6 @@ Fluidos será una unidad posterior independiente. No se adelantan aquí presión
 | 4. ¿Hasta dónde llevar los modelos? | Resorte vertical y dos resortes ideales en la idea 4; energía solo horizontal; péndulo de 5°–10° con aproximación y componente tangencial explícitas. | Redes mixtas, masa del resorte, péndulo físico/cónico y energía vertical escrita como si toda deformación se midiera desde el equilibrio. |
 | 5. ¿Qué paleta y qué predicción de gráficas? | Usar los grupos de color indicados, reforzados por símbolos, unidades, carriles y trazos. Predice3 parte de la izquierda con T = 8 s y pregunta a los 2 s, después de explorar cuartos desde la derecha. | Depender solo del contraste verde/naranja, dejar m/k sin rótulo o repetir en Predice la misma fase inicial del juego. |
 | 6. ¿Qué datos reales y qué respaldo atribuir a los errores? | Modelos didácticos declarados y, si aporta al aprendizaje, una aplicación BCRP identificada. Distractores como operaciones hipotéticas con comprobación independiente. | Inventar mediciones locales, generalizar la masa de una moneda o presentar frecuencias extranjeras como diagnóstico peruano. |
+| 7. ¿Cómo actualizar una entrega anterior al nuevo criterio? | Conservar sus casos y sus oráculos; ampliar el texto con el significado de las magnitudes, la razón de cada operación y el error que produce cada alternativa. La rama incorpora el `main` actualizado sin reescribir su historia. | Rehacer números correctos para acomodar frases o mantener explicaciones abreviadas solo porque pasan los límites antiguos. |
+| 8. ¿Repetir «punto de retorno», ya definido en Gravitación? | Heredar ese término y presentar amortiguamiento como la disminución del vaivén por pérdida de energía; se explica por qué el modelo ideal lo desprecia, sin introducir ecuaciones nuevas. | Duplicar la definición con `local: true` aunque conserve el mismo significado, o anticipar el modelo de oscilación amortiguada. |
 

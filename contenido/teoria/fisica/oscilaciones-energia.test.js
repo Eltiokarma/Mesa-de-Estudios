@@ -121,11 +121,12 @@ function variables(c) {
   if (c.tipo === 'velocidad') vars.v = z;
   if (c.tipo === 'amplitud-estado') Object.assign(vars, { A: z / 100, E_C: cinetica(c.m, c.v), E_PE: elastica(c.k, vars.x), E_M: cinetica(c.m, c.v) + elastica(c.k, vars.x) });
   if (c.tipo === 'rigidez') Object.assign(vars, { k: z, x: 0, E_C: cinetica(c.m, c.v), E_M: cinetica(c.m, c.v), E_PE: 0 });
+  if (c.tipo === 'rapidez-estados') vars.E_M = cinetica(c.m, c.v1) + elastica(c.k, c.x1cm / 100);
   return vars;
 }
 function evaluar(s, vars) {
   s = s.replace(/\|([^|]+)\|/g, 'abs($1)').replace(/,/g, '.').replace(/−/g, '-').replace(/[·×]/g, '*').replace(/÷/g, '/');
-  s = s.replace(/(\d)\s*(?:m\/s²|m\/s|N\/m|kg|cm|J|m|s)(?=\s|\)|$)/g, '$1');
+  s = s.replace(/(\d)\s*(?:m\/s²|m\/s|N\/m|m²|kg|cm|J|m|s)(?=\s|\)|$)/g, '$1');
   for (const k of Object.keys(vars).sort((a, b) => b.length - a.length)) s = s.replace(new RegExp('(?<![A-Za-z_])' + k + '(?![A-Za-z_0-9])', 'g'), '(' + vars[k] + ')');
   assert.ok(/^[\d\s.()+\-*/sqrtabseENaInfiy]+$/.test(s), 'Expresión desconocida: ' + s);
   let n;
@@ -153,8 +154,8 @@ function ecuaciones(c, pasos) {
 }
 const CAUSAS = { 'sin-medio': /dos/, 'doble-medio': /dos/, 'sin-cuadrado': /cuadrado/, centimetros: /centímetros/, signo: /signo/, 'sin-masa': /masa/,
   suma: /sum/, total: /total|mecánica|restar|elástica/, potencial: /resorte|elástica/, 'resta-inversa': /orden|invert/, resta: /rest/, 'solo-cinetica': /resorte/, 'solo-potencial': /movimiento/, promedio: /promedio/,
-  'sin-dos': /dos|medio/, 'sin-raiz': /raíz/, metros: /metros/, extremos: /extremos/, equilibrio: /reposo/, 'sin-posicion': /elástica/, posicion: /posición/, 'cinetica-por-elastica': /cinética.*elástica/, amplitud: /toda.*elástica/,
-  medio: /medio/, 'sin-cuadrado-A': /amplitud.*cuadrado/, 'sin-cuadrado-v': /rapidez.*cuadrado/, 'sin-cambio': /cambio/, 'sin-inicial': /inicial/, 'suma-posiciones': /sum/ };
+  'sin-dos': /dos|medio/, 'sin-raiz': /raíz/, metros: /metros/, extremos: /extremos/, equilibrio: /reposo|detenido/, 'sin-posicion': /elástica/, posicion: /posición/, 'cinetica-por-elastica': /cinética.*elástica/, amplitud: /toda.*(?:elástica|resorte)/,
+  medio: /medio|división entre dos/, 'sin-cuadrado-A': /amplitud.*cuadrado/, 'sin-cuadrado-v': /rapidez.*cuadrado/, 'sin-cambio': /cambio/, 'sin-inicial': /inicial/, 'suma-posiciones': /sum/ };
 function entradasVisibles(obj) {
   const encontrados = [];
   function walk(x) { if (!x || typeof x !== 'object') return; if (x.m && typeof x.t === 'string' && /\d/.test(x.t)) encontrados.push({ clave: x.m, valor: numero(x.t) }); if (Array.isArray(x)) x.forEach(walk); else Object.values(x).forEach(walk); }
@@ -179,7 +180,7 @@ function casoCompleto(obj) {
     for (const op of obj.opciones) {
       const id = op.error && op.error.replace('OS-ENE-', ''), esperadoOp = op.correcta ? z : error(c, id);
       cerca(op.valor, esperadoOp, 'opción'); visible(op.texto, esperadoOp, 'opción visible');
-      if (!op.correcta) { assert.match(op.siFuera, CAUSAS[id], c.tipo + ' causa de ' + id); assert.ok(op.siFuera.startsWith('Bien ')); }
+      if (!op.correcta) { assert.match(op.siFuera.toLowerCase(), CAUSAS[id], c.tipo + ' causa de ' + id); assert.ok(op.siFuera.trim().split(/\s+/).length <= 40); }
     }
   }
   if (c.Acm !== undefined && c.xcm !== undefined) assert.ok(Math.abs(c.xcm) <= c.Acm);
@@ -277,6 +278,6 @@ test('energía MAS: figuras estáticas y generadas con rótulos legibles dentro 
 });
 test('energía MAS: calidad 2 simulada en400 semillas, sin marcar la unidad', () => {
   const { laboratorio, laboratorioIdeas, ...base } = def;
-  const d = { ...base, calidad: 2, ideas: [idea], glosario: def.glosario.filter(g => ['oscilación libre', 'punto de retorno'].includes(g.termino)) };
+  const d = { ...base, calidad: 2, ideas: [idea], glosario: def.glosario.filter(g => ['oscilación libre', 'amortiguamiento'].includes(g.termino)) };
   assert.deepEqual(Teoria.problemas(d, { semillas: 400 }), []);
 });

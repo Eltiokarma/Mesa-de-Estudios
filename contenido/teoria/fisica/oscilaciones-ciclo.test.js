@@ -340,6 +340,8 @@ function expresion(s, simbolos, c) {
     'ciclos completos': Number.isFinite(c.T) && Number.isFinite(c.dt) ? O.retornosCompletos(c.T, 0, c.dt).length : undefined,
     'medio ciclo': Number.isFinite(c.T) && Number.isFinite(c.dt) ? O.eventosCuartos(c.T, 0, c.dt).filter(e => e.nombre === 'extremo-izquierdo').length - O.retornosCompletos(c.T, 0, c.dt).length : undefined,
     'recorrido': simbolos.d,
+    'tiempo': c.final - c.inicio,
+    'llegadas': c.N,
   };
   s = s.trim().replace(/[.,]$/, '');
   for (const [k, v] of Object.entries(frases)) if (s.includes(k)) { assert.ok(Number.isFinite(v), k); s = s.split(k).join(`(${v})`); }
@@ -368,7 +370,7 @@ function comprobarOpciones(ops, e) {
     cerca(o.valor, calculados[i], `Alternativa ${i}`); cerca(cantidad(o.texto), o.valor, 'Número visible de opción', 0.005 / Math.max(1, Math.abs(o.valor)) + 1e-10);
     assert.ok(texto(o.texto).includes(e.unidad)); limite(o.texto, 14, 'Opción');
     if (Math.abs(cantidad(o.texto) - o.valor) > 1e-9) assert.ok(texto(o.texto).includes('≈'), 'Una opción redondeada debe llevar ≈');
-    if (i) { assert.ok(o.error); assert.ok(o.siFuera); limite(o.siFuera, 20, 'siFuera'); }
+    if (i) { assert.ok(o.error); assert.ok(o.siFuera); limite(o.siFuera, 40, 'siFuera'); }
     estadistica.opciones++;
   });
 }
@@ -381,7 +383,7 @@ function comprobarCaso(caso, clase, indice) {
   if (caso.respuesta) { cerca(cantidad(caso.respuesta), e.valor, 'Respuesta visible'); assert.ok(texto(caso.respuesta).includes(e.unidad)); limite(caso.respuesta, 14, 'Respuesta'); }
   const pasos = caso.pasos || (Array.isArray(caso.solucion) ? caso.solucion : [caso.solucion]);
   assert.ok(pasos.length <= (clase === 'resuelve' ? 6 : clase === 'ejemplos' ? 4 : 1));
-  for (const p of pasos) limite(p.texto, clase === 'ahoraTu' ? 20 : 30, 'Paso');
+  for (const p of pasos) limite(p.texto, clase === 'ahoraTu' ? 40 : 50, 'Paso');
   ecuaciones(pasos, e, c);
   if (caso.opciones) comprobarOpciones(caso.opciones, e);
   if (caso.alternativas) {
@@ -426,7 +428,7 @@ for (let s = 0; s < 400; s++) {
 verificar('predicción', () => { const T = O.medirPorConteo({ ciclos: 8, duracion: 4 }).T; comprobarOpciones(idea.predice.opciones, { valor: T, errores: [O.medirPorConteo({ ciclos: 16, duracion: 4 }).T, O.medirPorConteo({ ciclos: 4, duracion: 4 }).T, O.medirPorConteo({ ciclos: 8, duracion: 4 }).f], unidad: 's' }); });
 verificar('Mira y figuras fijas', () => {
   ecuaciones(idea.mira.pasos.slice(0, 3), { simbolos: { T: 0.5, f: 2 } }, { N: 8, dt: 4 });
-  idea.mira.pasos.forEach(p => limite(p.texto, 14, 'Mira'));
+  idea.mira.pasos.forEach(p => limite(p.texto, 35, 'Mira'));
   idea.lee.tarjetas.filter(t => t.dibujo).forEach(t => geometria(t.dibujo));
   geometria(idea.predice.dibujo); geometria(idea.predice.revelar); geometria({ datos: idea.mira.datos }); geometria(idea.regla.dibujo);
 });
@@ -460,8 +462,8 @@ verificar('Afirmaciones numéricas del glosario', () => {
 });
 verificar('presupuesto y glosario', () => {
   limite(idea.actividad, 16, 'Actividad'); limite(idea.aprendizaje, 25, 'Aprendizaje'); limite(idea.juega.mision.texto, 16, 'Misión'); limite(idea.juega.mision.bien, 16, 'Misión bien');
-  limite(idea.regla.texto, 30, 'Regla'); limite(idea.regla.condicion, 22, 'Condición');
-  idea.lee.tarjetas.forEach(t => limite(t.texto, 45, 'Lee')); idea.juega.leyenda.forEach(l => limite(l.t, 8, 'Leyenda'));
+  limite(idea.regla.texto, 60, 'Regla'); limite(idea.regla.condicion, 45, 'Condición');
+  idea.lee.tarjetas.forEach(t => limite(t.texto, 60, 'Lee')); idea.juega.leyenda.forEach(l => limite(l.t, 8, 'Leyenda'));
   def.glosario.forEach(g => { limite(g.simple, 14, 'Glosario simple'); limite(g.def, 20, 'Glosario definición'); assert.ok(g.ejemplos.length >= 3); g.ejemplos.forEach(e => limite(e, 20, 'Glosario ejemplo')); });
   const antes = JSON.stringify([def.glosario, idea.lee, idea.juega.consigna, idea.juega.voz, idea.juega.mision, idea.juega.leyenda]); assert.ok(!/0[,.]5\s*s/.test(antes), 'Nada anterior entrega T0,5s de la predicción');
 });

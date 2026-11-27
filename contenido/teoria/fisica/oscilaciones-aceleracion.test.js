@@ -120,6 +120,10 @@ function nodosNumericos(x, lista = []) {
   return lista;
 }
 function geometria(dibujo, contexto) {
+  for (const rotulo of dibujo.datos.textos || []) {
+    assert.equal(typeof rotulo.texto, 'string', contexto + ': rótulo de texto válido');
+    assert.doesNotMatch(rotulo.texto, /\b(?:true|false)\b/, contexto + ': un booleano no es un rótulo');
+  }
   const d = dibujo.datos, g = pieza.geometria(d, dibujo.estado || {}), pisa = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
   for (const box of [...g.rotulos, ...g.objetos]) assert.ok(box.x0 >= 4 && box.x1 <= 316 && box.y0 >= 4 && box.y1 <= g.H - 4, contexto + ': margen ' + JSON.stringify(box));
   for (let i = 0; i < g.rotulos.length; i++) {
@@ -138,6 +142,9 @@ function comprobar(p, nombre) {
   const disponibles = nodos.slice();
   for (const [k, v] of entradas) { const i = disponibles.findIndex(n => Math.abs(cantidad(n) - v) < 1e-8); assert.ok(i >= 0, nombre + ': entrada ' + k); const n = disponibles.splice(i, 1)[0]; assert.equal(n.m, k === 'gramos' || k === 'factorM' ? 'm' : k === 'factorK' ? 'k' : k[0]); }
   for (const d of p.datos) if (!/^1 (?:m|kg) = /u.test(plano(d))) assert.doesNotMatch(plano(d), /\b(?:F|a|x|k|m)\s*=|fuerza.*entre|proporcional/i, 'Datos da el procedimiento');
+  const convierteLongitud = ['aceleracion-cm', 'aceleracion-gramos', 'masa', 'posicion-cm', 'calibrada', 'masa-calibrada', 'masa-nueva', 'rigidez-nueva', 'dos-masas'].includes(c.tipo);
+  assert.equal(p.datos.some(d => plano(d) === '1 m = 100 cm.'), convierteLongitud, nombre + ': equivalencia de longitud solo cuando la solución convierte');
+  assert.equal(p.datos.some(d => plano(d) === '1 kg = 1000 g.'), c.tipo === 'aceleracion-gramos', nombre + ': equivalencia de masa cuando se convierte de gramos');
   if (p.respuesta) visible(p.respuesta, e.valor, e.unidad);
   const filas = p.pasos || (Array.isArray(p.solucion) ? p.solucion : [p.solucion]); ecuaciones(filas, e);
   const er = errores(c, e);
@@ -147,7 +154,7 @@ function comprobar(p, nombre) {
     assert.equal(new Set(p.opciones.map(o => cantidad(o.texto))).size, p.opciones.length);
     for (const o of p.opciones) {
       const v = o.correcta ? e.valor : er[o.error]; assert.ok(Number.isFinite(v)); cerca(o.valor, v, 'Opción'); visible(o.texto, v, e.unidad);
-      if (!o.correcta) { assert.match(o.siFuera, /^Bien:/); const final = o.siFuera.split('Sale ')[1].replace(/\.$/, ''); visible(final, v, e.unidad); assert.ok(o.siFuera.split(/\s+/).length <= 20); }
+      if (!o.correcta) { const salida = o.siFuera.match(/\bsale ([^.]+)\./i); assert.ok(salida, 'La explicación identifica el resultado de su error'); visible(salida[1], v, e.unidad); assert.ok(o.siFuera.split(/\s+/).length <= 40); }
       estadistica.opciones++;
     }
   }
@@ -159,7 +166,12 @@ function comprobar(p, nombre) {
   }
   const dibujo = p.dibujo || p.figura; geometria(dibujo, nombre);
   const xx = c.xcm ?? c.x2cm ?? (c.x != null ? 100 * c.x : null);
-  if (xx != null && c.tipo !== 'comparacion') { const obj = dibujo.datos.objetos.find(o => o.tipo === 'caja'); cerca(obj.x, 178 + 4 * xx, 'Escala común de posición'); }
+  if (xx != null && c.tipo !== 'comparacion') {
+    const obj = dibujo.datos.objetos.find(o => o.tipo === 'caja'); cerca(obj.x, 178 + 4 * xx, 'Escala común de posición');
+    const rotulosX = dibujo.datos.textos.filter(t => /^x = /.test(t.texto));
+    assert.equal(rotulosX.length, 1, nombre + ': una elongación conocida se rotula');
+    visible(rotulosX[0].texto, xx, 'cm'); assert.equal(rotulosX[0].color, 'i', nombre + ': color de elongación');
+  }
   return e;
 }
 
@@ -181,6 +193,8 @@ for (let s = 0; s < 12; s++) assert.ok(!resueltos.includes(plano(idea.ahoraTu.ge
 // Predicción por una realización física: k=150 N/m y m=1 kg reprodujeron el primer estado.
 const valorPred = fuerza(150, -0.06).val(); cerca(valorPred, 9);
 const opcionesPred = idea.predice.opciones; assert.equal(opcionesPred.filter(o => Math.abs(o.valor - valorPred) < 1e-10).length, 1);
+const incognitaPred = idea.predice.dibujo.datos.textos.find(t => t.texto === 'a = ?');
+assert.equal(incognitaPred?.color, 'd', 'La aceleración conserva su color cuando es desconocida');
 const predMalos = [-valorPred, fuerza(150, -0.02).val(), 3 * valorPred];
 opcionesPred.forEach((o, i) => { cerca(o.valor, i ? predMalos[i - 1] : valorPred); visible(o.texto, o.valor, 'm/s²'); });
 assert.ok(!textoCompleto([idea.lee, idea.juega.consigna, idea.juega.mision, def.glosario]).includes('+9 m/s²'));

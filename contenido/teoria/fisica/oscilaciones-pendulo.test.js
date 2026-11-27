@@ -102,15 +102,15 @@ const entradas={
 };
 function tokenValores(x,clave,out=[]){if(Array.isArray(x))x.forEach(t=>tokenValores(t,clave,out));else if(x&&typeof x==='object'){if(x.m===clave&&/^[+-]?\d/.test(x.t||''))out.push(Number(x.t.replace(',','.').split(' ')[0]));for(const[k,v]of Object.entries(x))if(typeof v==='object')tokenValores(v,clave,out);}return out;}
 function causa(id, texto) {
- const patrones={'medio-ciclo':/medio ciclo/,'sin-2pi':/omitiste.*2π/,'sin-raiz':/no extrajiste la raíz|sin extraer raíz/,frecuencia:/frecuencia/,
+ const patrones={'medio-ciclo':/medio ciclo/,'sin-2pi':/(?:omitiste|eliminaste).*2π/,'sin-raiz':/no extrajiste la raíz|sin extraer (?:su )?raíz|raíz.*omitir/,frecuencia:/frecuencia|ciclos por segundo/,
   'raiz-masa':/multiplicaste.*raíz.*masas/,'masa-directa':/multiplicaste.*razón de masas/,'raiz-inversa-masa':/dividiste.*raíz.*masas/,'masa-inversa':/dividiste.*razón de masas/,
   periodo:/copiaste el período/,medios:/cada ida|medio período/,dobles:/dos ciclos/,cuadrado:/período al cuadrado/,invierte:/intercambiaste|invertiste/,
-  'incluye-masa':/añadiste.*raíz.*masas/,'divide-masa':/dividiste.*raíz.*masas/,'sin-dos':/omitiste el dos|π en vez de 2π/,'medio-periodo':/medio período/,
-  'sin-cuadrado':/no elevaste.*cuadrado|sin elevarlo al cuadrado/,'un-ciclo':/solo un ciclo/,divide:/dividiste entre el período/,'doble-conteo':/dos veces/,
-  lineal:/no elevaste.*cuadrado|razón lineal/,raiz:/raíz en vez de elevar/,cubo:/razón al cubo/,'invierte-g':/invertiste.*gravedades/,'sin-cambio':/período anterior/,
-  'longitud-total':/longitud total nueva/,'solo-hilo':/solo el hilo|omitiste el radio/,inversa:/invertiste la razón/,'invierte-tiempo':/invertiste.*períodos/,
-  'sin-longitud':/omitiste.*longitudes/,'sin-periodo':/solo las longitudes/};
- assert.ok(patrones[id], 'Operación sin descripción comprobada: '+id);assert.match(plano(texto),patrones[id]);
+  'incluye-masa':/añadiste.*raíz.*masas/,'divide-masa':/dividiste.*raíz.*masas/,'sin-dos':/omitiste el dos|π en vez de 2π/,'medio-periodo':/medio período|media oscilación/,
+  'sin-cuadrado':/no elevaste.*cuadrado|sin elevar(?:lo| su razón)? al cuadrado/,'un-ciclo':/solo un ciclo|una sola oscilación/,divide:/dividiste entre el período/,'doble-conteo':/dos veces/,
+  lineal:/no elevaste.*cuadrado|razón lineal|misma proporción/,raiz:/raíz en vez de elevar|extrajiste otra raíz/,cubo:/razón al cubo/,'invierte-g':/invertiste.*gravedades/,'sin-cambio':/período anterior|conservaste el período/,
+  'longitud-total':/longitud total nueva|longitud completa/,'solo-hilo':/solo el hilo|omitiste el radio/,inversa:/invertiste la razón/,'invierte-tiempo':/invertiste.*períodos/,
+  'sin-longitud':/omitiste.*longitudes|como si las longitudes fueran iguales/,'sin-periodo':/solo las longitudes/};
+ assert.ok(patrones[id], 'Operación sin descripción comprobada: '+id);assert.match(plano(texto).toLowerCase(),patrones[id]);
 }
 function revisarCaso(x,donde){
  const c=x.caso,o=esperado(c),ns=numeros(x.enunciado||x.pregunta);assert.equal(ns.length,entradas[c.tipo].length,donde+' datos primarios');ns.forEach((n,i)=>cerca(n,c[entradas[c.tipo][i]],'Dato visible',1e-12));
@@ -125,10 +125,10 @@ function revisarCaso(x,donde){
  const sol=x.pasos||x.solucion;const filas=Array.isArray(sol)?sol:sol?[sol]:[];
  for(const p of filas)if(p.ecuacion)ecuaciones(p.ecuacion,o.vars,donde);
  if(x.opciones){assert.equal(x.opciones.filter(p=>p.correcta).length,1);assert.equal(new Set(x.opciones.map(p=>plano(p.texto))).size,x.opciones.length);
-  let exactas=0,visibles=0;for(const p of x.opciones){conteos.opciones++;if(Math.abs(p.valor-o.valor)<1e-8)exactas++;if(Math.abs(numeros(p.texto)[0]-o.valor)<=.005000001)visibles++;if(p.correcta)visible(p.texto,o.valor,o.unidad,true);else{const id=p.error.replace(/^OS-PEN-/,'');assert.ok(Object.hasOwn(o.errores,id));cerca(p.valor,o.errores[id]);visible(p.texto,o.errores[id],o.unidad,true);assert.match(plano(p.siFuera),/^Bien identificar los datos;/);causa(id,p.siFuera);assert.ok(plano(p.siFuera).split(/\s+/).length<=20);}}
+  let exactas=0,visibles=0;for(const p of x.opciones){conteos.opciones++;if(Math.abs(p.valor-o.valor)<1e-8)exactas++;if(Math.abs(numeros(p.texto)[0]-o.valor)<=.005000001)visibles++;if(p.correcta)visible(p.texto,o.valor,o.unidad,true);else{const id=p.error.replace(/^OS-PEN-/,'');assert.ok(Object.hasOwn(o.errores,id));cerca(p.valor,o.errores[id]);visible(p.texto,o.errores[id],o.unidad,true);causa(id,p.siFuera);assert.ok(plano(p.siFuera).split(/\s+/).length<=40);}}
   assert.equal(exactas,1);assert.equal(visibles,1,'Unicidad después de redondear');
  }
- if(x.alternativas){assert.equal(x.alternativas.length,5);assert.equal(new Set(x.alternativas.map(plano)).size,5);const todos=[o.valor,...Object.values(o.errores)];for(const t of x.alternativas){conteos.opciones++;assert.equal(todos.filter(n=>Math.abs(numeros(t)[0]-n)<=.005000001).length,1,'Alternativa equivalente a dos resultados');}assert.equal(x.alternativas.filter(t=>Math.abs(numeros(t)[0]-o.valor)<=.005000001).length,1);const partes=plano(filas.at(-1)).split('.').filter(s=>s.trim());assert.equal(partes.length,4);partes.forEach((p,i)=>visible(p,Object.values(o.errores)[i],o.unidad,true));}
+ if(x.alternativas){assert.equal(x.alternativas.length,5);assert.equal(new Set(x.alternativas.map(plano)).size,5);const todos=[o.valor,...Object.values(o.errores)];for(const t of x.alternativas){conteos.opciones++;assert.equal(todos.filter(n=>Math.abs(numeros(t)[0]-n)<=.005000001).length,1,'Alternativa equivalente a dos resultados');}assert.equal(x.alternativas.filter(t=>Math.abs(numeros(t)[0]-o.valor)<=.005000001).length,1);const partes=plano(filas.at(-1)).split('.').filter(s=>s.trim());assert.ok(partes.length>=4,'Se nombran los cuatro resultados incorrectos');partes.slice(0,4).forEach((p,i)=>visible(p,Object.values(o.errores)[i],o.unidad,true));}
  const fig=x.figura||x.dibujo;if(fig){geometria(fig,donde);const etiquetas=[...(fig.datos.cotas||[]),...(fig.datos.textos||[])].filter(co=>/^L\s*=/.test(plano(co.texto)));assert.equal(etiquetas.length,fig.datos.cotas.length,'Cada cota conserva un rótulo de longitud');for(const co of etiquetas){if(/\?/.test(plano(co.texto)))continue;const L=numeros(co.texto)[0]/100;const dados=[c.L,c.L1,c.L2,c.Lcm===undefined?undefined:c.Lcm/100].filter(n=>n!==undefined);assert.ok(dados.some(n=>Math.abs(n-L)<1e-10),donde+' longitud numérica inventada '+plano(co.texto));}}
  if(c.tipo==='razon'){const sentido=plano(filas.at(-1)||sol);if(/mayor que uno/.test(sentido))assert.ok(o.valor>1);if(/menor que uno/.test(sentido))assert.ok(o.valor<1);}
  return o;
@@ -184,13 +184,14 @@ grupo('Péndulo: misión, escala y movimiento en toda la malla y 400 instantes',
 grupo('Péndulo: Predice, Mira y revelación conservan datos y física del caso', () => {
 ejecutar('Predice',()=>{
  const p=idea.predice, c=p.caso, o=esperado(c);cerca(c.valor,o.valor);assert.equal(p.opciones.filter(x=>Math.abs(x.valor-o.valor)<1e-9).length,1);
- for(const x of p.opciones){const id=x.error?.replace(/^OS-PEN-/,''),n=x.correcta?o.valor:o.errores[id];visible(x.texto,n,'',true);if(!x.correcta){assert.match(plano(x.siFuera),/^Bien/);causa(id,x.siFuera);}}
+ for(const x of p.opciones){const id=x.error?.replace(/^OS-PEN-/,''),n=x.correcta?o.valor:o.errores[id];visible(x.texto,n,'',true);if(!x.correcta){assert.ok(plano(x.siFuera).split(/\s+/).length<=40);causa(id,x.siFuera);}}
  geometria(p.dibujo,'predice');geometria(p.revelar,'revelar');
  const before=plano([idea.lee.tarjetas,idea.juega.consigna,idea.juega.mision.texto,p.datos]);assert.doesNotMatch(before,/1,5|1\.5|tres medios/);
  const labels=p.revelar.datos.textos.filter(x=>/^T/.test(plano(x.texto)));visible(labels[0].texto,periodo(c.L1,c.g1),'s',true);visible(labels[1].texto,periodo(c.L2,c.g2),'s',true);
  assert.ok(tokenValores(p.datos,'g').some(n=>n===c.g1),'Los períodos revelados necesitan el g numérico visible');
  idea.mira.pasos.forEach(x=>{if(x.ecuacion)ecuaciones(x.ecuacion,o.vars,'Mira');});
- assert.match(plano(idea.mira.pasos),/aceleración tangencial, no necesariamente la total/);
+ assert.match(plano(idea.mira.pasos),/no hay aceleración a lo largo del arco/);
+ assert.match(plano(idea.mira.pasos),/aceleración hacia el apoyo/);
 });
 
 });

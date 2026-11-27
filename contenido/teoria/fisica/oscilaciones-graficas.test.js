@@ -144,7 +144,7 @@ function comprobar(o) {
   for(let a=0;a<valores.length;a++)for(let b=a+1;b<valores.length;b++)assert.ok(Math.abs(valores[a]-valores[b])>1e-9,'Opciones únicas');
   if(o.opciones){
     assert.equal(o.opciones.filter(x=>x.correcta).length,1);
-    for(const op of o.opciones){cerca(evaluar(op.texto),op.valor,`${c.tipo}: alternativa exacta`);if(!op.correcta){assert.ok(op.siFuera.startsWith('Identificaste'));const literal=op.siFuera.split('obtendrías ')[1].replace(/\.$/,'');cerca(evaluar(literal),op.valor,`${c.tipo}: siFuera`);}}
+    for(const op of o.opciones){cerca(evaluar(op.texto),op.valor,`${c.tipo}: alternativa exacta`);if(!op.correcta){assert.ok(op.siFuera.trim().split(/\s+/).length<=40);const literal=op.siFuera.split('obtendrías ')[1].replace(/\.$/,'');cerca(evaluar(literal),op.valor,`${c.tipo}: siFuera`);}}
     assert.equal(o.opciones.filter(x=>Math.abs(x.valor-r.esperado)<1e-7).length,1);
   }
   if(o.alternativas){assert.equal(o.alternativas.length,5);assert.equal(o.alternativas.filter(x=>Math.abs(evaluar(x)-r.esperado)<1e-7).length,1); for(const x of o.alternativas)assert.ok(valores.some(v=>Math.abs(v-evaluar(x))<1e-7));}

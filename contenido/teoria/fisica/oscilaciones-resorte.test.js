@@ -118,8 +118,8 @@ function comprobarEntradas(obj) {
 function expresion(n) {
   if (Array.isArray(n)) return n.map(expresion).join('');
   if (n && typeof n === 'object') {
-    if (n.v) { const l = literal(n.t); return l ? String(l.valor * (l.unidad === 'cm' ? 0.01 : l.unidad === 'g' ? 0.001 : 1)) : '?'; }
-    if (n.sub) return '?';
+    if (n.v) { const l = literal(n.t); return l ? String(l.valor * (l.unidad === 'cm' ? 0.01 : l.unidad === 'g' ? 0.001 : 1)) : '?' + texto(n); }
+    if (n.sub) return '?' + texto(n);
     if (n.sup) return '(' + expresion(n.sup[0]) + ')**(' + expresion(n.sup[1]) + ')';
     if (n.frac) return '(' + expresion(n.frac[0]) + ')/(' + expresion(n.frac[1]) + ')';
     if (n.raiz) return 'sqrt(' + expresion(n.raiz) + ')';
@@ -139,9 +139,12 @@ function evaluar(s) {
 }
 let igualdades = 0;
 function comprobarEcuacion(eq, contexto) {
-  const e = expresion(eq);
+  const e = expresion(eq), valores = new Map();
   for (const trozo of e.split(';')) {
-    const partes = trozo.split(/(=|≈)/); let anterior = evaluar(partes[0]);
+    const partes = trozo.split(/(=|≈)/), referencia = partes[0].trim();
+    let anterior = evaluar(referencia);
+    // k = cuenta; k = resultado conserva la misma igualdad que k = cuenta = resultado.
+    if (anterior === null && valores.has(referencia)) anterior = valores.get(referencia);
     for (let i = 1; i < partes.length; i += 2) {
       const actual = evaluar(partes[i + 1]);
       if (anterior !== null && actual !== null) {
@@ -149,6 +152,7 @@ function comprobarEcuacion(eq, contexto) {
         else assert.ok(Math.abs(anterior - actual) <= 0.00051, contexto + ': aproximación falsa');
         igualdades++;
       }
+      if (actual !== null && referencia.includes('?')) valores.set(referencia, actual);
       anterior = actual;
     }
   }
@@ -234,4 +238,16 @@ function ejecutar() {
   assert.ok(igualdades>500,'Faltan comprobaciones de igualdades numéricas');
   return {def,idea};
 }
+test('Resortes: el parser comprueba relaciones separadas sin confundir símbolos', () => {
+  const k = { v:'c-f', t:'k', m:'k' }, m = { v:'c-f', t:'m', m:'m' }, antes = igualdades;
+  try {
+    comprobarEcuacion([k, ' = 40 / 2', '   ;   ', m, ' = 3', '   ;   ', k, ' = 20'], 'separadas');
+    assert.equal(igualdades - antes, 1, 'Debe comparar los dos valores de k');
+    const k1 = { sub:[k,'1'] }, k2 = { sub:[k,'2'] };
+    comprobarEcuacion([k1, ' = 20', '   ;   ', k2, ' = 30', '   ;   ', k1, ' = 20'], 'subíndices');
+    assert.equal(igualdades - antes, 2, 'Debe distinguir k1 de k2');
+    assert.throws(() => comprobarEcuacion([k, ' = 20', '   ;   ', k, ' = 21'], 'separada falsa'), /20 frente a 21/);
+  } finally { igualdades = antes; }
+});
+
 test('Resortes: 15 ejemplos, 800 casos, ecuaciones, misión, Newton y geometría', () => { ejecutar(); });
