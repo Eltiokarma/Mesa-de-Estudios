@@ -169,7 +169,8 @@
        "productos": "Productos"
       },
       "terminos": 35
-     }
+     },
+     "apertura": "/contenido/aperturas/fisica/vectores.js"
     },
     {
      "id": "fisica.movimiento-rectilineo",
@@ -1640,7 +1641,8 @@
        "fuerzas-intermoleculares": "Fuerzas entre moléculas"
       },
       "terminos": 39
-     }
+     },
+     "apertura": "/contenido/aperturas/quimica/geometria-molecular.js"
     },
     {
      "id": "quimica.nomenclatura-inorganica",
@@ -3791,7 +3793,8 @@
        "compania": "Capital por tiempo"
       },
       "terminos": 25
-     }
+     },
+     "apertura": "/contenido/aperturas/aritmetica/magnitudes-proporcionales.js"
     },
     {
      "id": "aritmetica.porcentajes",
