@@ -9,19 +9,19 @@
       "enunciado": "La primera llegada al extremo derecho ocurre a los 4 s; la llegada número 8, a los 21,5 s. ¿Cuál es el período? Datos: Las llegadas al mismo extremo son consecutivas y el movimiento mantiene su período. Alternativas: A) ≈ 2,188 s   B) 0,4 s   C) ≈ 3,071 s   D) 2,5 s",
       "respuesta": "D) 2,5 s",
       "pasos": [
-        "Contamos los intervalos entre las llegadas: N = 8 − 1 = 7.",
-        "Restamos los instantes: duración = 21,5 − 4 = 17,5 s.",
-        "El período es tiempo por ciclo: T = 17,5 / 7 = 2,5 s."
+        "La primera llegada inicia la cuenta y cada llegada posterior completa un ciclo. Por eso contamos los intervalos: N = 8 − 1 = 7.",
+        "El reloj ya marcaba un tiempo en la primera llegada. Lo restamos para medir solo lo transcurrido entre las llegadas: duración = 21,5 − 4 = 17,5 s.",
+        "Dividimos la duración entre los ciclos porque el período mide cuánto tarda cada oscilación completa: T = 17,5 / 7 = 2,5 s."
       ]
     },
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Un bloque de 2,5 kg está unido a un resorte de 20 N/m. Su posición es 6 cm. ¿Cuál es su aceleración con signo? Datos: Resorte horizontal ideal, de masa despreciable y sin rozamiento. La derecha es positiva y el equilibrio fija el origen. La única fuerza horizontal sobre el bloque es la del resorte. La mano ya se retiró; no hay otra fuerza horizontal. 1 m = 100 cm. Alternativas: A) −0,48 m/s²   B) 0,48 m/s²   C) −1,2 m/s²   D) −0,192 m/s²",
+      "enunciado": "Un bloque de 2,5 kg está unido a un resorte de rigidez 20 N/m. Su posición es 6 cm. ¿Cuál es su aceleración con signo? Datos: Resorte horizontal ideal, de masa despreciable y sin rozamiento. La derecha es positiva y el equilibrio fija el origen. La única fuerza horizontal sobre el bloque es la del resorte. La mano ya se retiró; no hay otra fuerza horizontal. 1 m = 100 cm. Alternativas: A) −0,48 m/s²   B) 0,48 m/s²   C) −1,2 m/s²   D) −0,192 m/s²",
       "respuesta": "A) −0,48 m/s²",
       "pasos": [
-        "Calculamos la fuerza con la posición en metros: F = −20 · (0,06) = −1,2 N.",
-        "Dividimos la fuerza neta entre la masa: a = F / m = (−1,2) / 2,5 = −0,48 m/s²."
+        "Primero hallamos la fuerza que cambia la velocidad. Usamos metros porque la rigidez está en newtons por metro, y el signo menos orienta la fuerza hacia el equilibrio: F = −20 · (0,06) = −1,2 N.",
+        "La segunda ley relaciona fuerza y aceleración. Dividimos entre la masa para obtener cuánto cambia la velocidad por segundo, con el mismo signo que la fuerza: a = F / m = (−1,2) / 2,5 = −0,48 m/s²."
       ]
     },
     {
@@ -30,9 +30,9 @@
       "enunciado": "Un bloque parte en reposo del extremo izquierdo, con amplitud 5 cm y período 4 s. ¿Dónde está y hacia dónde se mueve a los 7 s? Datos: Resorte horizontal ideal, de masa despreciable y sin rozamiento. La derecha es positiva y el equilibrio fija el origen. La única fuerza horizontal sobre el bloque es la del resorte. Alternativas: A) x = 0 cm; hacia la derecha   B) x = −5 cm; reposo instantáneo   C) x = 0 cm; hacia la izquierda   D) x = 5 cm; reposo instantáneo",
       "respuesta": "C) x = 0 cm; hacia la izquierda",
       "pasos": [
-        "Contamos los cuartos transcurridos: cuartos = 7 / (4 / 4) = 7.",
-        "Desde un extremo, cada cuarto lleva al centro, al extremo opuesto, al centro y al extremo inicial.",
-        "El estado que corresponde al tiempo indicado es x = 0 cm; hacia la izquierda."
+        "Dividimos el tiempo entre un cuarto de período para contar los tramos del movimiento desde el estado inicial: cuartos = 7 / (4 / 4) = 7.",
+        "Desde un extremo, los cuartos sucesivos llevan al centro, al extremo opuesto, otra vez al centro y al inicio. Los dos cruces centrales se distinguen por el sentido.",
+        "Seguimos esa secuencia desde el extremo indicado, sin contar la partida como un tramo transcurrido. En el instante pedido corresponde x = 0 cm; hacia la izquierda."
       ]
     },
     {
@@ -41,9 +41,9 @@
       "enunciado": "Un resorte mide 16 cm sin carga. Con un bloque de 1,8 kg, su longitud en equilibrio es 38,5 cm. ¿Cuál es el período de sus oscilaciones verticales? Datos: Resorte ideal de masa despreciable, sin rozamiento. El bloque oscila alrededor del equilibrio con la misma masa. Para este modelo ideal, g = 10 m/s². 1 m = 100 cm. Alternativas: A) 3π/20 s   B) ≈ 0,141 s   C) 3π/10 s   D) ≈ 1,233 s",
       "respuesta": "C) 3π/10 s",
       "pasos": [
-        "Medimos el alargamiento desde la longitud natural: alargamiento = (38,5 − 16) / 100 = 0,225 m.",
-        "El equilibrio iguala fuerza elástica y peso: k = m · g / alargamiento = 1,8 · 10 / 0,225 = 80 N/m.",
-        "Usamos la rigidez obtenida: T = 2π · √(1,8 / 80) = 3π/10 s."
+        "El alargamiento mide cuánto se estiró el resorte, no su longitud total. Restamos la longitud sin carga y convertimos a metros: alargamiento = (38,5 − 16) / 100 = 0,225 m.",
+        "En equilibrio, la fuerza del resorte compensa el peso. Esa igualdad permite hallar la rigidez a partir de la masa y el alargamiento: k = m · g / alargamiento = 1,8 · 10 / 0,225 = 80 N/m.",
+        "Al oscilar alrededor del equilibrio, el peso ya está compensado allí. La misma rigidez determina la fuerza que devuelve al bloque; con ella hallamos el período: T = 2π · √(1,8 / 80) = 3π/10 s."
       ]
     },
     {
@@ -52,21 +52,21 @@
       "enunciado": "Un péndulo completa 20 ciclos en 32 s. Se usa g ≈ 10 m/s². ¿Cuál es su longitud aproximada? Datos: Hilo inextensible sin masa, apoyo fijo y rozamiento despreciable. La longitud llega del apoyo al centro de la pesa. Amplitud angular de 5°; se usa la aproximación de ángulo pequeño. Alternativas: A) ≈ 0,405 m   B) ≈ 0,162 m   C) ≈ 2,594 m   D) ≈ 0,648 m",
       "respuesta": "D) ≈ 0,648 m",
       "pasos": [
-        "Hallamos la duración de un ciclo: T = 32 / 20 = 1,6 s.",
-        "Elevamos el período al cuadrado y despejamos: L ≈ g · (T / (2π))².",
-        "Reemplazamos período y gravedad: L ≈ 10 · (1,6 / (2π))² ≈ 0,648 m."
+        "La medición reúne varias oscilaciones. Dividimos la duración total entre los ciclos para obtener el período, que es el tiempo de una sola oscilación: T = 32 / 20 = 1,6 s.",
+        "La longitud está dentro de una raíz en la fórmula del período. Aislamos esa raíz, elevamos al cuadrado y despejamos la longitud: L ≈ g · (T / (2π))².",
+        "Sustituimos el período de un ciclo y la gravedad. La longitud estimada corresponde a la distancia del apoyo al centro de la pesa: L ≈ 10 · (1,6 / (2π))² ≈ 0,648 m."
       ]
     },
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Un bloque de 0,4 kg oscila con resorte de 40 N/m y amplitud 5 cm. ¿Cuál es su rapidez al pasar por 3 cm? Datos: Resorte horizontal ideal, de masa despreciable y sin rozamiento. La derecha es positiva y el equilibrio fija el origen. La única fuerza horizontal sobre el bloque es la del resorte. 1 m = 100 cm. Alternativas: A) 0,4 m/s   B) 0,5 m/s   C) ≈ 0,283 m/s   D) 0,3 m/s",
+      "enunciado": "Un bloque de 0,4 kg oscila con un resorte de rigidez 40 N/m y amplitud 5 cm. ¿Cuál es su rapidez al pasar por 3 cm? Datos: Resorte horizontal ideal, de masa despreciable y sin rozamiento. La derecha es positiva y el equilibrio fija el origen. La única fuerza horizontal sobre el bloque es la del resorte. 1 m = 100 cm. Alternativas: A) 0,4 m/s   B) 0,5 m/s   C) ≈ 0,283 m/s   D) 0,3 m/s",
       "respuesta": "A) 0,4 m/s",
       "pasos": [
-        "Calculamos la energía total con la amplitud en metros: energía mecánica = 40 · (0,05)² / 2 = 0,05 J.",
-        "Restamos la energía del resorte en esa posición: energía cinética = energía mecánica − energía del resorte = 0,05 − 40 · (0,03)² / 2 = 0,032 J.",
-        "Despejamos la rapidez positiva: rapidez = √(2 · energía cinética / m) = √(2 · 0,032 / 0,4) = 0,4 m/s.",
-        "La energía permite hallar la rapidez; por sí sola no indica el sentido del movimiento."
+        "Calculamos la energía total desde el extremo, donde el bloque está quieto y toda la energía es elástica. Usamos la amplitud en metros: energía mecánica = 40 · (0,05)² / 2 = 0,05 J.",
+        "El resorte todavía almacena energía en esta posición. La restamos del total porque solo la energía restante corresponde al movimiento: energía cinética = energía mecánica − energía del resorte = 0,05 − 40 · (0,03)² / 2 = 0,032 J.",
+        "Despejamos la rapidez desde la energía cinética. Tomamos la raíz positiva porque la rapidez no incluye el sentido del movimiento: rapidez = √(2 · energía cinética / m) = √(2 · 0,032 / 0,4) = 0,4 m/s.",
+        "El bloque puede pasar por esa posición al ir o al volver con la misma rapidez. Por eso la energía, que depende del cuadrado de la velocidad, no decide el sentido."
       ]
     },
     {
@@ -75,21 +75,21 @@
       "enunciado": "Un bloque de 1,2 kg oscila horizontalmente con dos resortes conectados en serie, de 40 N/m y 120 N/m. ¿Cuál es el período del conjunto? Datos: Resortes ideales de masa despreciable y mesa sin rozamiento. Una pared, dos resortes consecutivos y el bloque forman la conexión. Alternativas: A) 2π/5 s   B) 4π/5 s   C) ≈ 0,544 s   D) ≈ 1,088 s",
       "respuesta": "A) 2π/5 s",
       "pasos": [
-        "En serie se suman deformaciones bajo una misma fuerza.",
-        "Despejamos la rigidez equivalente: rigidez equivalente = 40 · 120 / (40 + 120) = 30 N/m.",
-        "Usamos la rigidez del conjunto: T = 2π · √(1,2 / 30) = 2π/5 s."
+        "En serie, ambos resortes transmiten la misma fuerza y sus estiramientos se suman. La rigidez equivalente representa un solo resorte que produciría esa deformación total.",
+        "Para la conexión en serie, combinamos las rigideces a partir de la suma de deformaciones. Así obtenemos la rigidez que debe usarse para todo el conjunto: rigidez equivalente = 40 · 120 / (40 + 120) = 30 N/m.",
+        "El bloque oscila bajo la acción de los dos resortes. Usamos su rigidez equivalente, junto con la masa del bloque, para hallar el tiempo de un ciclo: T = 2π · √(1,2 / 30) = 2π/5 s."
       ]
     },
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Un bloque de 0,4 kg está unido a un resorte de 40 N/m. Pasa por 5 cm con velocidad 1,2 m/s. ¿Cuál es su amplitud? Datos: Resorte horizontal ideal, de masa despreciable y sin rozamiento. La derecha es positiva y el equilibrio fija el origen. La única fuerza horizontal sobre el bloque es la del resorte. 1 m = 100 cm. Alternativas: A) 12 cm   B) 13 cm   C) 17 cm   D) 5 cm",
+      "enunciado": "Un bloque de 0,4 kg está unido a un resorte de rigidez 40 N/m. Pasa por 5 cm con velocidad 1,2 m/s. ¿Cuál es su amplitud? Datos: Resorte horizontal ideal, de masa despreciable y sin rozamiento. La derecha es positiva y el equilibrio fija el origen. La única fuerza horizontal sobre el bloque es la del resorte. 1 m = 100 cm. Alternativas: A) 12 cm   B) 13 cm   C) 17 cm   D) 5 cm",
       "respuesta": "B) 13 cm",
       "pasos": [
-        "Calculamos ambas energías en el estado conocido: energía cinética = 0,4 · (1,2)² / 2 = 0,288 J; energía del resorte = 40 · (0,05)² / 2 = 0,05 J.",
-        "Sumamos la energía mecánica: energía mecánica = 0,288 + 0,05 = 0,338 J.",
-        "En un extremo, toda la energía es elástica. Despejamos: A = √(2 · energía mecánica / k).",
-        "Convertimos la amplitud a centímetros: A = 100 · √(2 · 0,338 / 40) = 13 cm."
+        "El bloque se mueve y el resorte está deformado. Calculamos ambas energías porque contribuyen al mismo total: energía cinética = 0,4 · (1,2)² / 2 = 0,288 J; energía del resorte = 40 · (0,05)² / 2 = 0,05 J.",
+        "Ambas formas pertenecen al mismo sistema. Las sumamos para obtener la energía mecánica que se conserva durante la oscilación sin rozamiento: energía mecánica = 0,288 + 0,05 = 0,338 J.",
+        "En el extremo, el bloque se detiene un instante y toda la energía queda en el resorte. Esa deformación máxima es la amplitud; la despejamos: A = √(2 · energía mecánica / k).",
+        "La raíz da la amplitud en metros. La convertimos a centímetros para expresar cuánto puede separarse el bloque del equilibrio: A = 100 · √(2 · 0,338 / 40) = 13 cm."
       ]
     }
   ]
