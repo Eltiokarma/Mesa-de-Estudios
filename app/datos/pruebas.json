@@ -2064,6 +2064,30 @@
     "GV-E-UMBRAL": {
      "respaldo": "hipotesis",
      "describe": "Hipótesis: responde con la rapidez mínima de escape en el lanzamiento cuando se pide la rapidez final."
+    },
+    "OS11-R-SIN-MASA": {
+     "respaldo": "hipotesis",
+     "describe": "Omite el cambio de masa y conserva el período inicial"
+    },
+    "OS11-R-LINEAL": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica el período por la razón de masas, sin sacar su raíz"
+    },
+    "OS11-R-INVERSA": {
+     "respaldo": "hipotesis",
+     "describe": "Divide el período por la razón de masas en vez de usar su raíz"
+    },
+    "OS11-P-SIN-RAIZ": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica la duración por la razón longitud/gravedad sin sacar la raíz"
+    },
+    "OS11-P-INVIERTE-G": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica por la raíz del factor de gravedad en vez de dividir"
+    },
+    "OS11-P-SIN-LONGITUD": {
+     "respaldo": "hipotesis",
+     "describe": "Considera el cambio de gravedad y omite el de longitud"
     }
    },
    "pares": [

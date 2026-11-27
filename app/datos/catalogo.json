@@ -673,24 +673,26 @@
       "trigonometria.funciones-trigonometricas"
      ],
      "plantillas": [
+      "fis-oscilaciones",
       "mas",
       "mas-horaria"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/fisica/oscilaciones.js",
       "requiere": [
-       "/nucleo/kit/piezas/fis-resorte.js",
+       "/nucleo/kit/piezas/fis-estatica.js",
        "/nucleo/kit/piezas/ejes.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "aceleracion-al-centro": "La aceleración apunta al centro",
-       "graficas-mas": "La posición sigue un coseno",
-       "periodo-resorte": "El período no depende de A",
-       "pendulo": "El péndulo no mira la masa",
-       "energia-mas": "La energía se reparte, no cambia"
+       "ciclo-y-amplitud": "Medir un vaivén",
+       "aceleracion-al-centro": "El empuje del resorte",
+       "graficas-mas": "Un reloj para el movimiento",
+       "periodo-resorte": "El ritmo del bloque",
+       "pendulo": "El péndulo simple",
+       "energia-mas": "Energía durante el vaivén"
       },
-      "terminos": 34
+      "terminos": 56
      }
     },
     {
@@ -9847,6 +9849,30 @@
     "/plantillas/fis-mruv/papel.json"
    ]
   },
+  "fis-oscilaciones": {
+   "id": "fis-oscilaciones",
+   "titulo": "Movimiento armónico simple",
+   "formato": "predicciones",
+   "estado": "probada",
+   "version": "1.0.0",
+   "unidades": [
+    "fisica.oscilaciones"
+   ],
+   "url": "#/practica/fis-oscilaciones",
+   "ideas": [
+    "ciclo-y-amplitud",
+    "aceleracion-al-centro",
+    "graficas-mas",
+    "periodo-resorte",
+    "pendulo",
+    "energia-mas"
+   ],
+   "papel": "/plantillas/fis-oscilaciones/papel.json",
+   "archivos": [
+    "/plantillas/fis-oscilaciones/generador.js",
+    "/plantillas/fis-oscilaciones/papel.json"
+   ]
+  },
   "fis-parabolico": {
    "id": "fis-parabolico",
    "titulo": "Movimiento parabólico",
@@ -10792,7 +10818,8 @@
     "/plantillas/mas/index.html",
     "/plantillas/mas/motor.js",
     "/plantillas/mas/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "mas-horaria": {
    "id": "mas-horaria",
@@ -10808,7 +10835,8 @@
    "archivos": [
     "/plantillas/mas-horaria/generador.js",
     "/plantillas/mas-horaria/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "masa-energia": {
    "id": "masa-energia",

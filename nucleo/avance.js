@@ -129,6 +129,11 @@
     if (conservaEstudio(est, { de: 'fisica.gravitacion', a: 'fisica.gravitacion',
       estudiada: { marca: 'estudiadaGV', fecha: '2026-11-22',
         ideas: ['cuadrado-inverso', 'campo-gravitatorio', 'orbita-circular', 'leyes-de-kepler'] } })) cambio = true;
+    // 26 nov (etapa 11, Oscilaciones): las cinco ideas antiguas conservan sus ids con otra Predice;
+    // ciclo-y-amplitud es nueva. Se conserva el estudio anterior, sin regalar la idea nueva ni tocar el historial.
+    if (sinHuella(est, 'fisica.oscilaciones', { marca: 'prediccionOSC', ideas: ['aceleracion-al-centro', 'graficas-mas', 'periodo-resorte', 'pendulo', 'energia-mas'] })) cambio = true;
+    if (conservaEstudio(est, { de: 'fisica.oscilaciones', a: 'fisica.oscilaciones', estudiada: { marca: 'estudiadaOSC', fecha: '2026-11-26',
+      ideas: ['aceleracion-al-centro', 'graficas-mas', 'periodo-resorte', 'pendulo', 'energia-mas'] } })) cambio = true;
     return cambio;
   }
   const REHECHAS_E6 = [

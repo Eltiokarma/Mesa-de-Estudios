@@ -1101,6 +1101,22 @@ const V = {
       'GV-E-RESTA': (v0 - escape) / d.escalaRapidez, 'GV-E-SIN-GRAVEDAD': d.v0, 'GV-E-UMBRAL': escape / d.escalaRapidez } };
   },
 
+  // Oscilaciones (26 nov, etapa 11): dos pares en reserva. fis-oscilaciones no expone motor;
+  // se recalcula desde equilibrio estático y razones de períodos. Las pruebas propias usan balances y bisección.
+  'osc-01': d => {
+    if (![d.m1, d.e1, d.m2, d.g].every(x => Number.isFinite(x) && x > 0)) throw new Error('Los datos deben ser positivos');
+    const k = d.m1 * d.g / d.e1, T1 = 2 * PI * Math.sqrt(d.m1 / k), razon = d.m2 / d.m1;
+    return { correcta: 2 * PI * Math.sqrt(d.m2 / k), errores: {
+      'OS11-R-SIN-MASA': T1, 'OS11-R-LINEAL': T1 * razon, 'OS11-R-INVERSA': T1 / razon } };
+  },
+  'osc-02': d => {
+    if (![d.N1, d.dt1, d.N2, d.kL, d.kG].every(x => Number.isFinite(x) && x > 0)) throw new Error('Los datos deben ser positivos');
+    const base = d.dt1 / d.N1 * d.N2;
+    return { correcta: base * Math.sqrt(d.kL / d.kG), errores: {
+      'OS11-P-SIN-RAIZ': base * d.kL / d.kG, 'OS11-P-INVIERTE-G': base * Math.sqrt(d.kL * d.kG),
+      'OS11-P-SIN-LONGITUD': base / Math.sqrt(d.kG) } };
+  },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },
