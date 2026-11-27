@@ -99,17 +99,17 @@
   // Por qué no es la elegida: empieza por lo que el alumno vio bien; el código es el error que lleva a elegirla.
   function siFuera(elegida, real) {
     if (pura(elegida) && pura(real)) return elegida === 'elemento'
-      ? ['MA9', 'Bien: hay una sola clase de partícula. Pero cada partícula une átomos de elementos distintos: es compuesto.']
-      : ['MA9', 'Bien: hay una sola clase de partícula. Pero sus átomos son todos de una clase, aunque vayan pegados: es elemento.'];
+      ? ['MA9', 'Hay una sola clase de partícula, bien visto: es sustancia pura. Pero cada partícula une átomos de elementos distintos, y eso la hace compuesto; un elemento tendría átomos de un solo tipo.']
+      : ['MA9', 'Hay una sola clase de partícula, bien visto: es sustancia pura. Pero sus átomos son todos del mismo elemento, aunque vayan pegados de a dos o de a tres: es elemento, no compuesto.'];
     if (pura(elegida)) return real === 'homogenea'
-      ? ['MA10', 'Bien: se reparte parejo, en una sola fase. Pero hay más de una clase de partícula, así que es mezcla, no sustancia pura.']
-      : ['MA9', 'Bien: miraste las partículas. Pero hay más de una clase de partícula, sueltas, así que es mezcla, no sustancia pura.'];
+      ? ['MA10', 'Se reparte parejo, en una sola fase, bien visto. Pero verse parejo no la vuelve pura: hay más de una clase de partícula, así que es mezcla, como el agua con azúcar.']
+      : ['MA9', 'Miraste las partículas, bien. Pero hay más de una clase, sueltas y en zonas distintas, así que es mezcla: una sustancia pura tendría todas sus partículas iguales.'];
     if (pura(real)) return real === 'compuesto'
-      ? ['MA9', 'Bien: viste dos clases de átomo. Pero van unidos en partículas todas iguales, así que hay una sola clase de partícula.']
-      : ['MA9', 'Bien: viste partículas de varios átomos. Pero todas son iguales, así que hay una sola clase de partícula.'];
+      ? ['MA9', 'Viste dos clases de átomo, bien. Pero van unidos dentro de cada partícula, y todas las partículas son iguales: hay una sola clase, así que no es mezcla sino compuesto.']
+      : ['MA9', 'Para ser mezcla haría falta más de una clase de partícula, y aquí todas son iguales, con átomos de un mismo elemento. Juntar varios átomos iguales no cambia la clase.'];
     return elegida === 'homogenea'
-      ? ['QM-HOMO', 'Bien: hay más de una clase de partícula. Pero forman zonas distintas, con un borde entre ellas, así que hay dos fases.']
-      : ['QM-HETERO', 'Bien: hay más de una clase de partícula. Pero se reparten juntas en una sola zona, sin bordes, así que hay una fase.'];
+      ? ['QM-HOMO', 'Hay más de una clase de partícula, bien: es mezcla. Pero forman zonas distintas con un borde entre ellas, así que hay dos fases o más; homogénea sería una sola zona pareja.']
+      : ['QM-HETERO', 'Hay más de una clase de partícula, bien: es mezcla. Pero se reparten juntas en una sola zona, sin bordes, así que hay una sola fase; heterogénea tendría zonas separadas por un borde.'];
   }
   function alternativasClase(real, rng) {
     const errores = Object.keys(NOMBRE).filter(k => k !== real).map(k => {
@@ -282,10 +282,10 @@
   const FORMADA = { el: 'Una mezcla de elementos solamente', co: 'Una mezcla de compuestos solamente', am: 'Una mezcla de elementos y compuestos', uno: 'Un compuesto de varios elementos' };
   const formadaDe = fs => { const t = fs.map(x => elementosDe(x).length === 1); return t.every(Boolean) ? 'el' : t.every(x => !x) ? 'co' : 'am'; };
   const SI_FORMADA = {
-    el: ['AQ-solo-elementos', 'Bien: viste elementos en la lista. Pero las fórmulas de dos símbolos o más son compuestos.'],
-    co: ['AQ-solo-compuestos', 'Bien: viste compuestos en la lista. Pero las fórmulas de un solo símbolo son elementos.'],
-    am: ['AQ-elementos-y-compuestos', 'Bien: revisaste cada fórmula. Pero aquí todas son de la misma clase, sin mezclar elementos y compuestos.'],
-    uno: ['MA9', 'Bien: tiene varios elementos. Pero están en sustancias distintas y sueltas: es una mezcla, no un compuesto.'],
+    el: ['AQ-solo-elementos', 'Sería así si cada fórmula tuviera un solo símbolo. Pero una fórmula de dos símbolos o más une átomos de elementos distintos, y eso es un compuesto.'],
+    co: ['AQ-solo-compuestos', 'Sería así si todas las fórmulas tuvieran dos símbolos o más. Pero una fórmula de un solo símbolo, como O₂, tiene átomos de un solo elemento: es un elemento.'],
+    am: ['AQ-elementos-y-compuestos', 'Sería así si hubiera fórmulas de un solo símbolo y también de varios. Pero aquí todas son del mismo tipo, así que la mezcla no junta elementos con compuestos.'],
+    uno: ['MA9', 'Tiene varios elementos, cierto. Pero no están unidos en una sola clase de partícula: cada fórmula es una sustancia aparte, y varias sustancias sueltas forman una mezcla.'],
   };
   function tFormada(rng) {
     const m = rng.elegir(MEZCLAS), real = formadaDe(m.formulas);
@@ -330,13 +330,13 @@
     const ps = rng.elegir(SISTEMAS), { F, C } = contarSistema(ps);
     const dis = ps.some(p => p === 'sal' || p === 'azucar'), hielo = ps.includes('hielo');
     const cand = [];
-    if (dis) cand.push([F + 1, C, 'QM-FASE-DISUELTO', `Bien los componentes. Pero lo disuelto no forma otra fase: queda repartido dentro del agua. Así contaste ${F + 1} fases.`]);
-    if (hielo) cand.push([F, C + 1, 'MA9', `Bien las fases. Pero el hielo es agua: el mismo componente en otra fase. Así contaste ${C + 1} componentes.`]);
-    cand.push([F, C - 1, 'QM-SIN-AGUA', `Bien las fases. Pero el agua también es una sustancia del sistema: un componente más. Así contaste ${C - 1}.`]);
-    if (dis && hielo) cand.push([F + 1, C + 1, 'QM-FASE-DISUELTO', 'Bien la idea de contar zonas y sustancias. Pero lo disuelto no es otra fase y el hielo no es otro componente.']);
-    cand.push([C, F, 'QM-INVIERTE', 'Bien los dos números, pero al revés: las fases son zonas con borde, y los componentes, sustancias.']);
-    cand.push([F, F, 'QM-COMP-FASES', `Bien las fases. Pero los componentes son las sustancias, no las zonas: no son ${F}.`]);
-    cand.push([C, C, 'QM-COMP-FASES', `Bien los componentes. Pero las fases son las zonas con borde, no las sustancias: no son ${C}.`]);
+    if (dis) cand.push([F + 1, C, 'QM-FASE-DISUELTO', `Los componentes están bien. Pero lo disuelto no forma otra fase, porque se reparte entre el agua y no hace una zona con borde. Así contaste ${F + 1} fases.`]);
+    if (hielo) cand.push([F, C + 1, 'MA9', `Las fases están bien. Pero el hielo es agua sólida, H₂O: forma otra fase porque tiene borde, pero es el mismo componente. Así contaste ${C + 1} componentes.`]);
+    cand.push([F, C - 1, 'QM-SIN-AGUA', `Las fases están bien. Pero el agua también es una sustancia del sistema, aunque sea la que lo contiene todo: es un componente más. Así contaste ${C - 1}.`]);
+    if (dis && hielo) cand.push([F + 1, C + 1, 'QM-FASE-DISUELTO', 'La idea de contar zonas y sustancias está bien. Pero lo disuelto no forma zona aparte, así que no es otra fase, y el hielo es agua, así que no es otro componente.']);
+    cand.push([C, F, 'QM-INVIERTE', 'Los dos números están bien, pero al revés. Las fases son las zonas con borde que se ven; los componentes son las sustancias distintas, aunque estén disueltas.']);
+    cand.push([F, F, 'QM-COMP-FASES', `Las fases están bien. Pero los componentes son las sustancias, no las zonas: en una misma zona puede haber varias sustancias. No son ${F}.`]);
+    cand.push([C, C, 'QM-COMP-FASES', `Los componentes están bien. Pero las fases son las zonas con borde, no las sustancias: lo disuelto comparte zona con el agua. No son ${C}.`]);
     const errores = cand.filter(([f, c]) => f !== F || c !== C).map(([f, c, id, ex]) => ({ clave: `fc:${f}|${c}`, texto: fc(f, c), ...err(id, ex) }));
     const fases = ['el agua líquida', ...ps.filter(p => PARTES[p].fase).map(p => ({ hielo: 'el hielo', aceite: 'el aceite', arena: 'la arena' })[p])];
     const comps = ['agua', ...ps.filter(p => PARTES[p].comp).map(p => ({ sal: 'sal', azucar: 'azúcar', aceite: 'aceite', arena: 'arena' })[p])];
@@ -389,18 +389,18 @@
     const mol = xs.filter(x => x.mol).length;
     const e = [];
     if (pide === 'mezclas') {
-      e.push(h(n - homo, 'MA10', `Bien las mezclas que se ven por partes. Pero lo parejo también puede ser mezcla: así contaste ${n - homo}.`));
-      e.push(h(n + comp, 'MA9', `Bien las mezclas. Pero un compuesto une átomos distintos en una sola clase de partícula: no es mezcla. Así contaste ${n + comp}.`));
+      e.push(h(n - homo, 'MA10', `Las mezclas que se ven por partes están bien. Pero lo que se ve parejo también puede ser mezcla, como el aire o el bronce: así contaste ${n - homo}.`));
+      e.push(h(n + comp, 'MA9', `Las mezclas están bien. Pero un compuesto une átomos distintos dentro de una sola clase de partícula, así que es sustancia pura y no mezcla. Así contaste ${n + comp}.`));
     } else if (pide === 'compuestos') {
-      e.push(h(n + mol, 'MA9', `Bien los compuestos. Pero O₂, O₃ o N₂ tienen una sola clase de átomo: son elementos. Así contaste ${n + mol}.`));
-      e.push(h(n + homo, 'MA10', `Bien los compuestos. Pero una mezcla pareja no es una sustancia pura: así contaste ${n + homo}.`));
+      e.push(h(n + mol, 'MA9', `Los compuestos están bien. Pero O₂, O₃ o N₂ tienen una sola clase de átomo, aunque junten varios: son elementos. Así contaste ${n + mol}.`));
+      e.push(h(n + homo, 'MA10', `Los compuestos están bien. Pero una mezcla pareja, como el aire, tiene varias clases de partícula: no es sustancia pura ni compuesto. Así contaste ${n + homo}.`));
     } else {
-      e.push(h(n - mol, 'MA9', `Bien los elementos de un átomo suelto. Pero O₂, O₃ o N₂ también son elementos, aunque tengan varios átomos: así contaste ${n - mol}.`));
-      e.push(h(n + xs.filter(x => x.clase === 'homogenea' && /cobre|hierro/.test(x.dato)).length, 'MA10', 'Bien los elementos. Pero una aleación de dos metales es una mezcla, no un elemento.'));
+      e.push(h(n - mol, 'MA9', `Los elementos de átomos sueltos están bien. Pero O₂, O₃ o N₂ también son elementos: tienen varios átomos, todos del mismo tipo. Así contaste ${n - mol}.`));
+      e.push(h(n + xs.filter(x => x.clase === 'homogenea' && /cobre|hierro/.test(x.dato)).length, 'MA10', 'Los elementos están bien. Pero una aleación junta dos metales distintos, como cobre y estaño, así que tiene dos clases de partícula: es mezcla, no elemento.'));
     }
-    e.push(h(n + 1, 'QM-CONTEO', `Bien el criterio. Pero sobra uno: revisa cada material con su dato. Así son ${n + 1}.`));
-    e.push(h(n - 1, 'QM-CONTEO', `Bien el criterio. Pero falta uno: revisa cada material con su dato. Así son ${n - 1}.`));
-    e.push(h(n + 2, 'QM-CONTEO', `Bien el criterio. Pero sobran dos: revisa cada material con su dato. Así son ${n + 2}.`));
+    e.push(h(n + 1, 'QM-CONTEO', `El criterio está bien, pero sobra uno: revisa cada material con su dato y cuenta sus clases de partícula. Así son ${n + 1}.`));
+    e.push(h(n - 1, 'QM-CONTEO', `El criterio está bien, pero falta uno: revisa cada material con su dato y cuenta sus clases de partícula. Así son ${n - 1}.`));
+    e.push(h(n + 2, 'QM-CONTEO', `El criterio está bien, pero sobran dos: revisa cada material con su dato y cuenta sus clases de partícula. Así son ${n + 2}.`));
     const errores = e.filter(x => x.valor !== n && x.valor > 0 && x.valor <= 5);
     const alternativas = P.armar({ correcta: n, errores, rng, texto: x => String(x) });
     const cuales = xs.filter(PIDE[pide].es).map(x => x.corto);
@@ -412,8 +412,8 @@
       respuesta: { valor: n, unidad: '' },
       solucion: [
         [pide === 'mezclas' ? 'Es mezcla lo que tiene varias clases de partícula, se vea parejo o no.' : pide === 'compuestos' ? 'Es compuesto lo que tiene una sola clase de partícula, con átomos distintos unidos.' : 'Es elemento lo que tiene átomos de una sola clase, sueltos o en moléculas como O₂.'],
-        [`Lo cumplen ${lista(cuales)}.`],
-        [`En total son ${n}.`],
+        [n === 1 ? `Solo lo cumple ${lista(cuales)}.` : `Lo cumplen ${lista(cuales)}.`],
+        [n === 1 ? 'En total es 1.' : `En total son ${n}.`],
       ],
       _datos: { tipo: 'contar', nivel: 3, pide, lista: ids },
     };

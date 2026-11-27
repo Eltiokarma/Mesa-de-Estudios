@@ -119,3 +119,135 @@ dos tandas de `siFuera` de la idea 1): cuadran con el valor de cada distractor, 
 **Comprobación:** `materia-y-energia.test.js` 35/35; práctica (las siete plantillas) 227/227; validador con `calidad: 2`
 en 200 semillas: 0 hallazgos; `papel-reglas.js`: nada de estas plantillas; `papel-generador.js --revisar`: al día.
 `teoria.test.js` (última corrida): 163 de 164; la unidad pasa, y la única falla es `quimica/mol-y-composicion.js`, otra unidad en obra. La prueba del glosario, que en una corrida anterior fallaba por `app/datos/glosario/*.json` desfasado, ya pasa.
+## Segunda pasada: explica (27 nov)
+
+Gerson vio la unidad en la app y dijo que los textos seguían cortos y sin mucho significado. Esta pasada sigue el punto 4
+de `docs/metodo/unidad/redaccion-delegada.md` («Explica, no solo pules») con los topes nuevos. Solo texto: ningún
+número, respuesta, distractor, dato ni dibujo cambió; `calidad: 2` se queda.
+
+### Qué se cambió, por tipo
+
+1. **Reglas (las seis).** Cada una dice ahora qué es el término nuevo, por qué vale y un caso: la «clase de partícula»
+   con el H₂O y el agua con azúcar que engaña a la vista (idea 1); la barra de oro partida (2); el agua que hierve y sigue
+   siendo H₂O (3); por qué el termómetro no sube en un cambio de estado (4); por qué unos miligramos dan tanta energía
+   (5); qué es la vida media y la serie 16 → 8 → 4 (6). La regla 6 presenta m₀.
+2. **Recuadro de la idea 1.** Ya no son rótulos sueltos: la primera línea dice qué es una fase («fase: zona que se ve
+   pareja, con un borde»), y debajo van homogénea y heterogénea y qué cuenta como componente.
+3. **«Vale si» (seis).** Cada condición dice además qué pasa si no se cumple: el agua con hielo que parece mezcla (1), el
+   método que deja juntos los componentes (2), el aspecto que engaña (3), el agua que hierve antes en Juliaca (4), la
+   energía que sale demasiado grande con la masa entera o en gramos (5), n que sale mal con días y semanas (6).
+4. **`siFuera` de las seis predicciones y de casi todas las alternativas de «Ahora tú».** Cada una nombra el razonamiento,
+   dice por qué falla y qué había que mirar. Las de la idea 1 y la idea 3 dependen ahora de la respuesta correcta (antes,
+   «Viste partículas de varios átomos, bien» salía también para el oro y el diamante, y «Viste elementos en la lista»
+   para el gas de encendedor, que no tiene ninguno). Los métodos de separación dicen qué propiedad sí servía.
+5. **Pasos de «Así se resuelve» y soluciones.** «Reemplazo los datos en la fórmula» pasó a decir qué se multiplica o se
+   divide y por qué (cada mL tiene tantos gramos; cada gramo pide tantas calorías). Las soluciones dicen el porqué del
+   resultado. Fases y componentes, y el único material de una lista, se arman con dos funciones nuevas (`cuentaSistema`,
+   `cuatroPorque`): antes, la solución de fases hablaba del hielo aunque el vaso no tuviera hielo.
+6. **Lee y Mira.** La tarjeta de la lupa define «clase de partícula»; la del calor específico ya no cuelga el «Por eso»
+   del aceite; los pasos de Mira dicen el porqué (el triple de masa en el triple de volumen; el tramo plano más largo;
+   ninguna reacción cambia un elemento).
+7. **Ejemplos.** Se completaron los de un solo renglón seco (idea 1: 1, 3, 4 y 5; idea 2: 2, 7, 8, 11, 13 y 14; idea 3:
+   12; idea 4: 7, 10 y 13).
+8. **Glosario.** Los `simple` llevan ahora un caso de la vida del alumno (la limonada, el mate, la chicha, el corcho que
+   flota) y se agregó a «estado de agregación». No se pudo agregar a compuesto, molécula, componente ni a los dos tipos
+   de mezcla: el validador pide de 2 a 4 términos con `simple` por idea, y la idea 1 ya tiene cuatro.
+9. **Práctica.** Las 194 explicaciones de `sustancias-mezclas`, `densidad-propiedades`, `cambios-materia`,
+   `calor-sensible-latente`, `masa-energia` y `vida-media` dejaron de abrir con «Bien:» (lo que había anotado el
+   verificador) y dicen el porqué. Arreglos de concordancia: «Lo cumplen la sal de mesa. En total son 1.» (ahora «Solo
+   lo cumple… En total es 1.»), «el temperatura de fusión», «el longitud» y «la 3.ª parte» (ahora «la tercera parte»).
+
+### Antes y después
+
+- **Regla, idea 1.** *Antes:* «Una sustancia pura tiene una sola clase de partícula, y una mezcla tiene varias. Si todos
+  los átomos de la sustancia pura son de un mismo elemento, es un elemento; si une átomos distintos, es un compuesto.»
+  *Después:* «Una clase de partícula es un tipo de molécula o de átomo, como el H₂O. Una sustancia pura tiene una sola
+  clase, y una mezcla tiene varias. El aspecto engaña: el agua con azúcar se ve como agua sola y es mezcla. Si una
+  sustancia pura tiene un solo elemento, es un elemento; si une átomos distintos, es un compuesto.» Y el recuadro pasó
+  de «homogénea: 1 fase · heterogénea: 2 fases o más» a «fase: zona que se ve pareja, con un borde · homogénea: 1 fase;
+  heterogénea: 2 o más · componentes: cuántas sustancias distintas hay».
+- **Regla, idea 4.** *Antes:* «Sin cambio de estado, el calor sube la temperatura, y se llama calor sensible. Durante un
+  cambio de estado, la temperatura no cambia y el calor se gasta en el cambio: es el calor latente.» *Después:* «Sin
+  cambio de estado, el calor sube la temperatura y se llama calor sensible: depende de la masa, del calor específico y
+  de cuánto sube. Durante un cambio de estado, como fundir o hervir, la temperatura no cambia aunque entre calor, porque
+  ese calor se gasta en soltar las partículas unas de otras: es el calor latente.»
+- **Condición, idea 6.** *Antes:* «Vale si el tiempo t y la vida media están en la misma unidad. Lo desintegrado es
+  m₀ − m…» *Después:* «Vale si el tiempo t y la vida media están en la misma unidad; si uno va en días y el otro en
+  semanas, n sale mal. Lo desintegrado es m₀ − m…»
+- **Alternativa de la predicción, idea 1** (agua con hielo, «Una mezcla, porque se ven dos partes»). *Antes:* «Se ven
+  dos partes, bien visto: son dos fases. Sería mezcla si hubiera dos clases de partícula.» *Después:* «Se ven dos partes,
+  bien visto, pero eso cuenta fases y no sustancias. Para que fuera mezcla haría falta otra clase de partícula, y el
+  hielo también es H₂O: es agua en otra fase.»
+- **Alternativa de «Ahora tú», idea 2** (densidad con la lectura final de la probeta). *Antes:* «Dividiste la masa, bien.
+  El volumen es lo que subió el agua, no la lectura final.» *Después:* «Dividiste la masa, bien, pero entre la lectura
+  final de la probeta. Esa lectura incluye los 50 mL de agua que ya había, y el volumen del objeto es solo lo que subió.»
+- **Solución de «Ahora tú», idea 1** (de qué está hecho el aire húmedo). *Antes:* «N₂ y O₂: elementos; CO₂ y H₂O:
+  compuestos.» *Después:* «N₂ y O₂ son elementos, porque cada fórmula tiene un solo símbolo; CO₂ y H₂O son compuestos,
+  porque cada fórmula tiene dos símbolos o más. Como son sustancias distintas y sueltas, juntas forman una mezcla.»
+
+### Para el auditor
+
+- **«Clase de partícula = tipo de molécula o de átomo»** (regla 1, como el ejemplo del método) no nombra los iones: la
+  sal de mesa tiene Na⁺ y Cl⁻ y es una sola sustancia. La unidad ya trata la sal como compuesto y el agua salada como
+  «agua e iones»; conviene que el auditor decida si la regla debe decir «de molécula, de átomo o de par de iones».
+- **Afirmaciones nuevas, ciertas pero sin fuente abierta en esta pasada:** el calor latente se gasta «en soltar las
+  partículas unas de otras»; hervir pide más que fundir «porque en el vapor las moléculas quedan muy separadas»; la
+  energía nuclear es «millones de veces mayor» que la química para la misma masa; «ninguna reacción química convierte un
+  elemento en otro»; una botella vacía y fría también se moja por fuera; el + 32 y el + 273 «corren el cero» y se
+  cancelan al restar; el agua destilada es pura porque al destilarla «se le quitó lo que tenía disuelto».
+- **Ejemplo 9 de la idea 3** (huevo frito, «las proteínas de la clara se transforman en otras»): no se tocó; la
+  desnaturalización se enseña a veces como cambio químico y a veces como físico. Que lo mire el auditor.
+- **Condiciones de las ideas 2 y 4:** siguen cargando una frase que no es condición (los métodos de separación; la
+  lectura de un punto en K y °F). Se dejaron, con su consecuencia agregada.
+- **Glosario de la app:** `app/datos/glosario/quimica.json` queda desfasado hasta que la sesión corra `npm run catalogo`;
+  mientras tanto falla la prueba «glosario … archivos de la app al día» de `teoria.test.js`, como prevé el método.
+- `node herramientas/papel-generador.js` sobre las seis plantillas: los `papel.json` no cambiaron (sus problemas no
+  traen las explicaciones de alternativas) y `--revisar` dice «al día». `papel-reglas.js`: nada de estas plantillas.
+
+### Comprobación (27 nov)
+
+- `contenido/teoria/quimica/materia-y-energia.test.js`: 35 pasan, 0 fallan.
+- `contenido/teoria/teoria.test.js`: 163 pasan; falla solo la del glosario de la app (falta `npm run catalogo`).
+- Validador de `calidad: 2` (`Teoria.problemas`, 200 semillas): 0 hallazgos.
+- Práctica (`materia-energia`, `sustancias-mezclas`, `densidad-propiedades`, `cambios-materia`,
+  `calor-sensible-latente`, `masa-energia`, `vida-media`): 227 pasan, 0 fallan.
+- `node herramientas/ecuaciones-ancho.js quimica.materia-y-energia` (servidor propio en el puerto 4261, ya cerrado): 0
+  no caben y los mismos 15 cortes después de «=» o «;» que ya estaban, todos en ecuaciones o datos que esta pasada no
+  tocó.
+
+## Verificación de la segunda pasada (27 nov)
+
+Verificador de cierre. Se leyeron todas las oraciones nuevas de esta pasada (teoría en 60 semillas por idea y las seis
+plantillas en 120 por idea, contra HEAD) y se resolvieron las notas.
+
+**Datos, opciones y respuestas contra HEAD (200 semillas por idea, más las 500 a 505):** iguales en «Ahora tú», «Así se
+resuelve», Predice, Mira y los 90 ejemplos, y en las seis plantillas. Lo único que cambia fuera del texto corrido es el
+recuadro de la regla 1, que pasó de rótulos a frases (lo pide el método), y tres ejemplos de la idea 1 cuya solución se
+partió en dos pasos.
+
+**Corregido (con prueba que falla con la versión del redactor, en `materia-y-energia.test.js`):**
+- **Regla 1, «clase de partícula».** «Un tipo de molécula o de átomo» dejaba fuera la sal de mesa, que la unidad cuenta
+  como una sola clase y sustancia pura (y el agua salada, como «agua e iones de la sal»). Ahora: «Una clase de partícula
+  es un tipo de molécula, de átomo o de par de iones, como el H₂O o el NaCl. Una sustancia pura tiene una sola clase: es
+  elemento si tiene un solo elemento, y compuesto si une varios. Una mezcla tiene varias, aunque se vea pareja: el agua
+  con azúcar parece agua sola y es mezcla.» (59 palabras; el tope es 60.)
+
+**Decidido por la sesión, Gerson revisa después:**
+- **Ejemplo 9 de la idea 3 (huevo frito).** Se deja como cambio químico, que es como lo enseñan y lo preguntan los
+  exámenes escolares; se precisa el porqué: «las proteínas de la clara se deshacen y se unen entre ellas de otra forma, y
+  forman algo distinto».
+
+**Confirmado (cierto en química escolar):** el calor latente se gasta en separar las partículas; hervir el agua pide
+540 cal/g, casi siete veces lo de fundir (80), porque en el vapor quedan muy separadas; fundir pide más de cuatro veces
+lo que calentar 18 °C; la energía nuclear por masa es millones de veces la química (fisión ≈ 8 × 10¹³ J/kg contra
+≈ 4,6 × 10⁷ J/kg del gas); un balón de 10 kg da unos 4,6 × 10⁸ J; ninguna reacción química cambia un elemento; una
+botella vacía y fría también se moja por fuera; el + 32 y el + 273 solo corren el cero y se cancelan al restar dos
+lecturas; el agua destilada es pura porque se le quitó lo disuelto; Juliaca a 87 °C. Las condiciones de las ideas 2 y 4
+con una segunda oración se dejan (mismo criterio del 26 nov).
+
+**Comprobación:** `materia-y-energia.test.js` 36/36; práctica (siete plantillas) en verde; validador con `calidad: 2`
+en 200 semillas: 0; `papel-generador.js --revisar`: al día; `papel-reglas.js`: nada de estas plantillas (marca solo
+`quimica-conceptos p2`, compartida y sin tocar). `teoria.test.js`: 163 de 164; la única falla,
+«glosario … archivos de la app al día», espera a `npm run catalogo`.
+
+Archivos de esta verificación: `contenido/teoria/quimica/materia-y-energia.js`, `contenido/teoria/quimica/materia-y-energia.test.js`.

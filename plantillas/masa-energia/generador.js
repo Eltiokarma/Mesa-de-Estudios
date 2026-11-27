@@ -75,8 +75,8 @@
   const J = x => `${cien(x)} J`;
   // Los dos errores al elevar c: solo la potencia (3 × 10¹⁶) o el 3 por 2 (6 × 10¹⁶).
   const erroresC2 = (kg, unidad = J, conv = x => x) => [
-    e(conv(kg * 3e16), 'QM-C2-SOLO-POTENCIA', `Bien la masa en kg. Pero al elevar 3 × 10⁸ se eleva también el 3: es 9 × 10¹⁶, no 3 × 10¹⁶. Así sale ${unidad(conv(kg * 3e16))}.`),
-    e(conv(kg * 6e16), 'QM-C2-DOBLE', `Bien la masa en kg. Pero elevar al cuadrado es 3 × 3 = 9, no 3 × 2: c² = 9 × 10¹⁶. Así sale ${unidad(conv(kg * 6e16))}.`),
+    e(conv(kg * 3e16), 'QM-C2-SOLO-POTENCIA', `La masa en kg está bien. Pero al elevar 3 × 10⁸ al cuadrado se eleva todo, también el 3: (3 × 10⁸)² = 9 × 10¹⁶, no 3 × 10¹⁶. Así sale ${unidad(conv(kg * 3e16))}.`),
+    e(conv(kg * 6e16), 'QM-C2-DOBLE', `La masa en kg está bien. Pero elevar al cuadrado es multiplicar el número por sí mismo, 3 × 3 = 9, no 3 × 2: c² = 9 × 10¹⁶. Así sale ${unidad(conv(kg * 6e16))}.`),
   ];
 
   // ---- energia ----
@@ -86,10 +86,10 @@
   function tEnergia(rng) {
     const [x, u] = rng.elegir(MASAS), kg = limpio(u === 'mg' ? x / 1e6 : x / 1e3), E = limpio(kg * C2);
     const errores = [
-      e(kg * 1000 * C2, 'QU1-' + (u === 'mg' ? 'mg-como-g' : 'g-como-kg'), `Bien multiplicar por c² = 9 × 10¹⁶. Pero ${u === 'mg' ? `${f(x)} mg son ${cien(kg)} kg: dividiste entre 1000 una sola vez` : `${f(x)} g no son ${f(x)} kg`}. Así sale ${J(kg * 1000 * C2)}.`),
-      e(kg / 1000 * C2, 'QU1-pasa-de-mas', `Bien multiplicar por c². Pero pasaste a kg de más: ${f(x)} ${u} son ${cien(kg)} kg. Así sale ${J(kg / 1000 * C2)}.`),
+      e(kg * 1000 * C2, 'QU1-' + (u === 'mg' ? 'mg-como-g' : 'g-como-kg'), `Multiplicar por c² = 9 × 10¹⁶ está bien, y la masa tiene que ir en kg para que salgan joules. Pero ${u === 'mg' ? `${f(x)} mg son ${cien(kg)} kg: dividiste entre 1000 una sola vez` : `${f(x)} g no son ${f(x)} kg`}. Así sale ${J(kg * 1000 * C2)}.`),
+      e(kg / 1000 * C2, 'QU1-pasa-de-mas', `Multiplicar por c² está bien. Pero al pasar a kg dividiste de más, y la masa quedó mil veces chica: ${f(x)} ${u} son ${cien(kg)} kg. Así sale ${J(kg / 1000 * C2)}.`),
       ...erroresC2(kg),
-      e(kg * 1000 * 3e16, 'QU1-' + (u === 'mg' ? 'mg-como-g' : 'g-como-kg'), `Bien la fórmula. Pero hay dos tropiezos: ${f(x)} ${u} son ${cien(kg)} kg, y c² es 9 × 10¹⁶, no 3 × 10¹⁶. Así sale ${J(kg * 1000 * 3e16)}.`),
+      e(kg * 1000 * 3e16, 'QU1-' + (u === 'mg' ? 'mg-como-g' : 'g-como-kg'), `La fórmula está bien, pero hay dos tropiezos: ${f(x)} ${u} son ${cien(kg)} kg, y al elevar al cuadrado también se eleva el 3, así que c² es 9 × 10¹⁶, no 3 × 10¹⁶. Así sale ${J(kg * 1000 * 3e16)}.`),
     ];
     return {
       variables: VARS_E, enunciado: ['En un proceso nuclear desaparecen ', v('dm', `${f(x)} ${u}`), ' de masa.'],
@@ -110,11 +110,11 @@
     const E = rng.elegir(ENERGIAS), kg = limpio(E / C2), g = limpio(kg * 1000);
     const G = x => `${cien(x)} g`;
     const errores = [
-      e(kg, 'QU1-kg-como-g', `Bien dividir entre c² = 9 × 10¹⁶. Pero eso sale en kg; falta pasarlo a gramos. Así queda ${G(kg)}.`),
-      e(g * 1000, 'QU1-g-como-mg', `Bien dividir entre c². Pero ${cien(kg)} kg son ${G(g)}: multiplicaste por 1000 dos veces. Así queda ${G(g * 1000)}.`),
-      e(E / 3e16 * 1000, 'QM-C2-SOLO-POTENCIA', `Bien despejar Δm = E / c². Pero c² es 9 × 10¹⁶, no 3 × 10¹⁶: también se eleva el 3. Así queda ${G(E / 3e16 * 1000)}.`),
-      e(E / 6e16 * 1000, 'QM-C2-DOBLE', `Bien despejar Δm = E / c². Pero 3² es 9, no 6: c² = 9 × 10¹⁶. Así queda ${G(E / 6e16 * 1000)}.`),
-      e(E / 3e16, 'QU1-kg-como-g', `Bien despejar Δm = E / c². Pero hay dos tropiezos: c² es 9 × 10¹⁶, no 3 × 10¹⁶, y el resultado sale en kg. Así queda ${G(E / 3e16)}.`),
+      e(kg, 'QU1-kg-como-g', `Dividir entre c² = 9 × 10¹⁶ está bien. Pero con la energía en joules, la masa sale en kg, y piden gramos: falta multiplicar por 1000. Así queda ${G(kg)}.`),
+      e(g * 1000, 'QU1-g-como-mg', `Dividir entre c² está bien. Pero para pasar de kg a gramos se multiplica por 1000 una sola vez: ${cien(kg)} kg son ${G(g)}. Así queda ${G(g * 1000)}.`),
+      e(E / 3e16 * 1000, 'QM-C2-SOLO-POTENCIA', `Despejar Δm = E / c² está bien. Pero al elevar 3 × 10⁸ al cuadrado también se eleva el 3: c² es 9 × 10¹⁶, no 3 × 10¹⁶. Así queda ${G(E / 3e16 * 1000)}.`),
+      e(E / 6e16 * 1000, 'QM-C2-DOBLE', `Despejar Δm = E / c² está bien. Pero 3² es 3 × 3 = 9, no 3 × 2 = 6: c² = 9 × 10¹⁶. Así queda ${G(E / 6e16 * 1000)}.`),
+      e(E / 3e16, 'QU1-kg-como-g', `Despejar Δm = E / c² está bien, pero hay dos tropiezos: c² es 9 × 10¹⁶, porque también se eleva el 3, y el resultado sale en kg, no en gramos. Así queda ${G(E / 3e16)}.`),
     ];
     return {
       variables: { E: va('energía que sale', 'energía'), x: va('masa que desapareció (lo que se pide)', 'masa') },
@@ -142,9 +142,9 @@
       falta: `La que falta: ${d4(falta)} g`, toda: `Toda la de antes: ${d4(antes)} g`, queda: `La que queda: ${d4(despues)} g`, nada: 'Ninguna: la masa no cambia',
     };
     const errores = [
-      { clave: 'masa:toda', texto: T.toda, ...err('QM-TODA-MASA', `Bien: la masa y la energía están ligadas. Pero solo la masa que falta se volvió energía; casi toda sigue ahí.`) },
-      { clave: 'masa:queda', texto: T.queda, ...err('QM-MASA-QUEDA', 'Bien buscar una masa en la reacción. Pero la que queda no se volvió energía: se usa la diferencia.') },
-      { clave: 'masa:nada', texto: T.nada, ...err('QM-MASA-IGUAL', 'Bien: en lo químico, la masa casi no cambia. Pero aquí antes y después hay masas distintas: falta un poco.') },
+      { clave: 'masa:toda', texto: T.toda, ...err('QM-TODA-MASA', `La masa y la energía están ligadas, cierto. Pero solo la masa que falta se volvió energía; casi toda la masa sigue ahí después, como materia.`) },
+      { clave: 'masa:queda', texto: T.queda, ...err('QM-MASA-QUEDA', 'Buscar una masa en la reacción está bien. Pero la que queda después sigue siendo materia y no se volvió energía: se usa la diferencia entre antes y después.') },
+      { clave: 'masa:nada', texto: T.nada, ...err('QM-MASA-IGUAL', 'En un cambio químico, la masa casi no cambia, cierto. Pero aquí es un proceso nuclear, y antes y después hay masas distintas: falta un poco, y eso es lo que se volvió energía.') },
     ];
     return {
       variables: { x: va('la masa que va en la fórmula (lo que se pide)', 'masa') },
@@ -166,10 +166,10 @@
   function tDefecto(rng) {
     const [antes, despues] = rng.elegir(DEFECTOS), dg = limpio(antes - despues), kg = limpio(dg / 1000), E = limpio(kg * C2);
     const errores = [
-      e(dg * C2, 'QU1-g-como-kg', `Bien la masa que falta, ${f(dg, 4)} g. Pero va en kg: ${f(dg, 4)} g son ${cien(kg)} kg. Así sale ${J(dg * C2)}.`),
-      e(kg / 1000 * C2, 'QU1-pasa-de-mas', `Bien la masa que falta. Pero pasaste a kg de más: ${f(dg, 4)} g son ${cien(kg)} kg. Así sale ${J(kg / 1000 * C2)}.`),
+      e(dg * C2, 'QU1-g-como-kg', `La masa que falta, ${f(dg, 4)} g, está bien. Pero va en kg para que la energía salga en joules: ${f(dg, 4)} g son ${cien(kg)} kg. Así sale ${J(dg * C2)}.`),
+      e(kg / 1000 * C2, 'QU1-pasa-de-mas', `La masa que falta está bien. Pero al pasar a kg dividiste de más, y la masa quedó mil veces chica: ${f(dg, 4)} g son ${cien(kg)} kg. Así sale ${J(kg / 1000 * C2)}.`),
       ...erroresC2(kg),
-      e(dg * 3e16, 'QU1-g-como-kg', `Bien la masa que falta. Pero hay dos tropiezos: ${f(dg, 4)} g son ${cien(kg)} kg, y c² es 9 × 10¹⁶, no 3 × 10¹⁶. Así sale ${J(dg * 3e16)}.`),
+      e(dg * 3e16, 'QU1-g-como-kg', `La masa que falta está bien, pero hay dos tropiezos: ${f(dg, 4)} g son ${cien(kg)} kg, y al elevar al cuadrado también se eleva el 3, así que c² es 9 × 10¹⁶. Así sale ${J(dg * 3e16)}.`),
     ];
     return {
       variables: VARS_E, enunciado: [`En una reacción nuclear, la masa pasa de ${f(antes, 4)} g a ${f(despues, 4)} g.`],
@@ -189,8 +189,8 @@
     const mg = rng.elegir([1, 2, 5, 10, 20, 50]), kg = mg / 1e6, E = limpio(kg * C2), n = Math.round(E / BALON);
     const B = x => `${f(x, 0)} balones`;
     const errores = [
-      e(Math.round(E * 1000 / BALON), 'QU1-mg-como-g', `Bien dividir entre la energía de un balón. Pero ${mg} mg son ${cien(kg)} kg: falta un factor 1000. Así salen ${B(Math.round(E * 1000 / BALON))}.`),
-      e(Math.round(E / 1000 / BALON), 'QU1-pasa-de-mas', `Bien dividir entre la energía de un balón. Pero ${mg} mg son ${cien(kg)} kg: pasaste de más. Así salen ${B(Math.round(E / 1000 / BALON))}.`),
+      e(Math.round(E * 1000 / BALON), 'QU1-mg-como-g', `Dividir entre la energía de un balón está bien. Pero un mg es una millonésima de kg: ${mg} mg son ${cien(kg)} kg, y te faltó un factor 1000. Así salen ${B(Math.round(E * 1000 / BALON))}.`),
+      e(Math.round(E / 1000 / BALON), 'QU1-pasa-de-mas', `Dividir entre la energía de un balón está bien. Pero un mg es una millonésima de kg: ${mg} mg son ${cien(kg)} kg, y dividiste de más. Así salen ${B(Math.round(E / 1000 / BALON))}.`),
       ...erroresC2(kg, B, x => Math.round(x / BALON)),
     ];
     return {

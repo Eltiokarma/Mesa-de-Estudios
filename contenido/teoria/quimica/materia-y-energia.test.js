@@ -518,3 +518,12 @@ test('idea 3, contar moléculas: el «te pasaste por una» dice de qué', () => 
   }
   assert.ok(vistos > 0);
 });
+
+// Verificador de la segunda pasada (27 nov): la regla definía «clase de partícula» como «un tipo de molécula o de átomo»,
+// pero la unidad cuenta la sal de mesa (Na⁺ y Cl⁻) como una sola clase y como sustancia pura: la definición nombra los
+// iones, y la sal sigue siendo sustancia pura en «Ahora tú».
+test('segunda pasada: la clase de partícula incluye la pareja de iones de la sal', () => {
+  const r = def.ideas[0].regla.texto;
+  assert.match(r, /clase de partícula es un tipo de molécula, de átomo o de par de iones/, r);
+  assert.match(r, /NaCl/, r);
+});

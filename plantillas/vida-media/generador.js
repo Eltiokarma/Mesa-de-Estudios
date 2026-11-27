@@ -96,11 +96,11 @@
   function tQueda(rng) {
     const s = rng.elegir(FUENTES), m0 = rng.elegir(s.masas), n = rng.entero(1, 3), m = m0 / 2 ** n;
     const errores = [
-      e(m0 / (2 * n), 'AQ-vm-divide-entre-2n', `Bien contar ${n} vidas medias. Pero cada una divide entre 2 lo que queda: entre 2${SUP[n]}, no entre 2 × ${n}. Así sale ${G(m0 / (2 * n))}.`),
-      e(m0 - m, 'AQ-vm-desintegrada', `Bien hacer las mitades. Pero ${G(m0 - m)} es lo que se desintegró; se pide lo que queda.`),
-      e(m0 / 2 ** (n + 1), 'AQ-vm-una-vida-de-mas', `Bien dividir entre 2 cada vez. Pero son ${n} vidas medias, no ${n + 1}. Así sale ${G(m0 / 2 ** (n + 1))}.`),
-      e(m0 / 2 ** (n - 1), 'AQ-vm-una-vida-de-menos', `Bien dividir entre 2 cada vez. Pero son ${n} vidas medias, no ${n - 1}. Así sale ${G(m0 / 2 ** (n - 1))}.`),
-      ...(n >= 3 ? [e(m0 / n, 'AQ-vm-divide-entre-n', `Bien contar ${n} vidas medias. Pero no se reparte en partes iguales: cada una se lleva la mitad de lo que queda. Así sale ${G(m0 / n)}.`)] : []),
+      e(m0 / (2 * n), 'AQ-vm-divide-entre-2n', `Contar ${n} vidas medias está bien. Pero cada una divide entre 2 lo que queda, así que se divide una vez por cada una: entre 2${SUP[n]}, no entre 2 × ${n}. Así sale ${G(m0 / (2 * n))}.`),
+      e(m0 - m, 'AQ-vm-desintegrada', `Las mitades están bien. Pero ${G(m0 - m)} es lo que se desintegró, lo que ya falta; se pide lo que queda en la muestra.`),
+      e(m0 / 2 ** (n + 1), 'AQ-vm-una-vida-de-mas', `Dividir entre 2 cada vez está bien. Pero son ${n} vidas medias, no ${n + 1}: divide el tiempo entre la vida media para contarlas. Así sale ${G(m0 / 2 ** (n + 1))}.`),
+      e(m0 / 2 ** (n - 1), 'AQ-vm-una-vida-de-menos', `Dividir entre 2 cada vez está bien. Pero son ${n} vidas medias, no ${n - 1}: divide el tiempo entre la vida media para contarlas. Así sale ${G(m0 / 2 ** (n - 1))}.`),
+      ...(n >= 3 ? [e(m0 / n, 'AQ-vm-divide-entre-n', `Contar ${n} vidas medias está bien. Pero la muestra no se reparte en partes iguales: cada vida media se lleva la mitad de lo que queda, así que cada vez se va menos. Así sale ${G(m0 / n)}.`)] : []),
     ];
     return {
       variables: usa('m0', 'n', 'm'), enunciado: [`${s.donde} `, v('m0', `${m0} g`), ` de ${s.nombre}.`],
@@ -118,12 +118,12 @@
   function tMasa(rng) {
     const s = rng.elegir(FUENTES), m0 = rng.elegir(s.masas), n = rng.entero(2, 4), t = limpio(n * s.vm), m = m0 / 2 ** n;
     const errores = [
-      e(m0 / (2 * n), 'AQ-vm-divide-entre-2n', `Bien contar ${n} vidas medias. Pero cada una divide entre 2 lo que queda: entre 2${SUP[n]}, no entre 2 × ${n}. Así sale ${G(m0 / (2 * n))}.`),
-      e(m0 / 2, 'AQ-vm-tiempo-como-una-vida', `Bien dividir entre 2. Pero en ${f(t)} años caben ${n} vidas medias de ${f(s.vm)} años, no una. Así sale ${G(m0 / 2)}.`),
-      e(m0 - m, 'AQ-vm-desintegrada', `Bien contar las vidas medias. Pero ${G(m0 - m)} es lo que se desintegró; se pide lo que queda.`),
-      e(m0 / 2 ** (n + 1), 'AQ-vm-una-vida-de-mas', `Bien dividir entre 2 cada vida media. Pero en ${f(t)} años caben ${n}, no ${n + 1}. Así sale ${G(m0 / 2 ** (n + 1))}.`),
-      e(m0 / 2 ** (n - 1), 'AQ-vm-una-vida-de-menos', `Bien dividir entre 2 cada vida media. Pero en ${f(t)} años caben ${n}, no ${n - 1}. Así sale ${G(m0 / 2 ** (n - 1))}.`),
-      e(m0 / n, 'AQ-vm-divide-entre-n', `Bien contar ${n} vidas medias. Pero no se reparte en partes iguales: cada una se lleva la mitad de lo que queda. Así sale ${G(m0 / n)}.`),
+      e(m0 / (2 * n), 'AQ-vm-divide-entre-2n', `Contar ${n} vidas medias está bien. Pero cada una divide entre 2 lo que queda, así que se divide una vez por cada una: entre 2${SUP[n]}, no entre 2 × ${n}. Así sale ${G(m0 / (2 * n))}.`),
+      e(m0 / 2, 'AQ-vm-tiempo-como-una-vida', `Dividir entre 2 está bien, pero eso vale para una sola vida media. En ${f(t)} años caben ${n} vidas medias de ${f(s.vm)} años, y hay que dividir una vez por cada una. Así sale ${G(m0 / 2)}.`),
+      e(m0 - m, 'AQ-vm-desintegrada', `Contar las vidas medias está bien. Pero ${G(m0 - m)} es lo que se desintegró, lo que ya falta; se pide lo que queda en la muestra.`),
+      e(m0 / 2 ** (n + 1), 'AQ-vm-una-vida-de-mas', `Dividir entre 2 cada vida media está bien. Pero en ${f(t)} años caben ${n}, no ${n + 1}: divide el tiempo entre la vida media para contarlas. Así sale ${G(m0 / 2 ** (n + 1))}.`),
+      e(m0 / 2 ** (n - 1), 'AQ-vm-una-vida-de-menos', `Dividir entre 2 cada vida media está bien. Pero en ${f(t)} años caben ${n}, no ${n - 1}: divide el tiempo entre la vida media para contarlas. Así sale ${G(m0 / 2 ** (n - 1))}.`),
+      e(m0 / n, 'AQ-vm-divide-entre-n', `Contar ${n} vidas medias está bien. Pero la muestra no se reparte en partes iguales: cada vida media se lleva la mitad de lo que queda, así que cada vez se va menos. Así sale ${G(m0 / n)}.`),
     ];
     return {
       variables: usa('m0', 't', 'th', 'n', 'm'), enunciado: [`${s.donde} `, v('m0', `${m0} g`), ` de ${s.nombre}.`],
@@ -145,11 +145,11 @@
     const queda = como === 'porcentaje' ? `el ${pc(100 * q)}` : como === 'parte' ? PARTE[n] : fr(q);
     const T = x => `${f(x)} ${s.u}`;
     const errores = [
-      e(2 ** n * s.vm, 'AQ-vm-multiplica-fraccion', `Bien usar la vida media. Pero ${2 ** n} es 2${SUP[n]}: hacen falta ${n} vidas medias, no ${2 ** n}. Así salen ${T(2 ** n * s.vm)}.`),
-      e((n - 1) * s.vm, 'AQ-vm-una-vida-de-menos', `Bien multiplicar por la vida media. Pero para llegar a 1/${2 ** n} hacen falta ${n} mitades. Así salen ${T((n - 1) * s.vm)}.`),
-      e((n + 1) * s.vm, 'AQ-vm-una-vida-de-mas', `Bien multiplicar por la vida media. Pero contaste una mitad de más: 1/${2 ** n} son ${n}. Así salen ${T((n + 1) * s.vm)}.`),
-      e(2 * (1 - q) * s.vm, 'AQ-vm-lineal', `Bien ver que se va perdiendo con el tiempo. Pero no al mismo ritmo: en cada vida media se va la mitad de lo que queda. Así salen ${T(2 * (1 - q) * s.vm)}.`),
-      e(s.vm / 2 ** n, 'AQ-vm-divide-vida-media', `Bien usar la fracción. Pero mientras menos queda, más tiempo pasó: se multiplica la vida media. Así salen ${T(s.vm / 2 ** n)}.`),
+      e(2 ** n * s.vm, 'AQ-vm-multiplica-fraccion', `Usar la vida media está bien. Pero ${2 ** n} es 2${SUP[n]}: llegar a 1/${2 ** n} es partir ${n} veces en dos, así que hacen falta ${n} vidas medias, no ${2 ** n}. Así salen ${T(2 ** n * s.vm)}.`),
+      e((n - 1) * s.vm, 'AQ-vm-una-vida-de-menos', `Multiplicar por la vida media está bien. Pero para llegar a 1/${2 ** n} hacen falta ${n} mitades: con ${n - 1} quedaría 1/${2 ** (n - 1)}. Así salen ${T((n - 1) * s.vm)}.`),
+      e((n + 1) * s.vm, 'AQ-vm-una-vida-de-mas', `Multiplicar por la vida media está bien. Pero contaste una mitad de más: 1/${2 ** n} son ${n} mitades, y con ${n + 1} quedaría 1/${2 ** (n + 1)}. Así salen ${T((n + 1) * s.vm)}.`),
+      e(2 * (1 - q) * s.vm, 'AQ-vm-lineal', `Se va perdiendo con el tiempo, cierto, pero no se pierde lo mismo cada vez: en cada vida media se va la mitad de lo que queda, así que se cuentan mitades. Así salen ${T(2 * (1 - q) * s.vm)}.`),
+      e(s.vm / 2 ** n, 'AQ-vm-divide-vida-media', `Usar la fracción está bien, pero dividiste la vida media. Mientras menos queda, más tiempo pasó, así que el tiempo es la vida media multiplicada por las mitades. Así salen ${T(s.vm / 2 ** n)}.`),
     ];
     const enunciado = c14 ? ['Un hueso hallado en una cueva de los Andes conserva ', v('m', queda), ' del carbono-14 que tenía al morir el animal.']
       : [`El ${s.nombre} ${s.uso}.`];
@@ -170,11 +170,11 @@
     const s = rng.elegir(SUSTANCIAS.slice(1)), n = rng.entero(2, 4), t = n * s.vm, q = 2 ** -n, como = rng.elegir(['porcentaje', 'fraccion']);
     const pct = como === 'porcentaje', val = pct ? 100 * (1 - q) : 1 - q, k = pct ? 100 : 1, T = pct ? pc : fr;
     const errores = [
-      e(k * q, 'AQ-vm-desintegrada', `Bien hacer las ${n} mitades. Pero ${T(k * q)} es lo que queda; se pide lo que se desintegró.`),
-      e(k * 0.5, 'AQ-vm-tiempo-como-una-vida', `Bien: en una vida media se va la mitad. Pero en ${t} ${s.u} caben ${n}. Así sale ${T(k * 0.5)}.`),
-      e(k * (1 - 2 ** -(n - 1)), 'AQ-vm-una-vida-de-menos', `Bien restar lo que queda. Pero en ${t} ${s.u} caben ${n} vidas medias, no ${n - 1}. Así sale ${T(k * (1 - 2 ** -(n - 1)))}.`),
-      e(k * (1 - 2 ** -(n + 1)), 'AQ-vm-una-vida-de-mas', `Bien restar lo que queda. Pero en ${t} ${s.u} caben ${n} vidas medias, no ${n + 1}. Así sale ${T(k * (1 - 2 ** -(n + 1)))}.`),
-      e(k * (1 - 1 / (2 * n)), 'AQ-vm-divide-entre-2n', `Bien restar lo que queda. Pero queda 1/2${SUP[n]}, no 1/(2 × ${n}). Así sale ${T(k * (1 - 1 / (2 * n)))}.`),
+      e(k * q, 'AQ-vm-desintegrada', `Las ${n} mitades están bien. Pero ${T(k * q)} es lo que queda; se pide lo que se desintegró, que es lo que falta para completar la dosis.`),
+      e(k * 0.5, 'AQ-vm-tiempo-como-una-vida', `En una vida media se va la mitad, cierto. Pero en ${t} ${s.u} caben ${n} vidas medias, y en cada una se va la mitad de lo que quedaba. Así sale ${T(k * 0.5)}.`),
+      e(k * (1 - 2 ** -(n - 1)), 'AQ-vm-una-vida-de-menos', `Restar lo que queda está bien. Pero en ${t} ${s.u} caben ${n} vidas medias, no ${n - 1}: divide el tiempo entre la vida media para contarlas. Así sale ${T(k * (1 - 2 ** -(n - 1)))}.`),
+      e(k * (1 - 2 ** -(n + 1)), 'AQ-vm-una-vida-de-mas', `Restar lo que queda está bien. Pero en ${t} ${s.u} caben ${n} vidas medias, no ${n + 1}: divide el tiempo entre la vida media para contarlas. Así sale ${T(k * (1 - 2 ** -(n + 1)))}.`),
+      e(k * (1 - 1 / (2 * n)), 'AQ-vm-divide-entre-2n', `Restar lo que queda está bien. Pero cada vida media parte en dos lo que hay, así que queda 1/2${SUP[n]}, no 1/(2 × ${n}). Así sale ${T(k * (1 - 1 / (2 * n)))}.`),
     ].filter(x => pct || fr(x.valor).includes('/'));
     return {
       variables: usa('t', 'th', 'n', 'm'), enunciado: [`El ${s.nombre} ${s.uso}.`],
@@ -193,11 +193,11 @@
     const s = rng.elegir(FUENTES), n = rng.entero(2, 3), m0 = rng.elegir(s.masas.filter(x => x % 2 ** n === 0)), t = limpio(n * s.vm), m = m0 / 2 ** n;
     const A = x => `${f(x)} años`;
     const errores = [
-      e(t, 'AQ-vm-tiempo-como-una-vida', `Bien usar el tiempo. Pero en ${A(t)} no queda la mitad sino 1/${2 ** n}: pasaron ${n} vidas medias. Así sale ${A(t)}.`),
-      e(t / 2 ** n, 'AQ-vm-divide-entre-2n', `Bien ver que queda 1/${2 ** n}. Pero eso son ${n} mitades: el tiempo se divide entre ${n}, no entre ${2 ** n}. Así sale ${A(t / 2 ** n)}.`),
-      e(n * t, 'AQ-vm-multiplica-tiempo', `Bien contar ${n} mitades. Pero esas vidas medias caben en el tiempo dado: se divide, no se multiplica. Así sale ${A(n * t)}.`),
-      e(t / (n + 1), 'AQ-vm-una-vida-de-mas', `Bien dividir el tiempo. Pero de ${m0} g a ${f(m)} g hay ${n} mitades, no ${n + 1}. Así sale ${A(t / (n + 1))}.`),
-      e(t / (n - 1), 'AQ-vm-una-vida-de-menos', `Bien dividir el tiempo. Pero de ${m0} g a ${f(m)} g hay ${n} mitades, no ${n - 1}. Así sale ${A(t / (n - 1))}.`),
+      e(t, 'AQ-vm-tiempo-como-una-vida', `Usar el tiempo está bien. Pero en ${A(t)} no queda la mitad sino 1/${2 ** n}, así que pasaron ${n} vidas medias, y cada una dura una parte de ese tiempo. Así sale ${A(t)}.`),
+      e(t / 2 ** n, 'AQ-vm-divide-entre-2n', `Ver que queda 1/${2 ** n} está bien. Pero eso es partir ${n} veces en dos, así que el tiempo se divide entre ${n} vidas medias, no entre ${2 ** n}. Así sale ${A(t / 2 ** n)}.`),
+      e(n * t, 'AQ-vm-multiplica-tiempo', `Contar ${n} mitades está bien. Pero esas vidas medias caben dentro del tiempo dado, así que cada una dura una parte de él: se divide, no se multiplica. Así sale ${A(n * t)}.`),
+      e(t / (n + 1), 'AQ-vm-una-vida-de-mas', `Dividir el tiempo está bien. Pero de ${m0} g a ${f(m)} g hay ${n} mitades, no ${n + 1}: ve partiendo en dos la masa y cuenta los pasos. Así sale ${A(t / (n + 1))}.`),
+      e(t / (n - 1), 'AQ-vm-una-vida-de-menos', `Dividir el tiempo está bien. Pero de ${m0} g a ${f(m)} g hay ${n} mitades, no ${n - 1}: ve partiendo en dos la masa y cuenta los pasos. Así sale ${A(t / (n - 1))}.`),
     ];
     return {
       variables: usa('m0', 'm', 't', 'n', 'th'), enunciado: [`Una fuente de ${s.nombre} pasa de `, v('m0', `${m0} g`), ' a ', v('m', G(m)), ' en ', v('t', A(t)), '.'],
@@ -224,12 +224,12 @@
     // El orden importa (P.armar toma los cuatro primeros que sirven): lo desintegrado con y sin una vida media de menos
     // va junto, para que la correcta no sea la que más se parece a todas (probarFugas, «central»).
     const errores = [
-      e(1 - q, 'AQ-vm-desintegrada', `Bien pasar a la misma unidad. Pero ${fr(1 - q)} es lo que se desintegró; se pide lo que queda.`),
-      e(2 * q, 'AQ-vm-una-vida-de-menos', `Bien pasar a ${s.u}. Pero en ${tc} ${s.u} caben ${n} vidas medias, no ${n - 1}. Así sale ${fr(2 * q)}.`),
-      e(1 - 2 * q, 'AQ-vm-desintegrada', `Bien pasar a la misma unidad. Pero ${fr(1 - 2 * q)} es lo desintegrado y con una vida media de menos: caben ${n}.`),
-      e(2 ** -x.t, 'AQ-vm-sin-convertir', `Bien dividir entre 2 por cada vida media. Pero ${f(x.t)} ${x.unidadT} no son ${f(x.t)} vidas medias: ${x.eq}. Así sale ${fr(2 ** -x.t)}.`),
-      e(q / 2, 'AQ-vm-una-vida-de-mas', `Bien pasar a ${s.u}. Pero en ${tc} ${s.u} caben ${n} vidas medias, no ${n + 1}. Así sale ${fr(q / 2)}.`),
-      e(1 / (2 * n), 'AQ-vm-divide-entre-2n', `Bien contar ${n} vidas medias. Pero queda 1/2${SUP[n]}, no 1/(2 × ${n}). Así sale ${fr(1 / (2 * n))}.`),
+      e(1 - q, 'AQ-vm-desintegrada', `Pasar a la misma unidad está bien. Pero ${fr(1 - q)} es lo que se desintegró; se pide lo que queda de la dosis.`),
+      e(2 * q, 'AQ-vm-una-vida-de-menos', `Pasar a ${s.u} está bien. Pero en ${tc} ${s.u} caben ${n} vidas medias, no ${n - 1}: divide el tiempo entre la vida media para contarlas. Así sale ${fr(2 * q)}.`),
+      e(1 - 2 * q, 'AQ-vm-desintegrada', `Pasar a la misma unidad está bien. Pero ${fr(1 - 2 * q)} tiene dos tropiezos: es lo desintegrado, no lo que queda, y cuenta una vida media de menos, porque caben ${n}.`),
+      e(2 ** -x.t, 'AQ-vm-sin-convertir', `Dividir entre 2 por cada vida media está bien. Pero el tiempo y la vida media van en la misma unidad, y ${f(x.t)} ${x.unidadT} no son ${f(x.t)} vidas medias: ${x.eq}. Así sale ${fr(2 ** -x.t)}.`),
+      e(q / 2, 'AQ-vm-una-vida-de-mas', `Pasar a ${s.u} está bien. Pero en ${tc} ${s.u} caben ${n} vidas medias, no ${n + 1}: divide el tiempo entre la vida media para contarlas. Así sale ${fr(q / 2)}.`),
+      e(1 / (2 * n), 'AQ-vm-divide-entre-2n', `Contar ${n} vidas medias está bien. Pero cada una parte en dos lo que hay, así que queda 1/2${SUP[n]}, no 1/(2 × ${n}). Así sale ${fr(1 / (2 * n))}.`),
     ].filter(x => fr(x.valor).includes('/'));   // solo fracciones de potencias de 2: un decimal suelto se delataría por su forma
     return {
       variables: usa('t', 'th', 'n', 'm'), enunciado: [`A un paciente le aplican ${s.nombre}, que ${s.uso}.`],
@@ -247,12 +247,12 @@
   function tDeducir(rng) {
     const s = rng.elegir(FUENTES), a = 2, b = rng.entero(4, 5), m0 = rng.elegir(s.masas.filter(x => x % 4 === 0)), t1 = limpio(a * s.vm), t2 = limpio(b * s.vm), m = m0 / 2 ** b;
     const errores = [
-      e(m0 / 2 ** (t2 / t1), 'AQ-vm-lee-tiempo-sin-mitad', `Bien dividir entre 2 por tramo. Pero en ${f(t1)} años no se fue la mitad sino tres cuartos: pasaron 2 vidas medias. Así sale ${G(m0 / 2 ** (t2 / t1))}.`),
-      e(m0 / 4 ** (t2 / t1), 'AQ-vm-lee-tiempo-sin-mitad', `Bien ver que en ${f(t1)} años queda la cuarta parte. Pero ${f(t2)} ÷ ${f(t1)} no es entero: cuenta vidas medias. Así sale ${G(m0 / 4 ** (t2 / t1))}.`),
-      e(m0 - m, 'AQ-vm-desintegrada', `Bien hallar la vida media. Pero ${G(m0 - m)} es lo que se desintegró; se pide lo que queda.`),
-      e(m0 / 2 ** (b - 1), 'AQ-vm-una-vida-de-menos', `Bien la vida media de ${f(s.vm)} años. Pero en ${f(t2)} años caben ${b}, no ${b - 1}. Así sale ${G(m0 / 2 ** (b - 1))}.`),
-      e(m0 / 2 ** (b + 1), 'AQ-vm-una-vida-de-mas', `Bien la vida media de ${f(s.vm)} años. Pero en ${f(t2)} años caben ${b}, no ${b + 1}. Así sale ${G(m0 / 2 ** (b + 1))}.`),
-      e(m0 / (2 * b), 'AQ-vm-divide-entre-2n', `Bien contar ${b} vidas medias. Pero se divide entre 2${SUP[b]}, no entre 2 × ${b}. Así sale ${G(m0 / (2 * b))}.`),
+      e(m0 / 2 ** (t2 / t1), 'AQ-vm-lee-tiempo-sin-mitad', `Dividir entre 2 por tramo está bien. Pero en ${f(t1)} años no se fue la mitad sino tres cuartos: pasaron 2 vidas medias, y la vida media es la mitad de ese tiempo. Así sale ${G(m0 / 2 ** (t2 / t1))}.`),
+      e(m0 / 4 ** (t2 / t1), 'AQ-vm-lee-tiempo-sin-mitad', `Ver que en ${f(t1)} años queda la cuarta parte está bien. Pero ${f(t2)} ÷ ${f(t1)} no es entero: halla primero la vida media y cuenta cuántas caben. Así sale ${G(m0 / 4 ** (t2 / t1))}.`),
+      e(m0 - m, 'AQ-vm-desintegrada', `Hallar la vida media está bien. Pero ${G(m0 - m)} es lo que se desintegró, lo que ya falta; se pide lo que queda en la fuente.`),
+      e(m0 / 2 ** (b - 1), 'AQ-vm-una-vida-de-menos', `La vida media de ${f(s.vm)} años está bien. Pero en ${f(t2)} años caben ${b}, no ${b - 1}: divide el tiempo entre la vida media para contarlas. Así sale ${G(m0 / 2 ** (b - 1))}.`),
+      e(m0 / 2 ** (b + 1), 'AQ-vm-una-vida-de-mas', `La vida media de ${f(s.vm)} años está bien. Pero en ${f(t2)} años caben ${b}, no ${b + 1}: divide el tiempo entre la vida media para contarlas. Así sale ${G(m0 / 2 ** (b + 1))}.`),
+      e(m0 / (2 * b), 'AQ-vm-divide-entre-2n', `Contar ${b} vidas medias está bien. Pero cada una divide entre 2 lo que queda, así que se divide entre 2${SUP[b]}, no entre 2 × ${b}. Así sale ${G(m0 / (2 * b))}.`),
     ];
     return {
       variables: usa('m0', 'm', 't', 'th', 'n'),

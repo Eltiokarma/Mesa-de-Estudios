@@ -104,13 +104,13 @@
   };
   // Por qué no es la elegida, según su clase y lo que se pide.
   function siFueraFen(clase, pide) {
-    if (clase === 'nuclear') return ['QM-NUCLEAR', 'Bien: algo cambia. Pero el carbono-14 pasa a ser otro elemento: es nuclear, no químico ni físico.'];
+    if (clase === 'nuclear') return ['QM-NUCLEAR', 'Algo cambia, cierto. Pero el carbono-14 pasa a ser nitrógeno, otro elemento, y eso no lo hace ninguna reacción química ni un cambio de estado: es nuclear.'];
     if (pide === 'quimico') return {
-      estado: ['MA1', 'Bien: algo cambió a la vista. Pero las mismas moléculas solo cambiaron de estado: es físico.'],
-      disolver: ['MA3', 'Bien: el azúcar o la sal desaparecen a la vista. Pero sus partículas siguen enteras en el líquido: es físico.'],
-      forma: ['QM-FORMA', 'Bien: cambió la forma. Pero los pedazos son del mismo material: es físico.'],
+      estado: ['MA1', 'Algo cambió a la vista, cierto. Pero las moléculas son las mismas, solo en otro estado: el vapor o el hielo siguen siendo agua. Es físico.'],
+      disolver: ['MA3', 'El azúcar o la sal desaparecen a la vista, cierto. Pero sus partículas siguen enteras, repartidas en el líquido, y vuelven a aparecer si se evapora el agua: es físico.'],
+      forma: ['QM-FORMA', 'Cambió la forma, cierto. Pero los pedazos son del mismo material, con las mismas partículas y las mismas propiedades: es físico.'],
     }[clase];
-    return ['MA2', 'Bien: algo cambió a la vista. Pero aparece una sustancia que antes no estaba: es químico, no físico.'];
+    return ['MA2', 'Algo cambió a la vista, cierto. Pero no es solo de forma o de estado: aparece una sustancia que antes no estaba, hecha con los mismos átomos. Es químico.'];
   }
   function tCual(rng) {
     const pide = rng.elegir(['quimico', 'fisico']);
@@ -147,8 +147,8 @@
     const bueno = rng.elegir(Object.keys(PROP).filter(k => PROP[k].clase === pide));
     const otros = rng.barajar(Object.keys(PROP).filter(k => PROP[k].clase !== pide)).slice(0, 3);
     const errores = otros.map(k => ({ clave: 'prop:' + k, texto: PROP[k].texto, ...(pide === 'quimica'
-      ? err('MA1', 'Bien: es un rasgo de la sustancia. Pero se observa sin que la sustancia se vuelva otra: es física.')
-      : err('MA2', 'Bien: es un rasgo de la sustancia. Pero solo se ve cuando la sustancia se transforma en otra: es química.')) }));
+      ? err('MA1', 'Es un rasgo de la sustancia, cierto. Pero se observa sin que la sustancia se vuelva otra, y se puede volver a medir: es física.')
+      : err('MA2', 'Es un rasgo de la sustancia, cierto. Pero solo se ve cuando la sustancia se transforma en otra, y después ya no queda la de antes: es química.')) }));
     return {
       variables: {}, enunciado: ['Mira estos rasgos de algunas sustancias.'], pregunta: [`¿Cuál es una propiedad ${pide === 'quimica' ? 'química' : 'física'}?`],
       datos: [DEF_PF, DEF_PQ],
@@ -255,20 +255,20 @@
   };
   // La cuarta opción: el error típico de cada caso, con el mismo largo que las otras.
   const CUARTA = {
-    fisico: ['quimico-estado', 'Químico: al cambiar de estado, es otra sustancia', 'MA1', 'Bien: cambió el estado. Pero las partículas son las mismas: un cambio de estado es físico.'],
-    quimico: ['fisico-atomos', 'Físico: los átomos son los mismos que antes', 'MA2', 'Bien: los átomos se conservan. Pero se unieron de otra forma: hay partículas nuevas, es químico.'],
-    nuclear: ['quimico-nuclear', 'Químico: los átomos de carbono se reordenan', 'QM-NUCLEAR', 'Bien: algo cambió en la lupa. Pero aparecen átomos de nitrógeno que antes no estaban: es nuclear.'],
+    fisico: ['quimico-estado', 'Químico: al cambiar de estado, es otra sustancia', 'MA1', 'Cambió el estado, cierto. Pero las partículas son las mismas antes y después, solo más juntas o más separadas: un cambio de estado es físico.'],
+    quimico: ['fisico-atomos', 'Físico: los átomos son los mismos que antes', 'MA2', 'Los átomos se conservan, cierto. Pero se unieron de otra forma y armaron partículas nuevas, así que hay una sustancia que antes no estaba: es químico.'],
+    nuclear: ['quimico-nuclear', 'Químico: los átomos de carbono se reordenan', 'QM-NUCLEAR', 'Algo cambió en la lupa, cierto. Pero aparecen átomos de nitrógeno que antes no estaban, y una reacción química solo reordena átomos, no los cambia: es nuclear.'],
   };
   const SI_LUPA = {
-    fisico: ['MA2', 'Bien: miraste las dos lupas. Pero después hay partículas que antes no estaban: no es físico.'],
-    quimico: ['MA1', 'Bien: algo cambió. Pero las partículas de después son las mismas de antes: no es químico.'],
-    nuclear: ['QM-NUCLEAR', 'Bien: algo cambió. Pero los elementos son los mismos antes y después: no es nuclear.'],
+    fisico: ['MA2', 'Miraste las dos lupas, bien. Pero después hay partículas que antes no estaban; en un cambio físico seguirían las mismas, solo en otro estado o lugar.'],
+    quimico: ['MA1', 'Algo cambió, cierto. Pero las partículas de después son las mismas de antes; un cambio químico tendría sustancias nuevas.'],
+    nuclear: ['QM-NUCLEAR', 'Algo cambió, cierto. Pero los elementos son los mismos antes y después; un cambio nuclear tendría átomos de un elemento nuevo.'],
   };
   function tLupa(rng) {
     const real = rng.elegir(['fisico', 'quimico', 'nuclear', 'quimico', 'fisico']);
     const caso = rng.elegir(Object.keys(LUPAS).filter(k => tipoLupa(LUPAS[k]) === real)), c = LUPAS[caso];
     const errores = Object.keys(OPC).filter(k => k !== real).map(k => {
-      const [id, ex] = real === 'nuclear' && k === 'quimico' ? ['QM-NUCLEAR', 'Bien: hay un cambio. Pero un cambio químico no crea átomos de otro elemento, y aquí aparece el nitrógeno.'] : SI_LUPA[k];
+      const [id, ex] = real === 'nuclear' && k === 'quimico' ? ['QM-NUCLEAR', 'Hay un cambio, cierto. Pero un cambio químico solo reordena los átomos y no crea átomos de otro elemento, y aquí aparece el nitrógeno: es nuclear.'] : SI_LUPA[k];
       return { clave: 'cambio:' + k, texto: OPC[k], ...err(id, ex) };
     });
     const [cid, ctx, cerr, cex] = CUARTA[real];
@@ -313,12 +313,12 @@
     const otro = Object.keys(enPide).find(s => s !== x.el);
     if (otro && x.fijo && cuenta(x.fijo[0])[otro]) {
       const malo = at[otro] / enPide[otro];
-      errores.push(e(malo, 'QM-CUENTA-O', `Bien contar átomos. Pero el ${otro} también va en el ${fm(x.fijo[0])}: no todo termina en ${fm(x.pide)}. Así salen ${f(malo)}.`));
+      errores.push(e(malo, 'QM-CUENTA-O', `Contar átomos está bien. Pero el ${otro} también va en el ${fm(x.fijo[0])}, así que no todo termina en ${fm(x.pide)}; cuenta un elemento que solo esté ahí. Así salen ${f(malo)}.`));
     }
-    errores.push(e(x.antes.reduce((t, [, n]) => t + n, 0), 'QM-MOLECULAS-IGUALES', `Bien la idea de que algo se conserva. Pero son los átomos de cada elemento, no las partículas: antes hay ${x.antes.reduce((t, [, n]) => t + n, 0)} partículas.`));
-    if (k > 1) errores.push(e(at[x.el], 'QM-SUBINDICE', `Bien: ${at[x.el]} átomos de ${x.el}. Pero cada ${fm(x.pide)} lleva ${k}: hay que repartirlos de ${k} en ${k}.`));
-    errores.push(e(correcta + 1, 'QM-CONTEO', `Bien contar átomos de ${x.el}. Pero revisa cuántos lleva cada ${fm(x.pide)}: con ${correcta + 1} sobrarían átomos.`));
-    errores.push(e(correcta - 1, 'QM-CONTEO', `Bien contar átomos de ${x.el}. Pero revisa cuántos lleva cada ${fm(x.pide)}: con ${correcta - 1} faltarían átomos.`));
+    errores.push(e(x.antes.reduce((t, [, n]) => t + n, 0), 'QM-MOLECULAS-IGUALES', `Algo se conserva, cierto, pero son los átomos de cada elemento, no las partículas: al unirse de otra forma pueden armar más o menos moléculas. Antes hay ${x.antes.reduce((t, [, n]) => t + n, 0)} partículas.`));
+    if (k > 1) errores.push(e(at[x.el], 'QM-SUBINDICE', `Son ${at[x.el]} átomos de ${x.el}, bien contados. Pero cada ${fm(x.pide)} lleva ${k}, así que hay que repartirlos de ${k} en ${k} para saber cuántas moléculas salen.`));
+    errores.push(e(correcta + 1, 'QM-CONTEO', `Contar átomos de ${x.el} está bien. Pero revisa cuántos lleva cada ${fm(x.pide)}: con ${correcta + 1} moléculas harían falta más átomos de los que hay.`));
+    errores.push(e(correcta - 1, 'QM-CONTEO', `Contar átomos de ${x.el} está bien. Pero revisa cuántos lleva cada ${fm(x.pide)}: con ${correcta - 1} moléculas sobrarían átomos sin usar.`));
     // Un elemento de átomos sueltos (el hierro) no forma moléculas: «4 átomos de Fe» (auditoría, 17 nov, M9).
     const suelto = fo => /^[A-Z][a-z]?$/.test(fo);
     const antes = lista(x.antes.map(([fo, n]) => `${n} ${suelto(fo) ? (n === 1 ? 'átomo' : 'átomos') : (n === 1 ? 'molécula' : 'moléculas')} de ${fm(fo)}`));
@@ -344,12 +344,12 @@
     const estado = ids.filter(k => FEN[k].clase === 'estado').length, dis = ids.filter(k => FEN[k].clase === 'disolver').length;
     const nuc = ids.filter(k => FEN[k].clase === 'nuclear').length;
     const errores = [
-      e(n + estado, 'MA1', `Bien los químicos. Pero un cambio de estado no forma sustancias nuevas: es físico. Así contaste ${n + estado}.`),
-      e(n + dis, 'MA3', `Bien los químicos. Pero disolver no forma sustancias nuevas: es físico. Así contaste ${n + dis}.`),
-      e(n + nuc, 'QM-NUCLEAR', `Bien los químicos. Pero el carbono-14 que pasa a nitrógeno es nuclear, no químico. Así contaste ${n + nuc}.`),
-      e(n - 1, 'MA2', `Bien el criterio. Pero se te pasó uno que forma una sustancia nueva. Así contaste ${n - 1}.`),
-      e(n + 1, 'QM-CONTEO', `Bien el criterio. Pero contaste uno que deja las mismas partículas. Así contaste ${n + 1}.`),
-      e(4, 'MA1', 'Bien: en todos cambia algo. Pero solo en algunos aparecen sustancias nuevas. Así contaste 4.'),
+      e(n + estado, 'MA1', `Los químicos están bien. Pero un cambio de estado no forma sustancias nuevas: el agua que se evapora o se congela sigue siendo agua. Es físico. Así contaste ${n + estado}.`),
+      e(n + dis, 'MA3', `Los químicos están bien. Pero disolver no forma sustancias nuevas: lo disuelto sigue entero en el líquido. Es físico. Así contaste ${n + dis}.`),
+      e(n + nuc, 'QM-NUCLEAR', `Los químicos están bien. Pero el carbono-14 que pasa a nitrógeno cambia de elemento, y eso es nuclear, no químico. Así contaste ${n + nuc}.`),
+      e(n - 1, 'MA2', `El criterio está bien, pero se te pasó uno que forma una sustancia nueva, como un óxido o un gas que antes no estaba. Así contaste ${n - 1}.`),
+      e(n + 1, 'QM-CONTEO', `El criterio está bien, pero contaste uno que deja las mismas partículas, aunque cambie de aspecto. Así contaste ${n + 1}.`),
+      e(4, 'MA1', 'En todos cambia algo, cierto. Pero romperse, disolverse o cambiar de estado deja las mismas partículas; solo en algunos aparecen sustancias nuevas. Así contaste 4.'),
     ].filter(q => q.valor !== n && q.valor > 0 && q.valor <= 4);
     return {
       variables: {}, enunciado: [`Mira estos fenómenos: ${ids.map((k, i) => `${NUM[i]}. ${FEN[k].texto}.`).join(' ')}`],
@@ -369,15 +369,15 @@
     const cerrado = rng.moneda(), lana = rng.elegir([2.8, 5.6, 11.2]), frasco = rng.elegir([150, 200, 250]);
     const O = limpio(lana * 24 / 56), oxido = limpio(lana + O), correcta = cerrado ? frasco : limpio(frasco + O);
     const errores = cerrado ? [
-      e(frasco + O, 'MA5', `Bien: el hierro toma ${f(O)} g de oxígeno. Pero ese oxígeno ya estaba dentro del frasco cerrado: ${f(frasco + O)} g lo cuenta dos veces.`),
-      e(frasco - lana, 'QM-MASA-SE-VA', `Bien: el hierro se transforma. Pero arder no destruye átomos: la lana no desaparece. Así saldrían ${f(frasco - lana)} g.`),
-      e(frasco - O, 'QM-MASA-SE-VA', `Bien: se gasta oxígeno del aire de adentro. Pero queda en el óxido, dentro del frasco. Así saldrían ${f(frasco - O)} g.`),
-      e(oxido, 'QM-SOLO-SOLIDO', `Bien la masa del óxido, ${f(oxido)} g. Pero la balanza pesa todo el frasco, no solo el óxido.`),
+      e(frasco + O, 'MA5', `El hierro toma ${f(O)} g de oxígeno, cierto. Pero ese oxígeno ya estaba dentro del frasco cerrado y la balanza ya lo pesaba: ${f(frasco + O)} g lo cuenta dos veces.`),
+      e(frasco - lana, 'QM-MASA-SE-VA', `El hierro se transforma, cierto. Pero arder no destruye átomos: el hierro de la lana queda en el óxido, sobre la balanza. Así saldrían ${f(frasco - lana)} g.`),
+      e(frasco - O, 'QM-MASA-SE-VA', `Se gasta oxígeno del aire de adentro, cierto. Pero no se va: queda unido al hierro en el óxido, dentro del frasco. Así saldrían ${f(frasco - O)} g.`),
+      e(oxido, 'QM-SOLO-SOLIDO', `La masa del óxido, ${f(oxido)} g, está bien. Pero la balanza pesa todo lo que tiene encima: el frasco y lo que hay dentro, no solo el óxido.`),
     ] : [
-      e(frasco, 'MA4', `Bien: los átomos se conservan. Pero el frasco está abierto: entra oxígeno del aire y se suma. Así dirías ${f(frasco)} g.`),
-      e(frasco - lana, 'QM-MASA-SE-VA', `Bien: el hierro se transforma. Pero arder no destruye átomos: la lana no desaparece. Así saldrían ${f(frasco - lana)} g.`),
-      e(frasco + oxido, 'QM-SUMA-OXIDO', `Bien sumar el óxido que se forma. Pero el hierro ya estaba en la balanza: solo se suma el oxígeno. Así saldrían ${f(frasco + oxido)} g.`),
-      e(oxido, 'QM-SOLO-SOLIDO', `Bien la masa del óxido, ${f(oxido)} g. Pero la balanza pesa todo el frasco, no solo el óxido.`),
+      e(frasco, 'MA4', `Los átomos se conservan, cierto. Pero el frasco está abierto: entra oxígeno del aire, se une al hierro y se queda sobre la balanza. Así dirías ${f(frasco)} g.`),
+      e(frasco - lana, 'QM-MASA-SE-VA', `El hierro se transforma, cierto. Pero arder no destruye átomos: el hierro de la lana queda en el óxido, sobre la balanza. Así saldrían ${f(frasco - lana)} g.`),
+      e(frasco + oxido, 'QM-SUMA-OXIDO', `Sumar lo que se forma está bien. Pero el hierro del óxido ya estaba en la balanza: lo único nuevo es el oxígeno que entró. Así saldrían ${f(frasco + oxido)} g.`),
+      e(oxido, 'QM-SOLO-SOLIDO', `La masa del óxido, ${f(oxido)} g, está bien. Pero la balanza pesa todo lo que tiene encima: el frasco y lo que hay dentro, no solo el óxido.`),
     ];
     return {
       variables: { m: va('masa del frasco con la lana', 'masa'), l: va('masa de la lana de acero', 'masa'), x: va('lo que marca al final', 'masa') },

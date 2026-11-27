@@ -95,10 +95,10 @@
     const o = rng.elegir(OBJETOS), V = rng.elegir([2, 3, 4]), v0 = rng.elegir([10, 15, 20]), m = limpio(o.rho * V), v1 = v0 + V;
     const correcta = limpio(m / V);
     const errores = [
-      e(m / v1, 'QM-PROBETA', `Bien dividir la masa. Pero el volumen es lo que subió el agua, no la lectura final: ${f(m)} ÷ ${v1} = ${fr(m / v1)}.`),
-      e(m / v0, 'QM-PROBETA-INICIAL', `Bien dividir la masa. Pero el volumen es lo que subió el agua, no la lectura de antes: ${f(m)} ÷ ${v0} = ${fr(m / v0)}.`),
-      e(V / m, 'QM-RHO-INVIERTE', `Bien el volumen, ${V} cm³. Pero va la masa entre el volumen, no al revés: ${V} ÷ ${f(m)} = ${fr(V / m)}.`),
-      e(m * V, 'QM-RHO-PRODUCTO', `Bien la masa y el volumen. Pero se dividen, no se multiplican: ${f(m)} × ${V} = ${fr(m * V)}.`),
+      e(m / v1, 'QM-PROBETA', `Dividir la masa está bien. Pero la lectura final incluye el agua que ya había: el volumen del objeto es solo lo que subió. Así hiciste ${f(m)} ÷ ${v1} = ${fr(m / v1)}.`),
+      e(m / v0, 'QM-PROBETA-INICIAL', `Dividir la masa está bien. Pero la lectura de antes es el agua sola, sin el objeto: su volumen es lo que subió el agua. Así hiciste ${f(m)} ÷ ${v0} = ${fr(m / v0)}.`),
+      e(V / m, 'QM-RHO-INVIERTE', `El volumen, ${V} cm³, está bien. Pero la densidad dice cuántos gramos hay en cada cm³, así que va la masa entre el volumen: ${V} ÷ ${f(m)} = ${fr(V / m)} es al revés.`),
+      e(m * V, 'QM-RHO-PRODUCTO', `La masa y el volumen están bien. Pero para saber cuántos gramos tocan a cada cm³ se reparte la masa: se divide, y ${f(m)} × ${V} = ${fr(m * V)} multiplica.`),
     ];
     return {
       variables: { m: va('masa', 'masa'), V: va('volumen', 'volumen'), r: va('densidad (lo que se pide)', 'densidad') },
@@ -124,8 +124,8 @@
     const buenas = pide === 'igual' ? INT : EXT, malas = pide === 'igual' ? EXT : INT;
     const buena = rng.elegir(buenas), otras = rng.barajar(malas).slice(0, 3);
     const errores = otras.map(x => ({ clave: 'prop:' + x, texto: May(x), ...err(x === 'temperatura' ? 'Q4' : 'AT1', pide === 'igual'
-      ? `Bien buscar algo que se mide en cada pedazo. Pero ${articulo(x)} depende de cuánto hay: se parte con el trozo.`
-      : `Bien buscar algo que se mide en cada pedazo. Pero ${articulo(x)} no depende de cuánto hay: queda igual.`) }));
+      ? `Buscar algo que se mide en cada pedazo está bien. Pero ${articulo(x)} depende de cuánto hay, así que se parte con el trozo: cada pedazo tiene menos.`
+      : `Buscar algo que se mide en cada pedazo está bien. Pero ${articulo(x)} depende solo del material, no de cuánto hay, así que queda igual en cada pedazo.`) }));
     return {
       variables: {}, enunciado: [`Partes ${mat} en dos pedazos iguales.`],
       pregunta: [pide === 'igual' ? '¿Qué propiedad de cada pedazo es igual a la del entero?' : '¿Qué propiedad de cada pedazo es la mitad de la del entero?'],
@@ -151,10 +151,10 @@
     if (sub === 'masa') {
       const L = rng.elegir([0.5, 1.5, 2, 2.5, 3]), mL = limpio(L * 1000), correcta = limpio(l.rho * mL);
       const errores = [
-        e(l.rho * L, 'QU2-litros-sin-mL', `Bien multiplicar densidad por volumen. Pero faltó pasar los litros a mL: ${f(l.rho)} × ${f(L)} = ${f(l.rho * L)}.`),
-        e(mL / l.rho, 'QM-RHO-INVIERTE', `Bien pasar a ${f(mL)} mL. Pero la masa es densidad por volumen, no volumen entre densidad: ${f(mL / l.rho)}.`),
-        e(mL, 'QM-COMO-AGUA', `Bien pasar a ${f(mL)} mL. Pero así sería con agua, de 1 g/mL; ${l.art} ${l.nombre} tiene unos ${f(l.rho)} g/mL.`),
-        e(l.rho * L * 100, 'QU2-litro-100-mL', `Bien multiplicar densidad por volumen. Pero 1 L son 1000 mL, no 100: ${f(l.rho)} × ${f(L * 100)} = ${f(l.rho * L * 100)}.`),
+        e(l.rho * L, 'QU2-litros-sin-mL', `Multiplicar densidad por volumen está bien. Pero la densidad va por mL, así que faltó pasar los litros a mL: ${f(l.rho)} × ${f(L)} = ${f(l.rho * L)}.`),
+        e(mL / l.rho, 'QM-RHO-INVIERTE', `Pasar a ${f(mL)} mL está bien. Pero si cada mL tiene cierta masa, más mL juntan más masa: la masa es densidad por volumen, no volumen entre densidad, que da ${f(mL / l.rho)}.`),
+        e(mL, 'QM-COMO-AGUA', `Pasar a ${f(mL)} mL está bien. Pero gramos y mL solo coinciden en el agua, que tiene 1 g/mL; ${l.art} ${l.nombre} tiene unos ${f(l.rho)} g/mL.`),
+        e(l.rho * L * 100, 'QU2-litro-100-mL', `Multiplicar densidad por volumen está bien. Pero 1 L son 1000 mL, no 100, así que el volumen quedó diez veces chico: ${f(l.rho)} × ${f(L * 100)} = ${f(l.rho * L * 100)}.`),
       ];
       return {
         variables: { V: va('volumen', 'volumen'), x: va('masa (lo que se pide)', 'masa') },
@@ -171,9 +171,9 @@
     }
     const mL = rng.elegir([200, 250, 500, 1000, 1500]), masa = limpio(l.rho * mL), correcta = mL;
     const errores = [
-      e(masa * l.rho, 'QM-RHO-PRODUCTO', `Bien usar la masa y la densidad. Pero el volumen es masa entre densidad: ${f(masa)} × ${f(l.rho)} = ${f(masa * l.rho)}.`),
-      e(masa, 'QM-COMO-AGUA', `Bien la idea de que gramos y mL se parecen. Pero eso solo pasa con el agua, de 1 g/mL: ${f(masa)} mL.`),
-      e(mL / 1000, 'QU2-mL-como-L', `Bien la división: ${f(masa)} ÷ ${f(l.rho)}. Pero eso ya está en mL; ${f(mL / 1000)} son litros.`),
+      e(masa * l.rho, 'QM-RHO-PRODUCTO', `Usar la masa y la densidad está bien. Pero para saber cuántos mL juntan esos gramos se divide la masa entre la densidad: ${f(masa)} × ${f(l.rho)} = ${f(masa * l.rho)} multiplica.`),
+      e(masa, 'QM-COMO-AGUA', `Gramos y mL se parecen, cierto, pero solo en el agua, que tiene 1 g/mL. Este líquido tiene otra densidad, así que no son ${f(masa)} mL.`),
+      e(mL / 1000, 'QU2-mL-como-L', `La división ${f(masa)} ÷ ${f(l.rho)} está bien, y como la densidad iba en g/mL, eso ya sale en mL. ${f(mL / 1000)} son litros, y piden mL.`),
     ];
     return {
       variables: { m: va('masa', 'masa'), x: va('volumen (lo que se pide)', 'volumen') },
@@ -202,22 +202,22 @@
   const SEPARAR = [
     { id: 'agua-arena', texto: 'separar la arena del agua de un balde, sin perder el agua', pide: 'filtracion', fuera: 'decantacion', dato: 'La arena no se disuelve en el agua',
       porque: 'La arena es un sólido sin disolver: el papel la retiene y el agua pasa.',
-      si: { destilacion: 'Bien: destilar separa. Pero gasta mucho calor para algo que un papel retiene.', evaporacion: 'Bien: evaporar deja la arena. Pero pierdes el agua, que querías conservar.', imantacion: 'Bien buscar una diferencia. Pero un imán no atrae a la arena.' } },
+      si: { destilacion: 'Destilar también separa, cierto. Pero hace hervir toda el agua y gasta mucho calor, cuando la arena no se disuelve y un papel la retiene.', evaporacion: 'Evaporar deja la arena, cierto. Pero el agua se va al aire y la pierdes, y querías conservarla; el filtro guarda las dos.', imantacion: 'Buscar una diferencia está bien. Pero la arena no es magnética, así que un imán no la atrae; lo que la distingue es que no se disuelve.' } },
     { id: 'agua-aceite', texto: 'separar el aceite del agua de una olla', pide: 'decantacion', dato: 'El aceite no se mezcla con el agua y flota sobre ella',
       porque: 'El aceite no se mezcla y es menos denso: queda arriba y se vierte aparte.',
-      si: { filtracion: 'Bien buscar un método sin calor. Pero los dos líquidos pasan juntos por el papel.', evaporacion: 'Bien buscar una diferencia. Pero evaporar se lleva el agua al aire: no la recuperas.', imantacion: 'Bien buscar una diferencia. Pero un imán no atrae al agua ni al aceite.' } },
+      si: { filtracion: 'Buscar un método sin calor está bien. Pero el papel solo retiene granos sólidos, y los dos líquidos pasan juntos; lo que los distingue es la densidad.', evaporacion: 'Buscar una diferencia está bien. Pero evaporar se lleva el agua al aire y no la recuperas; como forman dos capas, basta verter la de arriba.', imantacion: 'Buscar una diferencia está bien. Pero ni el agua ni el aceite son magnéticos; lo que los distingue es que el aceite flota en su capa.' } },
     { id: 'agua-alcohol', texto: 'separar el alcohol del agua', pide: 'destilacion', dato: 'El alcohol se mezcla del todo con el agua; hierve a unos 78 °C y el agua a 100 °C',
       porque: 'Difieren en la temperatura de ebullición: el alcohol hierve antes, su vapor se enfría y se recoge.',
-      si: { decantacion: 'Bien: sus densidades son distintas. Pero forman una sola fase: no hay capas que verter.', filtracion: 'Bien buscar un método sencillo. Pero los dos líquidos pasan juntos por el papel.', evaporacion: 'Bien usar el calor. Pero evaporar se lleva los dos al aire: no queda nada que recoger.' } },
+      si: { decantacion: 'Sus densidades son distintas, cierto. Pero se mezclan del todo y forman una sola fase, así que no hay capas que verter; lo que sirve es que hierven a temperaturas distintas.', filtracion: 'Buscar un método sencillo está bien. Pero el papel solo retiene granos sólidos, y los dos líquidos mezclados pasan juntos.', evaporacion: 'Usar el calor está bien. Pero evaporar se lleva los dos líquidos al aire y no queda nada que recoger; hay que recoger aparte el vapor del que hierve antes.' } },
     { id: 'hierro-azufre', texto: 'separar limaduras de hierro de azufre en polvo', pide: 'imantacion', dato: 'Hierro y azufre: dos polvos sólidos mezclados',
       porque: 'Solo el hierro es atraído por un imán: el azufre se queda.',
-      si: { filtracion: 'Bien buscar una diferencia de tamaño. Pero filtrar necesita un líquido que pase: aquí hay dos polvos.', decantacion: 'Bien buscar una diferencia de densidad. Pero decantar necesita un líquido: aquí hay dos polvos.', destilacion: 'Bien buscar una diferencia. Pero destilar necesita un líquido que hierva: aquí no hay.' } },
+      si: { filtracion: 'Buscar una diferencia de tamaño está bien. Pero filtrar necesita un líquido que pase por el papel, y aquí hay dos polvos; lo que los distingue es que el hierro es magnético.', decantacion: 'Buscar una diferencia de densidad está bien. Pero decantar necesita un líquido donde algo flote o se asiente, y aquí hay dos polvos secos.', destilacion: 'Buscar una diferencia está bien. Pero destilar necesita un líquido que hierva, y aquí no hay ninguno; lo que los distingue es que el hierro es magnético.' } },
     { id: 'sal-mar', texto: 'sacar la sal del agua de mar; el agua no importa', pide: 'evaporacion', fuera: 'destilacion', dato: 'La sal está disuelta en el agua: no se ve',
       porque: 'Basta con que el agua se vaya al aire: la sal disuelta queda en el fondo.',
-      si: { filtracion: 'Bien buscar un método sencillo. Pero la sal disuelta pasa por el papel.', decantacion: 'Bien buscar un método sin calor. Pero la sal disuelta forma una sola fase con el agua.', imantacion: 'Bien buscar una diferencia. Pero un imán no atrae a la sal.' } },
+      si: { filtracion: 'Buscar un método sencillo está bien. Pero el papel solo retiene sólidos sin disolver, y la sal disuelta pasa con el agua.', decantacion: 'Buscar un método sin calor está bien. Pero la sal disuelta no forma capa: queda en una sola fase con el agua, y no hay nada que verter.', imantacion: 'Buscar una diferencia está bien. Pero la sal no es magnética; lo que la distingue es que el agua se evapora y la sal no.' } },
     { id: 'sal-agua', texto: 'recuperar el agua y también la sal de un agua salada', pide: 'destilacion', fuera: 'evaporacion', dato: 'La sal está disuelta en el agua: no se ve',
       porque: 'El agua hierve, su vapor se enfría y se recoge aparte; la sal queda en el fondo.',
-      si: { filtracion: 'Bien buscar un método sencillo. Pero la sal disuelta pasa por el papel.', decantacion: 'Bien buscar un método sin calor. Pero la sal disuelta forma una sola fase con el agua.', imantacion: 'Bien buscar una diferencia. Pero un imán no atrae a la sal.' } },
+      si: { filtracion: 'Buscar un método sencillo está bien. Pero el papel solo retiene sólidos sin disolver, y la sal disuelta pasa con el agua.', decantacion: 'Buscar un método sin calor está bien. Pero la sal disuelta no forma capa: queda en una sola fase con el agua, y no hay nada que verter.', imantacion: 'Buscar una diferencia está bien. Pero la sal no es magnética; lo que la distingue es que el agua se evapora y la sal no.' } },
   ];
   function tSeparar(rng) {
     const q = rng.elegir(SEPARAR);
@@ -242,11 +242,11 @@
   function tCubo(rng) {
     const mt = rng.elegir(METALES), a = rng.elegir([2, 4, 5, 10]), V = a ** 3, g = limpio(mt.rho * V), kg = limpio(g / 1000), correcta = mt.rho;
     const errores = [
-      e(kg / V, 'QU1-kg-sin-g', `Bien el volumen, ${V} cm³. Pero la masa va en gramos para que salga g/cm³: ${f(kg, 4)} ÷ ${V} = ${fr(kg / V)}.`),
-      e(g / (a * a), 'QM-AREA', `Bien pasar a ${f(g)} g. Pero el volumen del cubo es lado × lado × lado: ${a} × ${a} = ${a * a} es un área; ${f(g)} ÷ ${a * a} = ${fr(g / (a * a))}.`),
-      e(g / a, 'QM-LADO', `Bien pasar a ${f(g)} g. Pero el volumen del cubo es lado × lado × lado, no el lado: ${f(g)} ÷ ${a} = ${fr(g / a)}.`),
-      e(V / g, 'QM-RHO-INVIERTE', `Bien el volumen y la masa en gramos. Pero va masa entre volumen, no al revés: ${V} ÷ ${f(g)} = ${fr(V / g)}.`),
-      e(kg * 100 / V, 'QU1-kg-100-g', `Bien el volumen, ${V} cm³. Pero 1 kg son 1000 g, no 100: ${f(kg * 100)} ÷ ${V} = ${fr(kg * 100 / V)}.`),
+      e(kg / V, 'QU1-kg-sin-g', `El volumen, ${V} cm³, está bien. Pero la masa va en gramos para que la densidad salga en g/cm³; en kg queda mil veces chica: ${f(kg, 4)} ÷ ${V} = ${fr(kg / V)}.`),
+      e(g / (a * a), 'QM-AREA', `Pasar a ${f(g)} g está bien. Pero el volumen del cubo es lado × lado × lado: ${a} × ${a} = ${a * a} es el área de una cara, no lo que ocupa. ${f(g)} ÷ ${a * a} = ${fr(g / (a * a))}.`),
+      e(g / a, 'QM-LADO', `Pasar a ${f(g)} g está bien. Pero el volumen del cubo es lado × lado × lado, no el lado solo, que es una longitud: ${f(g)} ÷ ${a} = ${fr(g / a)}.`),
+      e(V / g, 'QM-RHO-INVIERTE', `El volumen y la masa en gramos están bien. Pero la densidad dice cuántos gramos hay en cada cm³, así que va masa entre volumen: ${V} ÷ ${f(g)} = ${fr(V / g)} es al revés.`),
+      e(kg * 100 / V, 'QU1-kg-100-g', `El volumen, ${V} cm³, está bien. Pero 1 kg son 1000 g, no 100, así que la masa quedó diez veces chica: ${f(kg * 100)} ÷ ${V} = ${fr(kg * 100 / V)}.`),
     ];
     return {
       variables: { a: va('lado', 'longitud'), m: va('masa', 'masa'), r: va('densidad (lo que se pide)', 'densidad') },
@@ -271,10 +271,10 @@
     const tx = (mm, rr) => `${f(mm)} g y ${f(rr, rr < 1 ? 3 : 2)} g/cm³`;
     const cl = (mm, rr) => `parte:${limpio(mm)}|${limpio(rr)}`;
     const cand = [
-      [mp, rho / k, 'QM-PARTE-DENSIDAD', `Bien la masa de cada parte, ${f(mp)} g. Pero la densidad no depende de cuánto hay: no se divide entre ${k}.`],
-      [m, rho, 'AT1', `Bien la densidad, ${f(rho)} g/cm³. Pero la masa sí depende de cuánto hay: cada parte tiene la ${k === 2 ? 'mitad' : `${k}.ª parte`}.`],
-      [m, rho / k, 'AT1', 'Bien ver que algo se reparte. Pero se reparte la masa, no la densidad: es al revés.'],
-      [mp, V / m, 'QM-RHO-INVIERTE', `Bien la masa de cada parte. Pero la densidad es masa entre volumen, no al revés: ${V} ÷ ${f(m)}.`],
+      [mp, rho / k, 'QM-PARTE-DENSIDAD', `La masa de cada parte, ${f(mp)} g, está bien. Pero la densidad no depende de cuánto hay: cada parte tiene menos masa y también menos volumen, así que no se divide entre ${k}.`],
+      [m, rho, 'AT1', `La densidad, ${f(rho)} g/cm³, está bien. Pero la masa sí depende de cuánto hay: cada parte tiene la ${({ 2: 'mitad', 3: 'tercera parte', 4: 'cuarta parte', 5: 'quinta parte' })[k]} de la masa de la barra.`],
+      [m, rho / k, 'AT1', 'Ver que algo se reparte está bien. Pero se reparte la masa, que depende de cuánto hay; la densidad depende solo del metal y queda igual. Lo pusiste al revés.'],
+      [mp, V / m, 'QM-RHO-INVIERTE', `La masa de cada parte está bien. Pero la densidad dice cuántos gramos hay en cada cm³, así que es masa entre volumen: ${V} ÷ ${f(m)} es al revés.`],
     ];
     const errores = cand.map(([mm, rr, id, ex]) => ({ clave: cl(mm, rr), texto: tx(mm, rr), ...err(id, ex) }));
     return {
@@ -305,11 +305,11 @@
     const n = rng.entero(2, 4), xs = rng.barajar([...int.slice(0, n), ...ext.slice(0, 5 - n)]);
     const num = xs.filter(x => PROPS[x].int && PROPS[x].num).length, temp = xs.filter(x => PROPS[x].temp).length;
     const errores = [
-      e(n - num, 'AT1', `Bien las que no se miden con un número. Pero medirse con un número no la vuelve extensiva: así contaste ${n - num}.`),
-      e(n - temp, 'Q4', `Bien casi todas. Pero las temperaturas no se suman al juntar dos muestras: son intensivas. Así contaste ${n - temp}.`),
-      e(n + 1, 'QM-CONTEO', `Bien el criterio. Pero contaste una extensiva: si hay el doble de muestra, ¿es el doble? Así son ${n + 1}.`),
-      e(n - 1, 'QM-CONTEO', `Bien el criterio. Pero se te pasó una intensiva: no cambia si hay más muestra. Así son ${n - 1}.`),
-      e(n + 2, 'QM-CONTEO', `Bien el criterio. Pero contaste dos extensivas: si hay el doble de muestra, ¿es el doble? Así son ${n + 2}.`),
+      e(n - num, 'AT1', `Las que no se miden con un número están bien. Pero medirse con un número no la vuelve extensiva: la densidad se mide y no crece con la muestra. Así contaste ${n - num}.`),
+      e(n - temp, 'Q4', `Casi todas están bien. Pero las temperaturas no se suman al juntar dos muestras: dos vasos a 20 °C, juntos, siguen a 20 °C. Son intensivas. Así contaste ${n - temp}.`),
+      e(n + 1, 'QM-CONTEO', `El criterio está bien, pero contaste una extensiva. Pregúntate por cada una si se duplica al tener el doble de muestra; si se duplica, no es intensiva. Así son ${n + 1}.`),
+      e(n - 1, 'QM-CONTEO', `El criterio está bien, pero se te pasó una intensiva: una que no cambia si hay más muestra, aunque no sea densidad ni temperatura. Así son ${n - 1}.`),
+      e(n + 2, 'QM-CONTEO', `El criterio está bien, pero contaste dos extensivas. Pregúntate por cada una si se duplica al tener el doble de muestra; si se duplica, no es intensiva. Así son ${n + 2}.`),
     ].filter(x => x.valor !== n && x.valor > 0 && x.valor <= 5);
     return {
       variables: {}, enunciado: [`Mira esta lista de propiedades: ${lista(xs)}.`], pregunta: ['¿Cuántas son propiedades intensivas?'],

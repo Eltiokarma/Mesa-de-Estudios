@@ -92,10 +92,10 @@
     const x = rng.elegir(SUST), m = rng.elegir([50, 100, 200, 250, 500]), t0 = rng.elegir([10, 15, 20]), t1 = t0 + rng.elegir([20, 30, 40, 50]);
     const d = t1 - t0, q = limpio(m * x.ce * d);
     const errores = [
-      e(m * x.ce * t1, 'QM-T-FINAL', `Bien m · cₑ. Pero ΔT es lo que sube, final menos inicial (${d} °C), no ${t1}: así salen ${cal(m * x.ce * t1)}.`),
-      e(m * x.ce * t0, 'QM-T-INICIAL', `Bien m · cₑ. Pero ΔT es lo que sube, ${d} °C, no la temperatura de partida: así salen ${cal(m * x.ce * t0)}.`),
-      e(m * x.ce * (t0 + t1), 'QM-DT-SUMA', `Bien m · cₑ. Pero ΔT es una resta, ${t1} − ${t0}, no una suma: así salen ${cal(m * x.ce * (t0 + t1))}.`),
-      e(m * d, 'QM-SIN-CE', `Bien m · ΔT. Pero falta el calor específico del ${x.nombre}: así salen ${cal(m * d)}.`),
+      e(m * x.ce * t1, 'QM-T-FINAL', `La masa por cₑ está bien. Pero el calor depende de cuánto sube la temperatura: ΔT es la final menos la inicial, ${d} °C, no ${t1}. Así salen ${cal(m * x.ce * t1)}.`),
+      e(m * x.ce * t0, 'QM-T-INICIAL', `La masa por cₑ está bien. Pero el calor depende de cuánto sube la temperatura, ${d} °C, no de dónde parte: así salen ${cal(m * x.ce * t0)}.`),
+      e(m * x.ce * (t0 + t1), 'QM-DT-SUMA', `La masa por cₑ está bien. Pero ΔT es lo que sube, así que es una resta, ${t1} − ${t0}, no una suma: así salen ${cal(m * x.ce * (t0 + t1))}.`),
+      e(m * d, 'QM-SIN-CE', `La masa por ΔT está bien. Pero cada sustancia pide distinto para subir 1 °C: falta multiplicar por el calor específico del ${x.nombre}. Así salen ${cal(m * d)}.`),
     ];
     return {
       variables: VARS('calor (lo que se pide)', 'calor', { ...DT, ...CE }),
@@ -116,11 +116,11 @@
     if (sub === 'calor') {
       const funde = rng.moneda(), m = rng.elegir([20, 50, 100, 150, 200, 250]), L = funde ? LF : LV, otro = funde ? LV : LF, q = m * L;
       const errores = [
-        e(m * otro, 'QM-OTRO-L', `Bien Q = m · L. Pero ${otro} cal/g es el L de ${funde ? 'hervir' : 'fundir'}: así salen ${cal(m * otro)}.`),
-        e(m * (LF + LV), 'QM-SUMA-LATENTES', `Bien Q = m · L. Pero solo hay un cambio de estado: no se suman los dos L. Así salen ${cal(m * (LF + LV))}.`),
-        e(0, 'QM-CERO', 'Bien: la temperatura no cambia. Pero el calor sí entra: se usa en cambiar el estado, así que no es 0 cal.'),
+        e(m * otro, 'QM-OTRO-L', `Q = m · L está bien. Pero ${otro} cal/g es el L de ${funde ? 'hervir' : 'fundir'}, y aquí el agua ${funde ? 'se funde' : 'hierve'}: cada cambio de estado tiene su propio L. Así salen ${cal(m * otro)}.`),
+        e(m * (LF + LV), 'QM-SUMA-LATENTES', `Q = m · L está bien. Pero aquí hay un solo cambio de estado, así que va un solo L: los dos se sumarían si el hielo se fundiera y además hirviera. Así salen ${cal(m * (LF + LV))}.`),
+        e(0, 'QM-CERO', 'La temperatura no cambia, cierto. Pero el calor sí entra: se gasta en cambiar el estado y por eso no se nota en el termómetro. No es 0 cal.'),
       ];
-      if (!funde) errores.push(e(m * CE_AGUA * 100, 'QM-SENSIBLE-EN-LATENTE', `Bien usar la masa. Pero el agua ya hierve: no sube 100 °C, cambia de estado. Así salen ${cal(m * 100)}.`));
+      if (!funde) errores.push(e(m * CE_AGUA * 100, 'QM-SENSIBLE-EN-LATENTE', `Usar la masa está bien. Pero el agua ya hierve, así que no se calienta más: el calor la vuelve vapor, y eso pide 540 cal por gramo. Así salen ${cal(m * 100)}.`));
       return {
         variables: VARS('calor (lo que se pide)', 'calor', { L: va('calor latente', 'por gramo') }),
         enunciado: funde ? ['Hay ', v('m', `${m} g`), ' de hielo a 0 °C.'] : ['Una olla hierve. Hay ', v('m', `${m} g`), ' de esa agua.'],
@@ -136,9 +136,9 @@
     }
     const m = rng.elegir([20, 25, 40, 50, 75]), q = m * LV;
     const errores = [
-      e(q / LF, 'QM-OTRO-L', `Bien despejar m = Q / L. Pero hervir pide 540 cal/g; 80 es fundir. Así salen ${f(q / LF)} g.`),
-      e(q / (LF + LV), 'QM-SUMA-LATENTES', `Bien despejar m = Q / L. Pero solo hay un cambio de estado: no se suman los dos L. Así salen ${f(q / (LF + LV))} g.`),
-      e(q / 100, 'QM-SENSIBLE-EN-LATENTE', `Bien despejar la masa. Pero el agua ya hierve: no sube 100 °C, cambia de estado. Así salen ${f(q / 100)} g.`),
+      e(q / LF, 'QM-OTRO-L', `Despejar m = Q / L está bien. Pero el agua hierve, y hervir pide 540 cal/g; los 80 cal/g son para fundir hielo. Así salen ${f(q / LF)} g.`),
+      e(q / (LF + LV), 'QM-SUMA-LATENTES', `Despejar m = Q / L está bien. Pero aquí hay un solo cambio de estado, así que va un solo L, el de hervir. Así salen ${f(q / (LF + LV))} g.`),
+      e(q / 100, 'QM-SENSIBLE-EN-LATENTE', `Despejar la masa está bien. Pero el agua ya hierve y no se calienta más: el calor la vuelve vapor a 540 cal por gramo. Así salen ${f(q / 100)} g.`),
     ];
     return {
       variables: VARS('masa que hierve (lo que se pide)', 'masa', QD),
@@ -158,15 +158,15 @@
     const t0 = rng.elegir([-10, 5, 12, 15, 20]), t1 = rng.elegir([60, 70, 75, 90]), d = t1 - t0, aF = rng.moneda();
     const correcta = aF ? limpio(1.8 * d) : d, u = aF ? '°F' : 'K';
     const errores = aF ? [
-      e(1.8 * d + 32, 'QM-LECTURA-PUNTO', `Bien multiplicar por 1,8. Pero el +32 es para leer un punto, no para una variación: ${f(1.8 * d + 32)} °F.`),
-      e(d, 'QM-ESCALA-SIN-FACTOR', `Bien la variación en °C, ${d}. Pero cada grado Celsius son 1,8 °F: falta multiplicar.`),
-      e(d / 1.8, 'QM-ESCALA-SIN-FACTOR', `Bien el factor 1,8. Pero va multiplicando: el °F es más chico. Así salen ${f(d / 1.8)} °F.`),
-      e(1.8 * t1, 'QM-T-FINAL', `Bien multiplicar por 1,8. Pero se multiplica la variación, ${d} °C, no la temperatura final: ${f(1.8 * t1)}.`),
+      e(1.8 * d + 32, 'QM-LECTURA-PUNTO', `Multiplicar por 1,8 está bien. Pero el + 32 solo corre el cero de la escala, y al restar dos lecturas se cancela: sirve para leer un punto, no una variación. Así salen ${f(1.8 * d + 32)} °F.`),
+      e(d, 'QM-ESCALA-SIN-FACTOR', `La variación en °C, ${d}, está bien. Pero un grado Fahrenheit es más chico: cada grado Celsius son 1,8 °F, así que falta multiplicar.`),
+      e(d / 1.8, 'QM-ESCALA-SIN-FACTOR', `El factor 1,8 está bien. Pero va multiplicando: el °F es más chico, así que la misma variación da un número mayor en °F. Así salen ${f(d / 1.8)} °F.`),
+      e(1.8 * t1, 'QM-T-FINAL', `Multiplicar por 1,8 está bien. Pero piden cuánto varió, así que se multiplica la variación, ${d} °C, no la temperatura final: así salen ${f(1.8 * t1)}.`),
     ] : [
-      e(d + 273, 'QM-LECTURA-PUNTO', `Bien la variación en °C, ${d}. Pero sumar 273 sirve para leer un punto; en una variación, ΔK = Δ°C: ${d + 273}.`),
-      e(1.8 * d, 'QM-ESCALA-SIN-FACTOR', `Bien la variación en °C, ${d}. Pero el 1,8 es de los °F; un kelvin mide lo mismo que un °C: ${f(1.8 * d)}.`),
-      e(t1 + 273, 'QM-LECTURA-PUNTO', `Bien pasar a kelvin. Pero ${t1 + 273} K es la temperatura final, no cuánto varió.`),
-      e(t1 + Math.abs(t0), 'QM-DT-SUMA', `Bien restar las dos lecturas. Pero ${t1} − ${par(t0)} = ${d}, no ${t1 + Math.abs(t0)}.`),
+      e(d + 273, 'QM-LECTURA-PUNTO', `La variación en °C, ${d}, está bien. Pero sumar 273 solo corre el cero, y al restar dos lecturas se cancela: en una variación, ΔK = Δ°C. Así salen ${d + 273}.`),
+      e(1.8 * d, 'QM-ESCALA-SIN-FACTOR', `La variación en °C, ${d}, está bien. Pero el 1,8 es para pasar a °F; un kelvin mide lo mismo que un grado Celsius, así que el número no cambia. Así salen ${f(1.8 * d)}.`),
+      e(t1 + 273, 'QM-LECTURA-PUNTO', `Pasar a kelvin está bien. Pero ${t1 + 273} K es la temperatura final, no cuánto varió: para la variación se resta la inicial de la final.`),
+      e(t1 + Math.abs(t0), 'QM-DT-SUMA', `Restar las dos lecturas está bien. Pero restar un número negativo es sumar su valor: ${t1} − ${par(t0)} = ${d}, no ${t1 + Math.abs(t0)}.`),
     ];
     return {
       variables: { x: va('variación (lo que se pide)', 'temperatura') },
@@ -186,10 +186,10 @@
   function tTramos(rng) {
     const m = rng.elegir([50, 100, 200]), t = rng.elegir([10, 20, 25, 30, 40]), q1 = m * LF, q2 = m * t, q = q1 + q2;
     const errores = [
-      e(q1, 'QM-SOLO-LATENTE', `Bien fundir: ${cal(q1)}. Pero falta calentar el agua desde 0 °C hasta ${t} °C.`),
-      e(q2, 'MA6', `Bien calentar el agua: ${cal(q2)}. Pero antes hay que fundir el hielo, sin que suba la temperatura.`),
-      e(m * LV + q2, 'QM-OTRO-L', `Bien sumar dos tramos. Pero fundir pide 80 cal/g; 540 es hervir. Así salen ${cal(m * LV + q2)}.`),
-      e(q1 + m * CE_HIELO * t, 'QM-CE-HIELO', `Bien los dos tramos. Pero lo que se calienta ya es agua líquida, de cₑ = 1, no hielo. Así salen ${cal(q1 + m * CE_HIELO * t)}.`),
+      e(q1, 'QM-SOLO-LATENTE', `Fundir está bien: ${cal(q1)}. Pero al fundirse, el agua queda a 0 °C, y falta calentarla hasta ${t} °C: es un segundo tramo, de calor sensible.`),
+      e(q2, 'MA6', `Calentar el agua está bien: ${cal(q2)}. Pero antes hay que fundir el hielo, y eso pide 80 cal por gramo sin que suba la temperatura.`),
+      e(m * LV + q2, 'QM-OTRO-L', `Sumar dos tramos está bien. Pero el hielo se funde, no hierve: fundir pide 80 cal/g, y los 540 cal/g son para volver vapor el agua. Así salen ${cal(m * LV + q2)}.`),
+      e(q1 + m * CE_HIELO * t, 'QM-CE-HIELO', `Los dos tramos están bien. Pero lo que se calienta después de fundir ya es agua líquida, de cₑ = 1, no hielo de 0,5. Así salen ${cal(q1 + m * CE_HIELO * t)}.`),
     ];
     return {
       variables: VARS('calor (lo que se pide)', 'calor', { ...DT, ...CE }),
@@ -211,10 +211,10 @@
     if (sub === 'juliaca') {
       const q = g * (TEB - t0);
       const errores = [
-        e(g * (100 - t0), 'MA7', `Bien Q = m · cₑ · ΔT. Pero en Juliaca el agua hierve a unos 87 °C, no a 100 °C: así salen ${cal(g * (100 - t0))}.`),
-        e(g * TEB, 'QM-T-FINAL', `Bien la masa, ${f(g)} g. Pero ΔT es lo que sube, 87 − ${t0}, no 87: así salen ${cal(g * TEB)}.`),
-        e(g * t0, 'QM-T-INICIAL', `Bien la masa, ${f(g)} g. Pero ΔT es lo que sube, 87 − ${t0}, no la temperatura de partida: así salen ${cal(g * t0)}.`),
-        e(g * (TEB - t0) + g * LV, 'MA6', `Bien calentar hasta 87 °C. Pero la pregunta es hasta que empieza a hervir: no hace falta volverla vapor. Así salen ${cal(g * (TEB - t0) + g * LV)}.`),
+        e(g * (100 - t0), 'MA7', `Q = m · cₑ · ΔT está bien. Pero en Juliaca hay menos aire encima y el agua hierve a unos 87 °C, no a 100 °C: así salen ${cal(g * (100 - t0))}.`),
+        e(g * TEB, 'QM-T-FINAL', `La masa, ${f(g)} g, está bien. Pero el agua no parte de 0 °C: ΔT es lo que sube, 87 − ${t0}, no 87. Así salen ${cal(g * TEB)}.`),
+        e(g * t0, 'QM-T-INICIAL', `La masa, ${f(g)} g, está bien. Pero el calor depende de cuánto sube la temperatura, 87 − ${t0}, no de dónde parte: así salen ${cal(g * t0)}.`),
+        e(g * (TEB - t0) + g * LV, 'MA6', `Calentar hasta 87 °C está bien. Pero la pregunta es hasta que empieza a hervir, así que no hace falta volver vapor el agua. Así salen ${cal(g * (TEB - t0) + g * LV)}.`),
       ];
       return {
         variables: VARS('calor (lo que se pide)', 'calor', { ...DT, ...CE }),
@@ -232,11 +232,11 @@
     if (L === 1) return null; // en Lima, 2 L o 3 L: así cabe el error de tomar un solo litro
     const q = g * (100 - TEB);
     const errores = [
-      e(1000 * (100 - TEB), 'QM-UN-LITRO', `Bien la diferencia de 13 °C. Pero son ${L} L, ${f(g)} g de agua, no 1000 g: así salen ${cal(1000 * (100 - TEB))}.`),
-      e(g * (100 - t0), 'QM-UN-TRAMO', `Bien el calor de Lima, ${cal(g * (100 - t0))}. Pero piden cuánto más que en Juliaca: falta restar.`),
-      e(g * (TEB - t0), 'QM-UN-TRAMO', `Bien el calor de Juliaca, ${cal(g * (TEB - t0))}. Pero piden cuánto más hace falta en Lima.`),
-      e(g * (100 - t0) + g * (TEB - t0), 'QM-SUMA-CIUDADES', `Bien el calor de cada ciudad. Pero se pide la diferencia, no la suma: así salen ${cal(g * (100 - t0) + g * (TEB - t0))}.`),
-      e(g * (100 - TEB) * 2, 'QM-DT-SUMA', 'Bien la masa. Pero la diferencia entre 100 °C y 87 °C es una sola, 13 °C: no se cuenta dos veces.'),
+      e(1000 * (100 - TEB), 'QM-UN-LITRO', `La diferencia de 13 °C está bien. Pero son ${L} L, es decir, ${f(g)} g de agua, no 1000 g, y más agua pide más calor: así salen ${cal(1000 * (100 - TEB))}.`),
+      e(g * (100 - t0), 'QM-UN-TRAMO', `El calor de Lima, ${cal(g * (100 - t0))}, está bien. Pero piden cuánto más que en Juliaca, así que falta restarle el calor de Juliaca.`),
+      e(g * (TEB - t0), 'QM-UN-TRAMO', `El calor de Juliaca, ${cal(g * (TEB - t0))}, está bien. Pero piden cuánto más hace falta en Lima, así que se calcula también el de Lima y se restan.`),
+      e(g * (100 - t0) + g * (TEB - t0), 'QM-SUMA-CIUDADES', `El calor de cada ciudad está bien. Pero se pide cuánto más hace falta en Lima, y eso es la diferencia, no la suma: así salen ${cal(g * (100 - t0) + g * (TEB - t0))}.`),
+      e(g * (100 - TEB) * 2, 'QM-DT-SUMA', 'La masa está bien. Pero entre 100 °C y 87 °C hay una sola diferencia, 13 °C: es lo que el agua de Lima sube de más, y no se cuenta dos veces.'),
     ];
     return {
       variables: VARS('calor de más (lo que se pide)', 'calor', { ...DT, ...CE }),
@@ -258,10 +258,10 @@
     const kg = rng.elegir([2, 5, 10, 20]), t0 = rng.elegir([10, 15, 20]), t1 = rng.elegir([40, 50, 60]), g = kg * 1000, d = t1 - t0;
     const c = g * d, kJ = limpio(c * 4.18 / 1000);
     const errores = [
-      e(c / 1000, 'QM-CAL-COMO-J', `Bien el calor en calorías, ${f(c)} cal. Pero falta pasar a joules: cada caloría son unos 4,18 J. Así salen ${f(c / 1000)} kJ.`),
-      e(c / 4.18 / 1000, 'QM-CAL-J-INVERSO', `Bien el calor en calorías. Pero 1 cal son unos 4,18 J: se multiplica, no se divide. Así salen ${f(c / 4.18 / 1000)} kJ.`),
-      e(kg * d * 4.18 / 1000, 'QU1-kg-sin-g', `Bien ΔT y el paso a kJ. Pero la masa va en gramos: ${kg} kg = ${f(g)} g. Así salen ${f(kg * d * 4.18 / 1000)} kJ.`),
-      e(g * t1 * 4.18 / 1000, 'QM-T-FINAL', `Bien la masa y el paso a kJ. Pero ΔT es lo que sube, ${d} °C, no ${t1}: así salen ${f(g * t1 * 4.18 / 1000)} kJ.`),
+      e(c / 1000, 'QM-CAL-COMO-J', `El calor en calorías, ${f(c)} cal, está bien. Pero piden joules, y cada caloría son unos 4,18 J: falta multiplicar antes de pasar a kJ. Así salen ${f(c / 1000)} kJ.`),
+      e(c / 4.18 / 1000, 'QM-CAL-J-INVERSO', `El calor en calorías está bien. Pero 1 cal son unos 4,18 J, así que hay más joules que calorías: se multiplica, no se divide. Así salen ${f(c / 4.18 / 1000)} kJ.`),
+      e(kg * d * 4.18 / 1000, 'QU1-kg-sin-g', `ΔT y el paso a kJ están bien. Pero cₑ está en cal por gramo, así que la masa va en gramos: ${kg} kg = ${f(g)} g. Así salen ${f(kg * d * 4.18 / 1000)} kJ.`),
+      e(g * t1 * 4.18 / 1000, 'QM-T-FINAL', `La masa y el paso a kJ están bien. Pero el calor depende de cuánto sube la temperatura, ${d} °C, no de la temperatura final, ${t1}: así salen ${f(g * t1 * 4.18 / 1000)} kJ.`),
     ];
     return {
       variables: VARS('calor en kJ (lo que se pide)', 'calor', { ...DT, ...CE }),
@@ -283,10 +283,10 @@
     const m = rng.elegir([50, 100, 200]), T0 = rng.elegir([10, 20]), t = rng.elegir([10, 20, 30, 40]);
     const q1 = m * CE_HIELO * T0, q2 = m * LF, q3 = m * t, q = q1 + q2 + q3;
     const errores = [
-      e(m * T0 + q2 + q3, 'QM-CE-HIELO', `Bien los tres tramos. Pero el hielo tiene cₑ = 0,5, no 1: el primer tramo da ${cal(q1)}. Así salen ${cal(m * T0 + q2 + q3)}.`),
-      e(q1 + q3, 'MA6', `Bien calentar el hielo y el agua. Pero a 0 °C el hielo se funde y pide ${cal(q2)}, sin subir la temperatura.`),
-      e(m * (t + T0), 'QM-UN-TRAMO', `Bien usar la masa y ΔT = ${t + T0} °C. Pero hay tres tramos: el hielo, la fusión y el agua. Así salen ${cal(m * (t + T0))}.`),
-      e(q2 + q3 - q1, 'QM-T-SIGNO', `Bien los tres tramos. Pero el hielo sube de −${T0} °C a 0 °C: ΔT = +${T0}, y ese calor se suma. Así salen ${cal(q2 + q3 - q1)}.`),
+      e(m * T0 + q2 + q3, 'QM-CE-HIELO', `Los tres tramos están bien. Pero el hielo pide la mitad de calor que el agua para subir 1 °C, cₑ = 0,5, no 1: el primer tramo da ${cal(q1)}. Así salen ${cal(m * T0 + q2 + q3)}.`),
+      e(q1 + q3, 'MA6', `Calentar el hielo y el agua está bien. Pero entre los dos tramos, a 0 °C, el hielo se funde y pide ${cal(q2)} sin subir la temperatura: falta ese tramo plano.`),
+      e(m * (t + T0), 'QM-UN-TRAMO', `Usar la masa y ΔT = ${t + T0} °C está bien. Pero hay tres tramos con fórmulas distintas: calentar el hielo, fundirlo y calentar el agua. Así salen ${cal(m * (t + T0))}.`),
+      e(q2 + q3 - q1, 'QM-T-SIGNO', `Los tres tramos están bien. Pero el hielo sube de −${T0} °C a 0 °C, así que ΔT = +${T0}: también pide calor, y ese calor se suma. Así salen ${cal(q2 + q3 - q1)}.`),
     ];
     return {
       variables: VARS('calor (lo que se pide)', 'calor', { ...DT, ...CE }),
@@ -306,10 +306,10 @@
   function tFinal(rng) {
     const m = rng.elegir([50, 100, 200]), t = rng.elegir([10, 20, 25, 30, 40, 50]), q = m * LF + m * t;
     const errores = [
-      e(q / m, 'QM-SIN-LATENTE', `Bien usar Q = m · cₑ · ΔT. Pero primero el hielo se funde y gasta 80 cal por gramo. Así salen ${f(q / m)} °C.`),
-      e(2 * t, 'QM-CE-HIELO', `Bien restar el calor de fundir. Pero lo que se calienta ya es agua, de cₑ = 1, no hielo de 0,5: así salen ${f(2 * t)} °C.`),
-      e((q - LF) / m, 'QM-L-SIN-M', `Bien restar el calor de fundir. Pero son 80 cal por cada gramo: ${m} · 80. Así salen ${f((q - LF) / m)} °C.`),
-      e(0, 'MA6', 'Bien: mientras se funde, el agua está a 0 °C. Pero el calor alcanza para fundir todo el hielo y sobra.'),
+      e(q / m, 'QM-SIN-LATENTE', `Usar Q = m · cₑ · ΔT está bien, pero no con todo el calor. Primero el hielo se funde y gasta 80 cal por gramo; solo lo que sobra sube la temperatura. Así salen ${f(q / m)} °C.`),
+      e(2 * t, 'QM-CE-HIELO', `Restar el calor de fundir está bien. Pero después de fundirse, lo que se calienta ya es agua, de cₑ = 1, no hielo de 0,5: así salen ${f(2 * t)} °C.`),
+      e((q - LF) / m, 'QM-L-SIN-M', `Restar el calor de fundir está bien. Pero son 80 cal por cada gramo de hielo, así que fundirlo todo pide ${m} · 80. Así salen ${f((q - LF) / m)} °C.`),
+      e(0, 'MA6', 'Mientras se funde, el agua está a 0 °C, cierto. Pero aquí el calor alcanza para fundir todo el hielo y sobra, y lo que sobra calienta el agua.'),
     ];
     return {
       variables: VARS('temperatura final (lo que se pide)', 'temperatura', QD),
