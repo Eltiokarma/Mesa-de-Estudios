@@ -102,3 +102,29 @@ test('auditoría: el par de isoelectrónicos tiene una sola respuesta, y el car�
     if (d.tipo === 'metalico') { const E = gen.DATOS.EL, m = q.respuesta.valor.replace('El ', ''), [x, y] = [E[d.a], E[d.b]], mas = x.nombre === m ? x : y, otro = mas === x ? y : x; assert.ok(mas.ei < otro.ei, `${s}: ${mas.s} ${mas.ei}, ${otro.s} ${otro.ei}`); }
   }
 });
+
+// Verificador de la segunda pasada (27 nov): cada explicación de un orden de radios equivocado dice qué paso acertó
+// (el de la fila o el de la columna) y quién es el mayor. Con el trío [Ca, K, Mg], el mayor (K) está a la izquierda del
+// pivote y el menor (Mg), encima, y el texto de los otros tríos («el de abajo es el mayor») era falso.
+test('radio: la explicación de cada orden equivocado dice bien qué paso acertó y quién es el mayor (400 semillas)', () => {
+  let ca = 0;
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea: 'radio-atomico-ionico' }), d = p._datos;
+    if (d.tipo !== 'radio-orden' && d.tipo !== 'radio-z') continue;
+    const [piv, a, b] = d.trio, L = d.tipo === 'radio-z' ? Object.fromEntries(d.letras.map((l, i) => [l, d.trio[i]])) : null;
+    if (piv === 'Ca') ca++;
+    const fila = [a, b].find(x => T[x].p === T[piv].p), col = [a, b].find(x => T[x].g === T[piv].g);
+    const mayor = por(d.trio, 'r')[0];
+    for (const alt of p.alternativas.filter(x => x.error)) {
+      const orden = alt.texto.split(' > ').map(x => (L ? L[x] : x)), antes = (x, y) => orden.indexOf(x) < orden.indexOf(y);
+      const bienFila = antes(...por([piv, fila], 'r')), bienCol = antes(...por([piv, col], 'r')), e = alt.error.explicacion;
+      if (/^El paso del periodo está bien/.test(e)) assert.ok(bienFila && !bienCol, `${s} ${alt.texto}: ${e}`);
+      if (/^El paso del grupo está bien/.test(e)) assert.ok(bienCol && !bienFila, `${s} ${alt.texto}: ${e}`);
+      if (/^Dejar al de la derecha detrás del otro de su fila/.test(e)) assert.ok(T[fila].g > T[piv].g && antes(piv, fila), `${s}: ${e}`);
+      if (/^Dejar al de arriba detrás del otro de su columna/.test(e)) assert.ok(T[col].p < T[piv].p && antes(piv, col), `${s}: ${e}`);
+      if (/el de abajo, con un nivel más, es el mayor/.test(e)) assert.ok(T[mayor].g === T[piv].g && T[mayor].p > T[piv].p, `${s}: ${e}`);
+      if (/el de la izquierda, con menos protones, es el mayor/.test(e)) assert.ok(T[mayor].p === T[piv].p && T[mayor].g < T[piv].g, `${s}: ${e}`);
+    }
+  }
+  assert.ok(ca > 0, 'el trío del calcio sale en las 400 semillas');
+});

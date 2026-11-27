@@ -29,7 +29,7 @@
       "enunciado": "Los tres elementos son de los grupos A. Ordénalos de mayor a menor electronegatividad: boro, aluminio, carbono. Datos: Boro (B): periodo 2, grupo 13 (IIIA). Aluminio (Al): periodo 3, grupo 13 (IIIA). Carbono (C): periodo 2, grupo 14 (IVA). EN: cuánto jala un átomo el par que comparte en un enlace. Alternativas: A) C > Al > B   B) Al > B > C   C) B > Al > C   D) C > B > Al   E) B > C > Al",
       "respuesta": "D) C > B > Al",
       "pasos": [
-        "En una fila, el de la derecha jala más; en una columna, el de abajo jala menos.",
+        "En una fila, el de la derecha jala más porque tiene más protones; en una columna, el de abajo jala menos porque el par le queda más lejos.",
         "C > B > Al (B 2,04; C 2,55; Al 1,61)."
       ]
     },
@@ -76,7 +76,7 @@
       "enunciado": "Los tres elementos son de los grupos A. Ordénalos de mayor a menor electronegatividad: carbono, boro, aluminio. Datos: Carbono (C): periodo 2, grupo 14 (IVA). Boro (B): periodo 2, grupo 13 (IIIA). Aluminio (Al): periodo 3, grupo 13 (IIIA). EN: cuánto jala un átomo el par que comparte en un enlace. Alternativas: A) C > Al > B   B) C > B > Al   C) B > Al > C   D) B > C > Al   E) Al > B > C",
       "respuesta": "B) C > B > Al",
       "pasos": [
-        "En una fila, el de la derecha jala más; en una columna, el de abajo jala menos.",
+        "En una fila, el de la derecha jala más porque tiene más protones; en una columna, el de abajo jala menos porque el par le queda más lejos.",
         "C > B > Al (B 2,04; C 2,55; Al 1,61)."
       ]
     }
