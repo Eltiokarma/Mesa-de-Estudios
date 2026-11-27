@@ -78,7 +78,9 @@ for (const [curso, archivo] of archivos) {
     // La figura: dos paneles rotulados, sin NaN, después de un párrafo que existe y con su texto alternativo.
     assert.ok(f && typeof f.svg === 'string' && /^\s*<svg\b[\s\S]*<\/svg>\s*$/.test(f.svg), 'figura: { svg } con un <svg> entero');
     const tf = textoSVG(f.svg);
-    assert.ok(tf.includes('Lo que predice') && tf.includes('Lo que se mide'), 'figura: dos paneles rotulados «Lo que predice» y «Lo que se mide»');
+    // En razonamiento verbal el choque es entre dos lecturas de un texto: sus paneles pueden ser «Lo que se entiende» y «Lo que dice».
+    const [rIzq, rDer] = curso === 'razonamiento-verbal' && tf.includes('Lo que se entiende') ? ['Lo que se entiende', 'Lo que dice'] : ['Lo que predice', 'Lo que se mide'];
+    assert.ok(tf.includes(rIzq) && tf.includes(rDer), `figura: dos paneles rotulados «${rIzq}» y «${rDer}»`);
     assert.ok(!/NaN|undefined|Infinity/.test(f.svg), 'figura: el SVG trae NaN o undefined');
     assert.ok(Number.isInteger(f.antes) && f.antes >= 1 && f.antes < def.parrafos.length, 'figura.antes: el párrafo después del que va (no el último)');
     assert.ok(f.alt && f.alt.length > 40, 'figura.alt: el texto alternativo cuenta el choque');
@@ -120,7 +122,7 @@ for (const [curso, archivo] of archivos) {
     const html = Apertura.html(def);
     for (const c of ['seLleva', 'alcance', 'choque', 'atajo']) assert.ok(!html.includes(fi[c]), `la app muestra ficha.${c}`);
     for (const x of fi.porVerificar) assert.ok(!html.includes(x), 'la app muestra ficha.porVerificar');
-    assert.ok(html.includes('Antes de seguir') && html.includes('Lo que predice'), 'el HTML trae la pregunta y la figura');
+    assert.ok(html.includes('Antes de seguir') && html.includes(rIzq), 'el HTML trae la pregunta y la figura');
   });
 }
 
