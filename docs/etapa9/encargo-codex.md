@@ -44,3 +44,20 @@ presentación, y solo se ve en las capturas.
 Si tu entorno puede correr Playwright: `MESA_URL=http://localhost:<PORT> node herramientas/capturas-teoria.js
 <UNIDAD> <carpeta> momentos,ejemplos` y mira cada captura antes de entregar. Si no puede, dilo en el informe y
 Claude las saca en el cierre.
+
+## Actualización del 27 nov: cola de física y la redacción que explica
+
+**Orden** (la rama del catálogo): Oscilaciones → Ondas mecánicas → Fluidos → Temperatura y calor → Termodinámica →
+Electrostática → Corriente y circuitos → Magnetismo → Inducción electromagnética → Ondas electromagnéticas → Óptica
+geométrica → Física moderna. Una rama `codex/<etapa>-fisica-<unidad>` por unidad, desde `main` actualizado (trae los
+subíndices de la app v316 y los topes nuevos). La investigación larga de cada una está en `docs/investigacion/etapa13/`
+a `etapa22/` y `etapas-17-20/`, archivo `fisica.<unidad>.md`.
+
+**El texto explica, no solo enuncia** (Gerson, 26 nov). Además de las once lecciones de arriba, escribe como pide
+`docs/metodo/unidad/redaccion-delegada.md`, punto 4: cada regla dice qué es cada término en palabras del alumno, por qué
+vale y un caso; el recuadro de la regla se lee como frase; «Vale si» dice qué pasa si no se cumple; cada paso dice por
+qué se hace y qué significa el resultado; cada explicación de alternativa nombra el razonamiento equivocado. Topes:
+regla 60, condición 45, tarjeta 60, `siFuera` 40, paso 35, solución 40, paso de «Así se resuelve» 50. Mira como modelo
+las unidades de física redactadas el 26 nov (por ejemplo `fisica.movimiento-parabolico-y-circular`, regla 1).
+
+**Las prácticas no exigen abrir con «Bien»**: esa comprobación producía telegramas y se quitó.
