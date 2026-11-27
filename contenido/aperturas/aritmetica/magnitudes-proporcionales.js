@@ -30,7 +30,7 @@
     const chicas = Array.from({ length: n }, (_, i) => unaPizza(cx - 34 + (i % 2) * 68, 232 + Math.floor(i / 2) * 62, r, i === 0 ? '20 cm' : '')).join('');
     return `<text x="${cx}" y="30" text-anchor="middle" font-size="24" font-weight="800" fill="currentColor">${titulo}</text>
       ${unaPizza(cx, 106, R, '40 cm')}
-      <text x="${cx}" y="192" text-anchor="middle" font-size="20" font-weight="700" fill="currentColor">pesa lo de</text>
+      <text x="${cx}" y="192" text-anchor="middle" font-size="20" font-weight="700" fill="currentColor">pesaría lo de</text>
       ${chicas}
       ${pie.map((l, i) => `<text x="${cx}" y="${358 + i * 24}" text-anchor="middle" font-size="21" style="fill:var(--muted)">${l}</text>`).join('')}`;
   };
@@ -45,11 +45,11 @@
     titulo: '¿Por qué una pizza el doble de ancha pesa más del doble?',
     parrafos: [
       ['En una pizzería, la pizza personal mide unos ', ancho('20 cm'), ' de ancho y la familiar, unos ', ancho('40 cm'), '. ',
-        'Si la masa de las dos tiene el mismo grosor y pones cada una en una balanza, la familiar pesa lo mismo que ',
+        'Si la masa de las dos tiene el mismo grosor y pones cada una en una balanza, la familiar pesaría lo mismo que ',
         pizza('cuatro personales'), ' juntas.'],
       ['Con la regla de tres, la cuenta sale en un renglón: si el ancho se duplica, la pizza también, y la familiar pesaría lo de ',
         pizza('dos personales'), '. ',
-        'La regla de tres inversa tampoco ayuda, porque diría que la familiar pesa lo de media personal, y basta ponerlas lado a lado para ver que la familiar es más grande.'],
+        'La regla de tres inversa tampoco ayuda, porque diría que la familiar pesaría lo de media personal, y basta ponerlas lado a lado para ver que la familiar es más grande.'],
       ['Las dos reglas de tres suponen que, cuando una cantidad se duplica, la otra se duplica o se queda en la mitad. ',
         'Con la pizza no pasa ninguna de las dos cosas, porque al agrandarla la masa crece a lo ancho y también a lo largo, y por eso al doble de ancho le toca lo de ',
         pizza('cuatro personales'), '. ',
@@ -58,13 +58,13 @@
     figura: {
       antes: 2,
       svg,
-      alt: 'Dos dibujos con la misma escala. En los dos, una pizza familiar de 40 cm de ancho. Lo que predice la regla de tres: la familiar pesa lo de dos pizzas personales de 20 cm. Lo que se mide: pesa lo de cuatro personales.',
+      alt: 'Dos dibujos con la misma escala. En los dos, una pizza familiar de 40 cm de ancho. Lo que predice la regla de tres: la familiar pesa lo de dos pizzas personales de 20 cm. Lo que se mide: pesaría lo de cuatro personales.',
     },
     pregunta: 'Un pan de molde el doble de largo, con tajadas del mismo tamaño y grosor, sí da el doble de tajadas. Al agrandarse, ¿en qué se diferencia ese pan de la pizza?',
     ficha: {
       seLleva: 'La regla de tres solo sirve si, al duplicar una cantidad, la otra se duplica o se queda en la mitad; una pizza el doble de ancha trae lo de cuatro, no lo de dos.',
       alcance: 'Sí (cantidad; cambio y relaciones).',
-      choque: 'La regla de tres predice que la pizza de 40 cm trae lo de dos de 20 cm, y en la balanza pesa lo de cuatro.',
+      choque: 'La regla de tres predice que la pizza de 40 cm trae lo de dos de 20 cm, y en la balanza pesaría lo de cuatro.',
       atajo: 'La regla de tres inversa da media personal, que se descarta a la vista. La fórmula del área del círculo resolvería la cuenta, pero esa es justamente la pregunta del tema: averiguar cómo cambia una cantidad con la otra antes de calcular (aquí, la pizza crece con el cuadrado del ancho).',
       porVerificar: [
         'Anchos típicos en las pizzerías del Perú: personal de unos 20 cm y familiar de unos 40 cm (varían según la cadena; la familiar suele estar entre 36 y 40 cm).',
@@ -74,7 +74,7 @@
         'Segunda versión (27 nov): Gerson rechazó la primera, que era el ejemplo del skill (la talla del niño). Esta busca un hecho propio, que un alumno de 5.º entiende sin saber el tema, y deja una oración para llevarse (seLleva).',
         'La pregunta compara pares (largo del pan y tajadas, ancho de la pizza y pizza) y se puede responder con el párrafo 3: el pan crece solo a lo largo. La clase recoge esa respuesta para presentar la proporcionalidad directa.',
         'Revisión del Escribidor Escribano (27 nov): el título y la figura decían «trae», que no dice de qué; ahora todo habla de lo que pesa, como la balanza del párrafo 1. Se quitó «Quien usa la regla de tres…» (molde) y la pregunta, que decía «¿Qué tiene ese pan que no tiene la pizza?», ahora pide la diferencia al agrandarse y aclara que las tajadas son del mismo tamaño (si no, el pan también podría crecer a lo ancho).',
-        'Contenido, para Gerson: el panel «Lo que se mide» y el párrafo 1 presentan como pesada un resultado de cálculo (ver porVerificar). Antes de publicar conviene pesarlo una vez o decir «pesaría». Además, el párrafo 3 dice por qué crece (a lo ancho y a lo largo): es una pista de la causa, no la regla, pero roza el «la entrada no explica» del skill.',
+        'Contenido, para Gerson: el panel «Lo que se mide» y el párrafo 1 presentan como pesada un resultado de cálculo (ver porVerificar). Gerson eligió «pesaría» (27 nov). Además, el párrafo 3 dice por qué crece (a lo ancho y a lo largo): es una pista de la causa, no la regla, pero roza el «la entrada no explica» del skill.',
       ],
     },
   };
