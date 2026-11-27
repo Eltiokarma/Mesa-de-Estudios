@@ -48,7 +48,7 @@
       'En el recibo del agua, el consumo de tu casa viene en metros cúbicos, y un metro cúbico es el agua que llena una caja de 1 m de largo, 1 m de ancho y 1 m de alto. ' +
         'Un litro, en cambio, es lo que cabe en un cubo de 10 cm de lado, y es lo que mide una jarra de un litro como la de la cocina. ' +
         'Si llenas la caja de un metro y sacas su agua con esa jarra, tienes que llenar la jarra 1000 veces: son 1000 litros, casi lo que guarda el tanque de 1100 L que muchas casas tienen en el techo.',
-      'La cuenta que haría cualquiera es esta: un metro son diez veces 10 cm, así que en la caja de un metro cabrían diez litros, los de una fila de cubitos de un litro puestos uno junto al otro. ' +
+      'La cuenta rápida, la misma que sirve para pasar de metros a centímetros, es esta: un metro son diez veces 10 cm, así que en la caja de un metro cabrían diez litros, los de una fila de cubitos de un litro puestos uno junto al otro. ' +
         'Esa cuenta se queda corta por mucho, porque diez litros apenas llenan un balde y la caja de un metro llena casi un tanque entero.',
       'El lado de la caja mide diez veces el del cubo de un litro, y aun así la caja no guarda diez litros sino mil, cien veces más de lo que daba la cuenta. ' +
         'Esta unidad trata de las magnitudes y sus unidades: cómo pasar de una unidad a otra sin cambiar el tamaño de lo que mides, y cómo saber si una fórmula tiene sentido.',
@@ -74,6 +74,7 @@
         'Contenido, para Gerson: el choque del volumen prepara la idea 2, cuya Predice es de áreas (10 000 cuadraditos en 1 m²). El texto no da ese valor ni el mecanismo (largo por ancho por alto), pero quien lo leyó llega a la Predice sabiendo que las unidades de área no se convierten como las de largo. Decidir si se acepta.',
         'La figura dibuja los diez cubitos de la predicción en la arista de abajo, para que se vea qué parte de la caja ocupa esa cuenta; no dibuja las capas de cubitos para no dar el mecanismo.',
         'Revisión del Escribidor Escribano (27 nov): el párrafo 3 abría con la regla de la idea 2 («Un largo y un volumen no cambian de la misma manera cuando pasas de una unidad a otra»); ahora abre con el choque del caso (la caja tiene diez veces el lado del cubo de un litro y guarda mil litros, cien veces lo que daba la cuenta). El párrafo 1 decía «vaciar la jarra 1000 veces, casi lo que guarda el tanque», que comparaba veces con litros: ahora dice «son 1000 litros». Se quitó un «muchas» de dos seguidos. Sobre la Predice de la idea 2 (10 000 cuadraditos en 1 m²): no la delata. La apertura no habla de áreas, no da el mecanismo y el juego de la idea 2, que va antes de la Predice, ya muestra cómo se cubre un piso con cuadros de 1 dm. Lo más que hace es poner en guardia contra el distractor «100» (una sola fila), que es lo que la idea quiere enseñar; el distractor «1000» sigue tentando a quien traiga el número de la apertura.',
+        'Doble revisión (27 nov): «La cuenta que haría cualquiera es esta» pasó a «La cuenta rápida, la misma que sirve para pasar de metros a centímetros, es esta», porque no todos la hacen y el error real es usar para un volumen el factor de los largos. El choque es justo: la caja, el litro y las cantidades son los mismos en la predicción y en la medición.',
       ],
     },
   };

@@ -37,12 +37,12 @@
       ${camion(x0 + 58, 135, 35, 'style="fill:var(--card)" stroke="currentColor" stroke-dasharray="4 4"')}
       ${camion(x0 + 150, 200, 35, 'style="fill:var(--card)" stroke="currentColor"')}
       ${caliente ? vapor(x0 + 132, 176) : ''}
-      ${termometro(x0 + 228, caliente ? 0.92 : 0.12, caliente ? 'calientes' : 'fríos')}
+      ${termometro(x0 + 228, caliente ? 0.92 : 0.3, caliente ? 'calientes' : 'tibios')}
       ${pie.map((l, i) => `<text x="${x0 + 130}" y="${312 + i * 26}" text-anchor="middle" font-size="22" style="fill:var(--muted)">${l}</text>`).join('')}`;
   };
   const svg = `<svg viewBox="0 0 520 350" width="520" height="350" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <line x1="260" y1="12" x2="260" y2="340" style="stroke:var(--line)" stroke-width="2"/>
-    ${panel(0, 'Lo que predice', false, ['Baja sin gastar:', 'nada se calienta'])}
+    ${panel(0, 'Lo que predice', false, ['El roce entibia,', 'como en tus manos'])}
     ${panel(260, 'Lo que se mide', true, ['Los frenos humean', 'en la bajada'])}
   </svg>`;
 
@@ -52,23 +52,24 @@
     parrafos: [
       'Por la Carretera Central, un camión baja de Ticlio, a 4818 m sobre el mar, hasta Lima, casi 4,7 km más abajo, y en casi toda la bajada el chofer no pisa el acelerador. ' +
         'Los frenos, en cambio, trabajan todo el camino y se calientan tanto que muchos camiones llevan un tanque de agua para mojarlos, y el agua que cae sobre ellos sale en vapor.',
-      'Si el camión baja solo, sin gastar combustible, lo que esperarías es que la bajada no le cueste nada a nadie y que los frenos lleguen fríos a Lima. ' +
-        'Podría pensarse que el calor sale del roce, como cuando te frotas las manos, pero al frotarte las manos eres tú quien pone el esfuerzo, y en la bajada nadie empuja al camión ni el motor lo jala.',
+      'Que los frenos se calienten no extraña, porque frenar es rozar y el roce calienta, como cuando te frotas las manos. ' +
+        'Pero al frotarte las manos apenas se entibian, y eso que el esfuerzo lo pones tú, mientras que en la bajada nadie empuja al camión ni el motor lo jala. ' +
+        'Con esa idea, los frenos tendrían que llegar a Lima tibios, como tus manos, y no tan calientes que el agua hierva al tocarlos.',
       'El camión trae algo desde arriba por estar a esa altura, y al bajar ese algo no se pierde: sin frenos se volvería rapidez, y los frenos lo vuelven calor para que el camión no se embale. ' +
-        'Si todo lo que trae un camión cargado de 30 t fuera a parar a sus frenos, la cuenta dice que alcanzaría para hacer hervir el agua de unos cuatro tanques de techo. ' +
+        'Si todo lo que trae un camión cargado de 30 t fuera a parar a sus frenos, la cuenta dice que alcanzaría para hacer hervir el agua de casi cuatro tanques de techo. ' +
         'Ese algo es la energía, y esta unidad trata de ella y del trabajo, que es la manera en que una fuerza la pasa de un cuerpo a otro.',
     ],
     figura: {
       antes: 2,
       svg,
-      alt: 'El mismo camión que baja por la ladera desde Ticlio, a 4818 m, hasta Lima, con un termómetro de sus frenos. Lo que predice la idea de que bajar no cuesta nada: los frenos llegan fríos. Lo que se mide: los frenos llegan calientes y echan vapor.',
+      alt: 'El mismo camión que baja por la ladera desde Ticlio, a 4818 m, hasta Lima, con un termómetro de sus frenos. Lo que predice la idea de que el roce entibia, como al frotarse las manos: los frenos llegan tibios. Lo que se mide: los frenos llegan tan calientes que el agua que les cae sale en vapor.',
     },
     pregunta: 'Si el mismo camión bajara vacío, con menos de la mitad de su masa, ¿crees que sus frenos se calentarían más, igual o menos que cuando baja cargado?',
     ficha: {
       seLleva: 'La energía no desaparece, cambia de forma: la que tiene un camión por estar en la altura se vuelve calor en sus frenos mientras baja, y por eso humean en la bajada de la sierra.',
       alcance: 'Parcial (núcleo: conservación y transformación de la energía en un sistema, con un dato medido). El teorema del trabajo y la energía cinética en su forma algebraica no entra en PISA.',
-      choque: 'Bajar sin gastar combustible no debería calentar nada; los frenos de un camión que baja de Ticlio se calientan tanto que hay que mojarlos.',
-      atajo: 'El roce calienta, como frotarse las manos: es el mecanismo, pero no dice de dónde viene la energía, porque al frotarse las manos la pone uno y en la bajada no la pone nadie. No hay una explicación trampa que se pueda descartar con un dato sencillo.',
+      choque: 'El roce entibia, como las manos que se frotan, así que los frenos llegarían tibios; los de un camión que baja de Ticlio se calientan tanto que el agua que les echan sale en vapor, y nadie puso ese esfuerzo.',
+      atajo: 'El roce calienta, como frotarse las manos: el texto lo da por bueno como mecanismo, pero no dice de dónde viene tanto calor, porque al frotarse las manos el esfuerzo lo pone uno y apenas las entibia, y en la bajada no lo pone nadie. No hay una explicación trampa que se pueda descartar con un dato sencillo.',
       porVerificar: [
         'Altitud de Ticlio (abra de Anticona): 4818 m; Lima, unos 150 m (de memoria): de ahí sale «casi 4,7 km más abajo».',
         'Que muchos camiones de la Carretera Central lleven un tanque de agua para enfriar los frenos y que el agua salga en vapor (de memoria; conviene una nota de prensa o del MTC).',
@@ -80,6 +81,7 @@
         'Contenido, para Gerson: el camión es un vehículo, como la combi de la apertura de «Dinámica» (vecina en la rama); el tipo de hecho es distinto (allá se empuja y gana rapidez; aquí se frena y se calienta). Si se quiere evitar dos vehículos seguidos, el reemplazo sería otro choque de energía.',
         'El texto no compara caminos (toboganes o rampas) para no tocar las Predice de las ideas 4 y 5, ni habla de cargar algo en horizontal (idea 1).',
         'Revisión del Escribidor Escribano (27 nov): el párrafo 3 cerraba repitiendo la conservación como regla («Eso que cambia de forma sin desaparecer es la energía»), que la primera oración ya mostraba con el caso; ahora dice «Ese algo es la energía». La primera oración mezclaba «se convertiría» y «convierten» con un inciso entre el sujeto y el verbo («los frenos, para que la rapidez no crezca, lo convierten»); ahora va «sin frenos se volvería rapidez, y los frenos lo vuelven calor para que el camión no se embale». «En la cuenta, si todo…» pasó a «Si todo…, la cuenta dice que alcanzaría», que deja claro que es cálculo. «Lo que uno espera» pasó a «lo que esperarías». No delata: no compara caminos (ideas 4 y 5) ni da la fórmula de la energía potencial (idea 3).',
+        'Doble revisión (27 nov): el párrafo 2 decía «lo que esperarías es que la bajada no le cueste nada a nadie y que los frenos lleguen fríos a Lima», y el panel «Lo que predice» ponía «frenos fríos». Era un muñeco de paja: cualquiera sabe que frenar calienta. Ahora la predicción es la que un alumno sí hace, que el roce calienta, y se lleva hasta donde da: como las manos que se frotan, los frenos llegarían tibios, y lo medido es que el agua que les cae sale en vapor, sin que nadie ponga el esfuerzo. El termómetro de «Lo que predice» pasó de «fríos» a «tibios», con el pie «El roce entibia, como en tus manos». «Unos cuatro tanques» pasó a «casi cuatro», porque la cuenta da 3,7. El título, el caso, el párrafo 3 y la pregunta no cambian.',
       ],
     },
   };
