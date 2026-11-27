@@ -15,6 +15,19 @@
   const partes = x => (typeof x === 'string' ? esc(x) : window.Ecuacion.html(x));
   // La ecuación puede ser una línea (lista de partes) o varias (lista de listas).
   const lineas = ec => (Array.isArray(ec) && ec.length && Array.isArray(ec[0]) ? ec : [ec]);
+  // Un párrafo puede traer líneas sueltas { linea: [...] } (Gerson, 27 nov: cada ecuación, equivalencia o paso de un
+  // número a una letra va en su propia línea, como en la teoría). El texto de antes y de después sigue en su párrafo.
+  const parrafo = p => {
+    if (!Array.isArray(p) || !p.some(x => x && typeof x === 'object' && 'linea' in x)) return `<p>${partes(p)}</p>`;
+    let out = '', tramo = [];
+    const cerrar = () => { if (tramo.length) out += `<p>${partes(tramo)}</p>`; tramo = []; };
+    for (const x of p) {
+      if (x && typeof x === 'object' && 'linea' in x) { cerrar(); out += `<div class="ap-ec ap-linea te-ec"><p>${window.Ecuacion.html(x.linea)}</p></div>`; }
+      else tramo.push(x);
+    }
+    cerrar();
+    return out;
+  };
   const ancho = () => !!(window.matchMedia && matchMedia('(min-width:900px)').matches);
 
   function html(def) {
@@ -24,7 +37,7 @@
     const ec = def.ecuacion ? `<div class="ap-ec te-ec">${lineas(def.ecuacion).map(l => `<p>${window.Ecuacion.html(l)}</p>`).join('')}</div>` : '';
     let cuerpo = '';
     def.parrafos.forEach((p, i) => {
-      cuerpo += `<p>${partes(p)}</p>`;
+      cuerpo += parrafo(p);
       if (i + 1 === antesEc) cuerpo += ec;
       if (i + 1 === antesFig) cuerpo += fig;
     });

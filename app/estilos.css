@@ -671,6 +671,8 @@ input[type=file]{font:inherit;max-width:100%}
 .ap-fig figcaption{margin-top:8px;font-size:14px;line-height:1.4;color:var(--muted)}
 .ap-ec{margin:0 0 14px}
 .ap-ec p{margin:0}
+/* Línea suelta dentro de un párrafo: una ecuación, equivalencia o cambio de número a letra, sola y centrada. */
+.ap-linea{margin:-4px 0 12px;text-align:center}
 /* Fondo de la página y borde rosa: las fichas de color de la pregunta (109,5°) quedan sobre un fondo con contraste
    en los dos temas (el turquesa sobre el rosa daba 4,2:1 en claro y 2,8:1 sobre el lavanda del oscuro). */
 .ap-pregunta{margin-top:4px;padding:12px 14px;border-radius:16px;background:var(--bg);border:2px solid var(--acento);color:var(--ink)}

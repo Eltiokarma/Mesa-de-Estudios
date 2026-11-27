@@ -19,7 +19,9 @@ global.window = { Ecuacion };
 require('../../app/apertura.js');
 const Apertura = global.window.Apertura;
 
-const liso = Reglas.liso;
+// Las líneas sueltas { linea } de un párrafo cuentan como texto visible, pero no como oraciones (son ecuaciones).
+const liso = p => (Array.isArray(p) ? p.map(x => (x && typeof x === 'object' && 'linea' in x ? ` ${Reglas.liso(x.linea)} ` : Reglas.liso(x))).join('') : Reglas.liso(p));
+const sinLineas = p => (Array.isArray(p) ? p.map(x => (x && typeof x === 'object' && 'linea' in x ? ' ' : x)) : p);
 const textoSVG = svg => Teoria.textoSVG(svg);
 const norma = s => String(s).normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/[«»"“”¿?¡!.,;:()]/g, ' ').replace(/\s+/g, ' ').trim();
 const palabrasDe = s => norma(s).split(' ').filter(Boolean);
@@ -71,7 +73,7 @@ for (const [curso, archivo] of archivos) {
     }
 
     // Oraciones de 10 palabras o más en los párrafos y en la pregunta (texto de corrido, escribidor-escribano 9.4).
-    for (const [d, t] of [...def.parrafos.map((p, i) => [`párrafo ${i + 1}`, p]), ['pregunta', def.pregunta]]) {
+    for (const [d, t] of [...def.parrafos.map((p, i) => [`párrafo ${i + 1}`, sinLineas(p)]), ['pregunta', def.pregunta]]) {
       for (const o of oraciones(t)) assert.ok(nPalabras(o) >= 10, `${d}: oración de ${nPalabras(o)} palabras (mínimo 10): «${o}»`);
     }
 
