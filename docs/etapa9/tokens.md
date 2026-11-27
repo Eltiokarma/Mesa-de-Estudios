@@ -95,3 +95,4 @@ contra los límites semanales de los planes.
 | aperturas aritmética (8) | doble revisión (choques honestos) | 204 036 | 9 min | 41 herramientas |
 | algebra.division-de-polinomios | apertura investigada de nuevo (3 candidatos) | 210 722 | 9 min 33 s | 26 herramientas |
 | aperturas química (9) | doble revisión (choques honestos) | 218 241 | 9 min 46 s | 43 herramientas |
+| aperturas física (11) | doble revisión (choques honestos) | 226 372 | 10 min 26 s | 39 herramientas |
