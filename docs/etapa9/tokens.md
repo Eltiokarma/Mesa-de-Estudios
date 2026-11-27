@@ -82,3 +82,6 @@ contra los límites semanales de los planes.
 | quimica (2.ª pasada, tanda 1) | verificación | 364 551 | 21 min 43 s | 121 herramientas |
 | quimica.enlace-quimico | redactor, segunda pasada («explica») | 376 706 | 22 min | 70 herramientas |
 | quimica.mol-y-composicion | redactor, segunda pasada («explica») | 476 705 | 22 min 30 s | 80 herramientas |
+| aperturas química (8) | revisión del Escribidor Escribano | 220 248 | 6 min 40 s | 38 herramientas |
+| aperturas álgebra (7) | revisión del Escribidor Escribano (rehízo 2) | 253 292 | 11 min | 42 herramientas |
+| aperturas razonamiento matemático (6) | revisión del Escribidor Escribano | 217 041 | 6 min 42 s | 37 herramientas |
