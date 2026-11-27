@@ -110,7 +110,8 @@
        "homogeneidad": "Análisis dimensional"
       },
       "terminos": 32
-     }
+     },
+     "apertura": "/contenido/aperturas/fisica/magnitudes-y-vectores.js"
     },
     {
      "id": "fisica.vectores",
@@ -223,7 +224,8 @@
        "velocidad-relativa": "Velocidad relativa"
       },
       "terminos": 23
-     }
+     },
+     "apertura": "/contenido/aperturas/fisica/movimiento-rectilineo.js"
     },
     {
      "id": "fisica.mruv-y-caida-libre",
@@ -276,7 +278,8 @@
        "caida-libre": "Lanzamiento vertical"
       },
       "terminos": 38
-     }
+     },
+     "apertura": "/contenido/aperturas/fisica/mruv-y-caida-libre.js"
     },
     {
      "id": "fisica.movimiento-parabolico-y-circular",
@@ -325,7 +328,8 @@
        "ecuaciones-en-el-plano": "Ecuaciones del movimiento en el plano"
       },
       "terminos": 35
-     }
+     },
+     "apertura": "/contenido/aperturas/fisica/movimiento-parabolico-y-circular.js"
     },
     {
      "id": "fisica.movimiento-circular",
@@ -382,7 +386,8 @@
        "dos-aceleraciones": "Aceleración tangencial y total"
       },
       "terminos": 32
-     }
+     },
+     "apertura": "/contenido/aperturas/fisica/movimiento-circular.js"
     },
     {
      "id": "fisica.estatica",
@@ -434,7 +439,8 @@
        "cuerpo-rigido": "Equilibrio del cuerpo rígido"
       },
       "terminos": 40
-     }
+     },
+     "apertura": "/contenido/aperturas/fisica/estatica.js"
     },
     {
      "id": "fisica.dinamica",
@@ -486,7 +492,8 @@
        "centripeta-es-resultante": "Dinámica circular"
       },
       "terminos": 53
-     }
+     },
+     "apertura": "/contenido/aperturas/fisica/dinamica.js"
     },
     {
      "id": "fisica.gravitacion",
@@ -540,7 +547,8 @@
        "escape": "Rapidez de escape"
       },
       "terminos": 62
-     }
+     },
+     "apertura": "/contenido/aperturas/fisica/gravitacion.js"
     },
     {
      "id": "fisica.trabajo-y-energia",
@@ -590,7 +598,8 @@
        "potencia-y-eficiencia": "Potencia y eficiencia"
       },
       "terminos": 57
-     }
+     },
+     "apertura": "/contenido/aperturas/fisica/trabajo-y-energia.js"
     },
     {
      "id": "fisica.impulso-y-choques",
@@ -642,7 +651,8 @@
        "centro-masa": "Centro de masa"
       },
       "terminos": 53
-     }
+     },
+     "apertura": "/contenido/aperturas/fisica/impulso-y-choques.js"
     },
     {
      "id": "fisica.oscilaciones",
@@ -1379,7 +1389,8 @@
        "vida-media": "La mitad cada cierto tiempo"
       },
       "terminos": 47
-     }
+     },
+     "apertura": "/contenido/aperturas/quimica/materia-y-energia.js"
     },
     {
      "id": "quimica.estructura-atomica",
@@ -1441,7 +1452,8 @@
        "desapareados-isoelectronicos": "Hund y el último electrón"
       },
       "terminos": 40
-     }
+     },
+     "apertura": "/contenido/aperturas/quimica/estructura-atomica.js"
     },
     {
      "id": "quimica.tabla-periodica",
@@ -1490,7 +1502,8 @@
        "metales-no-metales": "Metales, no metales y semimetales"
       },
       "terminos": 39
-     }
+     },
+     "apertura": "/contenido/aperturas/quimica/tabla-periodica.js"
     },
     {
      "id": "quimica.propiedades-periodicas",
@@ -1536,7 +1549,8 @@
        "electronegatividad": "Electronegatividad y carácter metálico"
       },
       "terminos": 44
-     }
+     },
+     "apertura": "/contenido/aperturas/quimica/propiedades-periodicas.js"
     },
     {
      "id": "quimica.enlace-quimico",
@@ -1591,7 +1605,8 @@
        "resonancia": "Resonancia"
       },
       "terminos": 48
-     }
+     },
+     "apertura": "/contenido/aperturas/quimica/enlace-quimico.js"
     },
     {
      "id": "quimica.geometria-molecular",
@@ -1698,7 +1713,8 @@
        "sales-acidas-basicas-hidratadas": "Sales ácidas, básicas e hidratadas"
       },
       "terminos": 39
-     }
+     },
+     "apertura": "/contenido/aperturas/quimica/nomenclatura-inorganica.js"
     },
     {
      "id": "quimica.mol-y-composicion",
@@ -1756,7 +1772,8 @@
        "leyes-ponderales": "Leyes ponderales"
       },
       "terminos": 47
-     }
+     },
+     "apertura": "/contenido/aperturas/quimica/mol-y-composicion.js"
     },
     {
      "id": "quimica.reacciones-y-balance",
@@ -1811,7 +1828,8 @@
        "ion-electron": "Ion-electrón: ácido y básico"
       },
       "terminos": 48
-     }
+     },
+     "apertura": "/contenido/aperturas/quimica/reacciones-y-balance.js"
     },
     {
      "id": "quimica.estequiometria",
@@ -2687,7 +2705,8 @@
        "exponente-fraccionario": "La raíz es un exponente fraccionario"
       },
       "terminos": 29
-     }
+     },
+     "apertura": "/contenido/aperturas/algebra/exponentes-y-productos-notables.js"
     },
     {
      "id": "algebra.productos-notables",
@@ -2738,7 +2757,8 @@
        "racionalizar": "Racionalizar es multiplicar por uno"
       },
       "terminos": 35
-     }
+     },
+     "apertura": "/contenido/aperturas/algebra/productos-notables.js"
     },
     {
      "id": "algebra.ecuaciones-lineales-y-cuadraticas",
@@ -2937,7 +2957,8 @@
        "operaciones": "Multiplicar polinomios"
       },
       "terminos": 43
-     }
+     },
+     "apertura": "/contenido/aperturas/algebra/polinomios.js"
     },
     {
      "id": "algebra.division-de-polinomios",
@@ -2990,7 +3011,8 @@
        "cocientes-notables": "Cocientes notables"
       },
       "terminos": 40
-     }
+     },
+     "apertura": "/contenido/aperturas/algebra/division-de-polinomios.js"
     },
     {
      "id": "algebra.factorizacion",
@@ -3044,7 +3066,8 @@
        "mcd-mcm": "MCD y MCM de polinomios"
       },
       "terminos": 49
-     }
+     },
+     "apertura": "/contenido/aperturas/algebra/factorizacion.js"
     },
     {
      "id": "algebra.ecuaciones-polinomiales",
@@ -3102,7 +3125,8 @@
        "binomica": "Ecuaciones de dos términos"
       },
       "terminos": 60
-     }
+     },
+     "apertura": "/contenido/aperturas/algebra/ecuaciones-polinomiales.js"
     },
     {
      "id": "algebra.funciones",
@@ -3562,7 +3586,8 @@
        "potencia-trinomio": "La potencia de un trinomio"
       },
       "terminos": 43
-     }
+     },
+     "apertura": "/contenido/aperturas/algebra/binomio-de-newton.js"
     }
    ]
   },
@@ -4150,7 +4175,8 @@
        "conteo-cifras": "Contar cifras por bloques"
       },
       "terminos": 26
-     }
+     },
+     "apertura": "/contenido/aperturas/aritmetica/numeracion.js"
     },
     {
      "id": "aritmetica.cuatro-operaciones",
@@ -4209,7 +4235,8 @@
        "cifras-producto": "Cifras del producto y del cociente"
       },
       "terminos": 38
-     }
+     },
+     "apertura": "/contenido/aperturas/aritmetica/cuatro-operaciones.js"
     },
     {
      "id": "aritmetica.divisibilidad",
@@ -4264,7 +4291,8 @@
        "diofanticas": "Dos clases de monedas, pago justo"
       },
       "terminos": 39
-     }
+     },
+     "apertura": "/contenido/aperturas/aritmetica/divisibilidad.js"
     },
     {
      "id": "aritmetica.numeros-primos-y-divisores",
@@ -4323,7 +4351,8 @@
        "fermat-wilson": "Fermat y Wilson con un primo"
       },
       "terminos": 39
-     }
+     },
+     "apertura": "/contenido/aperturas/aritmetica/numeros-primos-y-divisores.js"
     },
     {
      "id": "aritmetica.mcd-y-mcm",
@@ -4380,7 +4409,8 @@
        "euclides": "Euclides y la fracción continua"
       },
       "terminos": 32
-     }
+     },
+     "apertura": "/contenido/aperturas/aritmetica/mcd-y-mcm.js"
     },
     {
      "id": "aritmetica.numeros-racionales",
@@ -4439,7 +4469,8 @@
        "otras-bases": "Fracciones en otras bases"
       },
       "terminos": 53
-     }
+     },
+     "apertura": "/contenido/aperturas/aritmetica/numeros-racionales.js"
     },
     {
      "id": "aritmetica.potenciacion-y-radicacion",
@@ -4492,7 +4523,8 @@
        "aproximadas": "Aproximar una raíz por décimas"
       },
       "terminos": 37
-     }
+     },
+     "apertura": "/contenido/aperturas/aritmetica/potenciacion-y-radicacion.js"
     },
     {
      "id": "aritmetica.sucesiones-y-series",
@@ -4696,7 +4728,8 @@
        "quiebre": "El quiebre entre paralelas"
       },
       "terminos": 38
-     }
+     },
+     "apertura": "/contenido/aperturas/geometria/segmentos-y-angulos.js"
     },
     {
      "id": "geometria.triangulos",
@@ -4748,7 +4781,8 @@
        "angulo-de-bisectrices": "Ángulos entre bisectrices"
       },
       "terminos": 53
-     }
+     },
+     "apertura": "/contenido/aperturas/geometria/triangulos.js"
     },
     {
      "id": "geometria.congruencia",
@@ -4799,7 +4833,8 @@
        "notables": "Triángulos rectángulos notables"
       },
       "terminos": 60
-     }
+     },
+     "apertura": "/contenido/aperturas/geometria/congruencia.js"
     },
     {
      "id": "geometria.poligonos-y-cuadrilateros",
@@ -4850,7 +4885,8 @@
        "trapecios": "El trapecio y su mediana"
       },
       "terminos": 56
-     }
+     },
+     "apertura": "/contenido/aperturas/geometria/poligonos-y-cuadrilateros.js"
     },
     {
      "id": "geometria.circunferencia",
@@ -4902,7 +4938,8 @@
        "cuadrilatero-inscrito": "Cuadrilátero inscrito"
       },
       "terminos": 60
-     }
+     },
+     "apertura": "/contenido/aperturas/geometria/circunferencia.js"
     },
     {
      "id": "geometria.proporcionalidad-y-semejanza",
@@ -4953,7 +4990,8 @@
        "ceva-menelao": "Teoremas de Ceva y Menelao"
       },
       "terminos": 56
-     }
+     },
+     "apertura": "/contenido/aperturas/geometria/proporcionalidad-y-semejanza.js"
     },
     {
      "id": "geometria.puntos-notables",
@@ -5004,7 +5042,8 @@
        "euler": "La recta de Euler"
       },
       "terminos": 70
-     }
+     },
+     "apertura": "/contenido/aperturas/geometria/puntos-notables.js"
     },
     {
      "id": "geometria.relaciones-metricas",
@@ -5655,7 +5694,8 @@
        "formula-general": "S, C y R: fórmula general"
       },
       "terminos": 34
-     }
+     },
+     "apertura": "/contenido/aperturas/trigonometria/angulo-trigonometrico.js"
     },
     {
      "id": "trigonometria.longitud-de-arco-y-sector",
@@ -5702,7 +5742,8 @@
        "faja-y-eje": "Ruedas unidas: faja y eje"
       },
       "terminos": 32
-     }
+     },
+     "apertura": "/contenido/aperturas/trigonometria/longitud-de-arco-y-sector.js"
     },
     {
      "id": "trigonometria.razones-trigonometricas-agudas",
@@ -5749,7 +5790,8 @@
        "complementarias": "Complementarias y recíprocas"
       },
       "terminos": 42
-     }
+     },
+     "apertura": "/contenido/aperturas/trigonometria/razones-trigonometricas-agudas.js"
     },
     {
      "id": "trigonometria.triangulos-rectangulos",
@@ -5798,7 +5840,8 @@
        "angulo-observacion": "Ángulo de observación"
       },
       "terminos": 41
-     }
+     },
+     "apertura": "/contenido/aperturas/trigonometria/triangulos-rectangulos.js"
     },
     {
      "id": "trigonometria.recta-en-el-plano",
@@ -5891,7 +5934,8 @@
        "coterminales-negativos": "Más vueltas, mismo lado final"
       },
       "terminos": 49
-     }
+     },
+     "apertura": "/contenido/aperturas/trigonometria/angulos-en-posicion-normal.js"
     },
     {
      "id": "trigonometria.reduccion-al-primer-cuadrante",
@@ -5939,7 +5983,8 @@
        "cofuncion": "Con 90° y 270°, la cofunción"
       },
       "terminos": 49
-     }
+     },
+     "apertura": "/contenido/aperturas/trigonometria/reduccion-al-primer-cuadrante.js"
     },
     {
      "id": "trigonometria.circunferencia-trigonometrica",
@@ -6608,7 +6653,8 @@
        "parentesco": "Subir y bajar por el árbol"
       },
       "terminos": 25
-     }
+     },
+     "apertura": "/contenido/aperturas/razonamiento-matematico/razonamiento-deductivo.js"
     },
     {
      "id": "razonamiento-matematico.trazos-y-perimetros",
@@ -6696,7 +6742,8 @@
        "mesa-cuadrada": "Frente a frente"
       },
       "terminos": 34
-     }
+     },
+     "apertura": "/contenido/aperturas/razonamiento-matematico/ordenamiento-de-informacion.js"
     },
     {
      "id": "razonamiento-matematico.verdades-y-mentiras",
@@ -6737,7 +6784,8 @@
        "cuantos-mienten": "¿Cuántos mienten?"
       },
       "terminos": 23
-     }
+     },
+     "apertura": "/contenido/aperturas/razonamiento-matematico/verdades-y-mentiras.js"
     },
     {
      "id": "razonamiento-matematico.traslados-y-puntos-cardinales",
@@ -6816,7 +6864,8 @@
        "piramide-de-sumas": "La pirámide de sumas"
       },
       "terminos": 23
-     }
+     },
+     "apertura": "/contenido/aperturas/razonamiento-matematico/arreglos-numericos.js"
     },
     {
      "id": "razonamiento-matematico.razonamiento-inductivo",
@@ -6859,7 +6908,8 @@
        "lo-que-se-repite": "Lo que se repite"
       },
       "terminos": 32
-     }
+     },
+     "apertura": "/contenido/aperturas/razonamiento-matematico/razonamiento-inductivo.js"
     },
     {
      "id": "razonamiento-matematico.juegos-recreativos",
@@ -6987,7 +7037,8 @@
        "llaves": "Llaves y candados"
       },
       "terminos": 27
-     }
+     },
+     "apertura": "/contenido/aperturas/razonamiento-matematico/certezas.js"
     },
     {
      "id": "razonamiento-matematico.frecuencia-de-sucesos",
@@ -7448,7 +7499,8 @@
        "definicion-en-texto": "La definición dentro del texto"
       },
       "terminos": 30
-     }
+     },
+     "apertura": "/contenido/aperturas/razonamiento-verbal/definiciones.js"
     },
     {
      "id": "razonamiento-verbal.analogias",
@@ -7495,7 +7547,8 @@
        "puente-justa": "La oración puente justa"
       },
       "terminos": 28
-     }
+     },
+     "apertura": "/contenido/aperturas/razonamiento-verbal/analogias.js"
     },
     {
      "id": "razonamiento-verbal.sentido-contextual",
@@ -7546,7 +7599,8 @@
        "inferir-significado": "El significado sale de las pistas"
       },
       "terminos": 34
-     }
+     },
+     "apertura": "/contenido/aperturas/razonamiento-verbal/sentido-contextual.js"
     },
     {
      "id": "razonamiento-verbal.conectores",
@@ -7584,7 +7638,8 @@
        "varios-espacios": "Varios espacios, una alternativa"
       },
       "terminos": 27
-     }
+     },
+     "apertura": "/contenido/aperturas/razonamiento-verbal/conectores.js"
     },
     {
      "id": "razonamiento-verbal.eliminacion-de-oraciones",
@@ -7708,7 +7763,8 @@
        "incluir": "La oración que falta"
       },
       "terminos": 28
-     }
+     },
+     "apertura": "/contenido/aperturas/razonamiento-verbal/cohesion-y-coherencia.js"
     },
     {
      "id": "razonamiento-verbal.tipologia-textual",
@@ -7799,7 +7855,8 @@
        "alternativas": "Elegir en el examen"
       },
       "terminos": 33
-     }
+     },
+     "apertura": "/contenido/aperturas/razonamiento-verbal/tema-e-idea-principal.js"
     },
     {
      "id": "razonamiento-verbal.resumen-y-sintesis",
