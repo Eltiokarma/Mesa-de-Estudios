@@ -133,3 +133,149 @@ Decidido por la sesión, Gerson revisa después:
 Comprobaciones: prueba de la unidad 16 de 16; `plantillas/geometria-fuerzas/generador.test.js` 9 de 9, con `papel.json`
 regenerado (al día); validador con `calidad: 2` en 200 semillas: 0; regla del papel: 0; `contenido/teoria/teoria.test.js`:
 163 de 164 (falla solo el glosario de `app/datos/`, por regenerar con `npm run catalogo`).
+
+## Segunda pasada: explica (27 nov)
+
+Gerson vio la unidad y dijo que los textos seguían cortos y sin mucho significado. Esta pasada sigue el punto 4 de
+`docs/metodo/unidad/redaccion-delegada.md` («Explica, no solo pules») con los topes nuevos. Solo texto: ningún número,
+respuesta, distractor, dato, dibujo, color ni letra cambió; `calidad: 2` se queda. La apertura (`contenido/aperturas/`)
+no se tocó: la teoría ahora retoma su hilo (los cuatro enlaces iguales del metano a 109,5°) en dos tarjetas de «Lee».
+
+Archivos: `contenido/teoria/quimica/geometria-molecular.js`; `plantillas/geometria-fuerzas/generador.js`, su `papel.json`
+(regenerado: cambian 8 soluciones) y una línea de `generador.test.js` (ver «Para el verificador», punto 1).
+
+### Qué se cambió, por tipo
+
+1. **Reglas (las cuatro).** Cada una dice ahora por qué vale y un caso: las regiones se repelen porque tienen carga
+   negativa, y el agua tiene cuatro regiones y es angular (1); el átomo mezcla tantos orbitales como regiones tiene, y el
+   sigma es el par que va entre los átomos (2); qué es ser polar (un lado algo positivo y otro algo negativo), con el CO₂
+   y el agua como casos (3); por qué hierve más alto la que más se atrae, con el agua frente al H₂S (4).
+2. **Recuadro de la idea 1.** Sus rótulos («2 regiones: lineal, 180° · 3: trigonal plana…») se leían sueltos: la regla
+   dice debajo que el número cuenta regiones y que las tres primeras formas no tienen pares libres. Los recuadros de las
+   ideas 2 a 4 ya se leían como frase y la regla los explica.
+3. **«Vale si» (cuatro).** Cada condición dice qué pasa si no se cumple: contar un doble como dos regiones da una de más
+   (1); olvidar los pares hace que el O del agua parezca sp, y contar cada par del doble hace que el C del CO₂ parezca sp³
+   (2); en el papel, dos átomos iguales dibujados opuestos parecen anularse aunque en el espacio queden del mismo lado (3);
+   sin puentes, una molécula mucho más grande puede hervir más alto por London aunque sea apolar (4).
+4. **`siFuera` de las cuatro predicciones y explicaciones de «Ahora tú».** Dejan de decir solo «Sería así con otro
+   número…»: nombran el razonamiento («Contaste cada par compartido como una región»), dicen por qué falla y dan el número
+   que tiene este caso («Este central tiene 5 regiones»). Las de polaridad dicen ahora cuál de las dos cosas falta (los
+   pares libres del central o los átomos distintos), y las de fuerzas dependen de la molécula (antes, «Sería así si la
+   molécula fuera polar y no tuviera H unido a N, O o F» salía igual para el CCl₄, que es apolar, y para el HF, que sí tiene
+   puente).
+5. **Soluciones y pasos de «Así se resuelve».** Dicen por qué y qué significa: en qué figura se ordenan las regiones
+   (nuevo `FIG` en la práctica), cuántos orbitales mezcla el átomo (`MEZCLA`: «5 orbitales salen de mezclar un s, tres p y
+   un d»), qué atracción decide y qué hace con la temperatura. Las de verdadero o falso completan su porqué («el par libre
+   del N es una cuarta región y empuja a los tres H hacia abajo»).
+6. **Lee y Mira.** Una idea por tarjeta, con el porqué: por qué se repelen las regiones, por qué el dibujo de Lewis
+   engaña, qué problema resuelve la hibridación (el del metano de la apertura), por qué el pi va por los costados, cómo se
+   suman las flechas (dos personas que jalan una soga), qué son las fuerzas de London. Los pasos de Mira dicen por qué el
+   par libre cierra el ángulo, por qué se vence el puente al hervir y qué pasaría si el agua siguiera la tendencia.
+7. **Ejemplos de nivel 3 (los 20, con sus explicaciones de alternativas).** Cada letra dice qué razonamiento sigue y por qué
+   falla, en vez de un rótulo («La D cuenta una región de más» → «La D suma una región que no existe: cuatro enlaces y un
+   par son cinco, no seis»). En los de verdadero o falso se dice qué afirmación acepta o niega cada letra. Se completaron
+   además diez ejemplos de nivel 1 y 2 de una sola línea seca.
+8. **Glosario.** Los 13 `simple` llevan una imagen de la vida del alumno o un caso: el globo amarrado, la V del agua, las
+   patas de un compás, el café con leche, los dos extremos de una pila, el aceite, la mano que une a dos moléculas.
+9. **Práctica (`geometria-fuerzas`).** Las explicaciones de los 13 tipos se reescribieron con el mismo criterio (máximo
+   30 palabras, el límite de `nucleo/papel-opciones.js`), y las soluciones dicen el porqué. Arreglos de paso: la EN8 de
+   las moléculas de cinco o seis regiones hablaba del «plano del papel» para una bipirámide (ahora dice lo de los pares
+   libres), y la QM-FUERZA de «Puente…» repetía «no tiene H unido a N, O o F» dos veces en el HCl.
+
+### Antes y después
+
+- **Regla, idea 1.** *Antes:* «Las regiones de electrones del átomo central, enlaces y pares libres, se alejan lo más
+  posible. La forma molecular se nombra solo por los átomos, aunque los pares libres también empujan.» *Después:* «Las
+  regiones de electrones del átomo central (enlaces y pares libres) se repelen, porque tienen carga negativa, y se alejan
+  lo más posible. La forma molecular se nombra solo por los átomos, aunque el par libre empuja: el agua tiene cuatro
+  regiones y es angular. En el recuadro, el número cuenta regiones; las tres primeras formas no tienen pares libres.»
+- **Regla, idea 4.** *Antes:* «Entre moléculas hay fuerzas de London (siempre), dipolo-dipolo (si son polares) y puente
+  de hidrógeno (H unido a N, O o F). A más atracción, mayor temperatura de ebullición, porque al hervir se separan
+  moléculas sin romper enlaces.» *Después:* «Entre moléculas hay fuerzas de London, que tienen todas; dipolo-dipolo, si
+  son polares, y puente de hidrógeno, si tienen un H unido a N, O o F. Al hervir, las moléculas se separan enteras, sin
+  romper enlaces, y cuanto más se atraen, más temperatura hace falta para separarlas: el agua, con sus puentes, hierve
+  más alto que el H₂S.»
+- **Condición, idea 2.** *Antes:* «Vale si los pares libres se cuentan como regiones y cada enlace doble o triple se
+  cuenta como una sola.» *Después:* «Vale si los pares libres se cuentan como regiones y cada doble o triple, como una
+  sola. Si olvidas los pares, el O del agua parece sp y es sp³; si cuentas cada par del doble, el C del CO₂ parece sp³ y
+  es sp.»
+- **Alternativa de la predicción, idea 1** (NH₃, «Tetraédrica, porque hay cuatro regiones»). *Antes:* «Sería así si la
+  forma se nombrara por las regiones. Las cuatro sí van en tetraedro, pero la forma se nombra solo por los átomos.»
+  *Después:* «Contaste bien las cuatro regiones, y sí se ordenan en tetraedro. Pero la forma se nombra por los átomos, y
+  en una punta no hay átomo sino el par libre: el N y los tres H forman una pirámide.»
+- **Alternativa de «Ahora tú», idea 2** (electrones pi, el valor 4·p). *Antes:* «Sería así si cada enlace pi tuviera 4
+  electrones. Cada uno tiene solo 2.» *Después:* «Sería así si cada enlace pi tuviera 4 electrones. Un enlace pi es un
+  solo par compartido, así que tiene 2, y los electrones del sigma no se cuentan como pi.»
+- **Explicación de alternativas, ejemplo «La razón del CCl₄»** (idea 3, nivel 3). *Antes:* «La B y la C miran un solo
+  factor. La D acierta en apolar con una razón falsa: los C–Cl sí son polares. / La E lee la molécula en el plano.»
+  *Después:* «La B y la C miran solo los enlaces: que el Cl jale más y que los átomos sean distintos hace polares los
+  enlaces, no la molécula. La D acierta en apolar con una razón falsa: los C–Cl sí son polares. / La E lee la molécula en
+  el papel, en cruz; y aun en una cruz, cuatro Cl iguales anularían sus flechas.»
+
+### Para el verificador
+
+1. **Prueba ajustada.** `plantillas/geometria-fuerzas/generador.test.js`, línea 92, buscaba la explicación de
+   QM-REGION-PARES por su texto («Un par libre es una región, no dos.»); ahora la busca por su id, y sigue comprobando lo
+   mismo (que solo salga si el central tiene pares libres).
+2. **Afirmaciones nuevas, ciertas en el modelo escolar pero sin fuente abierta en esta pasada:** el par libre empuja más
+   «porque solo lo atrae el N y ocupa más espacio cerca de él»; el segundo y el tercer par van por los costados porque la
+   línea entre los núcleos «ya está ocupada» por el sigma; un carbono no pasa de cuatro regiones «porque solo tiene un
+   orbital s y tres p para mezclar»; las fuerzas de London aparecen «porque los electrones se mueven y por un instante
+   dejan un lado cargado»; si el agua hirviera cerca de −80 °C «sería un gas a temperatura ambiente»; el peine cargado
+   atrae a las moléculas de agua «por el lado de carga contraria»; «las que forman puentes son polares y suman
+   dipolo-dipolo» (vale para todas las moléculas de la unidad: NH₃, HF, H₂O, CH₃OH, H₂O₂, CH₃NH₂).
+3. **Corregido de paso (hallazgo propio).** Mi primer borrador del QM-ANGULO-PLANO decía «con menos de seis regiones, los
+   enlaces se separan más de 90°», falso para la bipirámide (tiene 90°). Ninguna molécula de esa pregunta tiene cinco
+   regiones, pero quedó «con dos, tres o cuatro regiones», en la teoría y en la práctica.
+4. **El hilo con la apertura.** La tarjeta «En tres dimensiones» dice que los enlaces del metano no quedan a 90° sino
+   «más separados», sin dar el número, y la tarjeta «Orbitales que se mezclan» abre con el choque de la apertura (con un s
+   y tres p, los cuatro enlaces saldrían distintos). Ninguna nombra la apertura, para que se entiendan sin haberla leído.
+5. **Lo previo.** Ninguna tarjeta de «Lee» ni consigna dice la forma del NH₃, la hibridación del C₂H₂, la polaridad del
+   CH₂Cl₂ ni la ebullición del agua frente al H₂S. Las reglas y condiciones que nombran el agua y el H₂S van después de la
+   predicción. Las opciones no cambiaron.
+6. **Fuera de mi unidad (aviso).** Corrí `node herramientas/papel-generador.js` sin argumento y regeneró el `papel.json`
+   de todas las plantillas: cambiaron también los de `enlace-lewis` y `mol-practica`, desde los generadores que otros
+   redactores tienen en obra. No los restauré (no sé si ya estaban regenerados antes); quien integre debe regenerarlos o
+   revisarlos al cerrar esas unidades.
+7. `herramientas/validar-ejercicios.js` pide explicaciones de 20 palabras o menos; las de la práctica llegan a 30, el
+   límite de `nucleo/papel-opciones.js`, como en la segunda pasada de Materia y energía.
+
+### Comprobación (27 nov)
+
+- `contenido/teoria/quimica/geometria-molecular.test.js`: 16 de 16.
+- Validador con `calidad: 2` (`Teoria.problemas`, 200 semillas): 0.
+- `plantillas/geometria-fuerzas/generador.test.js`: 9 de 9; `papel-generador.js --revisar`: al día; `papel-reglas.js`:
+  nada de esta plantilla.
+- `contenido/teoria/teoria.test.js`: 163 de 164; falla solo «glosario … archivos de la app al día» (falta
+  `npm run catalogo`, como prevé el método).
+- `node herramientas/ecuaciones-ancho.js quimica.geometria-molecular` (servidor propio en el puerto 4282, ya cerrado):
+  todo cabe, 40 pantallas.
+- Lectura de 16 a 20 semillas por idea de «Ahora tú», las de «Así se resuelve» y 300 por idea de la práctica, en busca de
+  concordancias y textos que no cuadren con la molécula.
+
+## Verificación de la segunda pasada (27 nov)
+
+Verificador de cierre, sin commits. Lo comprobado:
+
+- **Nada de fondo cambió.** Contra HEAD, en 200 semillas por idea: «Ahora tú» (pregunta, Datos, opciones con su error y
+  su correcta, respuesta, ecuaciones, dibujo), «Así se resuelve», Predice, las ecuaciones de Mira y de la regla, los
+  ejemplos y el laboratorio: 0 diferencias. Práctica: 1200 problemas con los mismos enunciados, Datos, alternativas,
+  errores, respuestas y nodos, y ningún número de la solución de antes falta. Mismo `papel.json` salvo el texto de las
+  soluciones.
+- **Prueba ajustada (línea 92 de `generador.test.js`).** Buscar por `QM-REGION-PARES` comprueba lo mismo que antes: ese id
+  solo lo usa la explicación de «contaste cada par libre dos veces», en HEAD y ahora.
+- **Afirmaciones de modelo escolar, revisadas y bien:** el par libre empuja más porque lo atrae un solo núcleo; el pi va
+  por encima y por debajo del eje porque el sigma ocupa la línea entre los núcleos; el carbono no pasa de cuatro regiones
+  porque solo tiene un s y tres p; London por el movimiento de los electrones; el agua sería gas cerca de −80 °C sin sus
+  puentes; las que forman puentes también son polares (todas las de la unidad); a más regiones, ángulo más cerrado.
+- **Corregido:** dos frases decían que el puente «pesa más» que la diferencia de London o de tamaño, en un ejemplo que
+  justo compara masas (agua frente a H₂S, NH₃ frente a PH₃): ahora dicen «cuenta más». Es solo palabra; no hay prueba.
+- **`papel.json`.** Regenerados con `node herramientas/papel-generador.js <id>` los de `geometria-fuerzas`,
+  `enlace-lewis`, `nomenclatura-practica` y `mol-practica` desde sus generadores actuales; `--revisar`: «al día». Los
+  cuatro conservan sus 8 problemas con las mismas alternativas y respuestas que en HEAD.
+- Validador con `calidad: 2` en 200 semillas: 0. Unidad 16 de 16; `geometria-fuerzas` 9 de 9; regla del papel: 0.
+- `teoria.test.js`: 163 de 164; falla solo «glosario … archivos de la app al día» (falta `npm run catalogo`).
+- No corrí `ecuaciones-ancho.js`: no cambió ninguna ecuación.
+
+Archivos de la segunda pasada: `contenido/teoria/quimica/geometria-molecular.js`, `plantillas/geometria-fuerzas/generador.js`,
+`plantillas/geometria-fuerzas/generador.test.js`, `plantillas/geometria-fuerzas/papel.json` y este informe.

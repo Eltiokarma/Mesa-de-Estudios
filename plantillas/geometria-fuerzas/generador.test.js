@@ -89,7 +89,7 @@ test('auditoría: regiones, cual-hierve, cual-polar y polar con explicaciones ve
       const m = Mot.molecula(clave(d.k));
       for (const a of p.alternativas) {
         if (!a.error) continue;
-        if (a.error.explicacion === 'Un par libre es una región, no dos.') assert.ok(m.lewis.paresLibres > 0, `${s} ${d.k}: no tiene pares libres`);
+        if (a.error.id === 'QM-REGION-PARES') assert.ok(m.lewis.paresLibres > 0, `${s} ${d.k}: no tiene pares libres`);
         if (a.error.id === 'QM-REGION-DOBLE') assert.equal(+a.texto, m.lewis.paresEnlazantes + m.lewis.paresLibres, `${s} ${d.k}: contar cada par compartido`);
       }
     }

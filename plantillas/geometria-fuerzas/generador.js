@@ -36,6 +36,7 @@
   const DOM = { 2: 'lineal', 3: 'trigonal plana', 4: 'tetraédrica', 5: 'bipirámide trigonal', 6: 'octaédrica' };
   const HIB = { 2: 'sp', 3: 'sp²', 4: 'sp³', 5: 'sp³d', 6: 'sp³d²' };
   const ANG = { 2: '180°', 3: '120°', 4: '109,5°', 6: '90°' };
+  const FIG = { 2: 'una línea', 3: 'un triángulo plano', 4: 'un tetraedro', 5: 'una bipirámide trigonal', 6: 'un octaedro' };
   const forma = k => FORMA[`${MOL[k].n},${MOL[k].m}`];
   const D = {
     region: 'Región de electrones: cada enlace (simple, doble o triple) o par libre del átomo central',
@@ -97,28 +98,28 @@
     const k = rng.elegir([...BASICAS, ...EXPANDIDAS]), { n, m } = MOL[k], dobles = !!EXTRA[k];
     return { correcta: String(n + m), _datos: { k },
       enunciado: [`En el ${k}, ${desc(k)}.`], pregunta: ['¿Cuántas regiones de electrones tiene el átomo central?'], datos: [D.region],
-      errores: [err('QM-FORMA-LIGANDOS', String(n), 'Sería así si el central no tuviera pares libres. Cada par libre también es una región.'),
-        dobles ? err('QM-REGION-DOBLE', String(n + m + EXTRA[k]), 'Sería así si cada par compartido fuera una región. Un enlace doble o triple cuenta como una sola.')
-          : m ? err('QM-REGION-PARES', String(n + 2 * m), 'Un par libre es una región, no dos.') : err('QM-REGION-CENTRAL', String(n + 1), 'Sobra una región. El átomo central no cuenta: se cuentan sus enlaces y sus pares libres.'),
-        err('QM-REGION-OCTETO', n + m === 4 ? '8' : '4', n + m === 4 ? 'Sería así si se contaran los ocho electrones del octeto. Se cuentan regiones: enlaces y pares libres.' : 'Sería así si siempre hubiera cuatro, como en el octeto. Se cuentan los enlaces y pares libres del central.'),
-        err('QM-REGION-UNO', String(n + m + 2), 'Sobran dos regiones. Vuelve a contar los pares libres del central.')],
-      solucion: [[`El central forma ${n} enlaces y ${m ? `tiene ${pTxt(m)}` : 'no tiene pares libres'}.`], [`${n} + ${m} = ${n + m} regiones`]] };
+      errores: [err('QM-FORMA-LIGANDOS', String(n), 'Contaste solo los enlaces. Cada par libre del central también es una región, porque sus electrones ocupan lugar y empujan igual que un enlace.'),
+        dobles ? err('QM-REGION-DOBLE', String(n + m + EXTRA[k]), 'Contaste cada par compartido como una región. Los pares de un doble o un triple apuntan juntos hacia el mismo átomo, así que cuentan como una sola.')
+          : m ? err('QM-REGION-PARES', String(n + 2 * m), 'Contaste cada par libre dos veces. Un par libre es una sola región, porque sus dos electrones están juntos en el mismo lugar.') : err('QM-REGION-CENTRAL', String(n + 1), 'Te sobra una región: contaste el átomo central. Él no es una región; se cuentan solo sus enlaces y sus pares libres.'),
+        err('QM-REGION-OCTETO', n + m === 4 ? '8' : '4', n + m === 4 ? 'Contaste los ocho electrones del octeto. Pero se cuentan regiones, no electrones: una por cada enlace y una por cada par libre.' : 'Sería así si todo central tuviera cuatro regiones, como en el octeto. Pero hay centrales con menos y con más: se cuentan sus enlaces y pares libres.'),
+        err('QM-REGION-UNO', String(n + m + 2), 'Te sobran dos regiones: quizá sumaste pares libres que el central no tiene. Cuenta solo los pares que le quedan en la estructura de Lewis.')],
+      solucion: [[`El central forma ${n} enlaces y ${m ? `tiene ${pTxt(m)}` : 'no tiene pares libres'}. Cada enlace y cada par libre es una región, así que se suman.`], [`${n} + ${m} = ${n + m} regiones`]] };
   }
   function angulo(rng) {
     const k = rng.elegir(['BeCl₂', 'CO₂', 'BF₃', 'BCl₃', 'SO₃', 'CH₄', 'CCl₄', 'SF₆']), r = MOL[k].n;
     return { correcta: ANG[r], _datos: { k },
       enunciado: [`En el ${k}, ${desc(k)}.`], pregunta: ['¿Cuánto mide el ', v('ang', 'ángulo'), ' más chico entre dos enlaces, según la repulsión de pares?'], datos: [D.region, D.angs],
-      errores: Object.values(ANG).filter(a => a !== ANG[r]).map(a => err(a === '90°' ? 'QM-ANGULO-PLANO' : 'QM-ANGULO-OTRA', a, a === '90°' ? 'Sería así si los enlaces formaran una cruz, como en el dibujo del papel.' : `Sería así con otro número de regiones. Aquí el central tiene ${r}.`)),
-      solucion: [[`El central tiene ${r} regiones, todas enlaces.`], [v('ang', ANG[r])]] };
+      errores: Object.values(ANG).filter(a => a !== ANG[r]).map(a => err(a === '90°' ? 'QM-ANGULO-PLANO' : 'QM-ANGULO-OTRA', a, a === '90°' ? 'Sería así si los enlaces formaran una cruz, como en el dibujo del papel. En el espacio, con dos, tres o cuatro regiones, los enlaces se separan más.' : `Ese ángulo es el de ${{ '180°': 'dos regiones', '120°': 'tres regiones', '109,5°': 'cuatro regiones' }[a]}. Aquí el central tiene ${r} regiones, que se reparten de otra manera.`)),
+      solucion: [[`El central tiene ${r} regiones, todas enlaces, que se alejan lo más posible y forman ${FIG[r]}.`], [v('ang', ANG[r])]] };
   }
   function formaT(rng, lista) {
     const k = rng.elegir(lista), { n, m } = MOL[k], fm = forma(k), plano = { 2: 'lineal', 3: 'trigonal plana', 4: 'cuadrada plana', 5: 'bipirámide trigonal', 6: 'octaédrica' }[n];
     const otras = Object.values(FORMA).filter(x => x !== fm && x !== DOM[n + m] && x !== plano && x !== DOM[n]);
     return { correcta: fm, _datos: { k },
       enunciado: [`En el ${k}, ${desc(k)}.`], pregunta: ['¿Qué forma tiene la molécula?'], datos: lista === EXPANDIDAS ? [D.region, D.exp] : [D.region, D.formas],
-      errores: [err('QM-FORMA-DOMINIOS', DOM[n + m], 'Sería así si la forma se nombrara por las regiones. Se nombra solo por los átomos.'), err('EN8', plano, 'Sería así si los átomos se repartieran por igual en el plano del papel. En el espacio, las regiones se alejan más.'),
-        err('QM-FORMA-LIGANDOS', DOM[n], 'Sería así sin pares libres. Los pares libres del central también ocupan lugar.'), err('EN9', rng.elegir(otras), 'Sería así con otro número de regiones o de pares libres.')],
-      solucion: [[`El central tiene ${n} enlaces y ${pTxt(m)}: ${n + m} regiones. La forma se nombra por los átomos.`], [fm]] };
+      errores: [err('QM-FORMA-DOMINIOS', DOM[n + m], 'Es la figura de las regiones, con los pares libres incluidos. La forma se nombra solo por los átomos, y sin los pares los átomos dibujan otra figura.'), err('EN8', plano, n >= 5 ? 'Sería así si el central no tuviera pares libres. Sus pares libres también ocupan lugar y empujan a los átomos, así que cambian la figura.' : 'Sería así si los átomos se repartieran por igual en el plano del papel. Pero la molécula ocupa el espacio, y sus regiones se alejan también hacia adelante y atrás.'),
+        err('QM-FORMA-LIGANDOS', DOM[n], 'Sería así si el central no tuviera pares libres. Sus pares libres también ocupan lugar y empujan a los átomos, así que cambian la figura.'), err('EN9', rng.elegir(otras), `Esa forma sale con otro número de regiones o de pares libres. Este central tiene ${n} enlaces y ${pTxt(m)}: son ${n + m} regiones.`)],
+      solucion: [[`El central tiene ${n} enlaces y ${pTxt(m)}: son ${n + m} regiones, que se ordenan como ${FIG[n + m]}. ${m ? `La forma se nombra solo por los ${n} átomos de alrededor, sin los pares.` : 'Sin pares libres, los átomos tienen esa misma forma.'}`], [fm]] };
   }
   // ---- Idea 2 ----
   const SP = [['H₂C=CH₂', 5, 1, 4], ['H₂C=CH–CH₃', 8, 1, 6], ['O=C=O', 2, 2, 0], ['H–C≡N', 2, 2, 1], ['H₂C=O', 3, 1, 2], ['CH₃–CH₃', 7, 0, 6], ['N≡N', 1, 2, 0], ['H₂C=C=CH₂', 6, 2, 4],
@@ -128,38 +129,38 @@
     const malas = Object.values(HIB).filter(x => x !== h);
     return { correcta: h, _datos: { k },
       enunciado: [`En el ${k}, ${desc(k)}.`], pregunta: ['¿Qué hibridación tiene el átomo central?'], datos: [D.hib, D.region],
-      errores: [m ? err('QM-FORMA-LIGANDOS', HIB[n], 'Sería así sin pares libres. Los pares libres del central también son regiones.') : err('QM-HIB-SIEMPRE-SP3', h === 'sp³' ? 'sp²' : 'sp³', h === 'sp³' ? 'Sería sp² con tres regiones; este átomo tiene cuatro.' : 'Sería sp³ con cuatro regiones, como el carbono del metano; este átomo tiene otras.'),
-        ...malas.filter(x => x !== HIB[n]).slice(0, 3).map(x => err('QM-HIB-CUENTA', x, `Sería ${x} con otro número de regiones.`))],
-      solucion: [[`El central tiene ${n} + ${m} = ${n + m} regiones.`], [h]] };
+      errores: [m ? err('QM-FORMA-LIGANDOS', HIB[n], 'Contaste solo los enlaces. Los pares libres del central también son regiones, y el átomo mezcla un orbital para cada región, pares incluidos.') : err('QM-HIB-SIEMPRE-SP3', h === 'sp³' ? 'sp²' : 'sp³', h === 'sp³' ? 'Sería sp² con tres regiones; este átomo tiene cuatro, así que mezcla un s y tres p.' : `Sería sp³ con cuatro regiones, como el carbono del metano; este átomo tiene ${n + m}, y la hibridación sigue a las regiones.`),
+        ...malas.filter(x => x !== HIB[n]).slice(0, 3).map(x => err('QM-HIB-CUENTA', x, `Sería ${x} con ${{ sp: 'dos', 'sp²': 'tres', 'sp³': 'cuatro', 'sp³d': 'cinco', 'sp³d²': 'seis' }[x]} regiones. Este central tiene ${n + m}: sus enlaces y sus pares libres.`))],
+      solucion: [[`El central tiene ${n} + ${m} = ${n + m} regiones, y mezcla un orbital por región.`], [h]] };
   }
   function sigmaPi(rng) {
     const [fo, s, p, nH] = rng.elegir(SP), tx = (a, b) => `${a} σ y ${b} π`;
     return { correcta: tx(s, p), _datos: { fo },
       enunciado: [`La fórmula de la molécula es ${fo}.`], pregunta: ['¿Cuántos enlaces sigma (σ) y pi (π) tiene?'], datos: [D.sp, D.rayas],
-      errores: [err('QM-PI-SIGMA', tx(s + p, 0), 'Sería así si todo par compartido fuera sigma. En un doble o un triple, el segundo y el tercer par son pi.'), err('QM-PI-ELECTRONES', tx(s, 2 * p), 'Ese número cuenta electrones pi. Se piden enlaces pi, y cada uno tiene 2 electrones.'),
-        nH ? err('QM-SIGMA-SOLO-CC', tx(s - nH, p), 'Faltan los enlaces con los H, que también son sigma.') : err('QM-PI-CUENTA', tx(s, p + 1), 'Sobra un pi. El doble aporta uno y el triple, dos.'), err('QM-PI-SIGMA', tx(s + 1, p), 'Sobra un sigma. Un enlace doble o triple tiene un solo sigma.'),
-        err('QM-PI-DOBLE-SIGMA', tx(s + p, p), 'Los pi están bien, pero un pi no suma además un sigma.'), err('QM-SIGMA-CORTO', tx(s - 1, p), 'Falta un sigma. Cuenta todas las rayas y, si los hay, los C–H que no llevan raya.')],
-      solucion: [['Cada enlace tiene un sigma; cada doble suma un pi y cada triple, dos.'], [`${s} σ y ${p} π`]] };
+      errores: [err('QM-PI-SIGMA', tx(s + p, 0), 'Contaste cada par compartido como sigma. Entre dos átomos hay un solo sigma: en un doble o un triple, los otros pares van por los costados y son pi.'), err('QM-PI-ELECTRONES', tx(s, 2 * p), 'Los sigma están bien, pero contaste electrones pi. Se piden enlaces pi, y cada uno tiene 2 electrones, así que ese número sale el doble.'),
+        nH ? err('QM-SIGMA-SOLO-CC', tx(s - nH, p), 'Te faltan los enlaces con los H. Cada H está unido por un enlace simple, aunque en CH₃ o H₂C no lleve raya, y ese enlace es un sigma.') : err('QM-PI-CUENTA', tx(s, p + 1), 'Te sobra un pi. Los pi salen solo de los enlaces múltiples: cada doble aporta uno y cada triple, dos.'), err('QM-PI-SIGMA', tx(s + 1, p), 'Te sobra un sigma. Todo enlace, sea simple, doble o triple, tiene un solo sigma: el par que va justo entre los dos átomos.'),
+        err('QM-PI-DOBLE-SIGMA', tx(s + p, p), 'Los pi están bien, pero contaste cada pi también como sigma. Un pi es un par aparte, por los costados: no suma otro sigma.'), err('QM-SIGMA-CORTO', tx(s - 1, p), 'Te falta un sigma. Cuenta todas las rayas y, si los hay, los C–H que no llevan raya: cada enlace da un sigma.')],
+      solucion: [['Cada enlace tiene un sigma, también los C–H sin raya; los pi salen solo de los múltiples: uno por cada doble y dos por cada triple.'], [`${s} σ y ${p} π`]] };
   }
   function electronesPi(rng) {
     const [fo, , p] = rng.elegir(SP.filter(x => x[2] > 0));
     return { correcta: String(2 * p), _datos: { fo },
       enunciado: [`La fórmula de la molécula es ${fo}.`], pregunta: ['¿Cuántos ', v('e', 'electrones pi'), ' tiene?'], datos: [D.sp, D.epi],
-      errores: [err('QM-PI-ELECTRONES', String(p), 'Ese número cuenta enlaces pi, y cada uno tiene 2 electrones.'), err('QM-PI-DOBLE', String(4 * p), 'Sería así si cada enlace pi tuviera 4 electrones; tiene solo 2.'),
-        err('QM-PI-SIGMA', String(2 * p + 2), 'Sobran 2 electrones, porque los del sigma no son pi.')],
-      solucion: [[p > 1 ? `Hay ${p} enlaces pi, con 2 electrones cada uno.` : 'Hay 1 enlace pi, con 2 electrones.'], [`${p} · 2 = `, v('e', `${2 * p}`)]] };
+      errores: [err('QM-PI-ELECTRONES', String(p), 'Ese número cuenta enlaces pi, y se piden electrones. Cada enlace pi es un par compartido, con 2 electrones: hay que multiplicar por 2.'), err('QM-PI-DOBLE', String(4 * p), 'Sería así si cada enlace pi tuviera 4 electrones. Un pi es un solo par, así que tiene 2, y los electrones del sigma no son pi.'),
+        err('QM-PI-SIGMA', String(2 * p + 2), 'Te sobran 2 electrones: sumaste los de un sigma. Los electrones del sigma van entre los dos átomos y no son pi.')],
+      solucion: [[p > 1 ? `Hay ${p} enlaces pi, y cada uno es un par compartido, con 2 electrones.` : 'Hay 1 enlace pi, que es un par compartido: tiene 2 electrones.'], [`${p} · 2 = `, v('e', `${2 * p}`)]] };
   }
   const CARB = [['H₂C=CH–CH₃', 'el carbono del CH₃', 4], ['H₂C=CH–CH₃', 'el carbono del medio', 3], ['HC≡C–CH₃', 'el carbono del medio', 2], ['H₂C=C=CH₂', 'el carbono del medio', 2],
     ['H₂C=C=CH₂', 'un carbono de la punta', 3], ['CH₃–C≡N', 'el carbono unido al N', 2], ['CH₃–C≡N', 'el carbono del CH₃', 4], ['H₂C=O', 'el carbono', 3], ['CH₃–CH₃', 'un carbono', 4],
     ['HC≡CH', 'un carbono', 2], ['H₂C=CH–CH=CH₂', 'un carbono del medio', 3]];
   function hibCarbono(rng) {
     const [fo, cual, r] = rng.elegir(CARB), h = HIB[r];
-    const MALA = { 2: err('QM-HIB-TRIPLE-SP2', 'sp²', 'Sería sp² con tres regiones; un triple o dos dobles le dejan solo dos.'), 3: err('QM-HIB-ENLACES', 'sp³', 'Sería así si el doble contara dos veces. Es una sola región, así que son tres.'),
-      4: err('QM-HIB-CUENTA', 'sp²', 'Sería sp² con un doble; aquí todos sus enlaces son simples.') };
+    const MALA = { 2: err('QM-HIB-TRIPLE-SP2', 'sp²', 'Sería sp² con tres regiones, como un carbono con un doble. Un triple, o dos dobles, le dejan solo dos, porque cada enlace múltiple cuenta como una.'), 3: err('QM-HIB-ENLACES', 'sp³', 'Contaste los dos pares del doble como dos regiones. El doble es una sola región, porque sus pares unen a los mismos átomos: son tres.'),
+      4: err('QM-HIB-CUENTA', 'sp²', 'Sería sp² con un doble. Aquí todos sus enlaces son simples, así que tiene cuatro regiones, como el carbono del metano.') };
     return { correcta: h, _datos: { fo, cual },
       enunciado: [`La fórmula de la molécula es ${fo}.`], pregunta: [`¿Qué hibridación tiene ${cual}?`], datos: [D.hib, D.region],
-      errores: [MALA[r], ...['sp', 'sp²', 'sp³'].filter(x => x !== h && x !== MALA[r].texto).map(x => err('QM-HIB-CUENTA', x, `Sería ${x} con otro número de regiones.`)), err('QM-HIB-CUENTA', 'sp³d', 'Sería así con cinco regiones, y un carbono no pasa de cuatro.')],
-      solucion: [[`Ese carbono tiene ${r} regiones, contando cada doble o triple como una.`], [`${r} regiones → ${h}`]] };
+      errores: [MALA[r], ...['sp', 'sp²', 'sp³'].filter(x => x !== h && x !== MALA[r].texto).map(x => err('QM-HIB-CUENTA', x, `Sería ${x} con ${{ sp: 'dos', 'sp²': 'tres', 'sp³': 'cuatro' }[x]} regiones, y este carbono tiene ${r}: cuenta sus enlaces, cada múltiple como uno.`)), err('QM-HIB-CUENTA', 'sp³d', 'Sería así con cinco regiones, y un carbono no pasa de cuatro: solo tiene un orbital s y tres p para mezclar.')],
+      solucion: [[`Ese carbono tiene ${r} regiones, contando cada doble o triple como una, y mezcla un orbital por región.`], [`${r} regiones → ${h}`]] };
   }
   // ---- Idea 3 ----
   const POL = { si: 'Polar: sus dipolos no se anulan', no: 'Apolar: sus dipolos se anulan' };
@@ -168,11 +169,11 @@
     const k = rng.elegir([...BASICAS, ...EXPANDIDAS].filter(x => x !== 'CH₄')), p = MOL[k].polar;
     return { correcta: POL[p ? 'si' : 'no'], _datos: { k },
       enunciado: [`El ${k} tiene forma ${forma(k)} y enlaces ${k === 'H₂S' ? 'algo ' : ''}polares.`], pregunta: ['¿La molécula es polar?'], datos: [D.dip, D.suma],
-      errores: [p ? err('EN10', POL.no, 'Sería así en una forma simétrica con átomos iguales alrededor; aquí falta una de las dos cosas.') : err('EN11', POL.si, 'Sus enlaces son polares, pero la forma reparte las flechas por igual y se anulan.'),
-        err('QM-POL-ENLACE', 'Apolar: sus enlaces no son polares', 'Sería así con enlaces apolares, pero el enunciado dice que son polares.'),
-        p ? (DISTINTOS.has(k) ? err('EN11', 'Apolar: su forma es simétrica', 'Sería así si los átomos de alrededor fueran iguales; la forma es simétrica, pero no lo son.')
-          : err('EN11', 'Apolar: sus átomos de alrededor son iguales', 'Lo son, pero los pares libres del central rompen la simetría y dejan una flecha total.')) : err('EN11', 'Polar: tiene átomos distintos', 'Tener átomos distintos no basta: aquí la forma anula las flechas.')],
-      solucion: [[p ? 'La forma no reparte las flechas por igual, así que queda una flecha total.' : 'La forma es simétrica y los átomos de alrededor son iguales, así que las flechas se anulan.'], [v('mu', 'μ'), p ? ' ≠ 0' : ' = 0']] };
+      errores: [p ? err('EN10', POL.no, `Sería así en una forma simétrica con átomos iguales alrededor. Aquí ${DISTINTOS.has(k) ? 'los átomos de alrededor no son iguales' : 'los pares libres del central empujan a los átomos hacia un lado'}, y queda una flecha total.`) : err('EN11', POL.si, 'Sus enlaces son polares, pero la forma, con átomos iguales alrededor, reparte las flechas por igual y se anulan.'),
+        err('QM-POL-ENLACE', 'Apolar: sus enlaces no son polares', 'Sería así con enlaces apolares, como el del Cl₂. Pero el enunciado dice que son polares: hay que mirar si la forma anula sus flechas.'),
+        p ? (DISTINTOS.has(k) ? err('EN11', 'Apolar: su forma es simétrica', 'Sería así si los átomos de alrededor fueran iguales. La forma es simétrica, pero no lo son, y el que atrae distinto deja una flecha sin compensar.')
+          : err('EN11', 'Apolar: sus átomos de alrededor son iguales', 'Lo son, pero los pares libres del central los empujan hacia un lado y rompen la simetría: queda una flecha total.')) : err('EN11', 'Polar: tiene átomos distintos', 'Tener átomos distintos hace polares los enlaces, no la molécula. Aquí la forma reparte las flechas por igual y las anula.')],
+      solucion: [[p ? `${DISTINTOS.has(k) ? 'Los átomos de alrededor no son todos iguales' : 'Los pares libres del central empujan a los átomos hacia un lado'}, así que las flechas no se compensan y queda una flecha total.` : 'La forma es simétrica y los átomos de alrededor son iguales, así que las flechas tiran parejo hacia todos lados y se anulan.'], [v('mu', 'μ'), p ? ' ≠ 0' : ' = 0']] };
   }
   function cualPolar(rng) {
     const si = rng.elegir(['H₂O', 'NH₃', 'SO₂', 'PCl₃', 'CHCl₃', 'H₂S', 'HCN', 'NF₃', 'CH₃Cl']), no = rng.barajar(['CO₂', 'BF₃', 'CCl₄', 'BeCl₂', 'SF₆', 'SO₃', 'XeF₄', 'PCl₅']).slice(0, 3);
@@ -180,8 +181,8 @@
     return { correcta: si, _datos: { si, no },
       enunciado: [`Se comparan las moléculas ${lista.join(', ')}.`], pregunta: ['¿Cuál de ellas es polar?'],
       datos: [D.suma, `Formas: ${lista.map(k => `${k} ${forma(k)}`).join('; ')}`],
-      errores: no.map(k => err('EN11', k, `El ${k} tiene enlaces polares, pero su forma ${forma(k)} anula sus flechas.`)),
-      solucion: [[`El ${si} es polar: con su forma ${forma(si)}, sus flechas no se anulan.`]] };
+      errores: no.map(k => err('EN11', k, `El ${k} tiene enlaces polares, pero su forma ${forma(k)}, con átomos iguales alrededor${MOL[k].m ? ' y los pares libres opuestos' : ''}, reparte sus flechas por igual y las anula.`)),
+      solucion: [[`El ${si} es polar: ${MOL[si].m ? 'los pares libres de su central' : 'sus átomos de alrededor, que no son todos iguales,'} hacen que, con su forma ${forma(si)}, sus flechas no se anulen.`]] };
   }
   // ---- Idea 4 ----
   const FZ = [['CH₄', 'Solo London', 'apolar; sus H están unidos a C'], ['HCl', 'Dipolo-dipolo y London', 'polar; no tiene H unido a N, O o F'], ['NH₃', 'Puente de hidrógeno, dipolo-dipolo y London', 'polar; tiene H unido a N'],
@@ -191,9 +192,11 @@
   const TODAS = ['Solo London', 'Dipolo-dipolo y London', 'Puente de hidrógeno, dipolo-dipolo y London', 'Puente de hidrógeno y nada más'];
   function queFuerza(rng) {
     const [fo, bien, como] = rng.elegir(FZ);
-    const SI = { 'Solo London': ['QM-FUERZA-POLAR', 'Sería solo London si la molécula fuera apolar; es polar y suma dipolo-dipolo.'], 'Dipolo-dipolo y London': ['EN15', 'Sería así si la molécula fuera polar y no tuviera H unido a N, O o F.'],
-      'Puente de hidrógeno, dipolo-dipolo y London': ['EN15', 'Sería así si la molécula tuviera un H unido a N, O o F.'], 'Puente de hidrógeno y nada más': ['QM-FUERZA-SOLO', 'Aunque hubiera puente de hidrógeno, toda molécula tiene además London.'] };
     const [pol, resto] = como.split('; '), conPuente = bien.startsWith('Puente');
+    const SI = { 'Solo London': ['QM-FUERZA-POLAR', 'Sería solo London si la molécula fuera apolar. Es polar: el lado algo positivo de una atrae el algo negativo de la vecina, y eso suma dipolo-dipolo.'],
+      'Dipolo-dipolo y London': ['EN15', conPuente ? 'Sería así si la molécula no tuviera H unido a N, O o F. Lo tiene, así que suma además el puente de hidrógeno.' : 'Sería así si la molécula fuera polar. Es apolar: no tiene lados con carga que se atraigan, y solo le queda London.'],
+      'Puente de hidrógeno, dipolo-dipolo y London': ['EN15', `Sería así si la molécula tuviera un H unido a N, O o F${resto.startsWith('no tiene H unido') ? ', y no lo tiene' : `, pero ${resto}`}: no forma puentes de hidrógeno.`],
+      'Puente de hidrógeno y nada más': ['QM-FUERZA-SOLO', 'Aunque hubiera puente de hidrógeno, no sería lo único: toda molécula tiene además fuerzas de London, y las que forman puentes son polares.'] };
     return { correcta: bien, _datos: { fo },
       enunciado: [`El ${fo} es una molécula ${pol} y ${resto}.`], pregunta: ['¿Qué atracciones hay entre sus moléculas?'], datos: [D.puente, D.london],
       errores: TODAS.filter(x => x !== bien).map(x => err(SI[x][0], x, SI[x][1])),
@@ -210,19 +213,19 @@
     const [a, ea, b, eb, razon] = rng.elegir(EB), [x, y] = rng.barajar([a, b]);
     return { correcta: `El ${a}: ${razon}`, _datos: { a, b },
       enunciado: [`Se comparan el ${x} y el ${y}, a 1 atm.`], pregunta: ['¿Cuál hierve a mayor temperatura?'], datos: [D.atr, D.puente, D.london],
-      errores: [MASA[b] > MASA[a] ? err('EN16', `El ${b}: es más pesado`, `Sería así si solo importara la masa. Aquí pesa más otra cosa: el ${a} ${razon}.`)
-        : MASA[b] === MASA[a] ? err('EN16', 'Los dos igual: tienen la misma masa', 'Sería así si solo importara la masa; pesan lo mismo, pero la forma cambia cuánto se atraen.')
-          : err('QM-ENLACE-INTERNO', `El ${b}: sus enlaces internos son más fuertes`, `Al hervir no se rompen enlaces internos, y además el ${a} ${razon}.`), err('EN14', `El ${a}: sus enlaces internos son más fuertes`, 'Elegiste bien la sustancia, pero no la razón: al hervir no se rompen enlaces internos.'),
-        err('QM-GRUPO-EB', 'Los dos igual: son parecidos', 'Se parecen, pero sus moléculas no se atraen igual.'), err('QM-FUERZA-ORDEN', `El ${b}: sus moléculas se atraen más`, `Es al revés, porque el ${a} ${razon}.`)],
-      solucion: [[`El ${a} ${razon}.`], [`${a}: `, v('T', tC(ea)), `; ${b}: `, v('T', tC(eb))]] };
+      errores: [MASA[b] > MASA[a] ? err('EN16', `El ${b}: es más pesado`, `Sería así si solo importaran las fuerzas de London, que crecen con la masa. Aquí pesa más otra cosa: el ${a} ${razon}.`)
+        : MASA[b] === MASA[a] ? err('EN16', 'Los dos igual: tienen la misma masa', 'Sería así si solo importara la masa. Pesan lo mismo, pero la cadena alargada toca más a sus vecinas que la bola, y con más contacto hay más London.')
+          : err('QM-ENLACE-INTERNO', `El ${b}: sus enlaces internos son más fuertes`, `Al hervir, las moléculas se separan enteras y no se rompe ningún enlace interno. Lo que cuenta es la atracción, y el ${a} ${razon}.`), err('EN14', `El ${a}: sus enlaces internos son más fuertes`, 'Elegiste bien la sustancia, pero no la razón: al hervir, las moléculas se separan enteras y ningún enlace interno se rompe, así que su fuerza no cuenta.'),
+        err('QM-GRUPO-EB', 'Los dos igual: son parecidos', `Se parecen, pero sus moléculas no se atraen igual: el ${a} ${razon}.`), err('QM-FUERZA-ORDEN', `El ${b}: sus moléculas se atraen más`, `Es al revés: el ${a} ${razon}, así que sus moléculas se atraen más y necesitan más temperatura para separarse.`)],
+      solucion: [[`El ${a} ${razon}, así que sus moléculas se atraen más y hace falta más temperatura para separarlas.`], [`${a}: `, v('T', tC(ea)), `; ${b}: `, v('T', tC(eb))]] };
   }
   function puente(rng) {
     const si = rng.elegir(['NH₃', 'HF', 'CH₃OH', 'H₂O₂', 'CH₃NH₂', 'H₂O']), no = rng.barajar(['CH₃OCH₃', 'CH₃F', 'HCl', 'H₂S', 'CH₄', 'CH₂O']).slice(0, 3);
     return { correcta: si, _datos: { si, no },
       enunciado: [`Se comparan las sustancias ${rng.barajar([si, ...no]).join(', ')}.`], pregunta: ['¿Cuál de ellas forma puentes de hidrógeno entre sus moléculas?'],
       datos: [D.puente, 'En las fórmulas, el H escrito junto a O o N (OH, NH) está unido a ese átomo; en CH, al carbono'],
-      errores: no.map(x => err(/O|F/.test(x) ? 'EN15' : 'QM-PUENTE-POLAR', x, /O|F/.test(x) ? 'Tiene O o F, pero sus H están unidos a C y no a ellos.' : `${x === 'HCl' ? 'Su H no está unido' : 'Sus H no están unidos'} a N, O ni F, así que no forma puentes de hidrógeno.`)),
-      solucion: [[`El ${si} tiene un H unido a ${/F/.test(si) ? 'F' : /N/.test(si) ? 'N' : 'O'}, así que forma puentes de hidrógeno.`]] };
+      errores: no.map(x => err(/O|F/.test(x) ? 'EN15' : 'QM-PUENTE-POLAR', x, /O|F/.test(x) ? 'Tiene O o F, pero sus H están unidos a C y no a ellos, y el puente lo forma un H pegado al N, al O o al F.' : `${x === 'HCl' ? 'Su H está unido al Cl' : x === 'H₂S' ? 'Sus H están unidos al S' : 'Sus H están unidos al C'}, y el puente solo se forma con un H unido a N, O o F.`)),
+      solucion: [[`El ${si} tiene un H unido a ${/F/.test(si) ? 'F' : /N/.test(si) ? 'N' : 'O'}, así que forma puentes de hidrógeno. En las otras, ningún H está unido a N, O o F.`]] };
   }
 
   const CONSTRUIR = { regiones, angulo, forma: rng => formaT(rng, BASICAS), 'forma-expandida': rng => formaT(rng, EXPANDIDAS), 'hib-central': hibCentral, 'sigma-pi': sigmaPi,
