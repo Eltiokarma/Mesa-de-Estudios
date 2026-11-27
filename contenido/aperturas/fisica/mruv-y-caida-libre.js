@@ -69,6 +69,7 @@
         'La figura no rotula los centímetros de caída ni los tiempos para no dar la proporción entre tiempo y distancia, que es la misión de la idea 5.',
         'Se descartaron el choque de la frenada (al doble de rapidez, el cuádruple de distancia), que es la Predice de la idea 2, y el de la canica y la piedra, que es la Predice de la idea 5.',
         'Revisión del Escribidor Escribano (27 nov): «la que va adelante» pasó a «la que va más abajo», porque en una caída «adelante» no se ve; «lo que avanza una bicicleta» pasó a «más o menos la rapidez de una bicicleta». Los 20 km/h ya iban en condicional («llegaría»). No delata: el texto no dice nada del peso en la caída (Predice de la idea 5) ni de la frenada (idea 2).',
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido («más pesada» del párrafo 2 está sola, sin «peso» ni «masa» de la física al lado).',
       ],
     },
   };

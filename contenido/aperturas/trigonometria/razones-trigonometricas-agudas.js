@@ -49,9 +49,12 @@
     titulo: '¿Por qué una rampa con 100 % de pendiente no es una pared?',
     parrafos: [
       ['En la entrada de un colegio o de una municipalidad suele haber una rampa para sillas de ruedas, y el Reglamento Nacional de Edificaciones fija su pendiente máxima: si salva un desnivel de hasta 25 cm, puede llegar a ',
-        pend('12 %'), ', es decir, subir ', sube('12 cm'), ' por cada metro que ', avanza('avanza'), '. ',
-        'Si pusieras un transportador junto a esa rampa, marcaría unos ', ang('7°'), ' sobre el piso, y en una rampa de ', pend('100 %'), ', que sube ',
-        sube('1 m'), ' por cada ', avanza('metro'), ' que avanza, marcaría ', ang('45°'), '.'],
+        pend('12 %'), ', es decir, subir ', sube('12 cm'), ' por cada metro que ', avanza('avanza'), ':',
+        { linea: [pend('12 %'), ' = ', { frac: [[sube('12 cm')], [avanza('100 cm')]] }] },
+        'Si pusieras un transportador junto a esa rampa, marcaría unos ', ang('7°'), ' sobre el piso. ',
+        'Una rampa de ', pend('100 %'), ', en cambio, sube ', sube('1 m'), ' por cada ', avanza('metro'), ' que avanza:',
+        { linea: [pend('100 %'), ' = ', { frac: [[sube('1 m')], [avanza('1 m')]] }] },
+        'Junto a esa otra rampa, el mismo transportador marcaría ', ang('45°'), '.'],
       ['Un porcentaje suele contar partes de un todo, así que parece natural que el 100 % sea lo más empinado posible, una pared vertical, y que el 50 % quede a medio camino entre el piso y la pared. ',
         'Pero el transportador dejaría la rampa de 100 % justo a medio camino, y la de 50 % se levantaría apenas unos ', ang('27°'), '.'],
       ['La pendiente no reparte los grados que hay entre el piso y la pared: compara dos largos, lo que la rampa sube y lo que avanza. ',
@@ -76,6 +79,7 @@
         'La pregunta se puede intentar con lo leído: si 100 % ya es medio camino, 200 % (sube 2 m por cada metro) queda más empinada pero no llega a la pared; da unos 63°, y ninguna pendiente es una pared.',
         'El texto no dice «tangente» ni da la fórmula: la idea 1 nombra los lados desde el ángulo y la idea 2 muestra que el cociente no depende del tamaño. No se comparan rampas de distinto tamaño, para no tocar la Predice de la idea 2.',
         'Revisión del Escribidor Escribano (27 nov): el párrafo 1 decía «con un transportador se mide» y el 2, «el transportador pone», cuando los ángulos son cálculo: pasaron a condicional («marcaría», «dejaría», «se levantaría»). El párrafo 3 decía que el cociente «cambia cuando cambia el ángulo», que ya es parte de la regla: se quitó y queda solo el nombre.',
+        'Tercera pasada (27 nov): el párrafo 1 saca a su línea 12 % = 12 cm / 100 cm y 100 % = 1 m / 1 m, como fracciones con los colores de lo que sube y lo que avanza; la oración larga del transportador se partió en dos para que cada línea siga a su rampa.',
       ],
     },
   };

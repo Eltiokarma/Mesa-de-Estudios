@@ -74,6 +74,7 @@
         'Se descartaron el choque del colchón o del airbag (más tiempo, menos fuerza), que es la Predice de la idea 2, y el rebote de la pelota, que es la misión de la idea 5.',
         'La moneda de un sol también aparece en la apertura de «Movimiento parabólico» (la que se lanza en la combi); no son vecinas en la rama y el hecho es otro.',
         'Revisión del Escribidor Escribano (27 nov): «Las dos pesan lo mismo, 7,32 g» confundía masa con peso; ahora dice «tienen la misma masa». El párrafo 2 usaba «impulso» en sentido de todos los días («el golpe le gastó el impulso»), pero el impulso es un término de esta misma unidad (idea 2) y no significa eso; ahora dice «el golpe frenó a la tuya y su movimiento se perdió», y el atajo de la ficha se ajustó igual. La última oración encadenaba tres predicados con comas («depende…, se llama…, y de ella…»); ahora nombra primero y explica después. «Lo que uno espera» pasó a «Lo que esperarías». No delata: no da números de cantidad de movimiento (Predice de la idea 1) ni el coeficiente de restitución (idea 5).',
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. La pregunta dice «pesara el doble», pero en su propio párrafo y sin «masa» al lado; se dejó.',
       ],
     },
   };

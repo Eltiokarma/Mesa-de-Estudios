@@ -51,7 +51,7 @@
     titulo: '¿De dónde sale el calor que hace humear los frenos de un camión que baja de la sierra?',
     parrafos: [
       'Por la Carretera Central, un camión baja de Ticlio, a 4818 m sobre el mar, hasta Lima, casi 4,7 km más abajo, y en casi toda la bajada el chofer no pisa el acelerador. ' +
-        'Los frenos, en cambio, trabajan todo el camino y se calientan tanto que muchos camiones llevan un tanque de agua para mojarlos, y el agua que cae sobre ellos sale en vapor.',
+        'Los frenos, en cambio, no se sueltan en todo el camino y se calientan tanto que muchos camiones llevan un tanque de agua para mojarlos, y el agua que cae sobre ellos sale en vapor.',
       'Que los frenos se calienten no extraña, porque frenar es rozar y el roce calienta, como cuando te frotas las manos. ' +
         'Pero al frotarte las manos apenas se entibian, y eso que el esfuerzo lo pones tú, mientras que en la bajada nadie empuja al camión ni el motor lo jala. ' +
         'Con esa idea, los frenos tendrían que llegar a Lima tibios, como tus manos, y no tan calientes que el agua hierva al tocarlos.',
@@ -82,6 +82,7 @@
         'El texto no compara caminos (toboganes o rampas) para no tocar las Predice de las ideas 4 y 5, ni habla de cargar algo en horizontal (idea 1).',
         'Revisión del Escribidor Escribano (27 nov): el párrafo 3 cerraba repitiendo la conservación como regla («Eso que cambia de forma sin desaparecer es la energía»), que la primera oración ya mostraba con el caso; ahora dice «Ese algo es la energía». La primera oración mezclaba «se convertiría» y «convierten» con un inciso entre el sujeto y el verbo («los frenos, para que la rapidez no crezca, lo convierten»); ahora va «sin frenos se volvería rapidez, y los frenos lo vuelven calor para que el camión no se embale». «En la cuenta, si todo…» pasó a «Si todo…, la cuenta dice que alcanzaría», que deja claro que es cálculo. «Lo que uno espera» pasó a «lo que esperarías». No delata: no compara caminos (ideas 4 y 5) ni da la fórmula de la energía potencial (idea 3).',
         'Doble revisión (27 nov): el párrafo 2 decía «lo que esperarías es que la bajada no le cueste nada a nadie y que los frenos lleguen fríos a Lima», y el panel «Lo que predice» ponía «frenos fríos». Era un muñeco de paja: cualquiera sabe que frenar calienta. Ahora la predicción es la que un alumno sí hace, que el roce calienta, y se lleva hasta donde da: como las manos que se frotan, los frenos llegarían tibios, y lo medido es que el agua que les cae sale en vapor, sin que nadie ponga el esfuerzo. El termómetro de «Lo que predice» pasó de «fríos» a «tibios», con el pie «El roce entibia, como en tus manos». «Unos cuatro tanques» pasó a «casi cuatro», porque la cuenta da 3,7. El título, el caso, el párrafo 3 y la pregunta no cambian.',
+        'Tercera pasada (27 nov): sin ecuaciones en la oración. «Los frenos trabajan todo el camino» (trabajo de la calle) chocaba con «el trabajo» de la física del párrafo 3, que es el tema: ahora «no se sueltan en todo el camino».',
       ],
     },
   };

@@ -44,9 +44,11 @@
     unidad: 'fisica.movimiento-circular',
     titulo: '¿Por qué en los videos las ruedas de un auto en marcha a veces parecen quietas?',
     parrafos: [
-      'En un video grabado con el celular, a veces las ruedas de un auto que avanza rápido por la pista parecen quietas. ' +
-        'El celular graba unas 30 fotos en cada segundo, y el video es esa fila de fotos pasadas una tras otra. ' +
-        'La rueda de un auto que va a unos 40 km/h da unas 6 vueltas por segundo, así que un aro de cinco rayos gira entre foto y foto justo la quinta parte de una vuelta.',
+      ['En un video grabado con el celular, a veces las ruedas de un auto que avanza rápido por la pista parecen quietas. ',
+        'El celular graba unas 30 fotos en cada segundo, y el video es esa fila de fotos pasadas una tras otra. ',
+        'La rueda de un auto que va a unos 40\u00a0km/h da unas 6 vueltas por segundo, así que entre una foto y la siguiente gira solo un pedazo de vuelta:',
+        { linea: [{ v: 'c-f', t: '6' }, ' ÷ 30 = ', { v: 'c-f', t: '1/5 de vuelta' }] },
+        'Un aro de cinco rayos gira, entonces, justo la quinta parte de una vuelta entre foto y foto.'],
       'Si la rueda da 6 vueltas en cada segundo, el video tendría que mostrarla girando muy rápido hacia adelante. ' +
         'Y no se trata de un engaño del ojo, como cuando algo se mueve tan rápido que se ve borroso, porque si detienes el video y pasas las fotos una por una, los rayos salen en el mismo sitio en todas.',
       'Entre una foto y la siguiente, cada rayo avanza justo hasta donde estaba su vecino, y como los cinco rayos son iguales, las fotos salen idénticas. ' +
@@ -73,6 +75,7 @@
         'En la figura, la rueda de la predicción gira 15° por foto, en el sentido de las agujas del reloj (un ángulo que se ve); la real gira 72°, la quinta parte de una vuelta, y por eso sale igual. Los rayos no se distinguen entre sí, a propósito: si uno tuviera color, se vería que avanza.',
         'Se evitó el ventilador, que es el objeto de la Predice de la idea 2, aunque el efecto también se ve en sus aspas.',
         'Revisión del Escribidor Escribano (27 nov): el párrafo 1 decía que las ruedas «incluso parecen girar hacia atrás», que es la respuesta de la pregunta «Antes de seguir»; se quitó para que la pregunta se piense y no se recuerde. La tercera oración tenía un inciso entre el sujeto y el verbo («Un aro de cinco rayos que da 6 vueltas por segundo, lo que da la rueda de un auto a unos 40 km/h, gira…»); ahora va en orden: la rueda da 6 vueltas, así que el aro gira la quinta parte entre foto y foto. «Tampoco es un engaño del ojo» seguía a una predicción, no a otra explicación descartada: pasó a «Y no se trata de un engaño del ojo». No delata: no toca el ventilador (Predice de la idea 2) ni da radianes.',
+        'Tercera pasada (27 nov): el párrafo 1 saca a su línea 6 ÷ 30 = 1/5 de vuelta (antes la cuenta iba implícita en la oración, «así que un aro de cinco rayos gira… la quinta parte»).',
       ],
     },
   };

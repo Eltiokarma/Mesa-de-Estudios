@@ -44,9 +44,10 @@
     parrafos: [
       'En la sierra, durante los meses de lluvia, las tormentas eléctricas son frecuentes, y después de cada rayo se oye su trueno. ' +
         'Ya sabes que el trueno llega después del destello, porque la luz te alcanza casi al instante y el sonido viaja mucho más lento por el aire.',
-      'De ahí sale lo que esperarías: mientras más lejos caiga el rayo, más tarda en llegarte su trueno. ' +
-        'La intuición acierta, y la espera además crece de manera pareja, porque el sonido avanza unos 340 m en cada segundo, ni más ni menos: ' +
-        'son unos 3 s por cada kilómetro, así que el trueno de un rayo a 1 km te llegaría a los 3 s, y el de uno a 3 km, a los 9 s.',
+      ['De ahí sale lo que esperarías: mientras más lejos caiga el rayo, más tarda en llegarte su trueno. ',
+        'La intuición acierta, y la espera además crece de manera pareja, porque el sonido avanza unos 340 m en cada segundo, ni más ni menos, así que para recorrer un kilómetro tarda unos 3 s:',
+        { linea: [{ v: 'c-f', t: '1000 m' }, ' ÷ 340 m/s ≈ ', { v: 'c-i', t: '3 s' }] },
+        'Así, el trueno de un rayo a 1 km te llegaría a los 3 s, y el de uno a 3 km, a los 9 s.'],
       'Por eso basta contar los segundos entre el destello y el trueno para saber a qué distancia cayó el rayo, algo útil en el altiplano, donde los rayos son un peligro para quien está en el campo. ' +
         'El movimiento que avanza lo mismo en cada segundo, sin acelerar ni frenar, es el primero que estudia esta unidad, junto con la manera de decir dónde está algo y hacia dónde va.',
     ],
@@ -74,6 +75,7 @@
         'Se descartó el choque de la rapidez media (ida y vuelta a rapideces distintas), que era el más fuerte, porque es la Predice de la idea 3; y el de la combi vecina que parece quieta, porque es la misión de la idea 5.',
         'Revisión del Escribidor Escribano (27 nov): el párrafo 1 pasó a condicional («si el rayo cayera…, el trueno te llegaría»), porque los 3 s y 9 s son cálculo con 340 m/s. No delata ninguna Predice ni misión. Contenido, para Gerson: el choque es más débil de lo que parece, porque casi todo alumno de 5.º ya sabe que el sonido es más lento que la luz, así que el panel «Lo que predice» (trueno junto con el destello) se acerca a un muñeco de paja. Lo que sí le enseña algo es que la espera crezca pareja con la distancia (3 s por kilómetro), que es la rapidez constante; el párrafo 2 lo dice al descartar la espera fija. La pregunta se responde con una regla de tres a partir del párrafo 1 (6 s, 2 km): se puede intentar, pero es fácil.',
         'Doble revisión (27 nov): era casi un muñeco de paja (el panel «Lo que predice» ponía el trueno junto con el destello, y casi todo alumno sabe que el sonido es más lento que la luz). Se reescribió con el punto 7: el título pasó de «¿Por qué el trueno llega segundos después del rayo, si los dos nacen a la vez?» a «¿Cómo puedes saber a qué distancia cayó un rayo con solo contar segundos?»; el párrafo 1 parte de lo que el alumno ya sabe; el párrafo 2 presenta la intuición (más lejos, más espera) como correcta y le agrega los 3 s por kilómetro; el párrafo 3 la aplica (saber dónde cayó el rayo, útil en el altiplano). El panel «Lo que predice» pasó de «0 s, 0 s» a «antes, después» con el pie «Más lejos, más espera». La pregunta ya no es la regla de tres directa (6 s, 2 km): compara dos truenos (12 s y 6 s) para decir si la tormenta se acerca y cuánto, que es para lo que sirve contar.',
+        'Tercera pasada (27 nov): el párrafo 2 saca a su línea 1000 m ÷ 340 m/s ≈ 3 s (antes «son unos 3 s por cada kilómetro» en la oración); los ejemplos de 1 km y 3 km siguen en la oración como datos.',
       ],
     },
   };

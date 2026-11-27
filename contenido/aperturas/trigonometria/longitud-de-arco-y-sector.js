@@ -95,6 +95,7 @@
         'La figura no está a escala (las calles van más anchas para que se vean los dos corredores); la salida de la calle 8 se adelanta π · (R8 − R1) sobre su propia curva, como en la pista.',
         'Revisión del Escribidor Escribano (27 nov): «todos dan la misma curva» chocaba con el párrafo 3, donde la gracia es que las curvas no son la misma; ahora «en la curva todos giran media vuelta». «Las dos calles giran» pasó a «los dos corredores giran», y se quitó la coma que abría un inciso sin cerrarlo. La última oración se rehízo para que el sujeto no sea una pregunta indirecta («Cuánto mide… es»).',
         'Contenido, para Gerson: el párrafo 3 ya dice por qué (el camino de afuera es más largo con el mismo giro); es lo que el alumno se lleva y no da la fórmula, pero roza el «la entrada no explica», como el párrafo 3 de la pizza.',
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido («calle» va siempre como carril de la pista). Los 8,5 m que se vuelven 26 m se dejaron como dato: escribir la cuenta con π adelantaría la pregunta del cuarto de vuelta.',
       ],
     },
   };

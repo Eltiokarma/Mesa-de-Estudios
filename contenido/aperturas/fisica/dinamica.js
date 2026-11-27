@@ -77,6 +77,7 @@
         'Se descartó el choque de la combi que se mueve aunque nadie pueda levantarla, porque compara el empujón con el peso y adelanta la Predice de la idea 2 (en la Luna, empujar de lado no depende del peso).',
         'En la figura, la predicción va a 5 km/h en las tres filas; la medición sigue la cuenta redondeada (3, 5 y 11 km/h).',
         'Revisión del Escribidor Escribano (27 nov): el párrafo 3 terminaba su primera oración con «y gana menos cuanta más masa tiene», que es la segunda ley y toca la Predice de la idea 2 (la caja de 20 kg en la Luna); se quitó, y la oración cierra ahora con el choque del caso (la combi se les escapa a quienes la empujan). «El freno de las llantas» pasó a «la resistencia de las llantas», para no confundirlo con los frenos. El párrafo 1 pasó a condicional entero («si tres personas empujaran»). «Lo que uno espera» pasó a «Lo que esperarías» (de tú) y «Tampoco es que» a «Y no es que», porque seguía a una expectativa. La pregunta preguntaba «qué cambiaría en la manera en que la combi gana rapidez», que un alumno sin el tema no sabe cómo contestar; ahora pide comparar la rapidez a los 10 s (más, igual o menos que con tres).',
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido («fuerza» y «masa» van siempre en su sentido de la física).',
       ],
     },
   };

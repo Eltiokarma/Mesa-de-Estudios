@@ -82,6 +82,7 @@
         'La figura no está a escala (a escala la estación iría casi pegada al borde de la Tierra); el texto alternativo lo dice. En la predicción no hay flecha de gravedad, porque es la idea de «sin gravedad».',
         'El texto dice que la gravedad «cambia con la masa y con la distancia», el tema de la idea 1, sin decir cómo cambia, para no tocar su Predice (240 N) ni la de la idea 2 (2 N/kg).',
         'Revisión del Escribidor Escribano (27 nov): «caen junto con la estación» se podía leer como que la estación se viene abajo. El párrafo 3 dice ahora primero que la estación cae todo el tiempo pero avanza tan rápido de lado que la superficie curva de la Tierra se aleja debajo de ella, y nunca llega al suelo; después, en otra oración, que los astronautas caen con la estación y al mismo ritmo, así que nada los aprieta contra el piso. La última oración tenía un inciso entre el sujeto y el verbo («La fuerza que los hace caer, la misma que…, es la gravitación»); ahora va en orden, y usa «la gravedad» para la fuerza, como el título, y «la gravitación» para la unidad. Las nueve décimas pasaron a condicional («sería»), porque son cálculo. «Unas 16 vueltas» pasó a «casi 16» (1440 ÷ 92 da 15,7). La pregunta repetía el dato del título en una subordinada; ahora es una sola pregunta. No delata: no dice cómo cambia la gravedad con la distancia (Predices de las ideas 1 y 2) ni qué rapidez pide una órbita (idea 4).',
+        'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido.',
       ],
     },
   };

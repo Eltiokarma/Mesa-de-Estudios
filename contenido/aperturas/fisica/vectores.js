@@ -58,7 +58,9 @@
         'Si se separan, los brazos se abren y la misma bolsa se siente más pesada, aunque nadie le haya agregado nada. ',
         'Con dos balanzas de gancho, como las del mercado, se puede medir: una bolsa de 10 kg colgada de las dos con las cuerdas verticales hace marcar 5 kg a cada balanza. ',
         'Con las cuerdas abiertas hasta formar ', th('120°'), ' entre ellas, cada balanza marca 10 kg, la bolsa entera.'],
-      ['La cuenta que haría cualquiera es repartir: la bolsa tiene 10 kg y la sostienen dos cuerdas, así que a cada una le tocan 5 kg, estén abiertas o no. ',
+      ['La cuenta que haría cualquiera es repartir los 10 kg de la bolsa entre las dos cuerdas que la sostienen:',
+        { linea: ['10 kg ÷ 2 = 5 kg'] },
+        'Con esa cuenta, a cada cuerda le tocan 5 kg, estén abiertas o no. ',
         'Si alguien culpa al cansancio del brazo abierto, las balanzas lo desmienten, porque no tienen músculos y aun así marcan el doble.'],
       ['Con las cuerdas abiertas, cada balanza jala hacia arriba y también hacia su costado, y la parte que va hacia el costado no sostiene la bolsa: la anula el jalón de la otra balanza. ',
         'Por eso dos jalones no se suman como dos números, y para juntarlos hay que tener en cuenta su dirección además de su tamaño. ',
@@ -86,6 +88,7 @@
         'La pregunta se puede intentar con la figura: de 5 kg a 10 kg al abrir las cuerdas, así que al abrirlas más marcarían todavía más (con las cuerdas horizontales no podrían sostener la bolsa).',
         'Revisión del Escribidor Escribano (27 nov): «cuerdas rectas» no distinguía nada (una cuerda tensa siempre es recta) y pasó a «verticales»; «brazos rectos», a «estirados hacia abajo». El «Tampoco» del párrafo 2 sumaba una explicación descartada a una cuenta que todavía no se había descartado; ahora la trampa del cansancio entra como objeción que las balanzas desmienten.',
         'Contenido, para Gerson: el párrafo 3 explica el mecanismo (la parte del jalón que va al costado se anula), más de lo que el skill pide a una entrada, aunque sin componentes ni fórmulas; es lo que sostiene seLleva. Y la oración «hay que tener en cuenta su dirección además de su tamaño» no copia la respuesta de la Predice de la idea 1 (la prueba pasa), pero un alumno que la leyó llega a esa Predice sabiendo que la dirección importa. Decidir si se acepta o se corta esa oración.',
+        'Tercera pasada (27 nov): el párrafo 2 saca a su línea 10 kg ÷ 2 = 5 kg (antes «la bolsa tiene 10 kg y la sostienen dos cuerdas, así que a cada una le tocan 5 kg» en la oración).',
       ],
     },
   };
