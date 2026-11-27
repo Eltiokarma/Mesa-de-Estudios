@@ -41,7 +41,7 @@ Cada problema puede traer `"preguntas"`, una por cada magnitud que pide:
 - hay menos de **dos errores** que se vean distintos de la correcta y entre sí, ya escritos con su unidad;
 - una pregunta no trae su `enunciado`;
 - un error está fuera de escala (de 1/20 a 20 veces la correcta; las trampas de unidades U1–U8, QU, AU y RU pueden llegar a 1000, como en los generadores);
-- falta el código, el respaldo (`documentado`, `parcial` o `hipotesis`) o la explicación, o la explicación pasa de 30 palabras.
+- falta el código, el respaldo (`documentado`, `parcial` o `hipotesis`) o la explicación, o la explicación pasa de 40 palabras (desde el 27 nov, igual que el `siFuera` de la teoría).
 
 Además, el `motor.test.js` de la plantilla sigue comprobando `verificar`.
 

@@ -26,7 +26,8 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
   const RESPALDOS = ['documentado', 'parcial', 'hipotesis'];
-  const MAX_PALABRAS_ERROR = 30; // docs/escena-viva.md pide 20 en el ejercicio vivo; aquí la explicación es lo único que ve
+  const MAX_PALABRAS_ERROR = 40; // 27 nov: igual que el siFuera de la teoría (docs/teoria.md §5).
+  // docs/escena-viva.md pide 20 en el ejercicio vivo; aquí la explicación es lo único que ve
 
   // campo: "P", "gases.He.P" o "valor": el resultado mismo si es un número o un texto, o su campo «valor» si el motor
   // devuelve un objeto como { valor, simple } (cinética, mol y composición).
