@@ -67,7 +67,7 @@
       ['En geometría, el ángulo entre dos rayos es la abertura que queda entre ellos, y entre el 12 y el 3 de un reloj hay ', giro('un cuarto de vuelta'), '. ',
         'Con esa idea, tu minutero habría girado lo mismo que si hubieras llegado a las 7:15, y la hora entera de viaje no aparecería en la cuenta. ',
         'Medir la abertura por el otro lado, del 3 al 12 pasando por el 6, tampoco alcanza, porque la abertura entre dos posiciones de la aguja nunca llega a una vuelta entera.'],
-      ['Una abertura solo mira dónde empieza y dónde termina la aguja, y no ve cuántas vueltas dio ni hacia qué lado giró. ',
+      ['La cuenta de 6° por minuto es la correcta, porque cuenta las vueltas; la abertura, en cambio, solo mira dónde empieza y dónde termina la aguja, y no ve cuántas vueltas dio ni hacia qué lado giró. ',
         'Contar el giro entero, con sus vueltas y su sentido, es el trabajo del ángulo trigonométrico, el tema de esta unidad.'],
     ],
     figura: {
@@ -87,6 +87,7 @@
       notas: [
         'El reloj gira en sentido horario, que en trigonometría es el negativo: el texto no lo dice, para no adelantar la idea 1; la pregunta abre el sentido (avanzar o atrasar el reloj) sin dar el signo.',
         'La figura no escribe 90° en el panel de la predicción (dice «¼ de vuelta»), porque 90 sale de la respuesta de la Predice de la idea 1 (−90°) y la prueba común lo atraparía.',
+        'Doble revisión (27 nov): la comparación es justa (el mismo minutero, de 7:00 a 8:15, con la abertura y con el giro) y la predicción equivocada no es del alumno sino de la definición de ángulo de geometría, que sí trae del colegio. Pero ningún alumno cree que el minutero giró solo un cuarto de vuelta en una hora y cuarto, así que el párrafo 3 abría como si la abertura fuera su intuición. Ahora abre diciendo que la cuenta de 6° por minuto es la correcta, porque cuenta las vueltas, y que lo que se queda corto es la abertura (antes: «Una abertura solo mira dónde empieza…»).',
         'Revisión del Escribidor Escribano (27 nov): «ninguna abertura entre dos agujas» hablaba de dos agujas cuando el choque es una sola aguja en dos momentos; ahora dice «dos posiciones de la aguja». La última oración se acortó («con sus vueltas y su sentido»). La pregunta decía «cuando avanza solo», ambiguo (¿por sí solo o únicamente?); ahora dice «cuando el reloj avanza esa hora y cuarto por su cuenta».',
       ],
     },
