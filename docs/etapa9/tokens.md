@@ -71,3 +71,5 @@ contra los límites semanales de los planes.
 | fisica.dinamica | redactor («explica»), unidad ya cerrada | 429 046 | 30 min | 109 herramientas |
 | fisica (tanda 1, 5 unidades) | verificación de notas del redactor | 460 535 | 24 min 41 s | 153 herramientas |
 | fisica (tanda 2, 4 unidades) | verificación de notas del redactor | 271 018 | 14 min 44 s | 86 herramientas |
+| quimica.propiedades-periodicas | redactor, segunda pasada («explica») | 278 953 | 14 min | 48 herramientas |
+| quimica.tabla-periodica | redactor, segunda pasada («explica») | 372 510 | 17 min 43 s | 67 herramientas |
