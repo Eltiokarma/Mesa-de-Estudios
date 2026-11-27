@@ -93,3 +93,5 @@ contra los límites semanales de los planes.
 | aperturas RM y verbal (12) | doble revisión (choques honestos) | 206 167 | 8 min 15 s | 34 herramientas |
 | aperturas geometría (7) | doble revisión (choques honestos) | 205 864 | 8 min 48 s | 44 herramientas |
 | aperturas aritmética (8) | doble revisión (choques honestos) | 204 036 | 9 min | 41 herramientas |
+| algebra.division-de-polinomios | apertura investigada de nuevo (3 candidatos) | 210 722 | 9 min 33 s | 26 herramientas |
+| aperturas química (9) | doble revisión (choques honestos) | 218 241 | 9 min 46 s | 43 herramientas |

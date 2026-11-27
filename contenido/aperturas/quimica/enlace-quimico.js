@@ -49,8 +49,8 @@
     parrafos: [
       ['Si calientas azúcar en una sartén, se derrite antes de los 200 °C y se vuelve el caramelo dorado que se usa para la crema volteada. ',
         'La sal de cocina, en la misma sartén y con el fuego al máximo, sigue en granos, porque se derrite recién a 801 °C, una temperatura que una sartén de casa no alcanza.'],
-      ['Los dos se ven casi iguales, porque son granos blancos y brillantes que se disuelven en agua, así que lo esperable sería que se comportaran parecido al calentarlos. ',
-        'Tampoco sirve decir que el azúcar se derrite porque viene de una planta y la sal no porque viene del mar o de una mina, ya que la parafina de una vela sale del petróleo y se derrite a unos 60 °C, menos que el agua hirviendo.'],
+      ['Los dos son granos blancos y brillantes que se disuelven en agua, tan parecidos que más de una vez alguien ha echado sal al café, así que lo esperable sería que se comportaran parecido al calentarlos. ',
+        'Tampoco sirve decir que el azúcar se derrite porque viene de una planta y la sal no porque viene del mar o de una mina, ya que el estaño de soldar sale de minas como la de San Rafael, en Puno, y se derrite con la punta caliente de un cautín.'],
       ['La diferencia no se ve en el grano, sino en cómo se unen los átomos por dentro, y en el azúcar y en la sal se unen de maneras muy distintas. ',
         'Esas uniones entre átomos se llaman enlaces químicos, y esta unidad trata de sus clases y de lo que cada una le hace a una sustancia.'],
     ],
@@ -64,14 +64,15 @@
       seLleva: 'Dos sustancias que se ven iguales pueden tener sus átomos unidos de maneras muy distintas, y esa manera de unirse decide cosas como la temperatura a la que se derriten.',
       alcance: 'Parcial (núcleo: explicar una propiedad que se ve con la manera en que se unen las partículas; los tipos de enlace y las estructuras de Lewis no entran en PISA). Deducción propia.',
       choque: 'El azúcar y la sal se ven casi iguales y se disuelven igual; en la sartén el azúcar se derrite hacia los 186 °C y la sal sigue sólida hasta 801 °C.',
-      atajo: 'La explicación trampa «el azúcar viene de una planta y la sal de una mina» se descarta con la parafina, que sale del petróleo y se derrite a unos 60 °C. Decir que «el azúcar se quema» no alcanza: antes de oscurecerse, se derrite.',
+      atajo: 'La explicación trampa «el azúcar viene de una planta y la sal de una mina» se descarta con el estaño de soldar, que sale de una mina y se derrite con un cautín. Decir que «el azúcar se quema» no alcanza: antes de oscurecerse, se derrite.',
       porVerificar: [
         'Punto de fusión del cloruro de sodio: 801 °C (dato de tabla, de memoria).',
         'Que la sacarosa se derrita hacia los 186 °C y empiece a caramelizarse cerca de esa temperatura (de memoria: se descompone al fundirse; la caramelización puede empezar algo antes, hacia los 160 °C). El texto dice «antes de los 200 °C».',
         'Que una sartén en una cocina doméstica no llegue a 801 °C (lo esperado: una sartén vacía al máximo pasa poco de los 300 °C a 400 °C).',
-        'Punto de fusión de la parafina de vela: unos 50 °C a 65 °C según la mezcla (de memoria). El texto dice «unos 60 °C».',
+        'Que el estaño se saque en la mina San Rafael (Antauta, Melgar, Puno), una de las mayores minas de estaño del mundo (de memoria). Punto de fusión del estaño puro, 232 °C, y de la soldadura de estaño y plomo, unos 183 °C a 190 °C (de memoria): el texto no da la cifra, solo que se derrite con un cautín.',
       ],
       notas: [
+        'Doble revisión (27 nov): el choque es honesto (el azúcar y la sal se confunden de verdad en la cocina, y en la sartén se portan muy distinto) y se mantiene. Se cambió el contraejemplo de la explicación trampa: antes era la parafina, que sale del petróleo, y un alumno atento objetaría que el petróleo también viene de seres vivos; ahora es el estaño de soldar de la mina San Rafael, en Puno, que sale de una mina como la sal y se derrite con un cautín. Para que la predicción sea una que el alumno de verdad haría, el párrafo 2 recuerda que se confunden al endulzar el café.',
         'Revisión (Escribidor Escribano, 27 nov): se quitó «en la sal no hay moléculas sueltas», porque descartaba de antemano la opción «Moléculas sueltas, cada una con un sodio y un cloro» (error EN1) de la Predice de la idea 1. Para el atajo de la planta y la mina, un alumno podría objetar que el petróleo también viene de seres vivos; si Gerson lo prefiere, el estaño de soldar, que sale de una mina y se derrite con un cautín, sería un contraejemplo más limpio.',
         'El párrafo 3 dice solo que en el azúcar y en la sal los átomos se unen de maneras muy distintas: no dice que la sal esté hecha de iones ni cómo se acomodan, que es la respuesta de la Predice de la idea 1. Tampoco usa la corriente eléctrica, que es la Predice y la misión de esa idea.',
         'Precisión para Gerson: al derretir el azúcar no se rompen los enlaces de dentro de la molécula, sino las uniones débiles entre moléculas; por eso el texto dice «moléculas que se sueltan unas de otras». La idea 1 distingue enlace iónico, covalente y metálico, y la pregunta la abre sin responderla.',

@@ -38,8 +38,8 @@
   };
   const svg = `<svg viewBox="0 0 520 384" width="520" height="384" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <line x1="260" y1="12" x2="260" y2="374" style="stroke:var(--line)" stroke-width="2"/>
-    ${panel(0, 'Lo que predice', false, ['El pariente del cloro', 'es su vecino'])}
-    ${panel(260, 'Lo que se mide', true, ['El pariente del cloro', 'es el yodo, el 53'])}
+    ${panel(0, 'Lo que predice', false, ['El pariente del cloro', 'sería su vecino'])}
+    ${panel(260, 'Lo que se mide', true, ['Un pariente del cloro', 'es el yodo, el 53'])}
   </svg>`;
 
   return {
@@ -51,13 +51,13 @@
       ['Si los elementos se parecieran más cuanto más cerca están sus números, el pariente más cercano del cloro sería el argón, que tiene 18 protones, o el azufre, que tiene 16. ',
         'Pero el argón es un gas que casi no reacciona con nada, tanto que se usa para proteger el metal al soldar, y el azufre es un polvo amarillo que nadie usa para desinfectar el agua ni el baño. ',
         'Tampoco basta con decir que el cloro y el yodo se parecen porque son no metales, ya que el argón y el azufre también lo son.'],
-      ['El pariente del cloro no está al lado: aparece 36 lugares más adelante, después de un tramo de elementos que no se le parecen. ',
+      ['El yodo, que se parece al cloro, no está a su lado: aparece 36 lugares más adelante, y casi todos los elementos de ese tramo no se parecen a ninguno de los dos. ',
         'La tabla periódica de la pared del salón está armada para que esos parientes queden a la vista, y de cómo lo logra trata esta unidad.'],
     ],
     figura: {
       antes: 2,
       svg,
-      alt: 'Las casillas del azufre (16), el cloro (17) y el argón (18) en fila y, después de un salto, la del yodo (53). Lo que predice la idea de que los parecidos van por número: el pariente del cloro es su vecino, el argón. Lo que se mide: el pariente del cloro es el yodo, 36 lugares más adelante.',
+      alt: 'Las casillas del azufre (16), el cloro (17) y el argón (18) en fila y, después de un salto, la del yodo (53). Lo que predice la idea de que los parecidos van por número: el pariente del cloro es su vecino, el argón. Lo que se mide: un pariente del cloro es el yodo, 36 lugares más adelante.',
     },
     pregunta: 'Entre el cloro, que tiene 17 protones, y el yodo, que tiene 53, ¿crees que hay otro elemento que se parezca a los dos, y cuántos protones tendría?',
     ficha: {
@@ -73,6 +73,7 @@
         'Números atómicos: azufre 16, cloro 17, argón 18 y yodo 53.',
       ],
       notas: [
+        'Doble revisión (27 nov): corrección de un dato. El párrafo 3 decía «El pariente del cloro no está al lado: aparece 36 lugares más adelante, después de un tramo de elementos que no se le parecen», y eso es falso: en ese tramo está el bromo (35), que sí se le parece, y es justo la respuesta de la pregunta guía, así que el texto y la pregunta se contradecían. Ahora dice que el yodo aparece 36 lugares más adelante y que casi todos los elementos del tramo no se parecen a ninguno de los dos; la figura dice «un pariente», no «el pariente». La comparación es justa (mismo cloro, mismo criterio de parecido) y la predicción «los parecidos son vecinos de número» es la que haría quien ordena por número sin conocer las familias; se mantiene.',
         'Revisión (Escribidor Escribano, 27 nov): la pregunta «¿fila o columna?» se cambió porque sí delataba la Predice de la idea 1, que da al rubidio «en su misma columna» bajo el potasio y pregunta cómo es: quien respondió «columna» en la apertura ya tiene la respuesta. La nueva pregunta se puede intentar con lo leído (lo natural es buscar a mitad de camino) y su respuesta es el bromo, con 35 protones, que tampoco da el largo de corte que pide la misión. También se ató el párrafo 3 al caso (36 lugares) para que no enuncie la ley periódica.',
         'No se usa el sodio y el potasio, el ejemplo más obvio, porque la misión de la idea 1 pide cortar la tira para que el litio, el sodio y el potasio queden en columna, y su Predice pregunta por el rubidio, bajo el potasio. Con el cloro y el yodo la apertura deja la idea (los parientes reaparecen más adelante) sin dar el largo del corte.',
         'La pregunta abre la idea 1 («¿Por qué la tabla periódica tiene filas y columnas justo de ese largo?»). La pregunta de «¿fila o columna?» que había antes se cambió en la revisión (ver la nota anterior).',

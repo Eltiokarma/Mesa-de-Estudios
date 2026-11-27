@@ -77,6 +77,7 @@
         'Que «virulana» se entienda en todo el Perú como lana de acero para lavar ollas (de memoria: es una marca que se volvió nombre común; el texto la presenta como «la lana de acero»).',
       ],
       notas: [
+        'Doble revisión (27 nov): sin cambios. El choque es honesto: «lo quemado pesa menos» es una idea que los alumnos traen de verdad (la leña, la vela, el papel), y la comparación es justa (la misma bola, la misma balanza, antes y después; el frasco cerrado descarta que el fuego le deje algo). Las cuentas se rehicieron: 10 g de hierro dan 14,3 g de Fe₂O₃ o 13,8 g de Fe₃O₄, así que «unos 14 g» vale con las dos.',
         'Revisión (Escribidor Escribano, 27 nov): el párrafo 3 decía «se forma una sustancia nueva con lo que ya había dentro del frasco», que respondía la pregunta guía, y enunciaba la ley de conservación («la materia no aparece ni desaparece»), que es la regla de la unidad. Quedó el choque: no crea materia, no la recibe del fuego y aun así gana gramos.',
         'La pregunta deja abierta la fuente de los gramos de más (el oxígeno del aire del frasco), que el alumno puede deducir con lo leído: si nada entró al frasco y la virulana ganó masa, algo de adentro del frasco la perdió. El texto no nombra el oxígeno para no responderla.',
         'Seguridad, para Gerson: la apertura describe la demostración y no le pide al alumno que la haga; si se convierte en actividad, va con un adulto y sobre un plato que no arda.',

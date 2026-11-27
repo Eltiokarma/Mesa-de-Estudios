@@ -50,7 +50,7 @@
         'Cuando los químicos miden la masa de los átomos de cobre uno por uno, con un aparato llamado espectrómetro de masas, encuentran solo dos clases: unos de casi 63 unidades de masa atómica (u) y otros de casi 65 u.'],
       ['En el colegio aprendiste que la masa de un átomo está casi toda en sus protones y neutrones, que se cuentan con números enteros, así que la tabla periódica tendría que darle al cobre 63 o 65. ',
         'Pero la tabla de la pared del salón dice 63,55, y no hay un solo átomo de cobre que tenga esa masa. ',
-        'Tampoco es un redondeo ni un error de medición, porque la masa de cada clase de átomo se conoce con más de cuatro decimales: 62,9296\u00a0u y 64,9278\u00a0u.'],
+        'Tampoco es un redondeo ni un error de medición, porque las dos clases de átomo se miden con mucha precisión, en 62,93\u00a0u y 64,93\u00a0u, y ninguna de las dos se redondea a 63,55.'],
       ['El número de la tabla no describe un átomo, sino el cobre tal como sale de la mina, que trae las dos clases de átomo revueltas. ',
         'Con números como ese, los químicos cuentan los átomos de una sustancia pesándola, y de cómo se hace esa cuenta trata esta unidad, el mol y la composición.'],
     ],
@@ -64,7 +64,7 @@
       seLleva: 'El número de la tabla periódica no es la masa de un átomo, sino la de la mezcla de átomos que trae un elemento en la naturaleza, y con esas masas se cuentan átomos pesando.',
       alcance: 'Parcial (núcleo del informe PISA para estequiometría: proporción y cantidad; el mol como unidad no entra en PISA). Deducción propia.',
       choque: 'Si la masa de un átomo es casi un entero (protones más neutrones), la tabla debería decir 63 o 65; dice 63,55, que no es la masa de ningún átomo de cobre.',
-      atajo: 'El atajo «es un redondeo o un error de medición» se descarta porque las dos masas se miden con más de cuatro decimales (62,9296 u y 64,9278 u) y ninguna es 63,55.',
+      atajo: 'El atajo «es un redondeo o un error de medición» se descarta porque las dos masas se miden con mucha precisión (62,9296 u y 64,9278 u; el texto da 62,93 u y 64,93 u) y ninguna se redondea a 63,55.',
       porVerificar: [
         'Masas de los isótopos del cobre: cobre-63, 62,9296 u, y cobre-65, 64,9278 u; abundancias de unos 69,2 % y 30,8 % (de memoria; masa atómica 63,546 u).',
         'Que el Perú sea uno de los mayores productores de cobre del mundo (de memoria: segundo o tercero en los últimos años; el texto no da el puesto).',
@@ -72,6 +72,7 @@
         'Que la abundancia de los isótopos del cobre sea casi la misma en cualquier mina, de Arequipa, de Apurímac o de otro país, que es la respuesta de la pregunta (lo esperado: las variaciones naturales son de milésimas; antes de publicar, confirmarlo con la IUPAC; por eso la tabla puede dar un solo número).',
       ],
       notas: [
+        'Doble revisión (27 nov): el choque es justo (el mismo cobre, la misma casilla, 63 o 65 contra 63,55) y la predicción del número entero es la que haría un alumno que aprendió que el número de masa suma protones y neutrones; se mantiene. Se simplificó la última oración del párrafo 2: antes daba las masas con cuatro decimales («62,9296 u y 64,9278 u»), que cargaban la lectura sin cambiar el argumento; ahora da 62,93 u y 64,93 u y dice que ninguna se redondea a 63,55. El cobre se queda aquí, porque su proporción de isótopos (69 % y 31 %) sostiene la figura, y sale de «Estructura atómica», que ahora usa el sodio de la sal.',
         'Revisión (Escribidor Escribano, 27 nov): la pregunta anterior («tantos de 63 como de 65 darían 64; ¿qué significa 63,55?») llevaba al alumno a la idea de que el promedio se acerca al isótopo más abundante, que es justo lo que separa la respuesta de la Predice de la idea 1 (24,3 u) de su opción «25 u» (QM-PROMEDIO-SIMPLE), y se acercaba a la misión del cloro. La nueva pregunta trata de la mezcla sin pedir el promedio. Se quitó también «porque nadie puede contarlos uno por uno», que descartaba la opción «No se sabe sin contarlas una por una» (ES3) de la Predice de la idea 2.',
         'La figura dibuja siete átomos de 63 u y tres de 65 u, cerca de la proporción real: es una ilustración, no una muestra contada. Abre la idea 1 sin dar su Predice (el magnesio, 24,3 u) ni la misión (la mezcla de cloro que da 35,45 u): la apertura no enseña la cuenta del promedio ponderado.',
         'La masa se dice «masa» y no «peso» en todo el texto; «se pesan» se usa solo para la balanza.',
