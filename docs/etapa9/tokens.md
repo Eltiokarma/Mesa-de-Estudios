@@ -112,3 +112,5 @@ contra los límites semanales de los planes.
 | teoría física y química (7 unidades) | ejemplo o tarjeta que responde la apertura | 329 858 | 25 min 51 s | 85 herramientas |
 | aritmetica.magnitudes-proporcionales | piloto «En el mundo» (4 ideas) | 257 982 | 19 min | 59 herramientas |
 | trigonometria.razones-trigonometricas-agudas | piloto «En el mundo» (5 ideas) | 212 220 | 19 min 31 s | 47 herramientas |
+| quimica.propiedades-periodicas | piloto «En el mundo» (4 ideas) | 274 278 | 20 min 38 s | 61 herramientas |
+| razonamiento-matematico.certezas | piloto «En el mundo» (6 ideas) | 270 836 | 20 min 46 s | 64 herramientas |

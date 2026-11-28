@@ -293,6 +293,29 @@
       condicion: 'se saca sin mirar y sin devolver. Seguro es lo que pasa en todas las extracciones posibles, también en la peor.',
       voz: 'La certeza se gana contra la peor suerte.',
     },
+    // En el mundo (docs/teoria.md, 4k): la tanda de penales se corta cuando ni la peor suerte cambia el resultado
+    // (IFAB, regla 10). No usa tómbolas ni la meta de 3 rojas (Predice); el caso de la pregunta es otro marcador.
+    mundo: {
+      hecho: 'Una tanda de penales puede terminar antes del quinto tiro',
+      parrafos: [
+        'Cuando un partido de eliminación termina empatado, se puede definir con una tanda de cinco penales por equipo, que patean por turnos. El reglamento del fútbol manda cortar la tanda apenas un equipo lleva más goles de los que el otro podría alcanzar, aunque metiera todos los tiros que le quedan.',
+        ['Es la peor suerte escrita en el reglamento: se supone que el rival mete todos los tiros que le faltan. Si tu equipo gana 3 a 0 después de tres tiros por equipo, el rival tiene dos más:',
+          { linea: [O('0 + 2'), ' = 2, menos que 3'] },
+          'Ni con esos dos goles alcanza a tu equipo, que ya ganó con certeza, y la tanda termina ahí.'],
+      ],
+      pregunta: {
+        texto: 'Después de cuatro tiros por equipo, A gana la tanda 4 a 2. ¿Hace falta patear los quintos tiros?',
+        opciones: [
+          { id: 'no', texto: 'No: aunque B meta su quinto tiro, llega a 3', correcta: true },
+          { id: 'cinco', texto: 'Sí: siempre se patean los cinco tiros de cada equipo', error: 'RMP152',
+            siFuera: 'Es cierto que la tanda es de cinco tiros por equipo. Pero el reglamento la corta cuando el resultado ya no puede cambiar, y aquí B no alcanza a A ni metiendo su último tiro.' },
+          { id: 'achica', texto: 'Sí: B todavía puede meter su tiro y achicar la diferencia', error: 'RMP77',
+            siFuera: 'Es verdad que B puede meter su quinto tiro, pero achicar no basta: con ese gol llega a 3, y A ya tiene 4. Para seguir pateando, B tendría que poder empatar.' },
+        ],
+        porque: 'Con la peor suerte para A, B mete su quinto tiro y llega a 3 goles. Como A ya tiene 4, el ganador no cambia salga lo que salga, y la tanda termina.',
+      },
+      fuente: 'IFAB, Reglas de Juego 2025/26, regla 10 (tiros desde el punto penal).',
+    },
     ejemplos: null,
     // Así se resuelve: una bolsa del sorteo, k de un color. «Ahora tú» usa la tómbola (otro enunciado) y otros tipos.
     resuelve: {
@@ -657,6 +680,34 @@
       condicion: 'cada objeto cae en un solo casillero. Si un casillero no llega a «lo pedido − 1», aporta solo los que tiene.',
       voz: 'Parejo hasta el borde, y uno más.',
     },
+    // En el mundo: el palomar con números de pelos en Lima (no cumpleaños: esos son la Predice y los ejemplos). Los
+    // casilleros van del 0 al 999 999, porque nadie se acerca a un millón de pelos; la cuenta la hace el código.
+    mundo: (() => {
+      const C = 1000000, K = 10, peorL = (K - 1) * C + 1, CIUDAD = 3 * C + 1;
+      return {
+        hecho: `Al menos ${K === 10 ? 'diez' : f0(K)} limeños tienen el mismo número de pelos`,
+        parrafos: [
+          `Una cabeza tiene en promedio unos ${f0(100000)} pelos, y en la mayoría de las personas sanas la cifra va de ${f0(80000)} a ${f0(120000)}, así que nadie se acerca a un millón. Lima Metropolitana, según los Censos Nacionales 2025, tiene unos 10 millones de habitantes, muchas más personas que números de pelos posibles.`,
+          [`Cada número de pelos, del 0 al ${f0(C - 1)}, es un casillero, y cada persona cae en el de su cabeza. La peor suerte pone ${f0(K - 1)} personas en cada casillero, y una más ya obliga a que diez compartan uno:`,
+            { linea: [O(`${f0(K - 1)} × ${f0(C)}`), ` + 1 = ${f0(peorL)}`] },
+            'Lima tiene más gente que esa cantidad, así que diez personas, por lo menos, tienen el mismo número de pelos.'],
+        ],
+        pregunta: {
+          texto: `Si en una ciudad vivieran ${f0(CIUDAD)} personas, ¿cuántas, como mínimo, tendrían con certeza el mismo número de pelos?`,
+          opciones: [
+            { id: 'c', texto: '4 personas', correcta: true },
+            { id: 'tres', texto: '3 personas', error: 'RMP34',
+              siFuera: `Es cierto que ${f0(3 * C)} personas llenan los casilleros con 3 en cada uno. Pero en la ciudad vive una persona más, y esa persona tiene que caer en un casillero que ya tiene 3.` },
+            { id: 'dos', texto: '2 personas', error: 'RMP155',
+              siFuera: 'Dos iguales es seguro apenas hay más personas que casilleros. Pero aquí hay más del triple de personas que casilleros, y la peor suerte no logra dejar solo dos en cada uno.' },
+            { id: 'nada', texto: 'Ninguna, porque hay personas que no tienen pelo', error: 'RMP78',
+              siFuera: 'Es verdad que hay personas sin pelo, pero el 0 también es un casillero: quien no tiene pelo cae ahí, y la cantidad de casilleros no cambia.' },
+          ],
+          porque: `La peor suerte pone 3 personas en cada uno de los ${f0(C)} casilleros y así acomoda a ${f0(3 * C)}. La persona que sobra cae en un casillero que ya tiene 3, y lo deja con 4.`,
+        },
+        fuente: 'Pelos por cabeza: Medihair, estadísticas capilares; población: INEI, Censos Nacionales 2025 (preliminar).',
+      };
+    })(),
     ejemplos: null,
     // Así se resuelve: una bolsa con un color escaso (la condición de la regla). «Ahora tú»: la tómbola y los calendarios.
     resuelve: {
@@ -973,6 +1024,29 @@
       condicion: 'se saca sin mirar. Si se pide un par de un color dado, antes salen todos los guantes de los otros colores.',
       voz: 'Lo que falta llega al final.',
     },
+    // En el mundo: el robo de las 220 zapatillas del pie derecho en Huancayo (2023). Zapatillas y no guantes (Predice).
+    mundo: {
+      hecho: 'En Huancayo robaron 220 zapatillas, todas del pie derecho',
+      parrafos: [
+        'En 2023, unos ladrones entraron de madrugada a una tienda de calzado de Huancayo y se llevaron unas 220 zapatillas en sus cajas. Las cajas solo tenían la zapatilla del pie derecho, así que el botín no formaba ni un par que se pudiera vender.',
+        ['Un par que se puede usar pide una zapatilla de cada pie, y el robo armó justo la peor suerte: salió entera la clase del pie derecho. Con 220 zapatillas los ladrones no lograron ni un par, y una sola izquierda del mismo modelo les habría bastado:',
+          { linea: [O('220 derechas'), ' + ', I('1 izquierda'), ' = un par'] }],
+      ],
+      pregunta: {
+        texto: 'En un almacén a oscuras hay 40 zapatillas sueltas del mismo modelo y talla: 20 derechas y 20 izquierdas. ¿Cuántas hay que sacar, como mínimo, para tener con certeza un par?',
+        opciones: [
+          { id: 'c', texto: '21 zapatillas', correcta: true },
+          { id: 'tres', texto: '3 zapatillas', error: 'RMP31',
+            siFuera: 'Con medias de dos colores bastan 3, porque cualquier media hace par con otra del mismo color. Las zapatillas tienen pie, y entre 3 derechas no hay ningún par.' },
+          { id: 'dos', texto: '2 zapatillas', error: 'RM6',
+            siFuera: 'Con buena suerte, una derecha y una izquierda forman el par al segundo intento. La certeza pide que alcance también si salen solo derechas.' },
+          { id: 'veinte', texto: '20 zapatillas', error: 'RMP34',
+            siFuera: 'Es cierto que pueden salir las 20 derechas sin formar un par. Pero ahí la meta todavía no se cumple: falta la siguiente, que tiene que ser izquierda.' },
+        ],
+        porque: 'La peor suerte saca entera una clase, las 20 zapatillas de un mismo pie, sin formar ningún par. La siguiente es del otro pie y completa el par, así que hacen falta 21.',
+      },
+      fuente: 'Robo de unas 220 zapatillas del pie derecho en Huancayo, Canal N y Semana (mayo de 2023).',
+    },
     ejemplos: null,
     // Así se resuelve: los guantes (cierre del 19 nov: la predicción es de guantes y las bolitas ya están en el juego,
     // en «Ahora tú» y en los ejemplos). Un par de cualquier color o de un color dado.
@@ -1261,6 +1335,30 @@
       ecuacion: [{ llave: ['peor caso'], nota: 'las que no cumplen y una menos de lo pedido', color: 'c-o' }, ' + ', { llave: ['1'], nota: 'la que obliga', color: 'c-i' }],
       condicion: 'cada número está una sola vez. Las que no cumplen son el total menos las que cumplen.',
       voz: 'Lo que no sirve se cuenta, no se adivina.',
+    },
+    // En el mundo: La Tinka (6 bolillas del 1 al 48, sin devolver). Lo seguro sale de contar las que no cumplen.
+    mundo: {
+      hecho: 'En La Tinka siempre sale un número menor que 44',
+      parrafos: [
+        'En cada sorteo de La Tinka salen 6 bolillas de un bolillero con los números del 1 al 48, una de cada número, y la que sale no vuelve. Con tan pocas bolillas casi nada es seguro: hay 24 números impares, y una jugada puede salir sin ningún número par.',
+        ['Contando las que no cumplen, la regla encuentra algo que sí es seguro. Si la meta es un número menor que 44, no sirven los del 44 al 48, y la peor suerte saca primero esas cinco:',
+          { linea: [O('5'), ' + ', I('1'), ' = 6'] },
+          'La sexta bolilla tiene que ser menor que 44, así que en todo sorteo sale por lo menos una.'],
+      ],
+      pregunta: {
+        texto: 'En el mismo sorteo de 6 bolillas del 1 al 48, ¿qué sale con certeza en toda jugada?',
+        opciones: [
+          { id: 'c', texto: 'Al menos un número que no termina en 0', correcta: true },
+          { id: 'par', texto: 'Al menos un número par', error: 'RMP77',
+            siFuera: 'Es probable que salga un número par, porque la mitad de los números lo son. Pero los impares son 24, más que las 6 bolillas, y pueden salir solo impares.' },
+          { id: 'cifra', texto: 'Al menos un número de una cifra', error: 'RMP32',
+            siFuera: 'Hay 9 números de una cifra, y pueden salir. Pero los que no cumplen son los de dos cifras, que son 39, y la peor suerte saca 6 de ellos.' },
+          { id: 'nada', texto: 'Nada, porque 6 bolillas de 48 son muy pocas', error: 'RMP78',
+            siFuera: 'Es cierto que casi nada es seguro con 6 bolillas. Pero cuando las que no cumplen son menos de 6, la peor suerte se queda sin ellas antes de terminar.' },
+        ],
+        porque: 'Terminan en 0 el 10, el 20, el 30 y el 40, que son 4. La peor suerte los saca primero, y la quinta bolilla ya no puede terminar en 0.',
+      },
+      fuente: 'La Tinka: 6 números del 1 al 48, según Infobae (mayo de 2026) y la guía de juego de Líbero.',
     },
     ejemplos: null,
     resuelve: {
@@ -1590,6 +1688,47 @@
       condicion: 'cada número está una vez. Si la suma debe pasar de un número, la peor suerte da primero las más chicas.',
       voz: 'De cada pareja, una carta; de las solas, todas.',
     },
+    // En el mundo: las caras opuestas de un dado suman 7, y cada esquina junta una cara de cada pareja (el peor caso).
+    // La pregunta pasa a un dado de 8 caras, con la regla dicha en el enunciado. Figura: la esquina del 1, el 2 y el 3,
+    // en naranja (lo supuesto), sin violeta ni turquesa.
+    mundo: {
+      hecho: 'Ninguna esquina del dado junta dos caras que sumen 7',
+      parrafos: [
+        'En un dado de juego, las caras opuestas suman 7: el 1 está frente al 6, el 2 frente al 5 y el 3 frente al 4. Es una costumbre muy antigua, que ya seguían dados de hace unos cuatro mil años, y como dos caras opuestas nunca se tocan, cada esquina junta tres caras, una de cada pareja.',
+        ['Esa esquina es el peor caso de la regla, una cara de cada pareja, porque en el dado no hay caras sin pareja. Una cuarta cara es opuesta a una de las tres y completa una suma de 7:',
+          { linea: [O('3'), ' + ', I('1'), ' = 4'] },
+          'Por eso un dado se revisa de un vistazo: si una esquina junta dos caras que suman 7, está mal numerado.'],
+      ],
+      figura: {
+        svg: `<svg viewBox="0 0 320 190" width="320" height="190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M90 22L148 52L90 82L32 52Z" style="fill:var(--card);stroke:var(--c-o)" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M32 52L90 82L90 160L32 130Z" style="fill:var(--card);stroke:var(--c-o)" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M90 82L148 52L148 130L90 160Z" style="fill:var(--card);stroke:var(--c-o)" stroke-width="3" stroke-linejoin="round"/>
+    <text x="90" y="60" text-anchor="middle" font-size="24" font-weight="800" fill="currentColor">1</text>
+    <text x="61" y="129" text-anchor="middle" font-size="24" font-weight="800" fill="currentColor">2</text>
+    <text x="119" y="129" text-anchor="middle" font-size="24" font-weight="800" fill="currentColor">3</text>
+    <text x="236" y="62" text-anchor="middle" font-size="17" font-weight="700" style="fill:var(--c-o)">Se ven: 1, 2 y 3</text>
+    <text x="236" y="96" text-anchor="middle" font-size="17" fill="currentColor">Detrás quedan</text>
+    <text x="236" y="120" text-anchor="middle" font-size="17" fill="currentColor">el 6, el 5 y el 4</text>
+    <text x="236" y="154" text-anchor="middle" font-size="15" style="fill:var(--muted)">Ninguna suma 7</text>
+  </svg>`,
+        alt: 'Un dado visto desde una esquina, con el 1 arriba y el 2 y el 3 a los lados, bordeados en naranja. Detrás quedan el 6, el 5 y el 4, opuestos a ellos, así que ninguna de las tres caras que se ven suma 7 con otra.',
+      },
+      pregunta: {
+        texto: 'En un dado de 8 caras, las caras opuestas suman 9. ¿Cuántas caras tienes que mirar, como mínimo, para ver con certeza dos que sumen 9?',
+        opciones: [
+          { id: 'c', texto: '5 caras', correcta: true },
+          { id: 'cuatro', texto: '4 caras', error: 'RMP34',
+            siFuera: 'Es cierto que con el dado de 6 caras bastan 4. Pero aquí hay cuatro parejas, y 4 caras pueden ser una de cada pareja, como el 1, el 2, el 3 y el 4.' },
+          { id: 'dos', texto: '2 caras', error: 'RM6',
+            siFuera: 'Con buena suerte, las dos primeras caras ya suman 9. La certeza pide que alcance también si la suerte te muestra una cara de cada pareja.' },
+          { id: 'ocho', texto: '8 caras', error: 'RMP152',
+            siFuera: 'Mirar las 8 caras asegura la suma, pero sobran: con la peor suerte, la suma de 9 ya aparece antes de mirar la última.' },
+        ],
+        porque: 'Suman 9 el 1 y el 8, el 2 y el 7, el 3 y el 6, el 4 y el 5. La peor suerte muestra una cara de cada pareja, que son cuatro, y la quinta completa una.',
+      },
+      fuente: 'Caras opuestas que suman 7 en dados antiguos y modernos (Wikipedia, «Dice»); dado de 8 caras, Wolfram Demonstrations.',
+    },
     ejemplos: null,
     resuelve: {
       pieza: CR,
@@ -1862,6 +2001,34 @@
       condicion: 'cada llave abre un solo candado. Con más candados que llaves, la primera falla en todos menos uno: 7 candados, 6 pruebas.',
       voz: 'Lo último no se prueba: se deduce.',
     },
+    // En el mundo: la clave PIN de 4 cifras y el bloqueo del BCP (más de 3 claves equivocadas en una compra). Un solo
+    // candado con muchas claves: la condición de la regla («la primera falla en todos menos uno»). Cuentas en código.
+    mundo: (() => {
+      const N = 10000, PEOR = N - 1, POR_DIA = 4, ANOS = Math.floor(PEOR / POR_DIA / 365), M = 1000;
+      return {
+        hecho: 'Una clave de cuatro cifras aguanta años de intentos',
+        parrafos: [
+          `La clave PIN de una tarjeta del BCP tiene 4 cifras, y con cifras del 0 al 9 hay ${f0(N)} claves posibles, del 0000 al 9999. Si en una compra alguien escribe una clave equivocada más de 3 veces, el banco bloquea la tarjeta hasta las 00:00 del día siguiente.`,
+          ['Quien no sabe la clave prueba una por una, y cada intento acierta o falla, como una llave en un candado. En el peor caso falla en todas menos una, la que se deduce sin probarla:',
+            { linea: [O(`${f0(N)} − 1`), ` = ${PEOR} pruebas`] },
+            `Con ${f0(POR_DIA)} intentos por día como mucho, ese peor caso le tomaría más de ${ANOS === 6 ? 'seis' : f0(ANOS)} años, así que el bloqueo protege tu tarjeta.`],
+        ],
+        pregunta: {
+          texto: 'Un candado de maleta tiene 3 ruedas, cada una con las cifras del 0 al 9. ¿Cuántas pruebas hacen falta, como mínimo, para saber con certeza su clave?',
+          opciones: [
+            { id: 'c', texto: `${M - 1} pruebas`, correcta: true },
+            { id: 'todas', texto: `${M} pruebas`, error: 'RMP34',
+              siFuera: `Es cierto que hay ${M} claves, del 000 al 999. Pero si ${M - 1} fallan, la que queda es la clave: se deduce sin probarla.` },
+            { id: 'ruedas', texto: '30 pruebas', error: 'RMP32',
+              siFuera: 'Sería así si cada rueda se pudiera probar sola. El candado abre solo con las tres cifras juntas, y cada prueba es una clave entera.' },
+            { id: 'suma', texto: `${f0((M - 1) * M / 2)} pruebas`, error: 'RMP154',
+              siFuera: 'La suma de una prueba menos por llave sirve con muchas llaves y muchos candados. Aquí hay un solo candado, y cada clave que falla es una sola prueba.' },
+          ],
+          porque: `Con tres ruedas hay ${M} claves. En el peor caso fallan todas menos una, que son ${M - 1} pruebas, y la última ya no se prueba: es la clave.`,
+        },
+        fuente: 'BCP, página «Clave PIN»: clave de 4 dígitos y bloqueo tras más de 3 claves incorrectas en una compra.',
+      };
+    })(),
     ejemplos: null,
     resuelve: {
       pieza: CR,
