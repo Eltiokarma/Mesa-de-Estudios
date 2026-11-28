@@ -399,14 +399,21 @@
       { texto: 'Se cancela r² y se despeja:', ecuacion: junto(['16r = 640', FL, 'r = ', dF('40 cm')]) },
       { texto: '24 cm es media superficie; 32 cm, lo que hay del centro al agua; 80 cm, el diámetro; 36 cm sale de olvidar el 8² al desarrollar.' }],
     respuesta: [dF('40 cm')] });
-  EJ1.push({ nivel: 3, titulo: 'Qué tan cerca pasa',
-    enunciado: 'Desde el punto P se traza una tangente a una circunferencia de 7 cm de radio, y mide PT = 24 cm. ¿A qué distancia está P del punto de la circunferencia más cercano a él?',
-    alternativas: ['17 cm', '25 cm', '24 cm', '31 cm', '18 cm'],
-    datos: [D_TAN, D_PIT, 'El punto más cercano a P está sobre el segmento PO.'],
-    solucion: [{ texto: 'OT ⟂ PT: en el triángulo rectángulo OTP, la hipotenusa es PO:', ecuacion: junto(['PO² = 24² + 7² = 625', FL, 'PO = 25 cm']) },
-      { texto: ['Del centro al borde hay un radio: 25 cm − 7 cm = ', dF('18 cm'), '.'] },
-      { texto: '25 cm es PO, hasta el centro; 24 cm, la tangente; 31 cm suma el radio; 17 cm resta 7 de 24.' }],
-    respuesta: [dF('18 cm')] });
+  // El horizonte (apertura, 28 nov): reemplaza «Qué tan cerca pasa» (PO = 25, r = 7) y usa su idea al revés, PO = R + h.
+  // Cuentas rehechas aparte: 6371,02² − 6371² = 2 · 6371 · 0,02 + 0,02² = 254,8404 y √254,8404 ≈ 15,96 km; sin el 2,
+  // √(6371 · 0,02) ≈ 11,29; con los 20 m tomados como 20 km, √(6391² − 6371²) = √255 240 ≈ 505,2; sumando los cuadrados,
+  // √(6371,02² + 6371²) ≈ 9010,0. La apertura usa 1,6 m y unos 5 km: aquí van otros números.
+  EJ1.push({ nivel: 3, titulo: 'El horizonte desde un faro',
+    figura: fig(figTangente({ r: 'R', PO: '20 m', PT: '?' }, { prop: 2.6, alt: 'La Tierra como una circunferencia de centro O y radio OT, R; desde los ojos P, 20 m sobre el mar, la visual PT toca el mar en T y lleva signo de pregunta.' })),
+    enunciado: `Desde un faro, tus ojos, P, quedan a 20 m sobre el mar. Tu vista al horizonte, T, es tangente a la Tierra, de centro O y radio R. ¿Cuánto mide PT?${NO_ESC}`,
+    alternativas: ['505 km', '11 km', '20 m', '9010 km', '16 km'],
+    datos: [D_TAN, D_PIT, 'Se toma la Tierra como una esfera de radio R = 6371 km, y la vista, como una recta.', '1 km = 1000 m.'],
+    fuente: 'Radio medio de la Tierra: 6371 km (Unión Geodésica y Geofísica Internacional).',
+    solucion: [{ texto: 'OT ⟂ PT: el triángulo OTP es rectángulo en T. Su hipotenusa, OP, es el radio más la altura de tus ojos, pasada a kilómetros:', ecuacion: junto(['OP = ', dI('R'), ' + 0,02 km = 6371 km + 0,02 km = 6371,02 km']) },
+      { texto: 'Pitágoras resta los cuadrados. Los dos números son casi iguales, así que casi se cancelan: queda 2 · 6371 · 0,02 + 0,02².', ecuacion: junto(['PT² = 6371,02² − ', dI('6371'), '² = 254,8404']) },
+      { texto: ['La raíz da la distancia: es poquísimo al lado del radio, pero mucho más que los 20 m de altura.'], ecuacion: junto(['PT = √254,8404 ≈ ', dF('16 km')]) },
+      { texto: '505 km mezcla metros con kilómetros; 11 km olvida el 2; 20 m es la altura del faro; 9010 km suma los cuadrados.' }],
+    respuesta: ['Unos ', dF('16 km')] });
   EJ1.push({ nivel: 3, titulo: 'Dos isósceles en un transportador',
     figura: fig(figTransportador({ alt: 'Una circunferencia de centro O con A, B y C sobre ella; O queda dentro del ángulo ABC. El ángulo OAB mide 25° y el ángulo OCB, 35°.' })),
     enunciado: `A, B y C están en una circunferencia de centro O, y O queda dentro del ángulo ABC. m∠OAB = 25° y m∠OCB = 35°. ¿Cuánto mide m∠ABC?${NO_ESC}`,
