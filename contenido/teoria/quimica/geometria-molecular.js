@@ -1095,7 +1095,7 @@
 
   // Ejemplos de la idea 4. Temperaturas a 1 atm (CRC/NIST), comprobadas aparte (cuentas-b.js): H₂O 100, H₂S −60 ·
   // CH₄ −162 · NH₃ −33 > PH₃ −88 (55) · HF 20 > HCl −85 · Br₂ 59 > Cl₂ −34 · n-pentano 36 > neopentano 10 · etanol 78 >
-  // CH₃OCH₃ −24 (102) · H₂O 100 − 87 = 13.
+  // CH₃OCH₃ −24 (102) · hielo 450 ÷ 490 ≈ 0,92 g/mL.
   const EJEMPLOS_FZ = [
     { nivel: 1, titulo: 'Las burbujas del agua',
       enunciado: '¿Qué hay dentro de las burbujas del agua que hierve en una olla?',
@@ -1156,14 +1156,19 @@
         { texto: 'La diferencia entre las dos temperaturas es:', ecuacion: ['20 − (−85) = ', Te('105 °C')] },
       ],
       respuesta: ['El puente de hidrógeno del HF'] },
-    { nivel: 2, titulo: 'Hervir en Juliaca',
-      enunciado: 'En Juliaca el agua hierve a unos 87 °C. ¿Cuántos grados menos que a 1 atm? ¿Se rompen enlaces O–H al hervir?',
-      datos: ['Agua a 1 atm: 100 °C', 'Al hervir, un líquido pasa a gas'],
+    // Apertura (28 nov, docs/etapa9/aperturas-para-la-teoria.md): el hielo flota porque los puentes de hidrógeno fijan cada
+    // molécula angular con cuatro vecinas en una red con huecos. Números propios (no el 1 L → 1,09 L de la apertura):
+    // 450 g ÷ 490 mL ≈ 0,92 g/mL (hielo, 0,917 g/mL a 0 °C, CRC). Reemplaza al de «Hervir en Juliaca», que repetía la olla
+    // de la primera tarjeta de Lee.
+    { nivel: 2, titulo: 'Por qué flota el hielo',
+      enunciado: 'En una cubeta, 450 g de agua líquida ocupan 450 mL; ya congelados, ocupan unos 490 mL. ¿Qué densidad tiene el hielo, y por qué el agua se ensancha al congelarse?',
+      datos: ['Densidad: la masa entre el volumen', 'Agua líquida: 1 g/mL', D4.puente, 'H₂O: molécula angular, con dos H y dos pares libres en el O'],
       solucion: [
-        { texto: 'En la altura hay menos aire empujando sobre el agua, así que basta menos temperatura para que hierva.', ecuacion: ['100 − 87 = ', Te('13 °C')] },
-        { texto: 'Al hervir solo se separan moléculas: los O–H siguen enteros.' },
+        { texto: 'Al congelarse, la masa no cambia, porque las moléculas son las mismas; lo que crece es el volumen, así que la densidad queda por debajo de 1 g/mL.', ecuacion: ['450 g ÷ 490 mL ≈ 0,92 g/mL'] },
+        { texto: 'En el hielo, cada molécula angular se engancha con cuatro vecinas por puentes de hidrógeno: sus dos H van al O de dos vecinas, y sus dos pares libres reciben el H de otras dos.' },
+        { texto: 'Esos puentes fijan las moléculas en una red abierta, con huecos. En el líquido se rompen y se rehacen sin parar, y las moléculas se acercan más. Por eso el hielo flota.' },
       ],
-      respuesta: ['Unos ', Te('13 °C'), ' menos; no se rompen'] },
+      respuesta: ['Unos 0,92 g/mL: sus puentes de hidrógeno dejan huecos'] },
     { nivel: 3, titulo: 'El agua y su vecino',
       enunciado: 'El H₂O hierve a 100 °C y el H₂S, más pesado, a −60 °C. ¿Qué afirmación es correcta?',
       alternativas: ['El H₂S hierve más alto porque es más pesado.', 'Hierven distinto porque el enlace O–H es más fuerte que el S–H.', 'Los dos tienen solo fuerzas de London.',
