@@ -323,7 +323,8 @@
   // Ejemplos resueltos (pestaña «Ejemplos», docs/teoria.md 4h): 5 de nivel 1, 5 de nivel 2 y 5 de nivel 3. Cuentas
   // rehechas aparte, sin este archivo (scratchpad de la sesión, cuentas-idea1.js): 11 = 2 × 4 + 3; 35₍₆₎; 42₍₇₎ = 4 bolsitas
   // de 7 y 2; cifras de base 3; 26₍₅₎ → 31₍₅₎ (2 × 5 + 6 = 16 = 3 × 5 + 1); 38 = 212₍₄₎; 77₍₈₎ = 63; 2 bolsitas de 5 y 9
-  // sueltos = 34₍₅₎ (19); 20 = 32₍₆₎ = 26₍₇₎; 1201₍₂₎ mal escrita; menor base común de 2031₍ₙ₎, 425₍ₙ₎ y 106₍ₙ₎ = 7;
+  // sueltos = 34₍₅₎ (19; ejemplo cambiado el 28 nov por el reloj: de 7:45 a 8:30 van 45 min, 8 h 30 min = 7 h 90 min,
+  // y 830 − 745 = 85 presta 100 en vez de 60, 85 − 40 = 45); 20 = 32₍₆₎ = 26₍₇₎; 1201₍₂₎ mal escrita; menor base común de 2031₍ₙ₎, 425₍ₙ₎ y 106₍ₙ₎ = 7;
   // 2 cajas, 5 bolsitas y 7 sueltos de 4 = 59 = 323₍₄₎ (trampas 257, 263 y 223); 543₍₆₎ y 102₍₆₎; 30 caramelos con caja:
   // bolsitas de 5 (25 ≤ 30 < 36), 110₍₅₎; 45 caramelos con bolsitas de 7 = 63₍₇₎ (6 × 6 = 36 ≤ 45 < 49 = 7 × 7). Recalculadas
   // aparte en la fase 8 (scratchpad, correcciones-numeracion/cuentas.js). Ninguna figura muestra la respuesta: lo que se
@@ -393,15 +394,16 @@
         { texto: ['7 bolsitas de 8 son 56 caramelos; con los 7 sueltos, ', cant(63), '.'], ecuacion: ['7 × ', bas(8), ' + 7 = ', cant(63)] },
       ],
       respuesta: [num('77', 8), ', con ', cant(63), ' caramelos'] },
-    { nivel: 2, titulo: 'Mal empacado',
-      enunciado: ['Un ayudante dejó 2 bolsitas de ', bas(5), ' y 9 caramelos sueltos. ¿Cómo debe quedar el pedido, y qué etiqueta lleva?'],
-      datos: [DN.bolsita(5), DN.cifras],
-      figura: fig({ n: 5, bolsitas: 2, sueltos: 9, regla: 1, rotulos: true, colorCifras: false, etiqueta: { cifras: '?' } }),
+    { nivel: 2, titulo: 'Las horas del reloj',
+      enunciado: ['Una clase empieza a las 7:45 y termina a las 8:30. Rosa quita los dos puntos, resta 830 − 745 y le sale 85. ¿Cuánto dura la clase, y por qué falla su resta?'],
+      datos: [['1 hora = ', bas(60), ' minutos']],
       solucion: [
-        { texto: ['9 sueltos son más que ', bas(5), ': con 5 de ellos se llena otra bolsita y quedan 4.'], ecuacion: ['9 = 1 × ', bas(5), ' + ', cif(4)] },
-        { texto: 'Las bolsitas pasan de 2 a 3. Ya no se puede juntar nada.', ecuacion: [cif(3), ' bolsitas y ', cif(4), ' sueltos   →   ', num('34', 5)] },
+        { texto: ['En el reloj, ', bas(60), ' minutos forman una hora, así que la hora es el orden siguiente, como la bolsita que junta caramelos sueltos. Por eso los minutos van de 0 a 59 y un reloj nunca marca las 7:85.'] },
+        { texto: ['A los 30 minutos no se les puede quitar 45, así que se desarma una hora de las 8 y se vuelve ', bas(60), ' minutos, que se suman a los 30.'], ecuacion: ['8 h 30 min = 7 h + (', bas(60), ' + 30) min = 7 h 90 min'] },
+        { texto: 'Ahora se restan horas con horas y minutos con minutos, cada orden con lo suyo.', ecuacion: ['7 h 90 min − 7 h 45 min = 0 h ', cant('45 min')] },
+        { texto: ['La resta de Rosa desarmó la hora en 100 minutos, como si la hora tuviera cien minutos. Por eso le salen 100 − ', bas(60), ' = 40 minutos de más: 85 − 40 = 45.'] },
       ],
-      respuesta: [cif(3), ' bolsitas y ', cif(4), ' sueltos: ', num('34', 5)] },
+      respuesta: [cant('45 minutos'), ': la resta de siempre desarma la hora en 100 minutos'] },
     { nivel: 2, titulo: 'Dos puestos, un pedido',
       enunciado: ['Un cliente pide ', cant(20), ' caramelos. ¿Qué etiqueta lleva el pedido en el puesto de bolsitas de ', bas(6), ', y en el de bolsitas de ', bas(7), '?'],
       datos: [DN.etiqueta],
