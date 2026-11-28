@@ -605,7 +605,7 @@
     primo: { color: 'o', texto: '1,5 m' }, sombra2: { color: 'i', texto: '2 m' }, rayo2: { texto: '2,5 m' } }, { nota: o ? '6 ÷ 10 = 1,5 ÷ 2,5 = 0,6' : undefined });
 
   // Ejemplos resueltos de «Una razón es un cociente» (molde §3). Cuentas rehechas con un script aparte, sin el código de
-  // la unidad (scratchpad e2-trig-resto/cuentas-idea2.js): 2,4/2,5 = 24/25; 0,7/2,4 = 7/24; 6/10 = 3/5; 4,5/6 = 3/4;
+  // la unidad (scratchpad e2-trig-resto/cuentas-idea2.js): 2,4/2,5 = 24/25; 0,4/5 = 0,08 (8 %); 6/10 = 3/5; 4,5/6 = 3/4;
   // 5/13; √(1,2² + 0,5²) = 1,3 y 0,5/1,3 = 5/13; √(3,4² − 1,6²) = 3 y 3/1,6 = 15/8; 0,6/0,8 = 1,5/x → x = 2;
   // 1,6/2 = h/7,5 → h = 6; 6/10 + 8/10 = 7/5; tan = 8/15 → H = 17, (8 + 15)/17 = 23/17; sen = 5/13 → CA = 12, tan = 5/12;
   // rectángulo 12 × 5 → diagonal 13, cos = 12/13; cuadrado de 4 con M → tan = 2/4 = 1/2; sen = 0,28 = 7/25 → CA = 24,
@@ -622,15 +622,19 @@
         { texto: 'El seno divide esos dos lados; los metros se cancelan.', ecuacion: [...sen, ' = ', { frac: [op('2,4'), '2,5'] }, ' = ', { frac: ['24', '25'] }, ' = ', res('0,96')] },
       ],
       respuesta: [...sen, ' = ', res('24/25 = 0,96')] },
-    { nivel: 1, titulo: 'La tangente de la rampa',
-      figura: fig({ objeto: 'rampa', medidas: { ra: 2.4, rb: 0.7 }, lados: tres(L2('2,4 m', 'i'), L2('0,7 m', 'o'), L2('2,5 m')), angulos: { a: { texto: 'θ' } } }),
-      enunciado: ['Una rampa de 2,5 m sube 0,7 m y su base mide 2,4 m. ', thN, ' es su ángulo con el piso. ¿Cuánto vale tan ', thN, '?'],
-      datos: [DR.razones, DR.letras],
+    // La pendiente es la tangente por 100 (apertura, 28 nov; la apertura usa 12 %, 100 %, 50 % y 200 %): 0,4/5 = 0,08 y
+    // 0,08 · 100 = 8 %, rehecho aparte. Reemplaza «La tangente de la rampa» (0,7/2,4 = 7/24). La figura sube 1,25 m en vez
+    // de 0,4 m (a escala salía plana y los rótulos se pisaban): por eso el enunciado dice que no está a escala.
+    { nivel: 1, titulo: 'La pendiente de la rampa',
+      figura: fig({ objeto: 'rampa', medidas: { ra: 5, rb: 1.25 }, lados: { ra: L2('5 m', 'i'), rb: L2('0,4 m', 'o') }, angulos: { a: { texto: 'θ' } } }),
+      enunciado: ['La rampa de la entrada de una posta sube 0,4 m y su base mide 5 m. ', thN, ' es su ángulo con el piso. ¿Cuánto vale tan ', thN, ' y qué pendiente tiene la rampa? El dibujo no está a escala.'],
+      datos: [DR.razones, DR.letras, 'La pendiente en porcentaje dice cuántos centímetros sube la rampa por cada 100 cm que avanza.'],
       solucion: [
-        { texto: ['Desde ', thN, ', el opuesto es lo que sube, ', op('0,7 m'), '; el adyacente es la base, ', ad('2,4 m'), '. La rampa no se usa.'] },
-        { texto: 'La tangente divide el opuesto entre el adyacente.', ecuacion: [...tan, ' = ', { frac: [op('0,7'), ad('2,4')] }, ' = ', res('7/24')] },
+        { texto: ['Desde ', thN, ', el opuesto es lo que sube, ', op('0,4 m'), '; el adyacente es lo que avanza, la base, ', ad('5 m'), '.'] },
+        { texto: 'La tangente divide el opuesto entre el adyacente: dice cuánto sube la rampa por cada metro que avanza.', ecuacion: [...tan, ' = ', { frac: [op('0,4'), ad('5')] }, ' = ', res('0,08')] },
+        { texto: 'Subir 0,08 m por cada metro es subir 8 cm por cada 100 cm. Por eso la pendiente en porcentaje es la tangente por 100.', ecuacion: ['pendiente = ', res('0,08'), ' · 100 = ', res('8 %')] },
       ],
-      respuesta: [...tan, ' = ', res('7/24')] },
+      respuesta: [...tan, ' = ', res('0,08'), '; pendiente de ', res('8 %')] },
     { nivel: 1, titulo: 'El coseno del cable',
       // Mismo dibujo y mismos colores que «La secante del cable» (idea 5): el suelo, adyacente, turquesa; el poste, opuesto,
       // naranja; el cable, en tinta (lector en frío, 17 nov: antes iban al revés en las dos tarjetas).
