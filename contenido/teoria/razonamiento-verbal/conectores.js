@@ -1609,12 +1609,17 @@
 
   // «En el mundo» de la idea 4: la radiación UV con nubes (OMS) y el índice 18 de Juliaca (Senamhi). «Si bien» va
   // delante del obstáculo (las nubes); la pregunta, con el frío como obstáculo. El aviso de la posta es propio.
+  // Revisión del Escribidor Escribano (28 nov): el índice 18 solo aparece en una nota de El Búho (23 ene 2026) que
+  // cita al Senamhi y al COER Puno; no se encontró el pronóstico original, así que el texto lo atribuye a la prensa
+  // («según la prensa»). «Más del 90 % atraviesa las nubes delgadas» no aparece en las páginas de la OMS que se pudieron ver
+  // (dicen que las nubes delgadas tienen poco efecto y hasta pueden aumentar la radiación): ahora se dice así, sin
+  // porcentaje. La guía de la OMS es de 2002, no de 2003. Extremo es un índice de 11 o más.
   const AVISO_SOL = papel('puerta', 'Aviso de ejemplo', 'Cuida tu piel', 'la posta', 'los vecinos',
     [oracion('s1', '[w:Si bien] [p:hay nubes], usa sombrero y bloqueador al mediodía.')]);
   const MUNDO_4 = {
     hecho: 'El sol del altiplano quema aunque haya nubes',
     parrafos: [
-      'La Organización Mundial de la Salud explica que la radiación ultravioleta puede ser alta aun con nubes, porque más del 90 % atraviesa las nubes delgadas. Para el 22 de enero de 2026, el Senamhi pronosticó un índice UV de 18 en San Román, la provincia de Juliaca, y la OMS ya llama extremo al de 11.',
+      'La Organización Mundial de la Salud (OMS) explica que la radiación ultravioleta puede ser alta aun con nubes, porque las nubes delgadas casi no la frenan. Según la prensa, el Senamhi pronosticó para el 22 de enero de 2026 un índice UV de 18 en San Román, la provincia de Juliaca, y la OMS llama extremo a uno de 11.',
       ['Por eso un aviso de la posta, como este que escribimos de ejemplo, nombra las nubes y pide protegerse igual:',
         { linea: [{ negrita: 'si bien' }, ' + ', cubre('hay nubes'), ' + usa bloqueador'] },
         'Las nubes van después de «si bien» porque son el obstáculo que no impide lo dicho: aunque el cielo esté gris, el sol sigue quemando la piel.'],
@@ -1629,7 +1634,7 @@
       ]),
       porque: 'El frío hace esperar que el sol no queme, y no lo impide: es el obstáculo. En la concesión, «si bien» va delante del obstáculo, igual que «aunque».',
     },
-    fuente: 'OMS, «Índice UV solar mundial: guía práctica» (2003); pronóstico del Senamhi para Puno del 22 de enero de 2026, en El Búho.',
+    fuente: 'OMS, «Índice UV solar mundial: guía práctica» (2002); pronóstico del Senamhi para Puno del 22 de enero de 2026, en El Búho.',
   };
 
   const locuciones = {
@@ -1989,12 +1994,15 @@
 
   // «En el mundo» de la idea 5: el hervor del agua en la altura (CDC). Un consejo encadena dos relaciones (contraste y
   // causa); la pregunta pide la alternativa que cumple en los dos espacios. El mensaje es propio.
+  // Revisión del Escribidor Escribano (28 nov): el primer párrafo unía los tres minutos y la temperatura con «porque»,
+  // y eso le daba al alumno la relación del espacio 2 con un conector de la misma clase que la respuesta. Ahora el dato
+  // va con dos puntos, que dicen la explicación sin nombrar la clase.
   const MENSAJE_AGUA = papel('mensaje', 'Grupo de la familia', null, 'la tía Rosa', 'la familia',
     espacios('a', ['El agua del caño puede verse limpia; {1} hiérvela antes de tomarla.', 'Por debajo de unos 2000 m basta un minuto de hervor; en Juliaca, tres, {2} [q:a esa altura el agua hierve a menos temperatura].']));
   const MUNDO_5 = {
     hecho: 'En la altura, el agua se hierve más tiempo',
     parrafos: [
-      'Para que el agua de dudosa calidad sea segura, los CDC de Estados Unidos piden que hierva a borbotones durante un minuto. Por encima de unos 2000 m de altitud piden tres minutos, porque allí el agua hierve a menos de 100 °C.',
+      'Para que el agua de dudosa calidad sea segura, los CDC de Estados Unidos piden que hierva a borbotones durante un minuto. Por encima de unos 2000 m de altitud piden tres minutos: allí el agua hierve a menos de 100 °C.',
       'Un mensaje con ese consejo, como este que escribimos de ejemplo, encadena dos relaciones y necesita un conector para cada una. Si un conector acierta en un espacio y falla en el otro, el mensaje dice algo que nadie quiso decir, y quien lo lee puede entender mal cuánto hervir o por qué.',
     ],
     figura: { pieza: 'rv-soporte', datos: MENSAJE_AGUA, estado: { marcas: { a2q: 'i' } } },
