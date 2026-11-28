@@ -4,7 +4,7 @@
  * 6 personas y 100 entre 11), porque cambiaba el divisor de un ejemplo al otro para fabricar la sorpresa. Esta parte de
  * una sola estafa piramidal (antes «pirámide de dinero»; Gerson pidió el nombre conocido) con una sola regla (cada persona trae a 3) en los dos paneles: la promesa dice que todos
  * cobran y, cuando se detiene después de tres rondas, 27 de 40 no cobran. El total 1 + 3 + 9 + 27 es el polinomio
- * 1 + x + x² + x³ con x = 3, que sale de dividir x⁴ − 1 entre x − 1 (un cociente notable, idea 6). Lo que el alumno se
+ * x³ + x² + x + 1 con x = 3, que sale de dividir x⁴ − 1 entre x − 1 (un cociente notable, idea 6). Lo que el alumno se
  * lleva va en ficha.seLleva. No adelanta ninguna Predice (grado 4 del cociente, 3x², resto 7, 2x, resto 3, 8x²) ni los
  * valores de las misiones (el 17 de Ruffini, el 9984 y el 1248 de la calculadora). Colores de la unidad (cabecera de
  * contenido/teoria/algebra/division-de-polinomios.js): el divisor en turquesa (c-i) y el cociente, aquí el total de la
@@ -70,8 +70,8 @@
         { linea: ['9 = 3 × 3 → x²'] },
         { linea: ['27 = 3 × 3 × 3 → x³'] },
         { linea: ['81 = 3 × 3 × 3 × 3 → x⁴'] },
-        'Con letras, la cuenta corta pasa a ser una división de polinomios, y lo que sale es el mismo total, ahora escrito con letras:',
-        { linea: ['(x⁴ − 1) ÷ (', divisor('x − 1'), ') = ', cociente('1 + x + x² + x³')] },
+        'Con letras, la cuenta corta pasa a ser una división de polinomios, y lo que sale es el mismo total, escrito con letras y desde la última ronda hasta la persona que empezó:',
+        { linea: ['(x⁴ − 1) ÷ (', divisor('x − 1'), ') = ', cociente('x³ + x² + x + 1')] },
         'De dividir un polinomio entre otro, con su cociente y su resto, trata esta unidad, y las divisiones exactas que se repiten tanto como esta tienen nombre propio: se llaman cocientes notables.'],
     ],
     figura: {
@@ -84,13 +84,14 @@
       seLleva: 'En una estafa piramidal en la que cada uno trae a tres, cuando se detiene, los que no cobran son más de dos tercios de todos, no unos pocos al final.',
       alcance: 'Parcial (núcleo: cambio y relaciones, un total que crece de forma multiplicativa y se escribe para cualquier número de rondas; contexto de la competencia financiera; la división de polinomios, Horner y Ruffini son formalismo). Deducción propia con el marco de Matemática 2022.',
       choque: 'La promesa de que a cada uno le llega su turno, con el arreglo de que solo pierden unos pocos al final, predice que casi todos cobran; cuando la estafa de tres rondas se detiene, 27 de 40 no cobran.',
-      atajo: 'Sumar ronda por ronda (1 + 3 + 9 + 27 = 40) resuelve esta estafa y está bien; no dice, sin otra suma cada vez, qué pasa con 10 o 16 rondas, ni por qué la parte de los que no cobran queda siempre por encima de dos tercios. Eso lo da 1 + x + x² + … + xⁿ = (xⁿ⁺¹ − 1) ÷ (x − 1), el cociente notable de la idea 6, que la apertura muestra con números y con letras solo para tres rondas, no en general.',
+      atajo: 'Sumar ronda por ronda (1 + 3 + 9 + 27 = 40) resuelve esta estafa y está bien; no dice, sin otra suma cada vez, qué pasa con 10 o 16 rondas, ni por qué la parte de los que no cobran queda siempre por encima de dos tercios. El total para cualquier número de rondas lo da el cociente notable de la idea 6, (xⁿ⁺¹ − 1) ÷ (x − 1) = xⁿ + xⁿ⁻¹ + … + x + 1, que la apertura muestra con números y con letras solo para tres rondas; lo de los dos tercios no lo trata la unidad y se deja como cuenta del alumno.',
       porVerificar: [
         'Las cuentas son cálculo: 1 + 3 + 9 + 27 = 40 = (81 − 1) ÷ 2; 27 ÷ 40 = 0,675, más de 2/3; con una ronda más, 81 de 121, unos 0,669; en general, 3ⁿ de (3ⁿ⁺¹ − 1) ÷ 2, que siempre pasa de 2/3. 3¹⁶ = 43 046 721.',
         'Población del Perú, unos 34 millones (estimación del INEI para 2025, de memoria).',
         'La regla «cobras cuando traes a tres» es un modelo simplificado: las pirámides reales cambian el número de personas, la cuota y el pago. Que la SBS y el Indecopi alerten sobre esquemas piramidales en el Perú, y que la competencia financiera de PISA trate fraudes, sale de memoria.',
       ],
       notas: [
+        'Coherencia con la unidad (28 nov): la idea 6 (cocientes notables) da la herramienta: (xⁿ − aⁿ) ÷ (x − a) con a = 1 escribe el total de cualquier número de rondas, y su ejemplo de la calculadora (9919 ÷ 7, con 10⁴ − 3⁴) usa la división al revés, con números, como la apertura. El cociente pasó de 1 + x + x² + x³ a x³ + x² + x + 1, porque la regla de la unidad lo escribe con x bajando desde n − 1; el texto dice que va «desde la última ronda hasta la persona que empezó». El atajo de la ficha decía que el cociente notable explica por qué los que no cobran pasan siempre de dos tercios: la unidad no lo trata, y ahora la ficha solo le atribuye el total. Ningún ejercicio de la unidad ni de plantillas/division-practica usa x − 1 de divisor ni suma rondas; la pregunta se responde a mano o con (3⁵ − 1) ÷ 2.',
         'Tercera pasada (27 nov): Gerson pidió llamarla «estafa piramidal» y no «pirámide de dinero» (título, párrafos, alt, pregunta y ficha; «la pirámide» como atajo pasó a «la estafa»). Cada cuenta va en su línea: 1 + 3 + 9 + 27 = 40 al final del párrafo 1; en el párrafo 4, 81 − 1 = 80, después 80 ÷ 2 = 40, después un cambio por línea (3 → x; 9 = 3 × 3 → x²; 27 = 3 × 3 × 3 → x³; 81 = 3 × 3 × 3 × 3 → x⁴) y al final (x⁴ − 1) ÷ (x − 1) = 1 + x + x² + x³, con el divisor en turquesa y el cociente en violeta. La división ya no se escribe dentro de la oración, y se quitó la ecuación aparte (1 + 3 + 9 + 27 = (81 − 1) ÷ 2 = 40), que quedaba repetida en las líneas. Sin palabras de doble sentido: «cuenta» solo es la que se calcula.',
         'Investigada de nuevo (27 nov): Gerson rechazó el queque (25 trozos entre 6 personas, sobra 1; 100 entre 11, sobra 1) porque cambiaba el divisor a escondidas. Se probaron tres candidatos: (1) la regla del 9 como resto de un polinomio en x = 10 (2026 deja 1 entre 9 y sus cifras suman 10, que también deja 1), descartada porque «Divisibilidad» (idea 3, doña Juana y las bolsitas de 9) ya la enseña entera y el choque era débil; (2) los polos de promoción, un costo fijo del diseño más un precio por polo, dividido entre n polos, descartada porque es dividir entre un monomio (función afín y fracciones, no la división de la unidad) y su choque es el de la regla de tres, que ya usa «Magnitudes proporcionales»; (3) la estafa piramidal, elegida: un solo caso y una sola regla en los dos paneles, una predicción que la gente de verdad hace (la promesa del esquema) y algo útil para llevarse.',
         'La pregunta se puede intentar a mano: con una ronda más entran 81, el total es 121 y no cobran 81, unos 0,669 contra 0,675; queda casi igual, un poco menor. La respuesta abre la idea 6 (el total para cualquier número de rondas) y no está en el texto, que no dice «siempre».',

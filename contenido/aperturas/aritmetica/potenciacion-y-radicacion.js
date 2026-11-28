@@ -53,8 +53,8 @@
         'Las 128 capas forman un bloque de casi 13\u00a0mm, el grosor de un cuaderno delgado:',
         { linea: [capas('128'), ' × 0,1\u00a0mm = 12,8\u00a0mm'] }],
       ['Cada doblez también parte la hoja por la mitad, así que al final queda un taco de apenas 2 o 3\u00a0cm de lado y más de 1\u00a0cm de grueso, que se parece más a un dado que a una hoja. ',
-        'Multiplicar por dos siete veces seguidas te dio las capas y el grosor sin contar nada, y de esas cuentas trata el tema de la potenciación y la radicación. ',
-        'El tema estudia los números que salen de multiplicar un número por sí mismo varias veces, como los cuadrados y los cubos, y el camino de vuelta, que es la raíz.'],
+        'Multiplicar varias veces el mismo número te dio las capas y el grosor sin contar nada, y esa multiplicación de factores iguales se llama potencia. ',
+        'Este tema se queda sobre todo con las potencias de dos y de tres factores iguales, que son los cuadrados y los cubos, y con el camino de vuelta, que es la raíz.'],
     ],
     figura: {
       antes: 2,
@@ -74,6 +74,7 @@
         'Que 128 capas de 0,1 mm (12,8 mm) sean «el grosor de un cuaderno delgado» (comparación propia, por verificar con un cuaderno de 50 hojas).',
       ],
       notas: [
+        'Coherencia con la unidad (28 nov): la unidad no vuelve a los dobleces ni a las potencias de 2 con el exponente creciendo; trata cuadrados y cubos perfectos, raíces enteras con su residuo y aproximaciones. El porqué del choque (cada doblez duplica) queda explicado en la propia apertura, y la unidad solo aporta la palabra y la cuenta de la potencia (idea 1: «El exponente cuenta cuántas veces se multiplica la base»). El párrafo 3 decía «de esas cuentas trata el tema», que prometía potencias de 2; ahora dice que la multiplicación de factores iguales se llama potencia y que el tema se queda con los cuadrados y los cubos. La pregunta (tres dobleces en tres, 27 capas) sí cae en la idea 1, cuya tarjeta «Cubo perfecto» arma 27 con 3 × 3 × 3.',
         'Tercera pasada (27 nov): en el párrafo 2, cada cuenta va en su línea: 2 × 2 × 2 × 2 × 2 × 2 × 2 = 128 (en vez de la lista «2, 4, 8 y así hasta 128»), 50 mm ÷ 500 = 0,1 mm (la resma pasa de «unos 5 cm» a «unos 50 mm», para no meter la equivalencia 5 cm = 50 mm en la oración) y 128 × 0,1 mm = 12,8 mm. Las capas llevan su color. Sin palabras de doble sentido («fuerza» siempre es la de las manos).',
         'Doble revisión (27 nov): la versión anterior oponía «sumar una o dos capas por doblez» (unas 14 capas) a las 128 que salen al duplicar. Era un muñeco de paja: con la hoja en la mano, cualquiera ve 2 capas al primer doblez y 4 al segundo, y nadie suma. Duplicar es la intuición correcta, así que la apertura ya no fabrica sorpresa: «Lo que predice» es la cuenta de duplicar (128 capas de 0,1 mm) y «Lo que se mide», el bloque de casi 13 mm, y el texto muestra lo que permite la cuenta (saber el grosor sin doblar y ver que queda un taco pequeño que no cede). Se quitó «siempre en el mismo sentido», que haría una tira y no un taco. La falta de fuerza pasó al párrafo 1. Queda el punto de abajo (el puente hacia cuadrados y raíces), que no se resuelve con este hecho.',
         'No repite la pizza: allá se agranda una figura y su área crece con el cuadrado del ancho; aquí se multiplica por dos una y otra vez. El tema de la unidad (cuadrados, cubos y raíces) se nombra solo al final.',
