@@ -4,12 +4,36 @@
 //   node herramientas/mapa-unidad.js <unidad> <idea> <momento>     código de un momento (lee, juega, predice…)
 //   node herramientas/mapa-unidad.js <unidad> <idea> --texto [momento]   lo que ve el alumno, ya armado y sin figuras
 //   node herramientas/mapa-unidad.js <unidad> <idea> --ejemplo <n>       el ejemplo n (desde 1), ya armado
+//   node herramientas/mapa-unidad.js <unidad> <idea> --texto mundo       «En el mundo» (28 nov), en texto plano
 // <unidad> va como geometria.congruencia, geometria/congruencia o la ruta del archivo. <idea> es su id o su número.
 'use strict';
 const fs = require('fs');
 const path = require('path');
 
 const RAIZ = path.join(__dirname, '..');
+// Texto plano de partes de nucleo/ecuacion.js (las letras tal como se ven).
+const plano = x => require('../nucleo/teoria-reglas.js').liso(x === undefined ? '' : x);
+// «En el mundo» como lo lee el alumno: el hecho, los párrafos (las líneas sueltas, en su renglón), la figura, la
+// pregunta con sus opciones (✓ la correcta; las demás con su siFuera), el porqué y la fuente.
+function textoMundo(M) {
+  const out = [`EN EL MUNDO · ${plano(M.hecho)}`, ''];
+  for (const p of M.parrafos || []) {
+    let tramo = '';
+    for (const x of Array.isArray(p) ? p : [p]) {
+      if (x && typeof x === 'object' && !Array.isArray(x) && 'linea' in x) { if (tramo.trim()) out.push(tramo.trim()); tramo = ''; out.push(`    ${plano(x.linea)}`); }
+      else tramo += plano(x);
+    }
+    if (tramo.trim()) out.push(tramo.trim());
+    out.push('');
+  }
+  const F = M.figura;
+  if (F) out.push(F.svg ? `[figura svg: ${F.alt || ''}]` : `[figura ${F.pieza || '(pieza de la idea)'}]`, '');
+  const Q = M.pregunta || {};
+  out.push(`Pregunta: ${plano(Q.texto)}`);
+  for (const o of Q.opciones || []) out.push(`  ${o.correcta ? '✓' : '·'} ${plano(o.texto)}${o.siFuera ? `  → ${plano(o.siFuera)}` : ''}`);
+  out.push(`Por qué: ${plano(Q.porque)}`, `Fuente: ${M.fuente || '(falta)'}`);
+  return out.join('\n');
+}
 
 function rutaDe(unidad) {
   if (fs.existsSync(unidad) && unidad.endsWith('.js')) return path.resolve(unidad);
@@ -66,6 +90,8 @@ function sinFiguras(clave, v) {
     const alt = d.alt || (d.figura && d.figura.alt) || (d.escena && d.escena.alt) || '';
     return `[figura ${v.pieza}${d.objeto ? ' · ' + d.objeto : ''}${alt ? ': ' + alt : ''}]`;
   }
+  // Una figura en SVG propio (la de «En el mundo»): su texto alternativo.
+  if (v && typeof v === 'object' && !Array.isArray(v) && typeof v.svg === 'string') return `[figura svg${v.alt ? ': ' + v.alt : ''}]`;
   if (typeof v === 'number' && !Number.isInteger(v)) return Math.round(v * 1000) / 1000;
   return v;
 }
@@ -107,6 +133,10 @@ function imprimirMapa(m) {
     });
     if (largos.length) out.push(`   ${largos.join(' · ')}`);
     if (cortos.length) out.push(`   en una línea: ${cortos.join(', ')}`);
+    // «En el mundo» (Gerson, 28 nov; docs/teoria.md, 4k): el hecho, o que falta (las 152 unidades lo van sumando).
+    const M = idea.mundo;
+    out.push(M ? `   En el mundo: «${plano(M.hecho)}» · ${(M.parrafos || []).length} párrafos${M.figura ? ' · con figura' : ''} · pregunta de ${((M.pregunta || {}).opciones || []).length} opciones`
+      : '   En el mundo: todavía no');
     previo = l.fin + 1;
   });
   if (previo < m.lineas.length) out.push('', `Después de la última idea (glosario, laboratorio, cierre): L${previo + 1}–${m.lineas.length}`);
@@ -130,6 +160,7 @@ function principal(args) {
     return ej ? { codigo: 0, texto: armado(ej) } : { codigo: 1, texto: `La idea ${idea.id} tiene ${(idea.ejemplos || []).length} ejemplos; pide uno de 1 a ese número.` };
   }
   if (args.includes('--texto')) {
+    if (momento === 'mundo' && idea.mundo) return { codigo: 0, texto: textoMundo(idea.mundo) };
     if (momento) return momento in idea ? { codigo: 0, texto: armado(idea[momento]) } : { codigo: 1, texto: `La idea ${idea.id} no tiene «${momento}». Tiene: ${Object.keys(idea).join(', ')}` };
     const sinEj = Object.assign({}, idea);
     if (Array.isArray(idea.ejemplos)) sinEj.ejemplos = `[${idea.ejemplos.length} ejemplos: pídelos con --ejemplo <n>]`;
@@ -150,4 +181,4 @@ if (require.main === module) {
   process.exitCode = r.codigo;
 }
 
-module.exports = { mapa, ubicar, principal, rutaDe };
+module.exports = { mapa, ubicar, principal, rutaDe, textoMundo };

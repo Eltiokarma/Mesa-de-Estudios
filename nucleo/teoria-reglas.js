@@ -36,6 +36,7 @@
     'resuelve-repite': '«Así se resuelve» (sus 4 primeros casos) no trae un caso de los 12 primeros de «Ahora tú».',
     'leyenda-visible': 'Toda letra que nombra la leyenda del juego se ve en el juego: en la figura, la lectura, la consigna, la misión o los controles.',
     'igualdad-falsa': 'Toda igualdad entre números que ve el alumno se cumple, con el redondeo que admiten los decimales del resultado; si es aproximada, va con «≈».',
+    'mundo-predice': '«En el mundo» (el hecho real de una idea, después de su regla) no trae la frase, el valor ni la cuenta que responde la Predice de su idea ni la de las ideas que siguen.',
     'icono-respuesta': 'El ícono de la unidad (app/dibujos/<curso>.js) no escribe la respuesta de ninguna Predice ni de ninguna misión: ni su número (de dos cifras o más) ni su texto (de tres caracteres o más).',
   };
 
@@ -682,6 +683,71 @@
   }
 
   // ---------- Las reglas ----------
+  // Lo que delata la respuesta de una Predice (regla glosario-predice y antes-predice; también «En el mundo», 28 nov):
+  // frase(txt) da la respuesta entera o cuatro palabras seguidas de ella; valor(txt), el valor de la respuesta con los
+  // números de la pregunta; cuenta(txt), la respuesta como resultado de una cuenta («= 25 m²»). Cada una devuelve qué
+  // encontró o null. nums(x, acc) lee los números de un texto (T.numerosDe sobre el texto liso). null si no hay correcta.
+  function delatores(P, nums) {
+    const buena = P && Array.isArray(P.opciones) && P.opciones.find(x => x && x.correcta);
+    if (!buena) return null;
+    const tc = liso(buena.texto), preg = `${liso(P.pregunta)} ${(P.datos || []).map(liso).join(' ')}`;
+    const nPreg = nums(preg), nResp = new Set([...nums(tc)].filter(n => !nPreg.has(n)));
+    const wResp = palabrasDe(tc), cPreg = new Set(contenido(`${preg} ${tc}`));
+    // La frase: la respuesta entera (3 palabras o más) o cuatro palabras seguidas de ella, con tres o más que digan
+    // algo («el punto medio de» lo dice cualquier tarjeta de geometría: no cuenta).
+    const frases = [];
+    if (wResp.length >= 3) frases.push(wResp.join(' '));
+    for (let i = 0; i + 4 <= wResp.length; i++) { const f = wResp.slice(i, i + 4); if (f.filter(w => !VACIAS.has(w)).length >= 3) frases.push(f.join(' ')); }
+    const frase = txt => { const t = ` ${palabrasDe(txt).join(' ')} `; const f = frases.find(x => t.includes(` ${x} `)); return !f ? null : f === wResp.join(' ') ? 'la respuesta entera' : `la frase «${f}»`; };
+    // El valor, en el glosario: la respuesta es un número (con su unidad) de dos cifras o más, o con decimales o
+    // fracción, que la pregunta no dio, y el texto lo trae junto a los números de la pregunta (o, si la pregunta no
+    // trae números, junto a una de sus palabras). Una cifra suelta (4, «5xy», «entre 9») está en cualquier ejemplo.
+    const esNumero = /^\s*(?:[\p{L}_′⃗ ]{0,12}[=≈]\s*)?[+−-]?\d[\d .,]*(?:\s*\/\s*\d[\d.,]*)?\s*(?:\S+(?:\s+\S+)?)?\s*$/u.test(limpio(tc));
+    const valor = txt => {
+      if (!nResp.size || !esNumero || ![...nResp].every(n => n.replace(/[^\d]/g, '').replace(/^0+/, '').length >= 2)) return null;
+      const n = nums(txt);
+      if (![...nResp].every(x => n.has(x))) return null;
+      const comunes = [...nPreg].filter(x => n.has(x)).length;
+      const mismaSituacion = nPreg.size ? comunes >= Math.min(2, nPreg.size) : contenido(txt).some(w => cPreg.has(w));
+      return mismaSituacion ? `el valor ${[...nResp].join(' y ')} con los números de la pregunta` : null;
+    };
+    // Antes de Predice, fuera del glosario: la frase, o la respuesta como resultado de una cuenta («= 25 m²»).
+    const mResp = /^\s*(?:[\p{L}_′⃗ ]{0,12}[=≈]\s*)?[+−-]?(\d[\d .,]*(?:\s*\/\s*\d[\d.,]*)?)\s*(\S*)\s*$/u.exec(limpio(tc));
+    const nR = mResp && [...nums(mResp[1])][0];
+    const cuenta = txt => {
+      if (nR === undefined || nR === null || nPreg.has(nR)) return null;
+      const t = limpio(txt);
+      for (const q of t.matchAll(/[=≈]\s*[+−-]?(\d[\d .,]*(?:\s*\/\s*\d[\d.,]*)?)\s*(\S*)/gu)) {
+        if ([...nums(q[1])][0] === nR && (!mResp[2] || norma(q[2]) === norma(mResp[2]))) return `la cuenta «${q[0].trim()}»`;
+      }
+      return null;
+    };
+    return { buena, tc, frase, valor, cuenta };
+  }
+
+  // «En el mundo» (Gerson, 28 nov; docs/teoria.md, 4k): el hecho real va después de la regla de su idea. No repite la
+  // respuesta de su Predice ni trae la de las ideas que siguen, que el alumno todavía no predijo. La misma comprobación
+  // que el glosario y Lee (delatores): la frase, el valor con los números de la pregunta o la cuenta. Corre con toda
+  // unidad que traiga `mundo`, tenga o no calidad 2 (lo llama Teoria.problemas). T: nucleo/teoria.js.
+  function mundoDelata(def, T) {
+    const out = [], ideas = (def && def.ideas) || [];
+    const nums = (x, acc) => T.numerosDe(limpio(typeof x === 'string' ? x : liso(x)), acc || new Set());
+    ideas.forEach((idea, k) => {
+      if (!idea || !idea.mundo || typeof idea.mundo !== 'object') return;
+      const textos = T.textoMundo(idea.mundo, liso);
+      for (let j = k; j < ideas.length; j++) {
+        const D = ideas[j] && delatores(ideas[j].predice, nums);
+        if (!D) continue;
+        const cuya = j === k ? 'su Predice' : `la Predice de la idea ${j + 1} (${ideas[j].id}), que viene después`;
+        for (const [campo, txt] of textos) {
+          const q = D.frase(txt) || D.valor(txt) || D.cuenta(txt);
+          if (q) out.push({ regla: 'mundo-predice', idea: idea.id, donde: `idea ${k + 1} (${idea.id}) mundo ${campo}`, que: `trae ${q}, que es la respuesta de ${cuya} («${limpio(D.tc)}»): «${limpio(txt).trim()}»` });
+        }
+      }
+    });
+    return out;
+  }
+
   function revisar(def, o = {}, T) {
     const out = [];
     const N = o.semillas || 60;
@@ -718,44 +784,13 @@
       if (idea.resuelve && typeof idea.resuelve.generar === 'function') for (let s = 0; s < 12; s++) { try { const c = idea.resuelve.generar(s); if (c && c.enunciado) casosR.push([s, c]); } catch (e) { /* idem */ } }
 
       // --- (a) glosario-predice y antes-predice ---
-      const buena = P && Array.isArray(P.opciones) && P.opciones.find(x => x && x.correcta);
+      const D = delatores(P, nums), buena = D && D.buena;
       if (buena) {
-        const tc = liso(buena.texto), preg = `${liso(P.pregunta)} ${(P.datos || []).map(liso).join(' ')}`;
-        const nPreg = nums(preg), nResp = new Set([...nums(tc)].filter(n => !nPreg.has(n)));
-        const wResp = palabrasDe(tc), cPreg = new Set(contenido(`${preg} ${tc}`));
-        // La frase: la respuesta entera (3 palabras o más) o cuatro palabras seguidas de ella, con tres o más que digan
-        // algo («el punto medio de» lo dice cualquier tarjeta de geometría: no cuenta).
-        const frases = [];
-        if (wResp.length >= 3) frases.push(wResp.join(' '));
-        for (let i = 0; i + 4 <= wResp.length; i++) { const f = wResp.slice(i, i + 4); if (f.filter(w => !VACIAS.has(w)).length >= 3) frases.push(f.join(' ')); }
-        const frase = txt => { const t = ` ${palabrasDe(txt).join(' ')} `; const f = frases.find(x => t.includes(` ${x} `)); return !f ? null : f === wResp.join(' ') ? 'la respuesta entera' : `la frase «${f}»`; };
-        // El valor, en el glosario: la respuesta es un número (con su unidad) de dos cifras o más, o con decimales o
-        // fracción, que la pregunta no dio, y el texto lo trae junto a los números de la pregunta (o, si la pregunta no
-        // trae números, junto a una de sus palabras). Una cifra suelta (4, «5xy», «entre 9») está en cualquier ejemplo.
-        const esNumero = /^\s*(?:[\p{L}_′⃗ ]{0,12}[=≈]\s*)?[+−-]?\d[\d .,]*(?:\s*\/\s*\d[\d.,]*)?\s*(?:\S+(?:\s+\S+)?)?\s*$/u.test(limpio(tc));
-        const valor = txt => {
-          if (!nResp.size || !esNumero || ![...nResp].every(n => n.replace(/[^\d]/g, '').replace(/^0+/, '').length >= 2)) return null;
-          const n = nums(txt);
-          if (![...nResp].every(x => n.has(x))) return null;
-          const comunes = [...nPreg].filter(x => n.has(x)).length;
-          const mismaSituacion = nPreg.size ? comunes >= Math.min(2, nPreg.size) : contenido(txt).some(w => cPreg.has(w));
-          return mismaSituacion ? `el valor ${[...nResp].join(' y ')} con los números de la pregunta` : null;
-        };
+        const { tc, frase, valor } = D, cuenta = D.cuenta;
         for (const e of porIdea[k] || []) {
           const textos = [['simple', e.simple], ['definición', e.def], ...Glosario.ejemplosDe(e).map((x, i) => [`ejemplo ${i + 1}`, x])];
           for (const [campo, txt] of textos) { const q = txt && (frase(txt) || valor(txt)); if (q) mal('glosario-predice', `${d} glosario «${e.termino}» (${campo})`, `trae ${q}, que es la respuesta de su Predice («${limpio(tc)}»): «${txt}»`); }
         }
-        // Antes de Predice, fuera del glosario: la frase, o la respuesta como resultado de una cuenta («= 25 m²»).
-        const mResp = /^\s*(?:[\p{L}_′⃗ ]{0,12}[=≈]\s*)?[+−-]?(\d[\d .,]*(?:\s*\/\s*\d[\d.,]*)?)\s*(\S*)\s*$/u.exec(limpio(tc));
-        const nR = mResp && [...nums(mResp[1])][0];
-        const cuenta = txt => {
-          if (nR === undefined || nR === null || nPreg.has(nR)) return null;
-          const t = limpio(txt);
-          for (const q of t.matchAll(/[=≈]\s*[+−-]?(\d[\d .,]*(?:\s*\/\s*\d[\d.,]*)?)\s*(\S*)/gu)) {
-            if ([...nums(q[1])][0] === nR && (!mResp[2] || norma(q[2]) === norma(mResp[2]))) return `la cuenta «${q[0].trim()}»`;
-          }
-          return null;
-        };
         const antes = [];
         ((idea.lee && idea.lee.tarjetas) || []).forEach((t, i) => { if (t) antes.push([`Lee tarjeta ${i + 1}`, `${t.titulo || ''} · ${liso(t.texto)} · ${liso(t.ecuacion || '')}`]); });
         antes.push(['Juega (consigna y voz)', `${liso(J.consigna)} · ${liso(J.voz || '')}`]);
@@ -1000,6 +1035,14 @@
       }
       ((idea.mira && idea.mira.pasos) || []).forEach((p, i) => { if (p) { leer(`${d} Mira paso ${i + 1}`, p.texto); leer(`${d} Mira paso ${i + 1}`, p.ecuacion); } });
       if (idea.regla) ['texto', 'ecuacion', 'condicion'].forEach(k => leer(`${d} regla`, idea.regla[k]));
+      // «En el mundo» (28 nov): sus párrafos (cada línea suelta aparte), la pregunta, sus opciones y la explicación.
+      if (idea.mundo && typeof idea.mundo === 'object') {
+        const M = idea.mundo;
+        (Array.isArray(M.parrafos) ? M.parrafos : []).forEach((p, i) => (Array.isArray(p) ? p : [p]).forEach(x => leer(`${d} mundo párrafo ${i + 1}`, x && typeof x === 'object' && !Array.isArray(x) && 'linea' in x ? x.linea : x)));
+        const Q = M.pregunta || {};
+        leer(`${d} mundo pregunta`, Q.texto); leer(`${d} mundo pregunta`, Q.porque);
+        (Array.isArray(Q.opciones) ? Q.opciones : []).forEach(x => { if (x) { leer(`${d} mundo opción`, x.texto); leer(`${d} mundo siFuera`, x.siFuera); } });
+      }
       ejemplos.forEach((e, i) => {
         const de = `${d} ejemplo ${i + 1}`;
         leer(de, e.enunciado);
@@ -1088,5 +1131,5 @@
     return EXCEPCIONES.filter(x => x.unidad === def.unidad && !todos.some(h => cubre(x, def, h)));
   }
 
-  return { REGLAS, EXCEPCIONES, revisar, aplicar, sobran, letrasDeRequiere, liso, preparar, simbolosDe, definido, clavesDe, escala, igualdadesDe, textoCuenta, iconoDe, trae };
+  return { REGLAS, EXCEPCIONES, revisar, aplicar, sobran, mundoDelata, delatores, letrasDeRequiere, liso, preparar, simbolosDe, definido, clavesDe, escala, igualdadesDe, textoCuenta, iconoDe, trae };
 });

@@ -4,7 +4,7 @@
  * La unidad del catálogo trae `teoria: { archivo, requiere }`. Aquí se cargan el kit, las piezas y el archivo de la
  * unidad (contenido/teoria/<curso>/<unidad>.js), que se registra con Teoria.unidad({...}) (nucleo/teoria.js).
  *
- * Cada idea recorre cinco momentos: juega → predice → mira → regla → ahora tú. Solo la predicción bloquea (regla 3);
+ * Cada idea recorre cinco momentos: juega → predice → mira → regla → ahora tú (más Lee, En el mundo y Así se resuelve si los trae). Solo la predicción bloquea (regla 3);
  * antes se juega (decisión 20). El estado vive en est.teoria[unidad]; los eventos «teoria» van a la medición.
  * Rutas: #/unidad/<id>/teoria (la idea en curso), …/teoria/<idea>, …/teoria/laboratorio, …/teoria/ficha y …/teoria/glosario.
  *
@@ -37,7 +37,7 @@
   const cargarEstilo = () => estilo || (estilo = new Promise(ok => {
     const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = KIT_CSS; l.onload = ok; l.onerror = ok; document.head.appendChild(l);
   }));
-  const NOMBRE_MOMENTO = { lee: 'Lee', juega: 'Juega', predice: 'Predice', mira: 'Mira', regla: 'La regla', resuelve: 'Así se resuelve', 'ahora-tu': 'Ahora tú' };
+  const NOMBRE_MOMENTO = { lee: 'Lee', juega: 'Juega', predice: 'Predice', mira: 'Mira', regla: 'La regla', mundo: 'En el mundo', resuelve: 'Así se resuelve', 'ahora-tu': 'Ahora tú' };
   const reducido = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   const ICONO_LUPA = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 15l5 5M10.5 8v5M8 10.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   const MAX_CASOS = 4;
@@ -111,6 +111,34 @@
   // se carga junto con la teoría.
   const datosHTML = (E, ds) => (Array.isArray(ds) && ds.length
     ? `<div class="te-datos"><p class="te-datos-et">Datos</p><ul>${ds.map(x => `<li>${E.html(x)}</li>`).join('')}</ul></div>` : '');
+
+  // «En el mundo» (Gerson, 28 nov; docs/teoria.md, 4k): el hecho real que la regla de la idea explica, en 2 o 3
+  // párrafos, y una pregunta breve que se responde con la regla. Sin DOM, para probarlo en Node (app/teoria.test.js).
+  // Un párrafo puede traer líneas sueltas { linea: [...] }: cada ecuación va en su propia línea, como en app/apertura.js.
+  // Las opciones son los mismos botones .alt de Predice y de «Ahora tú» (opcionesDe); `ops` ya viene en el orden a mostrar.
+  const opcionesDe = (E, esc, ops, nose) => `<div class="alts" role="radiogroup" aria-label="Opciones">${ops.map((o, k) =>
+    `<button type="button" class="alt" role="radio" aria-checked="false" data-op="${esc(o.id)}"><span class="letra">${'ABCDE'[k]}</span><span>${E.html(o.texto)}</span></button>`).join('')}
+    ${nose ? '<button type="button" class="alt nose" data-op="nose">No sé</button>' : ''}</div>`;
+  const esLinea = x => !!x && typeof x === 'object' && !Array.isArray(x) && 'linea' in x;
+  function parrafoMundo(E, p) {
+    const ps = Array.isArray(p) ? p : [p];
+    let out = '', tramo = [];
+    const cerrar = () => { if (tramo.length) out += `<p>${E.html(tramo)}</p>`; tramo = []; };
+    for (const x of ps) { if (esLinea(x)) { cerrar(); out += `<p class="te-ec te-mundo-linea">${E.html(x.linea)}</p>`; } else tramo.push(x); }
+    cerrar();
+    return out;
+  }
+  function mundoHTML(E, esc, M, ops) {
+    const Q = M.pregunta;
+    return `<div class="te-mundo" tabindex="-1" data-foco><span class="te-mundo-et">En el mundo</span><h3 class="te-mundo-hecho">${E.html(M.hecho)}</h3>
+        ${M.parrafos.map(p => parrafoMundo(E, p)).join('')}
+        ${M.fuente ? `<p class="te-mundo-fuente">Fuente: ${esc(M.fuente)}</p>` : ''}</div>
+      <div class="te-mundo-preg"><p class="te-mundo-preg-et">Explícalo con la regla</p><p class="te-mundo-q">${E.html(Q.texto)}</p>
+        ${opcionesDe(E, esc, ops || Q.opciones)}<div class="te-fb" aria-live="polite"></div>
+        <button type="button" class="btn borde te-mundo-comprobar">Comprobar</button></div>`;
+  }
+  // Lo que se ve al comprobar: si la opción no era, su siFuera (qué pensó bien y cuándo sería cierto); siempre, el porqué.
+  const mundoFbHTML = (E, Q, o) => `${o && !o.correcta && o.siFuera ? `<p>${E.html(o.siFuera)}</p>` : ''}<p class="te-sol">${E.html(Q.porque)}</p>`;
 
   // Glosario del curso: se pide una vez y queda en memoria (el service worker lo guarda para usarlo sin conexión).
   const glosarios = {};
@@ -493,7 +521,8 @@
     // Los momentos de esta idea: «Lee» y «Así se resuelve» solo si los trae (nucleo/teoria.js, momentosDe).
     const MOM = T.momentosDe(idea);
     const ir = m => {
-      if (!MOM.includes(m)) m = m === 'lee' ? 'juega' : m === 'resuelve' ? 'ahora-tu' : MOM[0];
+      // Un momento que la idea no trae (Lee, En el mundo, Así se resuelve): el siguiente que sí trae.
+      if (!MOM.includes(m)) { const k = T.MOMENTOS.indexOf(m); m = (k >= 0 && T.MOMENTOS.slice(k + 1).find(x => MOM.includes(x))) || MOM[0]; }
       si.momento = m; ctx.guardar(); decir(''); lectura.textContent = ''; raiz.dataset.m = m;
       if (lt) { lt.destruir(); lt = null; }
       if (juego) { juego.destruir(); juego = null; }
@@ -501,7 +530,7 @@
       // Volver atrás (Gerson, 17 nov: «no podías ir atrás cuando explorabas una idea»): al momento anterior, con el botón
       // o tocando un momento ya pasado de la tira. Adelante solo con «Seguir»: la predicción sigue bloqueando (regla 3).
       atras.hidden = MOM.indexOf(m) <= 0;
-      ({ lee, juega, predice, mira, regla, resuelve, 'ahora-tu': ahoraTu })[m]();
+      ({ lee, juega, predice, mira, regla, mundo, resuelve, 'ahora-tu': ahoraTu })[m]();
       const foco = zona.querySelector('h3,[data-foco]');
       if (foco && document.activeElement && document.activeElement !== document.body) foco.focus({ preventScroll: true });
     };
@@ -599,11 +628,7 @@
     }
 
     // Opciones como botones .alt (los mismos de la práctica): elegir y después «Comprobar».
-    function opcionesHTML(ops, nose) {
-      return `<div class="alts" role="radiogroup" aria-label="Opciones">${ops.map((o, k) =>
-        `<button type="button" class="alt" role="radio" aria-checked="false" data-op="${esc(o.id)}"><span class="letra">${'ABCDE'[k]}</span><span>${E.html(o.texto)}</span></button>`).join('')}
-        ${nose ? '<button type="button" class="alt nose" data-op="nose">No sé</button>' : ''}</div>`;
-    }
+    function opcionesHTML(ops, nose) { return opcionesDe(E, esc, ops, nose); }
     function elegir(onElegir) {
       let elegida = null;
       zona.querySelector('.alts').addEventListener('click', e => {
@@ -694,9 +719,45 @@
       const fr = T.figuraRegla(idea);
       dibujar(fr, fr.pieza);
       zona.innerHTML = reglaHTML(r, true);
-      const res = MOM.includes('resuelve');
-      sig.textContent = res ? 'Siguiente: Así se resuelve ›' : 'Siguiente: Ahora tú ›';
-      sig.onclick = () => ir(res ? 'resuelve' : 'ahora-tu');
+      // Después de la regla: «En el mundo», «Así se resuelve» o «Ahora tú», el primero que la idea traiga.
+      const prox = MOM[MOM.indexOf('regla') + 1] || 'ahora-tu';
+      sig.textContent = `Siguiente: ${NOMBRE_MOMENTO[prox]} ›`;
+      sig.onclick = () => ir(prox);
+    }
+
+    // 4d. En el mundo (Gerson, 28 nov; docs/teoria.md, 4k): un hecho real que la regla recién vista explica («cómo influye
+    // en…»), con su figura si la trae y una pregunta breve que se responde con la regla. La pregunta da retroalimentación
+    // (siFuera y el porqué) pero no bloquea: el alumno ya jugó y predijo (regla 3). La respuesta queda en si.mundo.
+    function mundo() {
+      const M = idea.mundo, Q = M.pregunta, F = M.figura;
+      actuar('mundo', M.voz || 'Esto pasa de verdad. La regla que viste lo explica.');
+      if (F && F.svg) { fig.innerHTML = F.svg; $('#te-alt').textContent = F.alt || ''; }
+      else if (F) dibujar(F, F.pieza);
+      else { fig.innerHTML = ''; $('#te-alt').textContent = ''; }
+      // Barajadas como las de Predice (orden fijo por alumno e idea), salvo orden: 'fijo'.
+      const ops = Q.orden === 'fijo' ? Q.opciones : T.barajar(Q.opciones, [...`${idea.id}|mundo|${ctx.est.alumno || ''}`].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7));
+      zona.innerHTML = mundoHTML(E, esc, M, ops);
+      const cual = elegir(), fb = zona.querySelector('.te-fb'), comprobar = zona.querySelector('.te-mundo-comprobar');
+      const resolver = e => {
+        const o = Q.opciones.find(x => x.id === e);
+        marcar(Q.opciones, e);
+        fb.innerHTML = mundoFbHTML(E, Q, o);
+        comprobar.hidden = true;
+        actuar(o && o.correcta ? 'coincide' : 'no-coincide');
+      };
+      comprobar.onclick = () => {
+        const e = cual();
+        if (!e) { decir('Elige una opción para comprobar.'); zona.querySelector('.alt').focus(); return; }
+        const o = Q.opciones.find(x => x.id === e);
+        si.mundo = e; ctx.guardar();
+        evento('mundo', { opcion: e, correcta: !!o.correcta, error: o.error || null });
+        resolver(e); mostrar(fb);
+      };
+      const ya = si.mundo && Q.opciones.some(x => x.id === si.mundo) ? si.mundo : null;
+      if (ya) resolver(ya);
+      const prox = MOM[MOM.indexOf('mundo') + 1] || 'ahora-tu';
+      sig.textContent = `Siguiente: ${NOMBRE_MOMENTO[prox]} ›`;
+      sig.onclick = () => { if (!si.mundo) evento('mundo', { salto: true }); ir(prox); };
     }
 
     // 5. Ahora tú: un caso nuevo (semilla), sin la ayuda del juego. «Otro caso» da otro; se puede pedir ayuda con «No sé».
@@ -1611,6 +1672,6 @@
   }
 
   // En Node (pruebas) solo sale lo que no toca el DOM.
-  if (typeof module === 'object' && module.exports) module.exports = { avisoJuego, partirLargas, trozosTermino };
+  if (typeof module === 'object' && module.exports) module.exports = { avisoJuego, partirLargas, trozosTermino, mundoHTML, mundoFbHTML };
   else window.Teoria = Object.assign(window.Teoria || {}, { vista, entrada, avisoJuego, partirLargas, trozosTermino });
 })();

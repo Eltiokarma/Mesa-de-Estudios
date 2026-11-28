@@ -6,7 +6,7 @@
  *
  *   node herramientas/capturas-teoria.js <unidad> <carpeta> [partes] [--oscuro] [--ancha] [--lector]
  *
- *   partes: momentos,ejemplos,glosario,laboratorio (por defecto, todas)
+ *   partes: momentos,ejemplos,glosario,laboratorio (por defecto, todas). momentos incluye «En el mundo» si la idea lo trae
  *   --oscuro   también en tema oscuro
  *   --ancha    también a 1280 × 860 (pantalla ancha); por defecto solo 390 × 844 (celular)
  *   --entera   momentos en página entera (figura y botones sin fijar): lo que lee el lector en frío
@@ -58,7 +58,9 @@ if (!unidad || !carpeta) { console.error('uso: node herramientas/capturas-teoria
 const banderas = new Set(resto.filter(x => x.startsWith('--')));
 const partes = new Set((resto.find(x => !x.startsWith('--')) || 'momentos,ejemplos,glosario,laboratorio').split(','));
 const BASE = process.env.MESA_URL || 'http://localhost:4173';
-const MOMENTOS = ['lee', 'juega', 'predice', 'mira', 'regla', 'resuelve', 'ahora-tu'];
+// Los momentos, en el orden del lector (nucleo/teoria.js): «En el mundo» (28 nov) va después de la regla. El número del
+// archivo es el lugar del momento en esa lista (…-5-regla, -6-mundo, -7-resuelve, -8-ahora-tu).
+const MOMENTOS = require('../nucleo/teoria.js').MOMENTOS;
 
 // La unidad abierta: con su propio estado de teoría empezado, el mapa la deja entrar aunque su requisito no esté hecho.
 // El estado sembrado ya trae hechas las migraciones del avance (nucleo/avance.js): si no, una migración que borra

@@ -10,6 +10,8 @@
  *   3. mira     la explicación como línea de tiempo de la misma figura (Kit.lineaTiempo)
  *   4. regla    la regla con su ecuación y la condición que la hace verdadera; queda en el resumen de repaso
  *   5. ahora tú un caso nuevo, generado con semilla, sin la ayuda del juego
+ * Opcionales, si la idea los trae: lee (antes del juego), mundo (después de la regla: un hecho real que ella explica,
+ * con una pregunta breve que no bloquea; 28 nov) y resuelve (un ejercicio resuelto, antes de «Ahora tú»).
  * Todo número que se ve lo calcula el archivo con código (regla 1); el texto cumple los topes de PRESUPUESTO.
  */
 (function (root, fabrica) {
@@ -49,6 +51,7 @@
     'ahora-tu': { expresion: 'E1', pose: 'reposo' },
     lee: { expresion: 'E4', pose: 'reposo' },
     resuelve: { expresion: 'E4', pose: 'reposo' },
+    mundo: { expresion: 'E4', pose: 'reposo' },
     acierto: { expresion: 'E7', pose: 'celebra' },
     error: { expresion: 'E8', pose: 'acompaña' },
     ayuda: { expresion: 'E8', pose: 'ayuda' },
@@ -70,10 +73,15 @@
     dato: 22,
     // Resumen (16 nov): qué va a hacer el alumno en el juego, dicho antes de jugar.
     actividad: 16,
+    // «En el mundo» (Gerson, 28 nov): el título corto del hecho real. Sus párrafos usan el tope de `tarjeta`, su pregunta
+    // el de `pregunta`, sus opciones el de `opcion`, y su explicación (`porque`) y cada `siFuera`, el de `siFuera`.
+    hecho: 10,
   };
-  // Los siete momentos posibles, en orden. «Lee» y «Así se resuelve» van solo si la idea los trae (momentosDe).
-  const MOMENTOS = ['lee', 'juega', 'predice', 'mira', 'regla', 'resuelve', 'ahora-tu'];
-  const momentosDe = idea => MOMENTOS.filter(m => (m !== 'lee' || (idea && idea.lee)) && (m !== 'resuelve' || (idea && idea.resuelve)));
+  // Los ocho momentos posibles, en orden. «Lee», «En el mundo» y «Así se resuelve» van solo si la idea los trae
+  // (momentosDe). «En el mundo» (Gerson, 28 nov; docs/teoria.md, 4k) va después de la regla: el hecho real que ella explica.
+  const MOMENTOS = ['lee', 'juega', 'predice', 'mira', 'regla', 'mundo', 'resuelve', 'ahora-tu'];
+  const OPCIONALES = { lee: 'lee', mundo: 'mundo', resuelve: 'resuelve' };
+  const momentosDe = idea => MOMENTOS.filter(m => !OPCIONALES[m] || (idea && idea[OPCIONALES[m]]));
   // Los pasos de un ejercicio resuelto: cómo se ataca un problema, en este orden (docs/teoria.md, 4e).
   const PASOS_RESUELTO = {
     pide: '¿Qué me piden?', datos: '¿Qué tengo?', regla: '¿Qué regla uso?', cuentas: 'Las cuentas', sentido: '¿Tiene sentido?',
@@ -83,6 +91,29 @@
   // Texto plano de un texto con partes de ecuación (variables, subíndices, fracciones), para contar y revisar.
   const plano = x => Ecuacion.texto(x === undefined || x === null ? '' : x);
   const palabras = x => Kit.palabras(plano(x));
+
+  // «En el mundo» (Gerson, 28 nov). Un párrafo es texto o lista de partes de nucleo/ecuacion.js; una parte
+  // { linea: [...] } es una ecuación suelta que va en su propia línea (como en app/apertura.js). Estas tres lo separan.
+  const esLinea = x => !!x && typeof x === 'object' && !Array.isArray(x) && 'linea' in x;
+  const partesMundo = p => (Array.isArray(p) ? p : [p]);
+  const sinLineas = p => partesMundo(p).filter(x => !esLinea(x));
+  // Lo que ve el alumno de un «En el mundo», campo por campo: [[campo, texto plano]]. `liso` pasa partes a texto
+  // (por defecto, el de los lectores de pantalla; las reglas de calidad usan TeoriaReglas.liso, con las letras tal cual).
+  function textoMundo(M, liso = plano) {
+    if (!M || typeof M !== 'object') return [];
+    const Q = M.pregunta || {}, F = M.figura || {};
+    const out = [['hecho', liso(M.hecho || '')]];
+    (Array.isArray(M.parrafos) ? M.parrafos : []).forEach((p, i) => out.push([`párrafo ${i + 1}`, partesMundo(p).map(x => (esLinea(x) ? ` ${liso(x.linea)} ` : liso(x))).join('')]));
+    if (F.svg) out.push(['figura', `${F.alt || ''} · ${textoSVG(F.svg)}`]);
+    out.push(['pregunta', liso(Q.texto || '')]);
+    (Array.isArray(Q.opciones) ? Q.opciones : []).forEach((x, i) => { if (x) out.push([`opción ${i + 1}`, `${liso(x.texto || '')}${x.siFuera ? ` · ${liso(x.siFuera)}` : ''}`]); });
+    if (Q.porque) out.push(['explicación', liso(Q.porque)]);
+    return out;
+  }
+  // Las oraciones de un texto: se corta después de . ! ? cuando sigue una mayúscula, un signo de apertura o una cifra
+  // (la misma regla de las aperturas, contenido/aperturas/aperturas.test.js).
+  const oracionesDe = t => String(t).split(/(?<=[.!?])\s+(?=[¿¡«A-ZÁÉÍÓÚÑ0-9])/u).map(x => x.trim()).filter(Boolean);
+  const MIN_ORACION = 10;
 
   // ---------- Registro (navegador) ----------
   // Los números que se leen en un texto, normalizados para compararlos: «× 4» → 4, «6,5 m» → 6.5, «10 000» → 10000,
@@ -504,6 +535,64 @@
         }
       }
 
+      // 4d. En el mundo (opcional; Gerson, 28 nov; docs/teoria.md, 4k): un hecho real que la regla de esta idea explica,
+      // en 2 o 3 párrafos, con figura si hace falta, y una pregunta breve que se responde con la regla. No bloquea.
+      if (idea.mundo !== undefined) {
+        const M = idea.mundo, dm = `${d} mundo`;
+        if (!M || typeof M !== 'object' || Array.isArray(M)) mal(dm, 'mundo es { hecho, parrafos, figura?, pregunta, fuente }');
+        else {
+          if (!M.hecho || !plano(M.hecho).trim()) mal(dm, 'sin hecho (el título corto del hecho real)'); else tope(dm, 'hecho', M.hecho);
+          if (M.voz) tope(dm, 'voz', M.voz);
+          const ps = M.parrafos;
+          if (!Array.isArray(ps) || ps.length < 2 || ps.length > 3) mal(dm, 'parrafos: de 2 a 3');
+          else ps.forEach((p, i) => {
+            const dp = `${dm} párrafo ${i + 1}`, tx = sinLineas(p);
+            if (!plano(tx).trim()) { mal(dp, 'sin texto'); return; }
+            tope(dp, 'tarjeta', tx);
+            ecuacion(dp, tx);
+            partesMundo(p).filter(esLinea).forEach(x => { if (!x.linea || (Array.isArray(x.linea) && !x.linea.length)) mal(dp, 'línea suelta vacía'); else ecuacion(`${dp} (línea)`, x.linea); });
+            // Texto de corrido (escribidor-escribano): oraciones enteras, no telegramas.
+            for (const o of oracionesDe(partesMundo(p).map(x => (esLinea(x) ? ' ' : plano(x))).join(''))) {
+              const n = Kit.palabras(o);
+              if (n < MIN_ORACION) mal(dp, `oración de ${n} palabras (mínimo ${MIN_ORACION}: texto de corrido): «${o}»`);
+            }
+          });
+          // La figura (opcional): una pieza del kit { pieza?, datos, estado? } o un SVG propio { svg, alt } con los
+          // colores de las variables (var(--c-*)) o currentColor. Va en el recuadro de la figura de la idea, como en los otros momentos.
+          if (M.figura !== undefined) {
+            const F = M.figura, df = `${dm} figura`;
+            if (F && typeof F.svg === 'string') {
+              if (!/^\s*<svg\b[\s\S]*<\/svg>\s*$/.test(F.svg)) mal(df, 'svg: un <svg> entero');
+              if (/NaN|undefined|Infinity/.test(F.svg)) mal(df, 'el SVG muestra NaN, undefined o Infinity');
+              for (const c of F.svg.matchAll(/(?:fill|stroke|color)\s*[=:]\s*"?(#[0-9a-f]{3,8}|rgba?\([^)"]*\))/gi)) mal(df, `color suelto ${c[1]}: usa var(--c-*) o currentColor`);
+              for (const c of F.svg.matchAll(/var\(--(c-[a-z]+)\)/g)) if (!Ecuacion.COLORES.includes(c[1])) mal(df, `--${c[1]} no es un color de variable`);
+              if (!F.alt || String(F.alt).length < 15) mal(df, 'alt: el texto alternativo cuenta lo que se ve (15 caracteres o más)');
+            } else if (F && typeof F === 'object' && F.datos !== undefined) dibuja(df, F, F.pieza);
+            else mal(df, 'la figura es { pieza?, datos, estado? } o { svg, alt }');
+          }
+          // La pregunta: se responde con la regla de esta idea; opciones con su siFuera y una explicación (`porque`)
+          // que se ve al comprobar. No bloquea el avance (regla 3: el alumno ya jugó y predijo).
+          const Q = M.pregunta;
+          if (!Q || !Q.texto) mal(dm, 'sin pregunta');
+          else {
+            const dq = `${dm} pregunta`;
+            tope(dq, 'pregunta', Q.texto);
+            ecuacion(dq, Array.isArray(Q.texto) ? Q.texto : [Q.texto]);
+            if (!/\?\s*$/.test(plano(Q.texto))) mal(dq, 'la pregunta termina en «?»');
+            opciones(dq, Q.opciones);
+            if (!Q.porque) mal(dq, 'sin porque (la explicación con la regla, que se ve al comprobar)'); else tope(dq, 'siFuera', Q.porque);
+            if (Q.orden !== undefined && Q.orden !== 'fijo') mal(dq, "orden: solo 'fijo'");
+          }
+          // El hecho es real y verificable: de dónde sale (se ve en letra chica, como en los ejemplos).
+          if (typeof M.fuente !== 'string' || M.fuente.length < 8 || M.fuente.length > 140) mal(dm, 'fuente: texto de 8 a 140 caracteres (de dónde sale el hecho)');
+          for (const [campo, t] of textoMundo(M)) {
+            if (/—/.test(t)) mal(`${dm} ${campo}`, 'sin raya (—): usa punto, coma, dos puntos o paréntesis');
+            if (/\d\.\d/.test(t)) mal(`${dm} ${campo}`, `coma decimal, no punto («${(t.match(/\S*\d\.\d\S*/) || [''])[0]}»)`);
+            if (/NaN|undefined|Infinity|\[object/.test(t)) mal(`${dm} ${campo}`, 'muestra NaN, undefined o un objeto');
+          }
+        }
+      }
+
       // 4c. Ejemplos resueltos (opcional; pestaña «Ejemplos», Gerson 16 nov): 3 niveles × 5, resueltos enteros (no paso a
       // paso), con texto en colores y su dibujo. Cada uno: { nivel, titulo, enunciado, figura?, solucion: [{ texto, ecuacion? }],
       // respuesta }. Se escriben a mano, con los números ya comprobados; el validador mira forma, topes y dibujos.
@@ -599,6 +688,9 @@
       }
     }
     if (Glosario) for (const q of Glosario.revisar(def)) mal(def.unidad, q);
+    // «En el mundo» no delata la Predice de su idea ni la de las que siguen (28 nov). Con o sin calidad 2: es nuevo y
+    // no tiene excepciones. Solo donde están las reglas (las pruebas; la app no las carga).
+    if (Reglas && Reglas.mundoDelata && def.ideas.some(i => i && i.mundo)) for (const h of Reglas.mundoDelata(def, api)) mal(h.donde, `[${h.regla}] ${h.que}`);
     // Reglas de calidad 2 (Etapa 5, 19 nov): lo que los auditores y los lectores en frío encontraron una y otra vez en
     // las 15 primeras unidades (glosario que adelanta la predicción, letras sin decir en los datos, la letra correcta
     // sin repartir…). Solo con calidad: 2 y solo si el formato de arriba ya está sano. Las faltas ya conocidas del
@@ -679,6 +771,6 @@
 
   // Las faltas de una unidad con calidad 2 que una excepción con fecha deja pasar (la lista de pendientes de la unidad).
   const pendientes = (def, o = {}) => (def && def.calidad >= 2 && Reglas ? Reglas.aplicar(def, o, api).pendientes.map(h => `${h.donde}: [${h.regla}] ${h.que} (pendiente desde ${h.fecha}: ${h.motivo})`) : []);
-  const api = { unidad, unidades, problemas, pendientes, plano, inicio, ajustar, grilla, barajar, ordenAhoraTu, figuraRegla, ejemplosAbiertos, numerosDe, textoSVG, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, momentosDe, PASOS_RESUELTO, palabras };
+  const api = { unidad, unidades, problemas, pendientes, plano, inicio, ajustar, grilla, barajar, ordenAhoraTu, figuraRegla, ejemplosAbiertos, numerosDe, textoSVG, textoMundo, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, momentosDe, PASOS_RESUELTO, palabras };
   return api;
 });

@@ -279,6 +279,8 @@ glosario: [
 
 > Lee → Juega → Predice → Mira → La regla → Así se resuelve → Ahora tú
 
+Desde el 28 nov hay un tercer opcional, «En el mundo», después de la regla (4k).
+
 **«Lee»** (`idea.lee`), antes del juego:
 
 ```js
@@ -446,6 +448,106 @@ letras: { v: 'velocidad', t: 'tiempo', t_e: 'instante del encuentro', 'Δx': 'de
 Las faltas que esas reglas encontraron en el contenido ya hecho están en `TeoriaReglas.EXCEPCIONES`, con fecha
 (`Teoria.pendientes(def)` da las de una unidad). Una unidad nueva no agrega excepciones.
 
+## 4k. En el mundo (Gerson, 28 nov)
+
+**Por qué.** Gerson: «Creo que nuestra teoría no está complementándose con las ideas PISA. Por ejemplo, hablamos del
+radio atómico, pero después no decimos cómo esto influye en sus propiedades de la naturaleza. Y así es lo mismo con
+todo.» Las aperturas ya hacen el toque PISA al empezar la unidad (`docs/metodo/apertura-pisa.md`); faltaba dentro de
+cada idea. Gerson eligió un momento corto, **«En el mundo»**, después de la regla: un hecho real que la regla explica,
+con imagen si hace falta y una pregunta breve que el alumno responde usando la regla. Es el hermano de la apertura: la
+apertura abre la unidad con un choque; «En el mundo» cierra cada regla mostrando qué hace esa regla fuera del libro.
+
+**Orden.** Con todos los opcionales, una idea tiene ocho momentos:
+
+> Lee → Juega → Predice → Mira → La regla → **En el mundo** → Así se resuelve → Ahora tú
+
+Va después de la regla porque necesita la regla para entenderse: el hecho no se explica sin ella, y la pregunta se
+responde con ella. Va antes de «Así se resuelve» porque cambia de registro una sola vez: primero la regla y para qué
+sirve en la vida, después el ejercicio tipo examen resuelto y el que hace el alumno, seguidos. Ponerlo después de
+«Ahora tú» lo dejaba fuera de la idea (el botón de «Ahora tú» ya lleva a la idea siguiente). Como todo opcional,
+`Teoria.momentosDe(idea)` lo pone solo si la idea trae `mundo`; las unidades sin él siguen igual.
+
+**Formato** (`idea.mundo`, opcional):
+
+```js
+mundo: {
+  hecho: 'El sodio burbujea en el agua; el cesio explota',      // ≤ 10 palabras: el título corto del hecho
+  parrafos: [                                                    // 2 o 3; texto o partes de nucleo/ecuacion.js
+    'Si echas un trocito de sodio al agua, corre sobre ella, burbujea y suelta hidrógeno. Un trocito de cesio, …',
+    ['Los dos le entregan al agua su último electrón. En el cesio ese electrón está más lejos del núcleo:',
+      { linea: [{ v: 'c-i', t: 'r' }, '(Cs) ≈ 298 pm   ·   ', { v: 'c-i', t: 'r' }, '(Na) ≈ 190 pm'] },   // ecuación suelta, en su línea
+      'Por eso se suelta mucho más rápido y la reacción libera su calor de golpe.'],
+  ],
+  figura: { pieza: 'quim-tabla', datos: { … }, estado: { … } },  // opcional: pieza del kit (sin pieza, la de la idea)
+       // o { svg: '<svg …>', alt: 'qué se ve' } con colores var(--c-*) o currentColor, nunca un color suelto
+  pregunta: {
+    texto: '¿Qué esperas del potasio, que está entre el sodio y el cesio en el mismo grupo?',   // ≤ 40, termina en «?»
+    opciones: [                                                  // de 2 a 5, como las de Predice
+      { id: 'medio', texto: 'Reacciona más fuerte que el sodio y menos que el cesio', correcta: true },
+      { id: 'igual', texto: 'Igual que el sodio, porque tiene un solo electrón afuera', error: 'mismo-grupo-igual',
+        siFuera: 'Es cierto que los dos tienen un solo electrón afuera… Pero el del potasio está un nivel más lejos…' },
+    ],
+    porque: 'El potasio tiene un nivel más que el sodio y uno menos que el cesio: …',   // ≤ 40: se ve siempre al comprobar
+    orden?: 'fijo',                                              // como en Predice; si no, se barajan
+  },
+  fuente: 'Radios calculados de Clementi y Raimondi (1967); reacciones de los alcalinos con agua, RSC.',   // 8 a 140 caracteres
+  voz?: '…',                                                     // ≤ 16; si no, «Esto pasa de verdad. La regla que viste lo explica.»
+}
+```
+
+El ejemplo es la muestra de la prueba (`nucleo/teoria-mundo.test.js`), no contenido de una unidad.
+
+**Cómo se ve** (`app/teoria.js`, función `mundo`; estilos `.te-mundo*` en `app/estilos.css`):
+- La pestaña del momento dice «En el mundo» y su color es el rosa `--c-h`, el único color de variable que no tenía
+  momento. La tarjeta usa la tipografía de «Lee»: la etiqueta «En el mundo» arriba, el hecho como título, los párrafos y la
+  fuente en letra chica.
+- La figura va en el recuadro de la figura de la idea, como en los otros momentos (al lado del texto desde 900 px, arriba
+  en el celular). Sin figura, el recuadro se esconde.
+- Debajo, el recuadro «Explícalo con la regla»: la pregunta, las opciones con los mismos botones de Predice y «Ahora
+  tú», y «Comprobar». Al comprobar se marcan la correcta y la elegida, se ve el `siFuera` de la elegida si no era y
+  siempre el `porque`.
+- **No bloquea:** el botón de abajo siempre lleva al momento siguiente, haya respondido o no (regla 3: el alumno ya jugó
+  y predijo antes). La respuesta queda en `est.teoria[unidad].ideas[idea].mundo` y, al volver, se ve ya comprobada.
+- Eventos: `{ momento: 'mundo', opcion, correcta, error }` al comprobar y `{ momento: 'mundo', salto: true }` si siguió
+  sin responder. No cuentan como preguntas del avance.
+
+**Topes y comprobaciones** (`nucleo/teoria.js`, `Teoria.problemas`; prueba `nucleo/teoria-mundo.test.js`):
+- `hecho` 10 palabras; cada párrafo, el tope de una tarjeta de «Lee» (60), sin contar sus líneas sueltas; la pregunta,
+  40; cada opción, 14; `porque` y cada `siFuera`, 40; `voz`, 16.
+- Texto de corrido: cada oración de un párrafo tiene 10 palabras o más (la misma regla de las aperturas).
+- Coma decimal, sin raya (—) y sin NaN ni undefined en nada de lo que se ve (también en el texto del SVG).
+- Una opción correcta, `siFuera` en las demás, la pregunta termina en «?», hay `porque` y hay `fuente`.
+- La figura pasa por su pieza sin NaN (la misma revisión de los otros momentos), o es un `<svg>` entero con colores de
+  variable y `alt` de 15 caracteres o más.
+- **No delata** (regla `mundo-predice`, `nucleo/teoria-reglas.js`): nada del momento trae la respuesta de la Predice de
+  su idea ni de las ideas que siguen. Es la misma comprobación que el glosario y «Lee»: la respuesta entera o cuatro
+  palabras seguidas de ella, el valor con los números de la pregunta, o la cuenta que la da. Corre con o sin
+  `calidad: 2`, porque el momento es nuevo y no tiene excepciones.
+- Las igualdades entre números que se leen ahí se cumplen (`igualdad-falsa`, con `calidad: 2`).
+
+**Herramientas.** `node herramientas/mapa-unidad.js <unidad>` dice en cada idea si ya tiene «En el mundo» («En el
+mundo: todavía no»); `… <unidad> <idea> --texto mundo` lo muestra como lo lee el alumno. `herramientas/capturas-teoria.js`
+lo captura en el modo `momentos` cuando la idea lo trae (el archivo sale como `…-6-mundo.png`; desde ahora «Así se
+resuelve» es el 7 y «Ahora tú» el 8).
+
+**Criterios de escritura.** Manda el skill del Escribidor Escribano (cada ecuación en su línea, palabra de un solo
+sentido, explicar el porqué); además:
+1. **Un hecho real y verificable**, con su `fuente`. Lo que salga de memoria se marca para verificar antes de publicar.
+2. **Que lo explique la regla de esa idea**, no la de otra idea ni la de otra unidad. Si para entenderlo hace falta una
+   regla que viene después, el hecho va en esa otra idea.
+3. **Que una el concepto con una propiedad o una consecuencia** en la naturaleza, la tecnología o la vida diaria: «cómo
+   influye en…». En radio atómico, no basta decir que el cesio es grande; hay que decir qué hace distinto por serlo.
+4. **Que lo reconozca un alumno de 5.º de secundaria**: cosas que ve, usa o ya estudió (la cocina, el celular, el
+   cuerpo, el clima, una obra en su ciudad). Nada que exija un modelo nuevo para entenderse.
+5. **Con números propios**: no los del juego, ni los de Predice, ni los de «Ahora tú». Los datos del hecho se escriben
+   con su fuente; si hay una cuenta, la hace el código (regla 1).
+6. **Sin delatar Predice**, ni la de su idea ni la de las siguientes (lo vigila el validador, pero no lo reemplaza: el
+   hecho tampoco adelanta con otras palabras lo que la idea siguiente hace descubrir).
+7. **La pregunta se responde con la regla**, en otra situación (otro átomo, otro objeto, otro número), y es breve. Las
+   opciones incorrectas salen de errores reales de postulantes, como en Predice, y su `siFuera` empieza por lo que el
+   alumno pensó bien. El `porque` explica con la regla, no repite la opción.
+8. **Corto:** dos párrafos bastan casi siempre; el tercero, solo si la consecuencia necesita un paso más.
+
 ## 5. Topes de texto (los vigila `contenido/teoria/teoria.test.js`)
 
 | Campo | Palabras |
@@ -467,6 +569,9 @@ Las faltas que esas reglas encontraron en el contenido ya hecho están en `Teori
 | Enunciado de «Así se resuelve» | 40 |
 | Respuesta de «Así se resuelve» | 14 |
 | Línea de `datos` | 22, más su ecuación |
+| Hecho de «En el mundo» | 10 |
+| Párrafo de «En el mundo» | 60, más sus líneas sueltas |
+| Pregunta de «En el mundo» | 40 (opción 14; `porque` y `siFuera` 40) |
 
 **Gerson, 26 nov (dos veces; la segunda, para que quepa el porqué y un ejemplo):** subieron los topes de los textos que explican (regla, condición, `siFuera`, paso de «Mira», solución y paso de «Así se resuelve»), porque cortados salían incoherentes; desde la Etapa 9 cada unidad pasa además por el redactor (`docs/metodo/unidad/redaccion-delegada.md`). Los textos que van junto al dibujo siguen cortos.
 
