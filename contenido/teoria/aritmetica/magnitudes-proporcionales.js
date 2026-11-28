@@ -144,20 +144,23 @@
       ecuacion: ['directa: ', { llave: [{ frac: [y, x] }], nota: 'cociente' }, ' = ', k, '   ·   ', 'inversa: ', { llave: [x, ' · ', y], nota: 'producto' }, ' = ', k],
       condicion: 'crecer juntas no basta: y = 2x + 3 crece y no es proporcional. En la inversa, x no puede ser 0.',
     },
+    // Revisión del Escribidor Escribano (28 nov): el título y el cierre ya no dicen que la regla explica la «menos fuerza»
+    // (eso es física: trabajo repartido en más vueltas de pedal); la regla explica solo las vueltas de la rueda. «Por»
+    // de multiplicar pasa a «multiplicados por», para que no se lea como «por cada».
     // En el mundo (docs/teoria.md, 4k): la bicicleta con cambios. Dientes del piñón (x, naranja) por vueltas de la rueda
     // (y, turquesa) dan siempre los dientes del plato (k, verde): una inversa que no repite obreros, tortuga, papa ni camión.
     mundo: {
-      hecho: 'El piñón grande de la bicicleta sirve para subir',
+      hecho: 'El piñón grande hace girar menos la rueda',
       parrafos: [
         ['En una bicicleta con cambios, la cadena une el plato de los pedales con uno de los piñones de la rueda de atrás. ',
           'Cada vez que los pedales dan una vuelta completa, el plato empuja la cadena tantos eslabones como dientes tiene; con un plato de ',
           { v: 'c-d', t: '44 dientes' }, ', la cadena avanza 44 eslabones.'],
-        ['Esos 44 eslabones pasan también por el piñón, y cada vuelta de la rueda gasta tantos eslabones como dientes tiene el piñón, así que los dientes del piñón por las vueltas de la rueda dan siempre 44:',
+        ['Esos 44 eslabones pasan también por el piñón, y cada vuelta de la rueda gasta tantos eslabones como dientes tiene el piñón, así que los dientes del piñón multiplicados por las vueltas de la rueda dan siempre 44:',
           { linea: [{ v: 'c-o', t: '11' }, ' · ', { v: 'c-i', t: '4' }, ' = ', { v: 'c-d', t: '44' }] },
           { linea: [{ v: 'c-o', t: '32' }, ' · ', { v: 'c-i', t: '1,375' }, ' = ', { v: 'c-d', t: '44' }] }],
         ['Con el piñón chico, de ', { v: 'c-o', t: '11 dientes' }, ', la rueda da ', { v: 'c-i', t: '4 vueltas' }, ' por cada vuelta de los pedales, y con el grande, de ',
           { v: 'c-o', t: '32' }, ', no llega a ', { v: 'c-i', t: 'una vuelta y media' }, '. ',
-          'Por eso, en una calle empinada, conviene pasar la cadena al piñón grande: cada vuelta de los pedales mueve menos la bicicleta, pero se pedalea con menos fuerza.'],
+          'Así, en una subida, cada vuelta de los pedales avanza menos camino; que a cambio cueste menos fuerza lo explica la física, no esta regla.'],
       ],
       figura: {
         pieza: 'ejes',
@@ -185,7 +188,7 @@
           { id: 'igual', texto: '4 vueltas, porque el plato no cambió', error: 'AT-NO-CAMBIA',
             siFuera: 'Es cierto que el plato sigue empujando 44 eslabones por cada vuelta de los pedales. Pero esos eslabones pasan ahora por un piñón de 22, y cada vuelta de la rueda gasta 22 de ellos.' },
         ],
-        porque: 'Los dientes del piñón por las vueltas de la rueda dan siempre los 44 del plato: son inversamente proporcionales. Con 22 dientes, la rueda da 2 vueltas, porque 22 por 2 da 44.',
+        porque: 'Los dientes del piñón multiplicados por las vueltas de la rueda dan siempre los 44 del plato: son inversamente proporcionales. Con 22 dientes, la rueda da 2 vueltas, porque 22 por 2 da 44.',
       },
       fuente: 'Relación de transmisión: dientes del plato entre dientes del piñón (Sheldon Brown, «Gear Theory for Bicyclists»).',
     },
@@ -314,13 +317,15 @@
       ecuacion: [{ llave: [{ sub: ['o', '1'] }, { sub: ['h', '1'] }, { sub: ['d', '1'] }], nota: 'la obra' }, ' = ', { llave: [{ sub: ['o', '2'] }, { sub: ['h', '2'] }, { sub: ['d', '2'] }], nota: 'la misma obra' }],
       condicion: 'todos rinden igual y la obra no cambia. Si la obra se duplica, los días se duplican: obra y días son directas.',
     },
+    // Revisión del Escribidor Escribano (28 nov): «no puede alargar la jornada» era falso tal cual (puede, con horas extras
+    // voluntarias); ahora «no puede contar con alargarla». Cuentas rehechas: 10 · 8 · 24 = 1920 = 15 · 8 · 16.
     // En el mundo: la jornada de 8 horas (Constitución, art. 25). Con las horas fijas por ley, para acortar los días solo
     // quedan los obreros. Obreros en naranja y horas diarias en turquesa, como en el juego.
     mundo: {
       hecho: 'La jornada de 8 horas decide cuántos obreros contratar',
       parrafos: [
         'La Constitución del Perú, en su artículo 25, dice que la jornada ordinaria de trabajo dura como máximo 8 horas diarias o 48 semanales. Las horas extras existen, pero la ley dice que son voluntarias, así que, salvo una emergencia, nadie puede obligar a un obrero a quedarse más tiempo.',
-        ['Por eso una constructora que necesita entregar antes no puede alargar la jornada, y la obra tiene que salir igual con menos días:',
+        ['Por eso, si una constructora necesita entregar antes, no puede contar con alargar la jornada: la misma obra tiene que caber en menos días de 8 horas.',
           { linea: [{ v: 'c-o', t: 'obreros' }, ' · ', { v: 'c-i', t: '8 h' }, ' · días = obra'] },
           'Con las horas de cada día fijas por ley, el único factor que puede crecer es el número de obreros: si los días bajan a la mitad, los obreros tienen que duplicarse.'],
       ],
@@ -463,6 +468,8 @@
       ecuacion: [{ sub: ['x', 'i'] }, ' = ', { llave: [T], nota: 'total', color: 'c-d' }, ' · ', { llave: [{ frac: [wi, ['Σ', 'w']] }], nota: 'su fracción' }, '   ·   ', 'inverso: ', wi, ' → ', { frac: ['1', wi] }],
       condicion: 'los pesos son positivos. Multiplicar todos los pesos por el mismo número no cambia el reparto.',
     },
+    // Revisión del Escribidor Escribano (28 nov): el «Por eso» del 750 no tenía causa en la oración anterior; ahora dice
+    // que es el mismo reparto contado en milésimas (18/24 = 750/1000). Cuentas rehechas: 12 · 14/24 = 7; 12 · 10/24 = 5.
     // En el mundo: el quilate. Una joya reparte su masa en 24 partes, según 18 de oro y 6 de otros metales: un reparto
     // directo de verdad. El oro en naranja, los otros metales en turquesa y el total en verde, como las partes y T.
     mundo: {
@@ -472,7 +479,7 @@
         ['Las 6 partes que faltan son de otros metales, así que en una cadena de 18 quilates con ', { v: 'c-d', t: '8 g' }, ' de masa el oro se lleva 18 de las 24 partes:',
           { linea: [{ v: 'c-o', t: 'oro' }, ' = ', { v: 'c-d', t: '8 g' }, ' · ', { frac: ['18', '24'] }, ' = ', { v: 'c-o', t: '6 g' }] },
           { linea: [{ v: 'c-i', t: 'otros metales' }, ' = ', { v: 'c-d', t: '8 g' }, ' · ', { frac: ['6', '24'] }, ' = ', { v: 'c-i', t: '2 g' }] },
-          'Por eso muchas joyas de 18 quilates llevan grabado el número 750, que dice que de cada 1000 partes de su masa, 750 son de oro.'],
+          'El mismo reparto, contado en milésimas, explica el número 750 que llevan grabado muchas joyas de 18 quilates: de cada 1000 partes de su masa, 750 son de oro.'],
       ],
       figura: {
         pieza: 'arit-tiras',
