@@ -116,3 +116,4 @@ contra los límites semanales de los planes.
 | razonamiento-matematico.certezas | piloto «En el mundo» (6 ideas) | 270 836 | 20 min 46 s | 64 herramientas |
 | algebra.productos-notables | piloto «En el mundo» (5 ideas) | 267 166 | 21 min 20 s | 66 herramientas |
 | razonamiento-verbal.conectores | piloto «En el mundo» (5 ideas) | 249 879 | 22 min | 59 herramientas |
+| fisica.trabajo-y-energia | piloto «En el mundo» (6 ideas) | 304 790 | 25 min 57 s | 66 herramientas |
