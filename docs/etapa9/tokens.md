@@ -107,3 +107,4 @@ contra los límites semanales de los planes.
 | aperturas física y trigonometría (17) | coherencia con la unidad | 207 399 | 7 min 19 s | 60 herramientas |
 | teoría RM y verbal (6 unidades) | ejemplo que responde la apertura | 297 537 | 17 min 53 s | 78 herramientas |
 | teoría aritmética y álgebra (5 unidades) | ejemplo que responde la apertura | 311 751 | 18 min 18 s | 92 herramientas |
+| teoría geometría y trigonometría (4 unidades) | ejemplo o tarjeta que responde la apertura | 268 289 | 19 min 34 s | 69 herramientas |
