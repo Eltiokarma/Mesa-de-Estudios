@@ -435,6 +435,288 @@ const D_THALES = ['Thales: paralelas que cortan una secante en A, B, C y otra en
   // Auditoría (20 nov): DF = 160 m. Con 120 m, DE salía de copiar el factor fijo del juego (DE = 1,5 · AB = 45 m) sin usar
   // el total; ahora ese atajo da 45 m, que no es la respuesta.
   const PRED1 = 'En otro barrio, la avenida 1 tiene AB = 30 m y BC = 50 m. En la avenida 2, del primer jirón al tercero hay DF = 160 m. ¿Cuánto mide DE?';
+  // ======================= En el mundo (Gerson, 28 nov; docs/teoria.md, 4k) =======================
+  // Un hecho real por idea, después de su regla, que esa regla explica, con una pregunta breve que se responde con ella.
+  // No repite la apertura (la foto de 10 por 15 ampliada a 20 por 25) ni los contextos de los ejemplos y juegos (calles,
+  // terreno, canal, poste y sombra, rampa y puntal, fotos, mayólicas). Las cuentas las hace el código (regla 1); los
+  // datos van con su fuente. Ninguno trae la respuesta de una Predice ni de una misión (60 m, 4 y 6 m, 4 m, 2 cm, la
+  // cuarta parte, 1 en Menelao; 75 m, D en el medio, 6 m, 3 m, 9 veces, F en el medio).
+  const fd = (n, d) => Kit.formatear(n, d);
+  const r1 = n => Math.round(n * 10) / 10;
+  const txt = (x, y, t, o = '') => `<text x="${r1(x)}" y="${r1(y)}" ${o}>${t}</text>`;
+
+  // Idea 1: el truco del carpintero. Tabla de 22 cm, 4 tiras: la wincha cruzada del 0 al 24 se marca cada 6 cm.
+  const TABLA = { ancho: 22, tiras: 4, wincha: 24 };
+  TABLA.paso = TABLA.wincha / TABLA.tiras; TABLA.tira = TABLA.ancho / TABLA.tiras;
+  const TABLA2 = { ancho: 17, tiras: 3, wincha: 18 };
+  TABLA2.paso = TABLA2.wincha / TABLA2.tiras; TABLA2.tira = TABLA2.ancho / TABLA2.tiras;
+  const svgTabla = (() => {
+    const s = 6, x0 = 30, y0 = 24, L = 250, H = TABLA.ancho * s, W = TABLA.wincha * s;
+    const dx = Math.sqrt(W * W - H * H), ax = 92, bx = ax + dx;
+    const marcas = [1, 2, 3].map(i => ({ x: ax + dx * i / TABLA.tiras, y: y0 + H * i / TABLA.tiras, n: TABLA.paso * i }));
+    return `<svg viewBox="0 0 330 190" xmlns="http://www.w3.org/2000/svg" font-family="inherit" font-size="13">
+      <rect x="${x0}" y="${y0}" width="${L}" height="${r1(H)}" fill="none" stroke="currentColor" stroke-width="2.5"/>
+      ${marcas.map(m => `<line x1="${x0}" y1="${r1(m.y)}" x2="${x0 + L}" y2="${r1(m.y)}" style="stroke:var(--c-i)" stroke-width="1.8" stroke-dasharray="6 4"/>`).join('')}
+      <line x1="${ax}" y1="${y0}" x2="${r1(bx)}" y2="${r1(y0 + H)}" style="stroke:var(--c-o)" stroke-width="5" stroke-linecap="round" opacity=".85"/>
+      ${marcas.map(m => `<circle cx="${r1(m.x)}" cy="${r1(m.y)}" r="4" fill="currentColor"/>${txt(m.x + 8, m.y - 4, m.n, 'style="fill:var(--c-o)" font-weight="700"')}`).join('')}
+      ${txt(ax - 4, y0 - 6, '0', 'style="fill:var(--c-o)" font-weight="700" text-anchor="middle"')}${txt(bx + 4, y0 + H + 16, TABLA.wincha, 'style="fill:var(--c-o)" font-weight="700" text-anchor="middle"')}
+      ${[0, 1, 2, 3].map(i => txt(x0 + L - 8, y0 + H * (i + 0.5) / TABLA.tiras + 5, `${fm(TABLA.tira)} cm`, 'style="fill:var(--c-i)" font-weight="700" text-anchor="end"')).join('')}
+      ${txt(16, y0 + H / 2, `${TABLA.ancho} cm`, `text-anchor="middle" fill="currentColor" transform="rotate(-90 16 ${r1(y0 + H / 2)})"`)}
+      ${txt(165, y0 + H + 34, 'La wincha, cruzada sobre la tabla', 'text-anchor="middle" style="fill:var(--muted)"')}
+    </svg>`;
+  })();
+  const MUNDO1 = {
+    hecho: 'Una wincha cruzada parte una tabla en tiras iguales',
+    parrafos: [
+      [`Un carpintero que tiene que partir una tabla de ${TABLA.ancho} cm de ancho en ${TABLA.tiras} tiras iguales no divide ${TABLA.ancho} entre ${TABLA.tiras}. `,
+        `Cruza su wincha sobre la tabla, con el 0 en un borde y el ${TABLA.wincha} en el otro, y marca la tabla donde la wincha dice ${TABLA.paso}, ${2 * TABLA.paso} y ${3 * TABLA.paso}.`],
+      ['Por cada marca traza una raya paralela a los bordes: son paralelas que cortan dos rectas, la wincha y el ancho de la tabla. Como los tramos de la wincha son iguales, los del ancho también lo son:',
+        { linea: [`${TABLA.wincha} cm ÷ ${TABLA.tiras} = `, dO(`${TABLA.paso} cm`), '   en la wincha'] },
+        { linea: [`${TABLA.ancho} cm ÷ ${TABLA.tiras} = `, dI(`${fm(TABLA.tira)} cm`), '   en el ancho de la tabla'] },
+        `El carpintero nunca midió ${fm(TABLA.tira)} cm: con la wincha cruzada, cualquier ancho se parte leyendo números enteros.`],
+    ],
+    figura: { svg: svgTabla,
+      alt: `Una tabla de ${TABLA.ancho} cm de ancho con una wincha cruzada del 0 al ${TABLA.wincha}. Las marcas ${TABLA.paso}, ${2 * TABLA.paso} y ${3 * TABLA.paso} de la wincha dejan rayas paralelas a los bordes, y las cuatro tiras miden ${fm(TABLA.tira)} cm.` },
+    pregunta: {
+      texto: `Con el mismo truco, una tabla de ${TABLA2.ancho} cm se parte en ${TABLA2.tiras} tiras: la wincha va del 0 al ${TABLA2.wincha} y se marca en el ${TABLA2.paso} y el ${2 * TABLA2.paso}. ¿Cuánto mide de ancho cada tira?`,
+      opciones: [
+        { id: 'c', texto: `Un tercio de ${TABLA2.ancho} cm: unos ${fm(TABLA2.tira)} cm`, correcta: true },
+        { id: 'igual', texto: `${TABLA2.paso} cm, lo que hay de marca a marca en la wincha`, error: 'GE-THA-igual',
+          siFuera: `Es cierto que las marcas parten la wincha en tramos de ${TABLA2.paso} cm. Pero la wincha va cruzada y es más larga que el ancho: sus tramos son proporcionales a los del ancho, no iguales.` },
+        { id: 'diagonal', texto: 'La del medio sale más ancha, porque la wincha va inclinada', error: 'GE-THA-inclinada',
+          siFuera: 'Es cierto que la wincha inclinada no mide el ancho. Pero las rayas son paralelas a los bordes, y paralelas que cortan una recta en tramos iguales también cortan la otra en tramos iguales.' },
+        { id: 'angulo', texto: 'No se sabe sin medir el ángulo de la wincha', error: 'GE-THA-angulo',
+          siFuera: 'Es cierto que con otro ángulo cambiaría el número que toca el borde. Pero la regla no pide el ángulo: basta que los tramos de la wincha sean iguales para que los del ancho también lo sean.' },
+      ],
+      porque: `Las rayas son paralelas y parten la wincha en ${TABLA2.tiras} tramos iguales, así que también parten el ancho en ${TABLA2.tiras} tramos iguales: cada tira mide ${TABLA2.ancho} cm ÷ ${TABLA2.tiras}, unos ${fm(TABLA2.tira)} cm.`,
+    },
+    fuente: 'Truco de la wincha cruzada para partir una tabla sin dividir: Fine Homebuilding, «Division without fractions» (2005).',
+  };
+
+  // Idea 2: el arquero se para en la bisectriz del ángulo de tiro. Arco de 7,32 m (IFAB, regla 1).
+  const ARCO = 7.32;
+  const arquero = (cerca, lejos) => ({ cerca, lejos, tc: ARCO * cerca / (cerca + lejos), tl: ARCO * lejos / (cerca + lejos) });
+  const ARQ = arquero(10, 14), ARQ2 = arquero(12, 15);
+  [ARQ2.pc, ARQ2.pl] = razon(ARQ2.cerca, ARQ2.lejos).split(' : ').map(Number);
+  const svgArco = (() => {
+    // Postes en x = ±3,66 m sobre la línea de gol; el balón donde está a 10 m de un poste y a 14 m del otro.
+    const h = ARCO / 2, bx = (ARQ.lejos ** 2 - ARQ.cerca ** 2) / (4 * h), by = Math.sqrt(ARQ.cerca ** 2 - (bx - h) ** 2);
+    const s = 21, X = x => 96 + x * s, Yp = y => 246 - y * s, dx = h - ARQ.tc;
+    return `<svg viewBox="0 0 330 290" xmlns="http://www.w3.org/2000/svg" font-family="inherit" font-size="13">
+      <line x1="10" y1="${Yp(0)}" x2="320" y2="${Yp(0)}" style="stroke:var(--muted)" stroke-width="1.5"/>
+      <line x1="${r1(X(-h))}" y1="${Yp(0)}" x2="${r1(X(dx))}" y2="${Yp(0)}" style="stroke:var(--c-i)" stroke-width="5"/>
+      <line x1="${r1(X(dx))}" y1="${Yp(0)}" x2="${r1(X(h))}" y2="${Yp(0)}" style="stroke:var(--c-o)" stroke-width="5"/>
+      <line x1="${r1(X(bx))}" y1="${r1(Yp(by))}" x2="${r1(X(h))}" y2="${Yp(0)}" style="stroke:var(--c-o)" stroke-width="2.5"/>
+      <line x1="${r1(X(bx))}" y1="${r1(Yp(by))}" x2="${r1(X(-h))}" y2="${Yp(0)}" style="stroke:var(--c-i)" stroke-width="2.5"/>
+      <line x1="${r1(X(bx))}" y1="${r1(Yp(by))}" x2="${r1(X(dx))}" y2="${Yp(0)}" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/>
+      <rect x="${r1(X(-h) - 4)}" y="${Yp(0) - 14}" width="8" height="14" fill="currentColor"/><rect x="${r1(X(h) - 4)}" y="${Yp(0) - 14}" width="8" height="14" fill="currentColor"/>
+      <circle cx="${r1(X(bx))}" cy="${r1(Yp(by))}" r="8" fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="${r1(X(dx))}" cy="${Yp(0)}" r="4" fill="currentColor"/>
+      ${txt(X(bx), Yp(by) - 14, 'balón', 'text-anchor="middle" fill="currentColor"')}
+      ${txt((X(bx) + X(h)) / 2 + 8, (Yp(by) + Yp(0)) / 2, `${ARQ.cerca} m`, 'style="fill:var(--c-o)" font-weight="700"')}
+      ${txt((X(bx) + X(-h)) / 2 - 10, (Yp(by) + Yp(0)) / 2, `${ARQ.lejos} m`, 'style="fill:var(--c-i)" font-weight="700" text-anchor="end"')}
+      ${txt((X(dx) + X(h)) / 2, Yp(0) + 20, `${fm(ARQ.tc)} m`, 'style="fill:var(--c-o)" font-weight="700" text-anchor="middle"')}
+      ${txt((X(-h) + X(dx)) / 2, Yp(0) + 20, `${fm(ARQ.tl)} m`, 'style="fill:var(--c-i)" font-weight="700" text-anchor="middle"')}
+      ${txt(165, Yp(0) + 38, 'La línea del arco, vista desde arriba', 'text-anchor="middle" style="fill:var(--muted)"')}
+    </svg>`;
+  })();
+  const MUNDO2 = {
+    hecho: 'El arquero no se para frente al centro del arco',
+    parrafos: [
+      'Cuando el balón llega por un costado, los entrenadores de arqueros enseñan a pararse sobre la bisectriz del ángulo que forman el balón y los dos postes. Así el arquero queda a la misma distancia de los dos tiros que van pegados a los postes, y no deja más espacio libre de un lado que del otro.',
+      [`Esa bisectriz llega a la línea del arco, que mide ${fm(ARCO)} m de poste a poste, en un punto que no es el centro. Si el balón está a ${ARQ.cerca} m de un poste y a ${ARQ.lejos} m del otro, los tramos del arco van en la misma razón que esas distancias:`,
+        { linea: [{ frac: [dO(`${fm(ARQ.tc)} m`), dI(`${fm(ARQ.tl)} m`)] }, ' = ', { frac: [dO(`${ARQ.cerca} m`), dI(`${ARQ.lejos} m`)] }] }],
+      `Por eso la línea del arquero llega a ${fm(ARQ.tc)} m del poste cercano, ${fm(Math.round((ARCO / 2 - ARQ.tc) * 100))} cm más cerca de él que el centro del arco, y el arquero se corre hacia ese poste.`,
+    ],
+    figura: { svg: svgArco,
+      alt: `El arco visto desde arriba y un balón a ${ARQ.cerca} m de un poste y a ${ARQ.lejos} m del otro. La bisectriz del ángulo de tiro llega a la línea del arco a ${fm(ARQ.tc)} m del poste cercano y a ${fm(ARQ.tl)} m del lejano.` },
+    pregunta: {
+      texto: `Ahora el balón está a ${ARQ2.cerca} m de un poste y a ${ARQ2.lejos} m del otro. ¿Dónde llega la bisectriz del ángulo de tiro a la línea del arco?`,
+      opciones: [
+        { id: 'c', texto: `A unos ${fm(ARQ2.tc)} m del poste más cercano al balón`, correcta: true },
+        { id: 'centro', texto: `Al centro, a ${fm(ARCO / 2)} m de cada poste`, error: 'GE8',
+          siFuera: 'Es cierto que la bisectriz parte el ángulo de tiro en dos ángulos iguales. Pero el arco no queda partido en dos mitades, porque el balón no está a la misma distancia de los dos postes.' },
+        { id: 'invertida', texto: `A unos ${fm(ARQ2.tc)} m del poste más lejano`, error: 'GE-PIE1',
+          siFuera: `Es cierto que el arco queda en tramos de unos ${fm(ARQ2.tc)} m y ${fm(ARQ2.tl)} m. Pero el corto está del lado del poste cercano: cada tramo va con la distancia del balón al poste que toca.` },
+        { id: 'resta', texto: `A ${ARQ2.lejos - ARQ2.cerca} m del poste cercano, porque ${ARQ2.lejos} − ${ARQ2.cerca} = ${ARQ2.lejos - ARQ2.cerca}`, error: 'GE-PIE2',
+          siFuera: `Ver que el punto se corre hacia el poste cercano está bien. Pero la diferencia de las distancias no da un tramo: los tramos van en razón ${razon(ARQ2.cerca, ARQ2.lejos)}.` },
+      ],
+      porque: `Cada tramo va con la distancia al poste que toca, así que el arco se parte en razón ${ARQ2.cerca} : ${ARQ2.lejos} = ${razon(ARQ2.cerca, ARQ2.lejos)}. El tramo cercano toma ${ARQ2.pc} de las ${ARQ2.pc + ARQ2.pl} partes iguales de los ${fm(ARCO)} m: unos ${fm(ARQ2.tc)} m.`,
+    },
+    fuente: 'Arco de 7,32 m: IFAB, Reglas de Juego, regla 1. El arquero sobre la bisectriz del ángulo de tiro: guías de entrenamiento de arqueros.',
+  };
+
+  // Idea 3: el eclipse total. Diámetros y distancias medias: NASA (NSSDCA, fichas del Sol y de la Luna).
+  const SOL = { d: 1391400, D: 149600000 }, LUNA = { d: 3475, D: 384400 }, MONEDA = 2.55;
+  const justo = LUNA.d * SOL.D / SOL.d;                      // a esta distancia la Luna tapa justo al Sol
+  const kLuna = LUNA.D / LUNA.d, aMoneda = MONEDA * kLuna;   // la moneda que tapa la Luna llena, en cm
+  const svgEclipse = `<svg viewBox="0 0 330 200" xmlns="http://www.w3.org/2000/svg" font-family="inherit" font-size="13">
+      <path d="M20 100 L300 30 L300 170 Z" style="fill:var(--c-i)" fill-opacity=".1"/>
+      <line x1="20" y1="100" x2="300" y2="30" style="stroke:var(--c-i)" stroke-width="2"/><line x1="20" y1="100" x2="300" y2="170" style="stroke:var(--c-i)" stroke-width="2"/>
+      <line x1="300" y1="30" x2="300" y2="170" style="stroke:var(--c-i)" stroke-width="4"/>
+      <line x1="110" y1="77.5" x2="110" y2="122.5" style="stroke:var(--c-o)" stroke-width="5"/>
+      <circle cx="110" cy="100" r="22.5" fill="none" style="stroke:var(--c-o)" stroke-width="2" stroke-dasharray="4 3"/>
+      <circle cx="20" cy="100" r="6" fill="currentColor"/>
+      ${txt(20, 126, 'ojo', 'text-anchor="middle" fill="currentColor"')}${txt(110, 70, 'Luna', 'text-anchor="middle" style="fill:var(--c-o)" font-weight="700"')}
+      ${txt(292, 100, 'Sol', 'text-anchor="end" style="fill:var(--c-i)" font-weight="700"')}
+      ${txt(165, 194, 'No está a escala.', 'text-anchor="middle" style="fill:var(--muted)"')}
+    </svg>`;
+  const MUNDO3 = {
+    hecho: 'La Luna tapa justo al Sol en un eclipse total',
+    parrafos: [
+      `El Sol mide unos ${fm(SOL.d)} km de ancho y la Luna, unos ${LUNA.d} km, así que el Sol es unas ${fd(SOL.d / LUNA.d, 0)} veces más ancho. También está unas ${fd(SOL.D / LUNA.D, 0)} veces más lejos de nosotros, y por eso en el cielo los dos se ven casi del mismo tamaño.`,
+      ['Cada astro forma un triángulo con un vértice en tu ojo y su diámetro como el lado de enfrente. Cuando la Luna tapa justo al Sol, los dos triángulos comparten el ángulo del ojo y tienen sus diámetros paralelos, así que son semejantes:',
+        { linea: [{ frac: [dO('diámetro de la Luna'), dO('diámetro del Sol')] }, ' = ', { frac: [dI('distancia de la Luna'), dI('distancia del Sol')] }] }],
+      `Con los datos del Sol y de la Luna, esa igualdad pide que la Luna esté a unos ${fm(Math.round(justo / 100) * 100)} km. Su distancia cambia entre unos 363 300 km y 405 500 km: más cerca, se ve más grande que el Sol y el eclipse es total; más lejos, queda un anillo de Sol alrededor de la Luna.`,
+    ],
+    figura: { svg: svgEclipse, alt: 'Dos triángulos con el vértice en el ojo: uno llega a la Luna, cerca y chica, y otro al Sol, lejos y grande. Los diámetros son paralelos y la Luna cubre justo el ángulo del Sol.' },
+    pregunta: {
+      texto: `Una moneda de un sol mide ${fm(MONEDA)} cm de ancho. ¿A qué distancia de tu ojo tapa justo la Luna llena, cuando está a ${fm(LUNA.D)} km?`,
+      opciones: [
+        { id: 'c', texto: `A unos ${fd(aMoneda / 100, 1)} m`, correcta: true },
+        { id: 'brazo', texto: 'Con el brazo estirado, a unos 60 cm', error: 'luna-grande',
+          siFuera: `Es cierto que la Luna llena parece grande en el cielo. Pero el triángulo de la moneda tiene que copiar el de la Luna, y su distancia es unas ${fd(kLuna, 0)} veces su ancho.` },
+        { id: 'invertida', texto: `A unos ${fd(MONEDA / kLuna * 10, 1)} mm, casi pegada al ojo`, error: 'k-al-reves',
+          siFuera: `Usar la razón de la Luna está bien. Pero se aplicó al revés: la distancia es unas ${fd(kLuna, 0)} veces el ancho, así que se multiplica ${fm(MONEDA)} cm por ${fd(kLuna, 0)}, no se divide.` },
+      ],
+      porque: `Los dos triángulos tienen que ser semejantes: la distancia de la moneda es ${fd(kLuna, 1)} veces su ancho, como la de la Luna. ${fm(MONEDA)} cm × ${fd(kLuna, 1)} son unos ${fd(aMoneda / 100, 1)} m.`,
+    },
+    fuente: 'Diámetros y distancias del Sol y de la Luna: NASA, fichas de datos (NSSDCA). Moneda de S/ 1 de 25,50 mm: BCRP, cono monetario.',
+  };
+
+  // Idea 4: la cámara oscura (cámara estenopeica). Triángulos cruzados en el agujero: la imagen sale de cabeza.
+  const CAM = { alto: 4, dist: 10, fondo: 0.3 }, CAM2 = { alto: 1.6, dist: 4, fondo: 0.25 };
+  CAM.img = CAM.alto * CAM.fondo / CAM.dist; CAM2.img = CAM2.alto * CAM2.fondo / CAM2.dist; CAM2.mal = CAM2.dist * CAM2.fondo / CAM2.alto;
+  const svgCamara = (() => {
+    // Dibujo sin escala, la caja vista de costado: el árbol a la izquierda, el agujero a la altura de su pie y, al fondo
+    // de la caja, la imagen de cabeza. La línea de la punta pasa por el agujero (la imagen sale de la misma recta).
+    const yb = 140, ar = 40, ap = 50, hx = 220, fx = 300, iy = yb + (yb - ap) * (fx - hx) / (hx - ar);
+    return `<svg viewBox="0 0 330 230" xmlns="http://www.w3.org/2000/svg" font-family="inherit" font-size="13">
+      <rect x="${hx}" y="${yb - 50}" width="${fx - hx}" height="${r1(iy - yb + 60)}" fill="none" stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="${ar}" cy="${ap + 10}" r="18" style="fill:var(--c-o)" fill-opacity=".25"/>
+      <line x1="${ar}" y1="${yb}" x2="${ar}" y2="${ap}" style="stroke:var(--c-o)" stroke-width="5"/>
+      <line x1="${ar}" y1="${ap}" x2="${fx}" y2="${r1(iy)}" style="stroke:var(--c-o)" stroke-width="1.8"/>
+      <line x1="${ar}" y1="${yb}" x2="${fx}" y2="${yb}" style="stroke:var(--c-i)" stroke-width="1.8" stroke-dasharray="5 4"/>
+      <line x1="${fx}" y1="${yb}" x2="${fx}" y2="${r1(iy)}" style="stroke:var(--c-o)" stroke-width="5"/>
+      <circle cx="${fx}" cy="${r1(iy - 10 * (fx - hx) / (hx - ar))}" r="${r1(18 * (fx - hx) / (hx - ar))}" style="fill:var(--c-o)" fill-opacity=".25"/>
+      <circle cx="${hx}" cy="${yb}" r="3.5" fill="currentColor"/>
+      ${txt(ar, yb + 20, 'árbol', 'text-anchor="middle" style="fill:var(--c-o)" font-weight="700"')}
+      ${txt((ar + hx) / 2, yb - 8, 'distancia al árbol', 'text-anchor="middle" style="fill:var(--c-i)" font-weight="700"')}
+      ${txt(hx, yb - 58, 'agujero', 'text-anchor="middle" fill="currentColor"')}
+      ${txt((hx + fx) / 2, yb - 8, 'fondo', 'text-anchor="middle" style="fill:var(--c-i)" font-weight="700"')}
+      ${txt(fx, iy + 28, 'imagen', 'text-anchor="middle" style="fill:var(--c-o)" font-weight="700"')}
+      ${txt(165, 224, 'La caja vista de costado. No está a escala.', 'text-anchor="middle" style="fill:var(--muted)"')}
+    </svg>`;
+  })();
+  const MUNDO4 = {
+    hecho: 'En una cámara oscura, la imagen sale de cabeza',
+    parrafos: [
+      'Si haces un agujerito en una caja cerrada y pones papel de calco en la cara de enfrente, en el papel aparece lo que hay afuera, pero de cabeza. Es la cámara oscura, la cámara de fotos más simple, y en el fondo de tu ojo la imagen también se forma de cabeza.',
+      ['La luz va en línea recta y se cruza en el agujero, así que un árbol y su imagen forman dos triángulos cruzados. Con el agujero a la altura del pie del árbol, los dos tienen un ángulo recto y sus ángulos del agujero son opuestos por el vértice, así que son semejantes:',
+        { linea: [{ frac: [dO('imagen'), dO('árbol')] }, ' = ', { frac: [dI('fondo de la caja'), dI('distancia al árbol')] }] }],
+      `La punta del árbol, arriba, va con la punta de la imagen, que queda abajo, y por eso la imagen sale de cabeza. Un árbol de ${m_(CAM.alto)}, a ${m_(CAM.dist)} de una caja de ${cm(CAM.fondo * 100)} de fondo, deja una imagen de ${cm(CAM.img * 100)}.`,
+    ],
+    figura: { svg: svgCamara, alt: 'Una caja con un agujero, vista de costado. Las líneas de luz que salen de la punta y del pie de un árbol se cruzan en el agujero, y al fondo de la caja la imagen del árbol queda de cabeza.' },
+    pregunta: {
+      texto: `Un compañero de ${m_(CAM2.alto)} se para a ${m_(CAM2.dist)} de una cámara oscura de ${cm(CAM2.fondo * 100)} de fondo. ¿Cómo sale su imagen en el papel?`,
+      opciones: [
+        { id: 'c', texto: `De ${cm(CAM2.img * 100)} y de cabeza`, correcta: true },
+        { id: 'derecha', texto: `De ${cm(CAM2.img * 100)} y derecha`, error: 'GE-HOM-lugar',
+          siFuera: `Es cierto que la imagen mide ${cm(CAM2.img * 100)}. Pero los triángulos están cruzados: la cabeza del compañero va con la punta de la imagen, que queda en el lado de abajo del papel.` },
+        { id: 'pareja', texto: `De ${cm(CAM2.mal * 100)} y de cabeza`, error: 'GE22',
+          siFuera: `Usar una razón está bien. Pero las parejas se cruzaron: la altura del compañero va con la de su imagen, y los ${m_(CAM2.dist)} van con el fondo de la caja.` },
+      ],
+      porque: `Los triángulos son semejantes con k = ${cm(CAM2.fondo * 100)} ÷ ${m_(CAM2.dist)} = 1/${CAM2.dist / CAM2.fondo}: la imagen mide ${m_(CAM2.alto)} ÷ ${CAM2.dist / CAM2.fondo} = ${cm(CAM2.img * 100)}, y sale de cabeza porque los triángulos se cruzan en el agujero.`,
+    },
+    fuente: 'Cámara oscura: Britannica, «camera obscura». Tamaño de la imagen en la cámara estenopeica: guías de física de la Universidad de Iowa.',
+  };
+
+  // Idea 5: la fotocopiadora amplía de A4 a A3 con 141 % (ISO 216; manuales de copiadoras).
+  const A4 = { a: 21, b: 29.7 }, A3 = { a: 29.7, b: 42 };
+  const kA = Math.sqrt(2);
+  const svgHojas = (() => {
+    const s = 4.2, x3 = 140, y0 = 14, x4 = 18;
+    return `<svg viewBox="0 0 330 210" xmlns="http://www.w3.org/2000/svg" font-family="inherit" font-size="13">
+      <rect x="${x4}" y="${r1(y0 + (A3.a - A4.b) * s)}" width="${r1(A4.a * s)}" height="${r1(A4.b * s)}" fill="none" style="stroke:var(--c-o)" stroke-width="3"/>
+      <rect x="${x3}" y="${y0}" width="${r1(A3.b * s)}" height="${r1(A3.a * s)}" fill="none" style="stroke:var(--c-i)" stroke-width="3"/>
+      <line x1="${r1(x3 + A3.b * s / 2)}" y1="${y0}" x2="${r1(x3 + A3.b * s / 2)}" y2="${r1(y0 + A3.a * s)}" style="stroke:var(--c-o)" stroke-width="1.8" stroke-dasharray="6 4"/>
+      ${txt(x4 + A4.a * s / 2, y0 + (A3.a - A4.b) * s + A4.b * s / 2 + 5, 'A4', 'text-anchor="middle" style="fill:var(--c-o)" font-weight="800" font-size="18"')}
+      ${txt(x3 + A3.b * s / 4, y0 + A3.a * s / 2 + 6, 'A3', 'text-anchor="middle" style="fill:var(--c-i)" font-weight="800" font-size="18"')}
+      ${txt(x4 + A4.a * s / 2, y0 + A3.a * s + 18, '21 por 29,7 cm', 'text-anchor="middle" style="fill:var(--c-o)"')}
+      ${txt(x3 + A3.b * s / 2, y0 + A3.a * s + 18, '29,7 por 42 cm', 'text-anchor="middle" style="fill:var(--c-i)"')}
+      ${txt(165, 200, 'En la A3 caben dos A4, una al lado de la otra.', 'text-anchor="middle" style="fill:var(--muted)"')}
+    </svg>`;
+  })();
+  const MUNDO5 = {
+    hecho: 'La fotocopiadora amplía de A4 a A3 con 141 %',
+    parrafos: [
+      `La hoja A4, la de la impresora, mide ${fm(A4.a)} cm por ${fm(A4.b)} cm, y la A3, que se usa para planos y afiches, mide ${fm(A3.a)} cm por ${fm(A3.b)} cm. En una A3 caben dos hojas A4, una al lado de la otra, y las dos hojas tienen la misma forma: son semejantes.`,
+      ['Para pasar un afiche de A4 a A3, la fotocopiadora no marca 200 %, sino 141 %. El área se duplica, y como crece con k², cada lado se multiplica por el número que, al cuadrado, da 2:',
+        { linea: [`k² = 2   →   k ≈ ${fd(kA, 2)}`] },
+        { linea: [dO(`${fm(A4.a)} cm`), ` × ${fd(kA, 2)} ≈ `, dI(`${fd(A4.a * kA, 1)} cm`)] },
+        'Con 200 %, cada lado se duplicaría y la copia ya no cabría en la hoja A3.'],
+    ],
+    figura: { svg: svgHojas, alt: 'Una hoja A4 de 21 por 29,7 cm y una hoja A3 de 29,7 por 42 cm, con la misma forma. En la A3 caben dos A4, una al lado de la otra.' },
+    pregunta: {
+      texto: 'Para reducir un afiche de A3 a A4, ¿qué porcentaje tiene que marcar la fotocopiadora?',
+      opciones: [
+        { id: 'c', texto: `${fd(100 / kA, 0)} %`, correcta: true },
+        { id: 'mitad', texto: '50 %, porque la A4 es la mitad de la A3', error: 'GE1',
+          siFuera: `Es cierto que la A4 tiene la mitad del área de la A3. Pero el porcentaje achica cada lado, a lo largo y a lo ancho: con 50 %, la copia saldría de ${fm(A3.a / 2)} cm por ${fm(A3.b / 2)} cm.` },
+        { id: 'resta', texto: `${100 - 41} %, porque se le quita el 41 % que se sumó`, error: 'GE-ARE-resta',
+          siFuera: `Es cierto que reducir deshace lo que hizo el 141 %. Pero deshacer una multiplicación es dividir: 100 % ÷ ${fd(kA, 2)} da unos ${fd(100 / kA, 0)} %, no se resta el 41 %.` },
+      ],
+      porque: `El área tiene que quedar en la mitad, así que k² = 1/2: cada lado se multiplica por unos ${fd(1 / kA, 2)}, que es 1 ÷ ${fd(kA, 2)}, y la máquina lo marca como ${fd(100 / kA, 0)} %.`,
+    },
+    fuente: 'Tamaños A4 y A3: norma ISO 216. Zoom de 141 % de A4 a A3 y de 71 % de A3 a A4: manuales de fotocopiadoras Canon.',
+  };
+
+  // Idea 6: un triángulo con monedas en las esquinas se equilibra en un solo punto (ley de la palanca y Ceva).
+  const MON = { A: 1, B: 2, C: 3 }, MON2 = { A: 6, B: 1, C: 2 };
+  const svgMonedas = (() => {
+    const A = [40, 172], B = [290, 172], C = [120, 42], m = MON, M = m.A + m.B + m.C;
+    const en = (P, Q, t) => [P[0] + (Q[0] - P[0]) * t, P[1] + (Q[1] - P[1]) * t];
+    const F = en(A, B, m.B / (m.A + m.B)), D = en(B, C, m.C / (m.B + m.C)), E = en(C, A, m.A / (m.C + m.A));
+    const G = [(m.A * A[0] + m.B * B[0] + m.C * C[0]) / M, (m.A * A[1] + m.B * B[1] + m.C * C[1]) / M];
+    const pila = (P, n, dx, dy) => Array.from({ length: n }, (_, i) => `<ellipse cx="${r1(P[0] + dx)}" cy="${r1(P[1] + dy - i * 5)}" rx="11" ry="4" fill="currentColor" fill-opacity=".55" stroke="currentColor"/>`).join('');
+    const ln = (P, Q, c) => `<line x1="${r1(P[0])}" y1="${r1(P[1])}" x2="${r1(Q[0])}" y2="${r1(Q[1])}" style="stroke:var(${c})" stroke-width="2" stroke-dasharray="6 4"/>`;
+    return `<svg viewBox="0 0 330 236" xmlns="http://www.w3.org/2000/svg" font-family="inherit" font-size="14">
+      <path d="M${A.join(' ')} L${B.join(' ')} L${C.join(' ')} Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+      ${ln(C, F, '--c-o')}${ln(A, D, '--c-o')}${ln(B, E, '--c-o')}
+      ${[F, D, E].map(P => `<circle cx="${r1(P[0])}" cy="${r1(P[1])}" r="3.5" fill="currentColor"/>`).join('')}
+      <circle cx="${r1(G[0])}" cy="${r1(G[1])}" r="6" style="fill:var(--c-i)"/>
+      ${pila(A, m.A, -20, 2)}${pila(B, m.B, 20, 2)}${pila(C, m.C, 0, -10)}
+      ${txt(A[0], A[1] + 24, 'A', 'text-anchor="middle" font-weight="800" fill="currentColor"')}${txt(B[0], B[1] + 24, 'B', 'text-anchor="middle" font-weight="800" fill="currentColor"')}${txt(C[0] - 26, C[1] + 4, 'C', 'font-weight="800" fill="currentColor"')}
+      ${txt(F[0], F[1] + 18, 'F', 'text-anchor="middle" fill="currentColor"')}${txt(D[0] + 8, D[1], 'D', 'fill="currentColor"')}${txt(E[0] - 10, E[1], 'E', 'text-anchor="end" fill="currentColor"')}
+      
+      ${txt(165, 210, `${m.A} moneda en A, ${m.B} en B y ${m.C} en C`, 'text-anchor="middle" style="fill:var(--muted)"')}${txt(165, 228, 'El punto de equilibrio va en turquesa.', 'text-anchor="middle" style="fill:var(--c-i)" font-weight="700"')}
+    </svg>`;
+  })();
+  const MUNDO6 = {
+    hecho: 'Un triángulo con monedas se equilibra en un solo punto',
+    parrafos: [
+      'Pon una moneda de un sol en un extremo de una regla liviana y dos monedas en el otro: la regla se equilibra sobre un lápiz en un punto más cerca de las dos monedas. Es la ley de la palanca, que ya escribió Arquímedes, y dice que los dos tramos de la regla van al revés que los pesos.',
+      `Ahora pon ${MON.A} moneda en la esquina A de un triángulo de cartulina, ${MON.B} en B y ${MON.C} en C. El triángulo se equilibra sobre el filo de una regla puesta en la línea que va de una esquina al punto de equilibrio del lado de enfrente.`,
+      ['Esas tres líneas pasan por un mismo punto, porque dando la vuelta el producto de las razones vale 1:',
+        { linea: [{ frac: [dO('AF'), dI('FB')] }, ' · ', { frac: [dO('BD'), dI('DC')] }, ' · ', { frac: [dO('CE'), dI('EA')] }, ' = ',
+          { frac: [dO(`${MON.B}`), dI(`${MON.A}`)] }, ' · ', { frac: [dO(`${MON.C}`), dI(`${MON.B}`)] }, ' · ', { frac: [dO(`${MON.A}`), dI(`${MON.C}`)] }, ' = 1'] },
+        'Sobre ese punto, y solo sobre ese, el triángulo queda quieto en la punta de un lápiz, si la cartulina pesa poco al lado de las monedas.'],
+    ],
+    figura: { svg: svgMonedas, alt: `Un triángulo ABC con ${MON.A} moneda en A, ${MON.B} en B y ${MON.C} en C. Las tres líneas que van de cada esquina al punto de equilibrio del lado de enfrente se cruzan en un solo punto.` },
+    pregunta: {
+      texto: `Con ${MON2.A} monedas en A, ${MON2.B} en B y ${MON2.C} en C, las líneas de A y de B dan BD/DC = ${MON2.C / MON2.B} y CE/EA = ${MON2.A / MON2.C}. ¿Cuánto vale AF/FB?`,
+      opciones: [
+        { id: 'c', texto: `1/${MON2.A}: F queda más cerca de A`, correcta: true },
+        { id: 'producto', texto: `${MON2.A}, porque ${MON2.C / MON2.B} · ${MON2.A / MON2.C} = ${MON2.A}`, error: 'GE-CEV-producto',
+          siFuera: `Multiplicar las dos razones está bien. Pero el producto de las tres tiene que valer 1, así que la tercera es la que, multiplicada por ${MON2.A}, da 1.` },
+        { id: 'suma', texto: `${MON2.C / MON2.B + MON2.A / MON2.C}, porque ${MON2.C / MON2.B} + ${MON2.A / MON2.C} = ${MON2.C / MON2.B + MON2.A / MON2.C}`, error: 'GE-CEV-suma',
+          siFuera: 'Juntar las dos razones que se conocen está bien. Pero Ceva las multiplica, no las suma: el producto de las tres razones, dando la vuelta, vale 1.' },
+      ],
+      porque: `Dando la vuelta, AF/FB · ${MON2.C / MON2.B} · ${MON2.A / MON2.C} = 1, así que AF/FB = 1/${MON2.A}. Con ${MON2.A} monedas en A, el punto de equilibrio del lado AB queda cerca de esa esquina pesada.`,
+    },
+    fuente: 'Ley de la palanca: Arquímedes, «Sobre el equilibrio de los planos». Equilibrio de pesos en un triángulo: geometría de masas.',
+  };
+
   const ideaThales = {
     id: 'thales',
     titulo: 'Paralelas que cortan dos rectas',
@@ -507,6 +789,7 @@ const D_THALES = ['Thales: paralelas que cortan una secante en A, B, C y otra en
       voz: 'Ante paralelas que cortan dos rectas, escribe las dos razones en el mismo orden.',
       dibujo: figO(figReglaThales()),
     },
+    mundo: MUNDO1,
     resuelve: { pieza: GO, generar: resuelveThales },
     ahoraTu: {
       pieza: GO,
@@ -870,6 +1153,7 @@ const D_THALES = ['Thales: paralelas que cortan una secante en A, B, C y otra en
       voz: 'Ante una bisectriz, empareja cada tramo con el lado que toca.',
       dibujo: figO(figBis(6, 3, 60, { AB: 'AB', AC: 'AC', BD: 'BD', DC: 'DC', CE: 'CE' }, { exterior: true, enAC: 0.78, vista: { x: [-4.4, 7.4], y: [-6, 1.6] }, alt: 'El triángulo ABC con la bisectriz interior AD y la exterior AE, que llega a la prolongación de BC en E.' })),
     },
+    mundo: MUNDO2,
     resuelve: { pieza: GO, generar: resuelveBis },
     ahoraTu: {
       pieza: GO,
@@ -1249,6 +1533,7 @@ const D_THALES = ['Thales: paralelas que cortan una secante en A, B, C y otra en
       voz: 'Busca dos ángulos iguales; después, los lados en el mismo orden.',
       dibujo: figO(figDos(50, 65, 1.6, { AB: 'AB', BC: 'BC', DE: 'DE', EF: 'EF' }, { alt: 'Dos triángulos semejantes ABC y DEF: los ángulos en B y E iguales (una marca), los de C y F iguales (dos marcas).' })),
     },
+    mundo: MUNDO3,
     resuelve: { pieza: GO, generar: resuelveSem },
     ahoraTu: {
       pieza: GO,
@@ -1625,6 +1910,7 @@ const D_THALES = ['Thales: paralelas que cortan una secante en A, B, C y otra en
       voz: 'Marca los ángulos iguales antes de escribir la razón.',
       dibujo: figO(figAnti(7, 6, 3.43, { AB: 'AB', AC: 'AC', AE: 'AE', AD: 'AD' }, { alt: 'El triángulo ABC con DE antiparalela: el ángulo ADE es igual al ACB.' })),
     },
+    mundo: MUNDO4,
     resuelve: { pieza: GO, generar: resuelveEnc },
     ahoraTu: {
       pieza: GO,
@@ -1949,6 +2235,7 @@ const D_THALES = ['Thales: paralelas que cortan una secante en A, B, C y otra en
       voz: 'Antes de multiplicar, pregúntate si mides un largo o un área.',
       dibujo: figO(figFoto(2, { w1: '15 cm', h1: '10 cm', w2: '30 cm', h2: '20 cm' }, { kMax: 2, alt: 'La foto chica y su ampliación por 2: caben 4 fotos chicas.' })),
     },
+    mundo: MUNDO5,
     resuelve: { pieza: GO, generar: resuelveArea },
     ahoraTu: {
       pieza: GO,
@@ -2351,6 +2638,7 @@ const D_THALES = ['Thales: paralelas que cortan una secante en A, B, C y otra en
       voz: 'Escribe las tres razones dando la vuelta, sin saltarte un tramo.',
       dibujo: figO(figReglaCM()),
     },
+    mundo: MUNDO6,
     resuelve: { pieza: GO, generar: resuelveCM },
     ahoraTu: {
       pieza: GO,
