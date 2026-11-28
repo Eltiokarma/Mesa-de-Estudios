@@ -95,6 +95,7 @@
         'Figura: los mismos tres bichos en los dos paneles; cambia solo la caja (bichos pequeños o seis patas). El turquesa marca lo que entra y el naranja lo que se cuela, como en la leyenda de la idea 1.',
         'Doble revisión (27 nov): el choque es justo (los mismos tres bichos y una sola regla que cambia, el tamaño o las patas), el error es real (llamar insecto a la araña es de uso común) y la cuenta cuadra: ocho patas son dos más que seis. Único cambio: el título y el párrafo 2 decían que la araña es «tan pequeña como una hormiga», y muchas arañas de casa son bastante más grandes que una hormiga; ahora dicen que es un bicho pequeño, como la hormiga.',
         'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. La diferencia de patas (ocho, dos más que seis) queda como dato en la oración, sin cuenta escrita.',
+        'Coherencia con la unidad (28 nov): responde. La idea 1 («Clase y rasgo que separa») y la idea 2 («Necesario, no solo frecuente») dan la herramienta de la pregunta del ciempiés: mirar el rasgo que está en todos los insectos (las seis patas) y no en los demás. Un «Ahora tú» de la idea 2 retoma el caso casi igual (la lámina de insectos con seis patas frente a la araña de ocho, con «es un animal pequeño» como error). Misma palabra, «rasgo». Sin cambios.',
       ],
     },
   };

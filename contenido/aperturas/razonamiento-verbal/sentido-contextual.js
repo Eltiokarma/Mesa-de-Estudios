@@ -73,6 +73,7 @@
         'Figura: dos gráficas con la misma escala; cambia solo la línea. El carmín marca el nivel «grave» y el turquesa, al paciente estable.',
         'Doble revisión (27 nov): sin cambios. El parte y la gráfica hablan del mismo paciente, y la mala lectura («estable» como «ya está bien») es real, porque es el sentido de la palabra en la calle. Sobre si puede herir: el paciente es una persona famosa sin nombre, nadie es culpable de nada y el texto no hace bromas con la enfermedad; lo que deja es útil para quien tenga a un familiar internado, porque le enseña a leer el parte sin tranquilizarse de más ni asustarse de más.',
         'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. El doble sentido de «estable» es el objeto de la apertura y está a propósito; «parte» es siempre el parte médico, nunca una porción.',
+        'Coherencia con la unidad (28 nov): responde. La idea 1 («La oración elige la acepción») dice que el diccionario da varias acepciones y que la pista del contexto decide cuál, que es lo que dice el párrafo 2; la pregunta (qué palabra dice cuánto peligro: «leve» o «grave») se responde buscando esa pista. Un ejemplo de la idea 1 trae «grave» en el aviso de una posta. La apertura dice «sentido» donde la teoría dice «acepción»; no chocan. El «estable que tranquiliza» de la calle también roza la idea 2 (connotación). Sin cambios.',
       ],
     },
   };

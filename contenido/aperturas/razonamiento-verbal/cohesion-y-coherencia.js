@@ -60,7 +60,7 @@
         'Un alumno que llega con su papá y se olvidó el DNI, en cambio, puede leer que «lo» es el apoderado y creer que igual subirá al bus, porque ya lo trajo. ',
         'Las dos lecturas respetan la gramática del aviso, y nada en sus palabras dice cuál de las dos quiso el colegio.'],
       ['El aviso no tiene una sola falta, y aun así falla porque el «lo» del final no queda amarrado a una sola de las dos palabras que lo preceden. ',
-        'Esos amarres entre las palabras de un texto se llaman cohesión, y son, junto con la coherencia, el tema de esta unidad.'],
+        'Los pronombres como «lo», los conectores y los nombres que se repiten son los amarres que unen una parte del texto con otra. Esos amarres forman la cohesión, que es, junto con la coherencia, el tema de esta unidad.'],
     ],
     figura: {
       antes: 2,
@@ -85,6 +85,7 @@
         'Figura: el mismo aviso y los mismos dos objetos en los dos paneles; cambia solo cuántas flechas salen de «lo».',
         'Doble revisión (27 nov): dos cambios en el párrafo 2. Primero, la mamá que no puede acompañar a su hija leía «lo» como el apoderado y temía que la hija se quedara sin excursión, pero el aviso ya exige ir con el apoderado en la primera parte, así que esa lectura no le cambia nada: el riesgo verdadero de la ambigüedad es el contrario, el de un alumno que va con su papá, olvidó el DNI y cree que igual sube. Ahora el ejemplo es ese. Segundo, el pendiente del distractor: la oración que descartaba «la palabra que está más cerca de «lo»» le quitaba fuerza a la opción «A la directora, que se nombra justo antes» de la Predice de la idea 2, y se quitó; en su lugar, el párrafo dice que las dos lecturas respetan la gramática y que el aviso no dice cuál quiso el colegio.',
         'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. «Falta» es siempre error de escritura, y «salida», la excursión.',
+        'Coherencia con la unidad (28 nov): responde a medias. La idea 2 («A quién se refiere») explica que el pronombre y su referente concuerdan en género y número, lo mismo que dice el párrafo 1, y la idea 3 («Repetir, sustituir o callar») da la salida de la pregunta: repetir el nombre («si no trae el DNI»). El párrafo 3 definía la cohesión como «amarres entre las palabras de un texto»; la unidad la define como lo que enlaza una parte del texto con otra (conectores, pronombres, nombres que se repiten), y ahora el párrafo lo dice así. Ojo: en los «Ahora tú» de la idea 2, la opción «debió repetir el nombre» es un error (RVK8) cuando el sentido ya decide; el aviso de la apertura es el caso contrario, en que las dos lecturas tienen sentido, y la unidad no trae ningún caso así. Queda para la teoría.',
       ],
     },
   };

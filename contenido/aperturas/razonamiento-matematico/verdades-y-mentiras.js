@@ -53,7 +53,7 @@
 
   return {
     unidad: 'razonamiento-matematico.verdades-y-mentiras',
-    titulo: '¿Por qué casi nadie descubre una mentira mirando la cara?',
+    titulo: '¿Cómo se descubre quién miente, si mirando la cara casi nadie acierta?',
     parrafos: [
       ['Cuando en tu casa se acaba la gaseosa de la refrigeradora y cada hermano jura que no fue él, lo primero que haces es mirarles la cara. ',
         'En cientos de experimentos, miles de personas vieron videos de gente que mentía o decía la verdad y tuvieron que decir cuál era cuál: ',
@@ -88,6 +88,7 @@
         'Revisión del Escribidor Escribano (27 nov, otro agente): el párrafo 3, la pregunta y seLleva prometían que a quien miente «lo delata lo que dice», como si las técnicas de la unidad sirvieran para descubrir mentiras en la vida real. No es así: alguien puede mentir sin contradecirse, y los acertijos funcionan porque cada personaje miente siempre o dice siempre la verdad. Ahora el párrafo 3 lo dice (en dos oraciones, para no pasar de 40 palabras), la pregunta pone esa regla a los hermanos y seLleva separa la vida real del acertijo. El párrafo 2 pasó de «Casi todos creemos» a «Casi todo el mundo cree». Datos: el 54 %, los 206 documentos y los 24 483 jueces de Bond y DePaulo, y los 58 países de la encuesta (estudio 1 del Global Deception Research Team), se confirmaron en fuentes secundarias y en el resumen de PubMed el 27 nov; el desglose 47 % y 61 % sigue de memoria.',
         'Doble revisión (27 nov): el dato y la creencia hablan del mismo caso (mirar la cara para saber si alguien miente), y el 54 frente al 50 de la moneda es medido. Dos cambios. La pregunta ponía a los hermanos de la gaseosa a mentir siempre, y convertir a la familia del alumno en mentirosos fijos no hace falta: ahora la regla es de un juego por mensajes, con jugadores. Y la creencia se dibujaba como «casi todo» (barra en 88), más de lo que se sabe que la gente cree; ahora dice «la mayoría de las veces» (barra en 80, sin número), que es lo que muestran los estudios de confianza: la gente cree que acierta bastante más que una moneda. El pie del panel dice «Mirando la cara, la mentira se nota», la voz de la creencia popular.',
         'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. «Cara» se usa solo como rostro; la moneda aparece sin hablar de cara y sello.',
+        'Coherencia con la unidad (28 nov): el título preguntaba «¿Por qué casi nadie descubre una mentira mirando la cara?», y la unidad no explica nada de caras ni de psicología: trata acertijos con veraces y mentirosos. El porqué de la cara ya lo dan los datos del párrafo 2, así que el título pasó a «¿Cómo se descubre quién miente, si mirando la cara casi nadie acierta?», que conserva el choque y apunta a lo que la unidad sí responde: en la idea 1 («Suponer y comprobar») se supone la tarjeta de cada uno y se revisa cada frase, y «lo que choca se descarta»; la idea 3 suma el par de frases que se contradicen. La pregunta («qué revisarías en lo que escribe cada uno») se responde con eso, y coincide con lo que espera la ficha.',
       ],
     },
   };

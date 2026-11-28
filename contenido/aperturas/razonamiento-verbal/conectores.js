@@ -73,7 +73,7 @@
     },
     pregunta: 'Si un tercer compañero escribiera «Es rica y cara», ¿su mensaje te ayudaría a decidir si vas o no a la cevichería?',
     ficha: {
-      seLleva: 'Un conector no solo une dos ideas, también dice cuál pesa más: por eso «rica, pero cara» y «cara, pero rica» traen los mismos datos y no recomiendan lo mismo.',
+      seLleva: 'Un conector como «pero» no solo une dos ideas, también hace pesar más la que viene después: por eso «rica, pero cara» y «cara, pero rica» traen los mismos datos y no recomiendan lo mismo.',
       alcance: 'Sí (marco de lectura de PISA 2025, deducción propia: integrar y relacionar las partes de un texto; el conector como pista de la relación entre ideas).',
       choque: 'Sin choque fabricado (apertura-pisa.md, punto 7): el alumno ya siente que el primer mensaje desanima y el segundo anima; lo que se le muestra es que los datos son los mismos y que la diferencia la hace el «pero», que pone el peso en lo que va después.',
       atajo: 'La explicación trampa del tono, que no existe en un mensaje escrito sin emojis. Leer el «pero» como una «y» ya no se le atribuye al alumno en el texto: aparece solo en la pregunta, como el mensaje de un tercero.',
@@ -88,6 +88,7 @@
         'La pregunta se puede intentar con el texto: con «y» los dos datos pesan igual y el mensaje no recomienda nada. La clase la retoma para presentar las clases de conectores (suma frente a contraste).',
         'Doble revisión (27 nov), reescrita: el párrafo 2 decía que, si se cuentan los datos, los dos mensajes «valen lo mismo, como una suma», y que el «pero» uniría igual que una «y». Nadie lee así un mensaje de WhatsApp: cualquier alumno siente la diferencia a la primera, así que el choque era forzado. La idea es intuitiva y útil, y ahora la apertura la usa como intuición correcta (punto 7): el párrafo 1 dice lo que el alumno ya sintió, el párrafo 2 muestra que los datos y el tono no cambian, y el párrafo 3 dice qué hace el «pero» y dónde sirve al escribir (dejar lo bueno o lo malo para después del «pero»). La figura cambió a la izquierda: en vez de una balanza pareja (la lectura que nadie hace), cada mensaje con lo que se entiende («Mejor no vamos», «Vale la pena ir»); la derecha, con las balanzas inclinadas, sigue igual. No toca la Predice de la idea 1 (Mateo y el «sin embargo»).',
         'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. «Rica» es siempre sabrosa y «cara», costosa (nunca rostro ni adinerada); el contexto de la cevichería no deja otra lectura.',
+        'Coherencia con la unidad (28 nov): responde a medias. La unidad enseña que «pero» marca un contraste (la segunda idea rompe lo esperado, idea 1) y que «y» suma (adición), con lo que la pregunta de «Es rica y cara» se responde. Pero ninguna idea dice que lo que va después del «pero» pesa más, que es la salida del choque; solo lo explica la apertura. seLleva decía que «un conector» dice cuál pesa más, y eso no vale para «y», que es justo el caso de la pregunta: ahora dice «un conector como «pero»». Queda para la teoría.',
       ],
     },
   };

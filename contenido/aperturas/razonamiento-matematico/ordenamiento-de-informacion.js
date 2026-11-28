@@ -110,6 +110,7 @@
         'La pregunta se responde con el párrafo 3, que ya dice que «más alta que» pasa de una persona a otra. Es fácil a propósito, como la del pan en la pizza; no se cambió.',
         'Doble revisión (27 nov): el párrafo 2 decía que, «con esa costumbre», la piedra le ganaría al papel, como si el alumno lo fuera a creer, y nadie que haya jugado lo cree: era un muñeco de paja. Ahora el párrafo 2 dice que eso es lo que daría la cadena si se usara en el juego, y que el alumno ya sabe que no es así; el choque queda entre la regla de la cadena, que sí usa a diario y le sirve con estaturas, y un caso que conoce de memoria. El panel «Lo que predice» ya era la predicción de la cadena, no del alumno, y no cambia.',
         'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido.',
+        'Coherencia con la unidad (28 nov): responde a medias. La idea 3 («Más que, menos que») enseña que cada comparación es una flecha y que «las flechas se encadenan», con la misma palabra «cadena» que usa la apertura, y eso basta para la pregunta («llegar antes que» se encadena). La unidad no muestra ninguna relación que no se encadene, así que el contraste con «le gana a» solo lo explica la apertura. Ojo: la «ronda» de la apertura (un ciclo) no es la «mesa redonda» de la idea 5; no se confunden porque la teoría no usa «ronda». Sin cambios en el texto; queda para la teoría.',
       ],
     },
   };

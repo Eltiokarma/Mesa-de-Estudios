@@ -77,6 +77,7 @@
         'Contenido, para Gerson: el tema es de geografía y leyes de otro país. Si se prefiere un ejemplo del Perú, habría que buscar uno donde dos relaciones del mismo par lleven a respuestas distintas.',
         'Doble revisión (27 nov): sin cambios. El par de arriba es el mismo en los dos paneles y cambia una sola cosa, la relación que se copia; el error es real (un alumno peruano tiende a dar La Paz por capital de Bolivia, y en Juliaca La Paz es la ciudad boliviana conocida), y Sucre como capital está en el artículo 6 de la Constitución de 2009. No pone a nadie como el problema.',
         'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. «Capital» es siempre la ciudad, nunca el dinero, y «par» es siempre el par de la analogía.',
+        'Coherencia con la unidad (28 nov): responde. La idea 1 («La relación, no el tema») pide decir primero la oración puente del par base, y con ella se responde la pregunta: «Lima es la ciudad más poblada del Perú» obliga a averiguar la ciudad más poblada de Bolivia. La idea 5 («La oración puente justa») trata la oración que deja pasar a dos pares y se afina con un rasgo, que es el problema de la apertura visto desde las alternativas. El glosario usa «Lima : Perú» como capital y su país, igual que la apertura, y define la analogía con las mismas palabras («dos pares unidos de la misma manera»). La apertura no usa «oración puente», y no hace falta. Sin cambios.',
       ],
     },
   };
