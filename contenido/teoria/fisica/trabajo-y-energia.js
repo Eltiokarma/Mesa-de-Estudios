@@ -414,6 +414,8 @@
   // Contextos distintos entre sí y de la apertura (el camión que baja de Ticlio): un satélite peruano (1), el casco de
   // bicicleta (2), la central del Mantaro (3), los clavados de altura (4), la frenada con lluvia (5) y el cuerpo al
   // pedalear (6). Las cuentas las hace el código; los datos medidos van con su fuente.
+  // Revisión del Escribidor Escribano (28 nov), constantes que cambian: teorema (casco), potencial (Mantaro),
+  // conservacion (clavados), rozamiento (lluvia) y potencia (pedalear); el detalle va junto a cada una.
   const MUNDO = (() => {
     // 1. PerúSAT-1 a unos 695 km de altura (Airbus, eoPortal): rapidez y vuelta con la gravitación de Newton.
     const GM = 3.986004418e14, RT = 6371e3, rOrb = RT + 695e3;
@@ -480,10 +482,13 @@
         fuente: 'Lanzamiento y altura de PerúSAT-1: Airbus Defence and Space y eoPortal, 2016; rapidez y vuelta calculadas con la gravitación de Newton.',
       },
 
+      // Revisión del Escribidor Escribano (28 nov): «como la de un ciclista que sale volando» no decía nada medible, y
+      // no se pudo abrir el texto de la norma para ver si ella misma habla de 2 m. Ahora el texto dice la cuenta, que
+      // es cierta con cualquier lectura de la norma: caer libremente unos 2 m da 6,2 m/s (√(2 · 9,8 · 2) ≈ 6,3).
       teorema: {
         hecho: 'La espuma del casco se aplasta para cuidar tu cabeza',
         parrafos: [
-          'Para venderse en Estados Unidos, un casco de bicicleta debe pasar una prueba: con una cabeza de prueba adentro, se deja caer contra un bloque plano, al que debe llegar a 6,2 m/s. Según la propia norma, esa rapidez se alcanza con una caída de unos 2 m, como la de un ciclista que sale volando.',
+          'Para venderse en Estados Unidos, un casco de bicicleta debe pasar una prueba: con una cabeza de prueba adentro, se deja caer contra un bloque plano, al que debe llegar a 6,2 m/s. Esa rapidez es la que alcanza una cabeza que cae libremente desde unos 2 m de altura.',
           ['Al llegar, la cabeza trae energía cinética, y para detenerla algo tiene que hacer sobre ella un trabajo neto negativo que la quite toda:',
             { linea: [Wneto, ' = 0 − ', EC, ' = −', EC] },
             'Sin casco, el bloque la detendría en muy poco camino y con una fuerza enorme. La espuma, al aplastarse, alarga ese camino, y con más camino basta menos fuerza para el mismo trabajo.'],
@@ -504,13 +509,18 @@
         fuente: 'Norma de cascos de bicicleta de la CPSC de Estados Unidos (16 CFR 1203, 1998): golpe contra el yunque plano a 6,2 m/s.',
       },
 
+      // Revisión del Escribidor Escribano (28 nov): 748 m es la caída neta de la central Santiago Antúnez de Mayolo,
+      // no la altura entre la toma y las turbinas (la caída bruta se da como 855 m: tesis de la UNI y descripciones del
+      // complejo; UNOPS, 2026, habla de «caídas de hasta 850 m»). El texto decía «748 m más abajo»; ahora dice «caída
+      // útil», que es lo que vale para la cuenta. El agua baja por un túnel y tuberías, no por «una tubería». Restitución,
+      // 257 m netos (misma tesis). «Cada litro» pasa a «cada metro cúbico», la unidad de la cuenta.
       potencial: {
-        hecho: 'El agua del Mantaro cae 748 m hasta sus turbinas',
+        hecho: 'El Mantaro da energía con una caída de 748 m',
         parrafos: [
-          `En Tayacaja, Huancavelica, la central Santiago Antúnez de Mayolo toma agua del río Mantaro y la hace bajar por una tubería hasta sus turbinas, ${hSAM} m más abajo. Con sus siete turbinas puede entregar unos 798 MW, y después la misma agua pasa a la central Restitución, donde cae otros ${hRes} m.`,
+          `En Tayacaja, Huancavelica, la central Santiago Antúnez de Mayolo toma agua del río Mantaro y la baja por un túnel y unas tuberías hasta sus turbinas, con una caída útil de unos ${hSAM} m. Con sus siete turbinas puede entregar unos 798 MW, y después la misma agua pasa a la central Restitución, donde aprovecha otros ${hRes} m de caída.`,
           ['Mientras baja, el peso del agua hace un trabajo que las turbinas recogen, y ese trabajo vale lo que baja su energía potencial. Para cada metro cúbico, que tiene 1000 kg:',
             { linea: [Wpeso, ' = ', ...MG, ` · h = 1000 · 10 · ${hSAM} = ${J_(eSAM)}`] },
-            'Cuantos más metros cae el agua, más energía da cada litro, y por eso las centrales de los Andes buscan lugares donde pueda caer cientos de metros.'],
+            'Cuantos más metros cae el agua, más energía da cada metro cúbico, y por eso las centrales de los Andes buscan lugares donde pueda caer cientos de metros.'],
         ],
         pregunta: {
           texto: `En la central Restitución, cada metro cúbico de esa agua cae otros ${hRes} m. ¿Cuánta energía potencial pierde allí?`,
@@ -528,6 +538,8 @@
         fuente: 'Caídas netas de 748 m y 257 m y 798 MW: tesis de la UNI sobre el Complejo Mantaro y Global Energy Monitor.',
       },
 
+      // Revisión del Escribidor Escribano (28 nov): los 85 km/h los da Red Bull, que no dice si los midió o los calculó;
+      // «es casi lo que se mide» pasa a «es casi la cifra que da la organización».
       conservacion: {
         hecho: 'Un clavado de 27 m termina a 85 km/h',
         parrafos: [
@@ -535,7 +547,7 @@
           ['Mientras cae, el clavadista cambia energía potencial por energía cinética, y como el aire casi no lo frena en tan poco tiempo, la suma de las dos no cambia:',
             { linea: [...MG, ' · h = ½ · m · v²'] },
             { linea: ['v = √(2 · ', g, ` · h) = √(2 · 10 · 27) ≈ ${f(v27, 1)} m/s ≈ ${f(v27 * 3.6, 0)} km/h`] },
-            'Es casi lo que se mide, y no depende de su masa ni de las vueltas que dé en el aire, sino de la altura de la plataforma.'],
+            'Es casi la cifra que da la organización, y no depende de su masa ni de las vueltas que dé en el aire, sino de la altura de la plataforma.'],
         ],
         pregunta: {
           texto: 'Una clavadista salta desde la plataforma de 21 m. ¿Qué rapidez lleva cuando ya bajó la mitad, 10,5 m?',
@@ -553,13 +565,17 @@
         fuente: 'Red Bull Cliff Diving World Series: plataformas de 27 m y de 21 m; entrada al agua a unos 85 km/h en menos de 3 s.',
       },
 
+      // Revisión del Escribidor Escribano (28 nov): los 32 m se cotejaron en la página de la DGT («a 90 km/h, 32 metros
+      // más» en mojado que en seco). Con frenos ABS las ruedas no patinan y la energía se vuelve calor sobre todo en los
+      // frenos; el rozamiento cinético con la pista, f_k · d, solo es el que la quita si las llantas se traban. El texto
+      // ahora dice esa condición, y la pregunta (la misma energía en las dos) sigue siendo cierta en cualquier caso.
       rozamiento: {
         hecho: 'Con lluvia, un auto necesita más metros para frenar',
         parrafos: [
           'La Dirección General de Tráfico de España calcula que, a 90 km/h, un auto que frena sobre asfalto mojado necesita unos 32 m más que sobre asfalto seco para detenerse. En Juliaca o en Puno pasa lo mismo en época de lluvias, porque el agua entre la llanta y la pista hace que rocen menos.',
-          ['Al frenar hasta detenerse, el auto se queda sin energía cinética, y el trabajo del rozamiento es el que se la quita y la vuelve calor:',
+          ['Al frenar hasta detenerse, el auto se queda sin energía cinética. Si las llantas se traban y patinan, el trabajo del rozamiento con la pista es el que se la quita y la vuelve calor:',
             { linea: ['0 = ', EC, ' + ', Wf, '   ;   ', Wf, ' = −', fk, ' · d'] },
-            'Con la pista mojada, el rozamiento es más débil, y por eso el auto necesita más metros, d, para quedarse quieto.'],
+            'Con la pista mojada, ese rozamiento es más débil, y por eso el auto necesita más metros, d, para quedarse quieto.'],
         ],
         pregunta: {
           texto: 'El mismo auto frena desde 90 km/h hasta detenerse, una vez en pista seca y otra en pista mojada. ¿En cuál de las dos frenadas se vuelve más energía en calor?',
@@ -577,13 +593,15 @@
         fuente: 'Dirección General de Tráfico de España, «Todo lo que necesitas saber para circular bajo la lluvia»: a 90 km/h, unos 32 m más en mojado.',
       },
 
+      // Revisión del Escribidor Escribano (28 nov): un foco no es «calor»: los 400 W son «tanto como consumen» cuatro
+      // focos antiguos de 100 W.
       potencia: {
         hecho: 'Al pedalear, cuatro de cada cinco joules se vuelven calor',
         parrafos: [
           `Cuando pedaleas, tu cuerpo gasta la energía de lo que comiste, pero solo una parte llega a los pedales como trabajo. Los estudios con ciclistas, que miden el oxígeno que respiran, encuentran que la eficiencia del cuerpo entero ronda el ${f(eta * 100, 0)} %, así que de cada cinco joules que gastas, uno mueve la bicicleta.`,
           [`Los otros cuatro joules se vuelven calor dentro de tus músculos, y por eso sudas: el sudor se evapora y se lleva ese calor. Si entregas ${W_(util1)} a los pedales:`,
             { linea: [Pcons, ' = ', frac(Putil, 'η'), ' = ', frac(W_(util1), f(eta)), ` = ${W_(cons1)}`] },
-            `Así, tu cuerpo consume unos ${W_(cons1)}, y ${W_(cons1 - util1)} se vuelven calor, tanto como cuatro focos antiguos de 100 W encendidos.`],
+            `Así, tu cuerpo consume unos ${W_(cons1)}, y ${W_(cons1 - util1)} se vuelven calor, tanto como consumen cuatro focos antiguos de 100 W encendidos.`],
         ],
         pregunta: {
           texto: `Una ciclista sube una cuesta entregando ${W_(util2)} a los pedales, con la misma eficiencia del ${f(eta * 100, 0)} %. ¿Cuánta potencia se vuelve calor en su cuerpo?`,
