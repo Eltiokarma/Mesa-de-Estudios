@@ -486,6 +486,31 @@
       respuesta: [buena('E'), ': por lo tanto'] },
   ];
 
+  // «En el mundo» de la idea 1 (docs/teoria.md, 4k; 28 nov): el alcohol en gel de los CDC. La segunda idea del cartel rompe
+  // lo que hace esperar la primera (contraste); la pregunta pide un resultado en el mismo cartel. El cartel es propio.
+  const CARTEL_GEL = papel('cartel', 'Cartel de ejemplo', 'Manos limpias', 'el comedor', 'quienes entran',
+    [oracion('g1', 'El alcohol en gel mata muchos microbios; [w:sin embargo,] [p:no sirve si tus manos tienen tierra o grasa].')]);
+  const MUNDO_1 = {
+    hecho: 'El alcohol en gel no limpia unas manos con tierra',
+    parrafos: [
+      'Los CDC, la agencia de salud pública de Estados Unidos, recomiendan el alcohol en gel cuando no hay agua y jabón cerca. También advierten que funciona mal en manos sucias de tierra o grasa, como después de trabajar en la chacra o de jugar al aire libre, y que entonces toca lavarlas.',
+      ['Un cartel que lo explique, como este que escribimos de ejemplo, nombra primero la relación entre sus dos ideas. Que el gel mate microbios hace esperar que siempre baste, y la segunda idea rompe esa espera:',
+        { linea: ['mata microbios → basta   ·   ', cubre('no sirve con tierra'), ': lo rompe'] },
+        'Por eso el cartel usa «sin embargo»: con «por eso» diría que el gel falla porque mata microbios, y eso no tiene sentido.'],
+    ],
+    figura: { pieza: 'rv-soporte', datos: CARTEL_GEL, estado: { marcas: { g1w: 'f', g1p: 'i' } } },
+    pregunta: {
+      texto: 'El mismo cartel sigue así: «El gel se seca solo mientras frotas las manos; ¿…? no necesitas toalla». ¿Qué conector va en el espacio?',
+      opciones: opciones('por eso', [
+        ['sin embargo', 'RVC2', 'Viste bien que es el mismo cartel de la advertencia. Pero aquí nada se rompe: si el gel se seca solo, se espera no necesitar toalla, y la segunda idea lo cumple.'],
+        ['además', 'RVC5', 'Es cierto que la toalla es otro dato sobre el gel. Pero no es un dato aparte: no necesitar toalla sale de que el gel se seque solo.'],
+        ['es decir', 'RV35', 'Las dos ideas hablan del secado, bien. Pero «no necesitas toalla» no repite lo de antes con otras palabras: dice lo que resulta de ello.'],
+      ]),
+      porque: 'Que el gel se seque solo hace esperar que no haga falta toalla, y la segunda idea cumple esa espera. Es un resultado, y el resultado se une con «por eso».',
+    },
+    fuente: 'CDC, «Hand Sanitizer Guidelines and Recommendations» (cdc.gov). El cartel es un ejemplo propio.',
+  };
+
   const relacion = {
     id: 'relacion-primero',
     titulo: 'Primero la relación, después el conector',
@@ -557,6 +582,7 @@
       voz: 'Vuelve a esta regla cuando dudes entre dos conectores.',
       condicion: 'las dos ideas hablan de lo mismo, y la segunda se mide con lo que hace esperar la primera.',
     },
+    mundo: MUNDO_1,
     resuelve: {
       pieza: 'rv-soporte',
       generar(s) {
@@ -837,6 +863,32 @@
       respuesta: [buena('E'), ': Los camiones se retrasaron; por eso el mercado abrió tarde'] },
   ];
 
+  // «En el mundo» de la idea 2: la advertencia de la Digemid (mayo de 2023). La causa (el virus) y la consecuencia (no
+  // la curan) en los dos órdenes; la pregunta pide «por eso» delante de la consecuencia en el aviso de una farmacia (propio).
+  const AVISO_FARMACIA = papel('cartel', 'Cartel de ejemplo', 'Antibióticos', 'la farmacia', 'sus clientes',
+    [oracion('b1', '[p:Muchas personas toman antibióticos sin receta]; [w:¿…?] aparecen bacterias que ya no responden a ellos.')]);
+  const MUNDO_2 = {
+    hecho: 'Los antibióticos no curan la gripe',
+    parrafos: [
+      'En mayo de 2023, la Digemid, la dirección de medicamentos del Ministerio de Salud, advirtió que los antibióticos no curan la influenza, la gripe ni el resfrío. Los antibióticos atacan bacterias, mientras que esas enfermedades las causa un virus, y tomarlos sin receta puede traer infecciones resistentes y alergias.',
+      ['La advertencia se puede escribir en dos órdenes, y en cada uno el conector va pegado a una idea distinta:',
+        { linea: [cubre('la gripe la causa un virus'), '; ', { negrita: 'por eso' }, ', los antibióticos no la curan'] },
+        { linea: ['los antibióticos no curan la gripe ', { negrita: 'porque' }, ' ', cubre('la causa un virus')] },
+        'Si alguien pone «porque» delante de lo que resulta, la advertencia se invierte y diría que la gripe viene de un virus porque los antibióticos no la curan.'],
+    ],
+    figura: { pieza: 'rv-soporte', datos: AVISO_FARMACIA, estado: { marcas: { b1p: 'i' } } },
+    pregunta: {
+      texto: 'Una farmacia pega este aviso: «Muchas personas toman antibióticos sin receta; ¿…? aparecen bacterias que ya no responden a ellos». ¿Qué conector va en el espacio?',
+      opciones: opciones('por eso', [
+        ['porque', 'RVC1', 'Viste bien que entre las dos ideas hay una razón. Pero «porque» va delante de la causa, y aquí la causa va primero: diría que la gente se automedica a raíz de las bacterias.'],
+        ['pero', 'RVC2', 'Notaste que la segunda idea es una mala noticia. Pero no rompe lo esperado: si los antibióticos se usan mal, se espera que dejen de funcionar.'],
+        ['además', 'RVC5', 'Las dos ideas son problemas del mismo hábito, bien. Pero no son datos aparte: las bacterias que ya no responden salen del uso sin receta.'],
+      ]),
+      porque: 'Tomar antibióticos sin receta es la razón, y las bacterias que ya no responden son lo que resulta. Como la causa va primero, el espacio pide «por eso», que va delante de la consecuencia.',
+    },
+    fuente: 'Digemid, Minsa (mayo de 2023), recogido por Canal N; OMS, nota descriptiva sobre la resistencia a los antimicrobianos.',
+  };
+
   const causa = {
     id: 'causa-consecuencia',
     titulo: 'Causa o consecuencia: el orden',
@@ -909,6 +961,7 @@
       voz: 'Antes de elegir, busca la razón.',
       condicion: 'se sabe cuál idea es la razón: «porque» va delante de ella, y «por eso», delante de lo que resulta.',
     },
+    mundo: MUNDO_2,
     resuelve: {
       pieza: 'rv-soporte',
       generar(s) {
@@ -1181,6 +1234,30 @@
       respuesta: [buena('E'), ': solo pueden cruzarlo a pie'] },
   ];
 
+  // «En el mundo» de la idea 3: los criaderos del dengue (Minsa). «Por ejemplo» presenta casos de un grupo mayor; la
+  // pregunta pide qué cambia con «es decir» (reformulación). El aviso del folleto es propio.
+  const FOLLETO_DENGUE = papel('folleto', 'Folleto de ejemplo', 'Contra el dengue', 'la posta', 'las familias',
+    [oracion('z1', '[p:Elimina todo objeto que junte agua]; [w:por ejemplo,] [q:llantas, botellas y latas].')]);
+  const MUNDO_3 = {
+    hecho: 'Cualquier recipiente con agua puede criar zancudos del dengue',
+    parrafos: [
+      'El zancudo que transmite el dengue pone sus huevos en los recipientes donde se junta agua. Por eso el Ministerio de Salud pide eliminar los objetos en desuso que puedan juntar agua de lluvia, como botellas, llantas y latas, y revisar la casa diez minutos cada semana.',
+      ['Un folleto con ese pedido, como este que escribimos de ejemplo, usaría un conector de ejemplificación entre sus dos partes:',
+        { linea: [cubre('todo objeto que junte agua'), ' + ', { negrita: 'por ejemplo' }, ' + ', cubre('llantas, botellas y latas')] },
+        'Con «por ejemplo», la lista trae solo algunos casos de un grupo mayor, y la familia busca en su casa todo lo demás que pertenece a ese grupo.'],
+    ],
+    figura: { pieza: 'rv-soporte', datos: FOLLETO_DENGUE, estado: { marcas: { z1p: 'i', z1q: 'i', z1w: 'f' } } },
+    pregunta: {
+      texto: 'Si el folleto dijera «Elimina todo objeto que junte agua; es decir, llantas, botellas y latas», ¿qué entendería una familia?',
+      opciones: opciones('Que esos tres objetos son todos los que juntan agua', [
+        ['Que son algunos casos y en la casa hay más', 'RV35', 'Así se lee el folleto con «por ejemplo», bien. Pero «es decir» es de reformulación: dice lo mismo con otras palabras, y la lista pasa a ser el grupo entero.'],
+        ['Que primero se botan las llantas y después lo demás', 'RV35', 'La lista tiene un orden, bien. Pero «es decir» no marca orden en el tiempo, como «después»: dice lo mismo con otras palabras.'],
+      ]),
+      porque: '«Es decir» es de reformulación: dice lo mismo con otras palabras. La lista quedaría como el grupo entero, y un balde viejo con agua de lluvia parecería no contar, aunque también cría zancudos.',
+    },
+    fuente: 'Minsa, campaña «10 minutos contra el dengue» y nota sobre criaderos (gob.pe). El folleto es un ejemplo propio.',
+  };
+
   const clases = {
     id: 'clases',
     titulo: 'Cada espacio pide una clase',
@@ -1252,6 +1329,7 @@
       voz: 'Antes de elegir, mira qué hace la parte que sigue.',
       condicion: 'las partes a los dos lados del espacio tienen esa relación; un conector de la misma clase puede reemplazar a otro.',
     },
+    mundo: MUNDO_3,
     resuelve: {
       pieza: 'rv-soporte',
       generar(s) {
@@ -1529,6 +1607,31 @@
       respuesta: [buena('E'), ': guarda piezas de gran valor'] },
   ];
 
+  // «En el mundo» de la idea 4: la radiación UV con nubes (OMS) y el índice 18 de Juliaca (Senamhi). «Si bien» va
+  // delante del obstáculo (las nubes); la pregunta, con el frío como obstáculo. El aviso de la posta es propio.
+  const AVISO_SOL = papel('puerta', 'Aviso de ejemplo', 'Cuida tu piel', 'la posta', 'los vecinos',
+    [oracion('s1', '[w:Si bien] [p:hay nubes], usa sombrero y bloqueador al mediodía.')]);
+  const MUNDO_4 = {
+    hecho: 'El sol del altiplano quema aunque haya nubes',
+    parrafos: [
+      'La Organización Mundial de la Salud explica que la radiación ultravioleta puede ser alta aun con nubes, porque más del 90 % atraviesa las nubes delgadas. Para el 22 de enero de 2026, el Senamhi pronosticó un índice UV de 18 en San Román, la provincia de Juliaca, y la OMS ya llama extremo al de 11.',
+      ['Por eso un aviso de la posta, como este que escribimos de ejemplo, nombra las nubes y pide protegerse igual:',
+        { linea: [{ negrita: 'si bien' }, ' + ', cubre('hay nubes'), ' + usa bloqueador'] },
+        'Las nubes van después de «si bien» porque son el obstáculo que no impide lo dicho: aunque el cielo esté gris, el sol sigue quemando la piel.'],
+    ],
+    figura: { pieza: 'rv-soporte', datos: AVISO_SOL, estado: { marcas: { s1w: 'f', s1p: 'i' } } },
+    pregunta: {
+      texto: 'Otro aviso dice: «El aire de Juliaca está frío; aun así, el sol te puede quemar la piel». ¿Qué oración con «si bien» dice lo mismo?',
+      opciones: opciones('Si bien el aire está frío, el sol te puede quemar', [
+        ['Si bien el sol te puede quemar, el aire está frío', 'RVC3', 'Usaste bien la locución de concesión. Pero «si bien» va delante del obstáculo, que aquí es el frío. Puesta delante de la quemadura, presenta al sol como el obstáculo y al frío como lo que pasó igual.'],
+        ['Dado que el aire está frío, el sol te puede quemar', 'RV24', '«Dado que» también es una locución, bien. Pero marca la razón: diría que el frío hace que el sol queme, y el frío es un obstáculo que no lo impide.'],
+        ['El aire está frío y además el sol te puede quemar', 'RV26', 'Junta los dos hechos, bien; pero como cosas que se suman, y se pierde que el frío hace esperar que el sol no queme.'],
+      ]),
+      porque: 'El frío hace esperar que el sol no queme, y no lo impide: es el obstáculo. En la concesión, «si bien» va delante del obstáculo, igual que «aunque».',
+    },
+    fuente: 'OMS, «Índice UV solar mundial: guía práctica» (2003); pronóstico del Senamhi para Puno del 22 de enero de 2026, en El Búho.',
+  };
+
   const locuciones = {
     id: 'locuciones',
     titulo: 'Varias palabras, un conector',
@@ -1600,6 +1703,7 @@
       voz: 'Si dudas, cambia la locución por un conector simple.',
       condicion: 'la locución se puede cambiar por un conector simple y la oración sigue diciendo lo mismo.',
     },
+    mundo: MUNDO_4,
     resuelve: {
       pieza: 'rv-soporte',
       generar(s) {
@@ -1883,6 +1987,29 @@
       respuesta: [buena('E'), ': es decir – a pesar de que'] },
   ];
 
+  // «En el mundo» de la idea 5: el hervor del agua en la altura (CDC). Un consejo encadena dos relaciones (contraste y
+  // causa); la pregunta pide la alternativa que cumple en los dos espacios. El mensaje es propio.
+  const MENSAJE_AGUA = papel('mensaje', 'Grupo de la familia', null, 'la tía Rosa', 'la familia',
+    espacios('a', ['El agua del caño puede verse limpia; {1} hiérvela antes de tomarla.', 'Por debajo de unos 2000 m basta un minuto de hervor; en Juliaca, tres, {2} [q:a esa altura el agua hierve a menos temperatura].']));
+  const MUNDO_5 = {
+    hecho: 'En la altura, el agua se hierve más tiempo',
+    parrafos: [
+      'Para que el agua de dudosa calidad sea segura, los CDC de Estados Unidos piden que hierva a borbotones durante un minuto. Por encima de unos 2000 m de altitud piden tres minutos, porque allí el agua hierve a menos de 100 °C.',
+      'Un mensaje con ese consejo, como este que escribimos de ejemplo, encadena dos relaciones y necesita un conector para cada una. Si un conector acierta en un espacio y falla en el otro, el mensaje dice algo que nadie quiso decir, y quien lo lee puede entender mal cuánto hervir o por qué.',
+    ],
+    figura: { pieza: 'rv-soporte', datos: MENSAJE_AGUA, estado: { marcas: { a2q: 'i' } } },
+    pregunta: {
+      texto: '¿Qué alternativa completa los dos espacios del mensaje de la tía Rosa?',
+      opciones: opciones('aun así – ya que', [
+        ['por eso – ya que', 'RVC4', '«Ya que» sirve en el espacio 2, porque va delante de la razón. Pero «por eso» en el espacio 1 diría que el agua se hierve por verse limpia, y lo esperado era no hervirla.'],
+        ['aun así – de modo que', 'RVC1', '«Aun así» sirve en el espacio 1, bien. Pero «de modo que» va delante de lo que resulta: diría que hervir tres minutos baja la temperatura a la que hierve el agua.'],
+        ['es decir – ya que', 'RV35', '«Ya que» sirve en el espacio 2, bien. Pero «es decir» en el espacio 1 diría que hervir el agua es lo mismo que verla limpia, dicho con otras palabras.'],
+      ]),
+      porque: 'Verse limpia hace esperar que no haga falta hervirla, y la orden rompe esa espera: el espacio 1 pide contraste. El espacio 2 va delante de la razón de los tres minutos: pide causa.',
+    },
+    fuente: 'CDC, «Drinking Water Advisories: An Overview» (cdc.gov): un minuto de hervor, tres por encima de 6500 pies. El mensaje es propio.',
+  };
+
   const espaciosIdea = {
     id: 'varios-espacios',
     titulo: 'Varios espacios, una alternativa',
@@ -1954,6 +2081,7 @@
       voz: 'Una alternativa vale entera o no vale.',
       condicion: 'cada conector de la alternativa marca la relación que pide su espacio.',
     },
+    mundo: MUNDO_5,
     resuelve: {
       pieza: 'rv-soporte',
       generar(s) {
