@@ -1467,7 +1467,7 @@
   // ---------- Ejemplos resueltos de «Más que, menos que» ----------
   // Recalculados aparte por fuerza bruta (scratchpad e5-rm/f3/v3.py, 21 comprobaciones, también el juego y la
   // predicción): 1 Ciro · 2 «Leo es más alto que Rosa» · 3 no se sabe · 4 Eva menor · 5 quedan 3 · 6 Maru · 7 Sara u Omar
-  // (3 órdenes) · 8 Iván · 9 la misma talla · 10 solo Ciro (3 órdenes) · 11 «Ana es menor que Ciro» (las otras: dos
+  // (3 órdenes) · 8 no se puede asegurar (ver su nota) · 9 la misma talla · 10 solo Ciro (3 órdenes) · 11 «Ana es menor que Ciro» (las otras: dos
   // posibles por el empate y dos que nunca pasan) · 12 Nora · 13 «Maru es más alta que Lucho» (3 órdenes) · 14 quedan 6 ·
   // 15 tres. La figura es el planteamiento: los alumnos de la formación, sin cadena; la cadena va en el resuelto.
   // Sin tallímetro cuando se comparan edades o puntajes (auditoría, 19 nov: el dibujo es lo que nombra el texto).
@@ -1522,14 +1522,18 @@
         { texto: ['El más alto es Sara en dos de ellos y Omar en el otro: ', F('Sara u Omar'), '. Pía es siempre la más baja.'] },
       ],
       respuesta: [F('Sara u Omar')] },
-    { nivel: 2, titulo: 'Los puntos del concurso', figura: TA(['Iván', 'Nora', 'Rosa'], true),
-      enunciado: 'Iván, Nora y Rosa participan en el concurso de matemática del aniversario. ¿Quién sacó más puntos?',
-      datos: ['Los tres puntajes son distintos.', ...PIS('Iván sacó más puntos que Nora.', 'Nora sacó menos puntos que Rosa.', 'Rosa sacó menos puntos que Iván.')],
+    // Apertura (piedra, papel o tijera; aperturas-para-la-teoria, 28 nov): una relación que no se encadena. Comprobado
+    // aparte: con las dos pistas, la partida de Gino con Omar puede ganarla cualquiera de los dos (Gino gana a los dos, o
+    // Gino a Pía, Pía a Omar y Omar a Gino); las dos maneras cumplen las pistas.
+    { nivel: 2, titulo: 'Ganar una partida no encadena', figura: TA(['Gino', 'Pía', 'Omar'], true),
+      enunciado: 'Gino, Pía y Omar juegan tenis de mesa en el recreo, y cada uno juega una partida contra cada uno de los otros dos. ¿Se puede asegurar que Gino le ganó a Omar?',
+      datos: ['En tenis de mesa no hay empates: cada partida la gana alguien.', ...PIS('Gino le ganó a Pía.', 'Pía le ganó a Omar.')],
       solucion: [
-        { texto: 'Flechas del que sacó menos al que sacó más: Nora → Iván, Nora → Rosa y Rosa → Iván.' },
-        { texto: ['Se encadenan: Nora, Rosa, Iván. Sacó más puntos ', F('Iván'), '.'] },
+        { texto: 'Con «es más alto que» sí habría cadena: si Gino es más alto que Pía y Pía es más alta que Omar, Gino es más alto que Omar, porque cada uno tiene una sola talla.' },
+        { texto: '«Le ganó a» no compara una medida que cada uno tenga, sino el resultado de una partida. Gino le gana a Pía, Pía a Omar y Omar a Gino cumple las dos pistas, como piedra, papel y tijera.' },
+        { texto: ['Las pistas no deciden la tercera partida, así que ', F('no se puede asegurar'), '. Solo las comparaciones de una misma medida, como la talla, la edad o el puntaje, forman fila.'] },
       ],
-      respuesta: [F('Iván')] },
+      respuesta: [F('No se puede asegurar'), ': la partida de Gino con Omar pudo ganarla cualquiera'] },
     { nivel: 2, titulo: 'Dos «no es más alto»', figura: TA(['Eva', 'Fito']),
       enunciado: 'Eva y Fito están en la formación del desfile. ¿Qué se sabe de sus tallas?',
       datos: [D_EMPATE, ...PIS('Eva no es más alta que Fito.', 'Fito no es más alto que Eva.')],
