@@ -1358,6 +1358,9 @@ function construirGr4(Kit) {
       { titulo: 'Un objeto que gira', texto: ['Un satélite es un cuerpo que gira alrededor de otro atraído por su gravedad, y el camino que recorre se llama órbita. Aquí estudiamos órbitas circulares alrededor de un planeta.'], dibujo: figuraJuego({ v: 2 }, true) },
       { titulo: 'Del centro a la trayectoria', texto: ['El radio orbital ', r, ' se mide desde el centro del planeta. La rapidez orbital ', v, ' dice cuánto camino recorre el satélite en cada segundo; su velocidad es tangente al círculo, es decir, lo toca sin cruzarlo.'] },
       { titulo: 'Dos aceleraciones por comparar', texto: ['Para girar en círculo hace falta una aceleración hacia el centro, v²/r. El juego la compara con la que aporta la gravedad, g, que en m/s² vale lo mismo que en N/kg. El período ', T, ' es el tiempo de una vuelta.'] },
+      // Apertura (28 nov, docs/etapa9/aperturas-para-la-teoria.md): el satélite cae todo el tiempo, y se une con la balanza
+      // que marca cero en caída libre (regla de la idea 2). No dice la rapidez de Predice (4 km/s).
+      { titulo: 'Cae sin llegar al suelo', texto: 'Un satélite en órbita cae todo el tiempo, porque la gravedad lo jala hacia el planeta, pero avanza de lado tan rápido que el suelo curvo se aleja debajo de él. Los astronautas caen con la nave, así que una balanza bajo sus pies marcaría cero, como en la caída libre de la idea del campo: por eso flotan.' },
     ] },
     juega: {
       consigna: 'Elige la rapidez del satélite, lanzado tangente al círculo, y compara la aceleración que necesita para girar con la que le da la gravedad.',
