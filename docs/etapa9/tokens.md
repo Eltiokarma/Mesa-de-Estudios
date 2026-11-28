@@ -118,3 +118,4 @@ contra los límites semanales de los planes.
 | razonamiento-verbal.conectores | piloto «En el mundo» (5 ideas) | 249 879 | 22 min | 59 herramientas |
 | fisica.trabajo-y-energia | piloto «En el mundo» (6 ideas) | 304 790 | 25 min 57 s | 66 herramientas |
 | geometria.proporcionalidad-y-semejanza | piloto «En el mundo» (6 ideas) | 304 198 | 26 min 47 s | 62 herramientas |
+| piloto «En el mundo» (física, química, RM, verbal) | revisión del Escribidor Escribano | 278 960 | 18 min 45 s | 75 herramientas |
