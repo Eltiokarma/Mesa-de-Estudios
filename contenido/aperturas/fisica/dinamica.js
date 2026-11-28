@@ -62,7 +62,7 @@
     },
     pregunta: 'Si en vez de tres personas empujaran seis, cada una con la misma fuerza, ¿crees que a los 10 s la combi iría más rápido, igual o más lento que con tres?',
     ficha: {
-      seLleva: 'Una fuerza que no cesa no mantiene la rapidez fija sino que la va aumentando, y por eso quienes empujan una combi terminan corriendo detrás de ella.',
+      seLleva: 'Una fuerza que no cesa y le gana al roce no mantiene la rapidez fija sino que la va aumentando, y por eso quienes empujan una combi terminan corriendo detrás de ella.',
       alcance: 'Parcial (núcleo: qué cambia y en qué intervalo; una causa constante produce un cambio que crece con el tiempo). La segunda ley con vectores y diagramas no entra en PISA.',
       choque: 'Un empujón fijo daría una rapidez fija; la combi empujada siempre igual va cada vez más rápido, de unos 3 km/h a los 5 s a unos 11 km/h a los 20 s.',
       atajo: 'La explicación trampa de la bajada la descarta que en una pista plana pasa igual (y que sin empujón la combi frena). El mejor alumno diría que la combi «agarra impulso»: es el nombre del fenómeno, no dice cuánto gana en cada segundo ni de qué depende, que es la segunda ley.',
@@ -78,6 +78,7 @@
         'En la figura, la predicción va a 5 km/h en las tres filas; la medición sigue la cuenta redondeada (3, 5 y 11 km/h).',
         'Revisión del Escribidor Escribano (27 nov): el párrafo 3 terminaba su primera oración con «y gana menos cuanta más masa tiene», que es la segunda ley y toca la Predice de la idea 2 (la caja de 20 kg en la Luna); se quitó, y la oración cierra ahora con el choque del caso (la combi se les escapa a quienes la empujan). «El freno de las llantas» pasó a «la resistencia de las llantas», para no confundirlo con los frenos. El párrafo 1 pasó a condicional entero («si tres personas empujaran»). «Lo que uno espera» pasó a «Lo que esperarías» (de tú) y «Tampoco es que» a «Y no es que», porque seguía a una expectativa. La pregunta preguntaba «qué cambiaría en la manera en que la combi gana rapidez», que un alumno sin el tema no sabe cómo contestar; ahora pide comparar la rapidez a los 10 s (más, igual o menos que con tres).',
         'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido («fuerza» y «masa» van siempre en su sentido de la física).',
+        'Coherencia con la unidad (28 nov): responde en la idea 1 (Segunda ley): la regla dice que «la fuerza neta, la suma de todas las fuerzas con su sentido, le da al cuerpo una aceleración», y un ejemplo de la idea 1 (cinco cajas empujadas con fuerza constante) calcula la rapidez ganada con v = a · t. El roce de las llantas es la idea 3. seLleva decía «una fuerza que no cesa […] la va aumentando», que choca con la idea 1, donde la caja arrastrada contra el piso va a velocidad constante con la fuerza puesta; ahora dice «una fuerza que no cesa y le gana al roce», como el párrafo 3. La pregunta de seis personas se responde con la fuerza neta de la idea 1',
       ],
     },
   };

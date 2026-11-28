@@ -63,7 +63,7 @@
     titulo: '¿Cuánto gira el minutero si termina a solo un cuarto de vuelta de donde empezó?',
     parrafos: [
       ['Si sales de tu casa a las 7:00 y llegas al colegio a las 8:15, el minutero de tu reloj empieza apuntando al 12 y termina apuntando al 3. ',
-        'El minutero da una vuelta entera cada hora, así que gira 6° por minuto, y en esos 75 minutos de camino giró en total:',
+        'El minutero da una vuelta entera cada hora, así que gira 6° por minuto, y en esos 75 minutos de camino su giro tuvo este tamaño, sin contar todavía hacia qué lado:',
         { linea: ['75 × 6° = ', giro('450°')] }],
       ['En geometría, el ángulo entre dos rayos es la abertura que queda entre ellos, y entre el 12 y el 3 de un reloj hay ', giro('un cuarto de vuelta'), '. ',
         'Con esa idea, tu minutero habría girado lo mismo que si hubieras llegado a las 7:15, y la hora entera de viaje no aparecería en la cuenta. ',
@@ -91,6 +91,7 @@
         'Doble revisión (27 nov): la comparación es justa (el mismo minutero, de 7:00 a 8:15, con la abertura y con el giro) y la predicción equivocada no es del alumno sino de la definición de ángulo de geometría, que sí trae del colegio. Pero ningún alumno cree que el minutero giró solo un cuarto de vuelta en una hora y cuarto, así que el párrafo 3 abría como si la abertura fuera su intuición. Ahora abre diciendo que la cuenta de 6° por minuto es la correcta, porque cuenta las vueltas, y que lo que se queda corto es la abertura (antes: «Una abertura solo mira dónde empieza…»).',
         'Revisión del Escribidor Escribano (27 nov): «ninguna abertura entre dos agujas» hablaba de dos agujas cuando el choque es una sola aguja en dos momentos; ahora dice «dos posiciones de la aguja». La última oración se acortó («con sus vueltas y su sentido»). La pregunta decía «cuando avanza solo», ambiguo (¿por sí solo o únicamente?); ahora dice «cuando el reloj avanza esa hora y cuarto por su cuenta».',
         'Tercera pasada (27 nov): el párrafo 1 saca a su línea 75 × 6° = 450° (antes «en esos 75 minutos giró 450°» en la oración). No se escribe 360° ÷ 60 para no poner el 60 de las misiones. En el párrafo 3, «La cuenta de 6° por minuto es la correcta, porque cuenta las vueltas» usaba «cuenta» en dos sentidos: ahora «porque incluye las vueltas completas».',
+        'Coherencia con la unidad (28 nov): responde en la idea 1 (giro con signo; puede pasar de una vuelta) y la retoman los ejemplos del minutero («El minutero en 20 minutos», «Cuarenta y cinco minutos»), donde el giro del minutero vale −120° y −270°, porque las agujas giran en sentido horario. La apertura decía «giró en total: 75 × 6° = 450°», y al terminar la unidad ese giro es −450°; ahora dice que 450° es el tamaño del giro, «sin contar todavía hacia qué lado», sin dar el signo. La pregunta (atrasar el reloj) se responde con la regla de la idea 1: mismo tamaño, signo contrario',
       ],
     },
   };

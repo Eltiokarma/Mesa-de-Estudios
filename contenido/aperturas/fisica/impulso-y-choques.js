@@ -58,7 +58,7 @@
       svg,
       alt: 'Dos monedas de un sol iguales, antes y después del golpe de frente. Lo que predice la idea de que la que golpea sigue empujando: después, las dos avanzan, la lanzada más despacio detrás de la otra. Lo que se mide: la lanzada se queda quieta en el punto del golpe y la otra sale con la rapidez que traía la primera.',
     },
-    pregunta: 'Si la moneda que lanzas pesara el doble que la que está quieta, ¿crees que después del golpe se quedaría quieta, seguiría avanzando o rebotaría hacia atrás?',
+    pregunta: 'Si la moneda que lanzas tuviera el doble de masa que la que está quieta, ¿crees que después del golpe se quedaría quieta, seguiría avanzando o rebotaría hacia atrás?',
     ficha: {
       seLleva: 'En un choque de frente entre dos monedas iguales, el movimiento pasa casi entero de una a otra: la que golpea se queda quieta y la otra sale con su rapidez.',
       alcance: 'Parcial (núcleo: conservación en un sistema; lo que se transfiere en una interacción). El coeficiente de restitución y el centro de masa no entran en PISA.',
@@ -75,6 +75,7 @@
         'La moneda de un sol también aparece en la apertura de «Movimiento parabólico» (la que se lanza en la combi); no son vecinas en la rama y el hecho es otro.',
         'Revisión del Escribidor Escribano (27 nov): «Las dos pesan lo mismo, 7,32 g» confundía masa con peso; ahora dice «tienen la misma masa». El párrafo 2 usaba «impulso» en sentido de todos los días («el golpe le gastó el impulso»), pero el impulso es un término de esta misma unidad (idea 2) y no significa eso; ahora dice «el golpe frenó a la tuya y su movimiento se perdió», y el atajo de la ficha se ajustó igual. La última oración encadenaba tres predicados con comas («depende…, se llama…, y de ella…»); ahora nombra primero y explica después. «Lo que uno espera» pasó a «Lo que esperarías». No delata: no da números de cantidad de movimiento (Predice de la idea 1) ni el coeficiente de restitución (idea 5).',
         'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido. La pregunta dice «pesara el doble», pero en su propio párrafo y sin «masa» al lado; se dejó.',
+        'Coherencia con la unidad (28 nov): responde. La cantidad de movimiento es la idea 1, la conservación en el choque la idea 3 y el choque elástico la idea 4 («en un choque elástico de frente, los cuerpos se separan tan rápido como se acercaban»); con la idea 5 salen las dos velocidades finales, y la pregunta (doble de masa: sigue avanzando, más despacio) se puede resolver así. La pregunta pasó de «pesara el doble» a «tuviera el doble de masa», porque la unidad habla siempre de masa y Dinámica separa masa de peso',
       ],
     },
   };

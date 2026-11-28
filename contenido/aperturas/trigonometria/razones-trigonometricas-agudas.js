@@ -58,7 +58,7 @@
       ['Un porcentaje suele contar partes de un todo, así que parece natural que el 100 % sea lo más empinado posible, una pared vertical, y que el 50 % quede a medio camino entre el piso y la pared. ',
         'Pero el transportador dejaría la rampa de 100 % justo a medio camino, y la de 50 % se levantaría apenas unos ', ang('27°'), '.'],
       ['La pendiente no reparte los grados que hay entre el piso y la pared: compara dos largos, lo que la rampa sube y lo que avanza. ',
-        'Un cociente así, entre dos lados de un triángulo rectángulo, se llama razón trigonométrica, y es el tema de esta unidad.'],
+        'Un cociente así, entre dos lados de un triángulo rectángulo, se llama razón trigonométrica, y la razón de la pendiente, lo que sube entre lo que avanza, se llama tangente. Las razones trigonométricas, como la tangente, el seno y el coseno, son el tema de esta unidad.'],
     ],
     figura: {
       antes: 2,
@@ -80,6 +80,7 @@
         'El texto no dice «tangente» ni da la fórmula: la idea 1 nombra los lados desde el ángulo y la idea 2 muestra que el cociente no depende del tamaño. No se comparan rampas de distinto tamaño, para no tocar la Predice de la idea 2.',
         'Revisión del Escribidor Escribano (27 nov): el párrafo 1 decía «con un transportador se mide» y el 2, «el transportador pone», cuando los ángulos son cálculo: pasaron a condicional («marcaría», «dejaría», «se levantaría»). El párrafo 3 decía que el cociente «cambia cuando cambia el ángulo», que ya es parte de la regla: se quitó y queda solo el nombre.',
         'Tercera pasada (27 nov): el párrafo 1 saca a su línea 12 % = 12 cm / 100 cm y 100 % = 1 m / 1 m, como fracciones con los colores de lo que sube y lo que avanza; la oración larga del transportador se partió en dos para que cada línea siga a su rampa.',
+        'Coherencia con la unidad (28 nov): responde a medias. La idea 2 define la tangente como el opuesto entre el adyacente y la idea 3 da tan 45° = 1, así que la rampa de 100 % a 45° sale de la unidad; las rampas aparecen en los ejemplos de la idea 1 («La rampa de la vereda», «La base de la rampa»). Pero la unidad nunca dice «pendiente» ni que la pendiente en porcentaje es la tangente por 100, y la rampa de 200 % (unos 63°) no es un ángulo notable. Por eso el párrafo 3 ahora nombra la tangente («la razón de la pendiente, lo que sube entre lo que avanza, se llama tangente»), sin fórmula y sin tocar la Predice de la idea 2; el ejemplo de la pendiente va como pendiente para la teoría',
       ],
     },
   };

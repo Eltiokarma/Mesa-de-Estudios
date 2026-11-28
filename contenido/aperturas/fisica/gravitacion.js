@@ -57,7 +57,7 @@
       'La explicación que más se repite es que allá arriba no hay gravedad, y por eso los astronautas no caen al piso de la estación. ' +
         'Pero si no hubiera gravedad, nada jalaría a la estación hacia la Tierra, y se iría en línea recta hacia el espacio en vez de volver a pasar sobre el Perú. ' +
         'Hecha la cuenta, a 400 km de altura la gravedad sería todavía casi nueve décimas de la que te jala hacia el suelo.',
-      'La estación no está quieta allá arriba: cae todo el tiempo hacia la Tierra, pero avanza de lado tan rápido que, mientras cae, la superficie curva de la Tierra se aleja debajo de ella, y nunca llega al suelo. ' +
+      'La estación, como todo satélite, no está quieta allá arriba: cae todo el tiempo hacia la Tierra, pero avanza de lado tan rápido que, mientras cae, la superficie curva de la Tierra se aleja debajo de ella, y nunca llega al suelo. ' +
         'Los astronautas caen con la estación y al mismo ritmo que ella, así que nada los aprieta contra el piso y flotan. ' +
         'Esa fuerza que los hace caer es la gravedad, la misma que mantiene a la Luna dando vueltas alrededor de la Tierra, y esta unidad, la gravitación, trata de cómo cambia con la masa y con la distancia.',
     ],
@@ -83,6 +83,7 @@
         'El texto dice que la gravedad «cambia con la masa y con la distancia», el tema de la idea 1, sin decir cómo cambia, para no tocar su Predice (240 N) ni la de la idea 2 (2 N/kg).',
         'Revisión del Escribidor Escribano (27 nov): «caen junto con la estación» se podía leer como que la estación se viene abajo. El párrafo 3 dice ahora primero que la estación cae todo el tiempo pero avanza tan rápido de lado que la superficie curva de la Tierra se aleja debajo de ella, y nunca llega al suelo; después, en otra oración, que los astronautas caen con la estación y al mismo ritmo, así que nada los aprieta contra el piso. La última oración tenía un inciso entre el sujeto y el verbo («La fuerza que los hace caer, la misma que…, es la gravitación»); ahora va en orden, y usa «la gravedad» para la fuerza, como el título, y «la gravitación» para la unidad. Las nueve décimas pasaron a condicional («sería»), porque son cálculo. «Unas 16 vueltas» pasó a «casi 16» (1440 ÷ 92 da 15,7). La pregunta repetía el dato del título en una subordinada; ahora es una sola pregunta. No delata: no dice cómo cambia la gravedad con la distancia (Predices de las ideas 1 y 2) ni qué rapidez pide una órbita (idea 4).',
         'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido.',
+        'Coherencia con la unidad (28 nov): responde a medias. La gravedad a 400 km sale con la idea 2 (campo según la distancia al centro), el sensor que marca cero en caída libre está en la idea 2 (la voz de la regla y el ejemplo «Una balanza durante la caída libre») y la órbita es la idea 4 («la gravedad le da justo la aceleración hacia el centro que necesita para girar»), pero ninguna idea junta las tres cosas: la unidad no dice que un satélite en órbita cae todo el tiempo ni que por eso los astronautas flotan. Va como pendiente para la teoría (idea 4). El párrafo 3 ahora dice «la estación, como todo satélite», para que el alumno reconozca en la idea 4 la palabra que usa la unidad',
       ],
     },
   };

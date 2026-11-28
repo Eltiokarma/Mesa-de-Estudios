@@ -54,9 +54,9 @@
       ['La tapa de una laptop gira sobre su bisagra, y en una de 14 pulgadas mide unos 20 cm desde la bisagra hasta su borde de arriba. ',
         'Si la abrieras ', ang('50°'), ' y midieras con una regla a qué altura sobre la bisagra queda ese borde, encontrarías unos ', alto('15,3 cm'), '.'],
       ['Si sigues abriéndola, el borde sube hasta que la tapa queda vertical, a 20 cm, y después vuelve a bajar, porque la tapa empieza a inclinarse hacia atrás. ',
-        'Abierta hasta ', ang('130°'), ', queda tan inclinada hacia atrás como lo estaba hacia adelante a 50°, como su reflejo en un espejo, así que su borde vuelve a quedar a unos ', alto('15,3 cm'), '.'],
+        'Abierta hasta ', ang('130°'), ', queda tan inclinada hacia atrás como lo estaba hacia adelante a 50°, como su reflejo en un espejo parado sobre la bisagra, así que su borde vuelve a quedar a unos ', alto('15,3 cm'), '.'],
       ['Esa intuición del espejo es correcta, y sirve para algo que el triángulo rectángulo no puede hacer solo, porque en un triángulo rectángulo no cabe un ángulo de 130°. ',
-        'Calcular con un ángulo así a través del ángulo agudo que es su reflejo, como el de 50° para el de 130°, es el tema de esta unidad, la reducción al primer cuadrante.'],
+        'Calcular con un ángulo así a través del ángulo agudo que es su reflejo en ese espejo parado, como el de 50° para el de 130°, es el tema de esta unidad, la reducción al primer cuadrante.'],
     ],
     figura: {
       antes: 2,
@@ -80,6 +80,7 @@
         'Doble revisión (27 nov): reescrita con los puntos 6 y 7 de apertura-pisa.md. Antes el párrafo 2 decía que, «con lo que sabes de triángulos rectángulos», a 130° el borde tendría que quedar más alto que a 50°, y el panel «Lo que predice» dibujaba la tapa de 130° más alta: un muñeco de paja, porque cualquiera que usó una laptop sabe que al echar la pantalla hacia atrás el borde baja. Ahora el párrafo 2 cuenta lo que el alumno ya ve (el borde sube hasta la vertical y luego baja, y 130° es el reflejo de 50°), el párrafo 3 dice que esa intuición es correcta y para qué sirve, y la figura pone el espejo en «Lo que predice». El título era «¿Por qué la tapa de una laptop abierta a 130° queda tan alta como abierta a 50°?»; ahora pregunta qué tienen en común, que era la pregunta vieja, y la pregunta nueva pide usar el espejo con 35°.',
         'Contenido, para Gerson (antes de la doble revisión): la pregunta («mirando cuánto se aparta la tapa de la mesa») casi dicta la respuesta; se puede pensar, pero conviene decidir si se deja la pista o se pregunta solo «¿qué tienen en común?».',
         'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido.',
+        'Coherencia con la unidad (28 nov): responde en las ideas 1 y 2: el ángulo de referencia (idea 1) y la cabina «gemela» de la idea 2, con «Altura con signo: y = r · sen θ» y el dibujo de la regla («la cabina a 150 grados y su gemela a 30 grados están a la misma altura»), que es el caso de la tapa. La pregunta (35° y 145°) se resuelve con la idea 1. Choque de palabras: en la unidad, «reflejo» y «espejo» son casi siempre el eje x (idea 3, θ y −θ: «El espejo es el eje x»), y la tapa de 130° es el reflejo de la de 50° en una línea vertical, lo que la unidad llama «gemela» (idea 2) o «reflejo en el eje y» (misión «Espejos y cuartos de vuelta»). El párrafo 2 dice ahora «un espejo parado sobre la bisagra» y el párrafo 3 «su reflejo en ese espejo parado», como el espejo vertical de la figura',
       ],
     },
   };
