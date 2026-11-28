@@ -431,7 +431,7 @@
 
   // Ejemplos de la idea 2. Nombres del motor, comprobados con OPSIN (nombres.js): SnO₂ óxido de estaño(IV) · Cl₂O₅
   // pentóxido de dicloro · PbO óxido plumboso · K₂O · Cr₂O₃ (+3) óxido de cromo(III) · SnO · Cl₂O₃ trióxido de dicloro,
-  // óxido de cloro(III) · Au₂O óxido auroso · B₂O₃ trióxido de diboro · Au₂O₃ óxido áurico · Br₂O₇.
+  // óxido de cloro(III) · Fe₃O₄ tetraóxido de trihierro · B₂O₃ trióxido de diboro · Au₂O₃ óxido áurico · Br₂O₇.
   const EJEMPLOS_NOMBRES = [
     { nivel: 1, titulo: 'La piedra del estaño', enunciado: 'La casiterita, de la que se saca el estaño, es SnO₂. ¿Cuál es su nombre Stock?',
       datos: [estadosTxt('Sn'), D2.o, D2.stock, D2.romanos], figura: tarjetaOxido('Sn', 4, { filas: [{ sistema: 'Stock', oculto: true }] }),
@@ -456,8 +456,15 @@
     { nivel: 2, titulo: 'Dos nombres de un óxido ácido', enunciado: 'Escribe el nombre sistemático y el Stock del Cl₂O₃.', datos: [D2.prefijos, D2.o, D2.stock, D2.romanos, 'EO del cloro: +1, +3, +5 y +7'],
       solucion: [{ texto: 'En la sistemática se cuentan tres O y dos Cl.', ecuacion: ['Cl₂O₃ → tri-óxido de di-cloro'] }, { texto: 'En la Stock, los tres O aportan −6, así que cada Cl tiene +3.', ecuacion: cuentaEO('Cl2O3', 'Cl', false) }],
       respuesta: [nombre('Cl2O3', 'sistematica'), ' y ', ...conRomano(nombre('Cl2O3', 'stock'))] },
-    { nivel: 2, titulo: 'Del tradicional a la fórmula', enunciado: 'El oro tiene EO +1 y +3. ¿Cuál es la fórmula del óxido auroso?', datos: [D2.o, D2.cero, D2.trad],
-      solucion: [{ texto: 'La terminación -⁠oso marca el EO menor, el del óxido con menos oxígeno, así que el oro tiene +1.' }, { texto: 'Dos Au con +1 compensan un O con −2.', ecuacion: ['2 · (+1) + (−2) = ', Cq('0'), '   →   Au₂O'] }], respuesta: ['Au₂O'] },
+    // Apertura (28 nov, docs/etapa9/aperturas-para-la-teoria.md): el polvo negro que atrae el imán, Fe₃O₄, nombrado por la
+    // sistemática (tetraóxido de trihierro). 3 · x = 8 da x = 8/3: no hay un solo EO entero, porque tiene un Fe con +2 y dos
+    // con +3 (FeO · Fe₂O₃). Reemplaza al de «Del tradicional a la fórmula» (Au₂O): el -oso del oro sigue en «El mayor del oro».
+    { nivel: 2, titulo: 'El óxido negro del imán', enunciado: 'La magnetita, Fe₃O₄, es el óxido de hierro negro que se pega a un imán. ¿Cuál es su nombre sistemático, y por qué no sirve igual el nombre Stock?',
+      datos: [D2.prefijos, D2.o, D2.cero, D2.stock, 'EO del hierro: +2 y +3'],
+      solucion: [{ texto: 'La sistemática solo cuenta los átomos de la fórmula: cuatro O dan «tetraóxido» y tres Fe dan «trihierro». No necesita saber ningún EO.', ecuacion: ['Fe₃O₄ → tetra-óxido de tri-hierro'] },
+        { texto: 'La Stock pide un solo EO del hierro, pero los cuatro O aportan −8, y tres hierros iguales tendrían que llevar +8/3 cada uno, que no es un EO.', ecuacion: ['3 · ', EOf, ' + 4 · (−2) = ', Cq('0'), SEP, EOf, ' = +8/3'] },
+        { texto: 'Es que la magnetita tiene hierros de dos clases, uno con +2 y dos con +3. Un solo romano no lo dice; en la academia la llaman óxido ferroso-férrico.', ecuacion: ['(+2) + 2 · (+3) = +8'] }],
+      respuesta: ['Tetraóxido de trihierro: lleva hierros con +2 y con +3'] },
     { nivel: 2, titulo: 'El óxido del boro', enunciado: 'El boro es un no metal con EO +3. ¿Qué clase de óxido forma y cuál es su nombre sistemático?', datos: [D2.clase, D2.o, D2.cero, D2.prefijos],
       solucion: [{ texto: 'Un no metal con oxígeno forma un óxido ácido. Dos B con +3 compensan tres O con −2.', ecuacion: ['2 · (+3) + 3 · (−2) = ', Cq('0'), '   →   B₂O₃'] }, { texto: 'Con tres O y dos B, el nombre sistemático es trióxido de diboro.' }],
       respuesta: ['Óxido ácido, ', nombre('B2O3', 'sistematica')] },
