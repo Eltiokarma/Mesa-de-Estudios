@@ -831,7 +831,7 @@
   }
 
   // Ejemplos de la idea 3. Cuentas rehechas aparte (cuentas-b.py): Li 520 > K 419 · Cl 1251 > Na 496 · AE Cl −349 · 2081 −
-  // 520 = 1561 · Be 900 > B 801 · Mg 738 > Na 496 > K 419 · 4562 ÷ 496 ≈ 9,2 y 6910 ÷ 4562 ≈ 1,5 · |−200| > |−53| · Li 520,
+  // 520 = 1561 · Be 900 > B 801 · Mg 738 > Na 496 > K 419 · 4562 ÷ 496 ≈ 9,2 y 6910 ÷ 4562 ≈ 1,5 · Au 890 > Fe 762 · Li 520,
   // el menor del periodo 2 · N 1402 > O 1314 · Si: 1577 ÷ 787 ≈ 2,0; 3232 ÷ 1577 ≈ 2,0; 4356 ÷ 3232 ≈ 1,3; 16 091 ÷ 4356 ≈
   // 3,7 → 4, grupo 14 · AE Cl −349, F −328, Na −53 · periodo 3: bajadas Mg → Al y P → S · Z 12 (periodo 3) y 20 (periodo 4),
   // grupo 2, 738 > 590.
@@ -885,14 +885,18 @@
         { texto: 'El salto está entre la primera y la segunda: el segundo electrón ya sale del nivel 2, que está lleno y más cerca del núcleo.' },
       ],
       respuesta: ['Entre la 1.ª y la 2.ª: 1 electrón de valencia'] },
-    { nivel: 2, titulo: 'Quién libera más',
-      enunciado: '¿Cuál libera más energía al ganar un electrón: un átomo de azufre o uno de sodio?',
-      datos: ['AE: azufre −200 kJ/mol; sodio −53 kJ/mol', D.ae],
+    // Apertura (28 nov, docs/etapa9/aperturas-para-la-teoria.md): el oro retiene su electrón más que el hierro aunque esté
+    // dos periodos más abajo. Primeras EI (NIST, Atomic Spectra Database): Fe 7,9025 eV = 762,5 kJ/mol; Au 9,2256 eV =
+    // 890,1 kJ/mol; 890 − 762 = 128. Reemplaza al de «Quién libera más»: la afinidad sigue en los de nivel 1 y 3.
+    { nivel: 2, titulo: 'El oro y el hierro',
+      enunciado: 'El hierro está en el periodo 4 y el oro, dos periodos más abajo. Si la EI baja hacia abajo en la tabla, ¿por qué al oro le cuesta más perder un electrón?',
+      datos: ['Primera EI: hierro 762 kJ/mol; oro 890 kJ/mol', 'Hierro: Z = 26, grupo 8; oro: Z = 79, grupo 11 (los dos, metales de transición)'],
       solucion: [
-        { texto: 'Las dos afinidades son negativas, así que los dos átomos liberan energía al ganar el electrón.' },
-        { texto: 'Libera más el átomo cuya afinidad tiene el mayor valor sin el signo.', ecuacion: ['|−200| > |−53|'] },
+        { texto: 'Los datos mandan: el oro pide unos 128 kJ/mol más, así que retiene su electrón de afuera con más fuerza, aunque ese electrón esté en el nivel 6.', ecuacion: ['Au ', Ei('890'), ' > Fe ', Ei('762 kJ/mol')] },
+        { texto: 'Del hierro al oro hay 53 protones más. Los electrones d y f de los niveles de adentro tapan mal esa carga, así que el núcleo del oro jala fuerte su electrón 6s.' },
+        { texto: 'Por eso, en los metales de transición la flecha general no basta: hay que mirar el dato. Retener sus electrones es una de las razones por las que el oro casi no se oxida.' },
       ],
-      respuesta: ['El de ', Ei('azufre')] },
+      respuesta: ['Su núcleo jala más: en transición, la tendencia no basta'] },
     { nivel: 2, titulo: 'El menor del periodo 2',
       enunciado: '¿Qué elemento del periodo 2 tiene la menor energía de ionización y en qué grupo está?',
       datos: ['EI (kJ/mol): Li 520, Be 900, B 801, C 1086, N 1402, O 1314, F 1681, Ne 2081'],
