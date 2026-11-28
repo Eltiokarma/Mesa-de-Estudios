@@ -277,7 +277,8 @@
 
   // Ejemplos resueltos (idea 1). Cuentas rehechas aparte (cuentas.py, con factorizaciones y raíces enteras de Python):
   // 144 = 2⁴ × 3² = 12²; 72 = 2³ × 3²; 216 = 2³ × 3³ = 6³; 2⁴ × 5² = 400 = 20²; 108 = 2² × 3³; 50 × 2 = 100 = 10²;
-  // 72 × 3 = 216 = 6³; 180 ÷ 5 = 36 = 6²; 4³ × 9 = 576 = 2⁶ × 3² = 24²; 64 = 2⁶ = 8² = 4³. Nivel 3: 540 = 2² × 3³ × 5,
+  // 72 × 3 = 216 = 6³; 180 ÷ 5 = 36 = 6²; 4³ × 9 = 576 = 2⁶ × 3² = 24²; las capas de una hoja (28 nov, puente con la apertura de los dobleces):
+  // 2⁹ = 512 = 8³, no cuadrado; 2¹⁰ = 1 024 = 32², no cubo. Nivel 3: 540 = 2² × 3³ × 5,
   // × 15 = 8 100 = 90² (30, 5, 3 no dan cuadrado; × 540 sí, pero no es el menor); 1 350 = 2 × 3³ × 5², × 20 = 27 000 = 30³
   // (10, 4 y 50 no dan cubo; × 6 da 8 100 = 90², cuadrado); 3 600 = 2⁴ × 3² × 5²: 3 × 2 × 2 = 12 divisores cuadrados (45
   // divisores en total; 3 + 2 + 2 = 7; 2 × 1 × 1 = 2; 45 ÷ 2 ≈ 22); 75 = 3 × 5²: los que dan cuadrado son 3 × j² (3, 12, 27,
@@ -348,14 +349,15 @@
         { texto: 'Los dos exponentes son pares: la raíz lleva la mitad de cada uno, 2³ × 3 = 24.', ecuacion: [...canonEc([[2, 6], [3, 2]]), ' = 576 = ', alK(24)] },
       ],
       respuesta: ['Sí: 4³ × 9 = 576 = ', alK(24)] },
-    { nivel: 2, titulo: 'Cuadrado y cubo a la vez',
-      enunciado: '¿El número 64 es cuadrado perfecto, cubo perfecto o las dos cosas?',
-      datos: [D1.cuadrado, D1.cubo],
+    { nivel: 2, titulo: 'Las capas de una hoja',
+      enunciado: ['Cada vez que doblas una hoja por la mitad, las capas se duplican. ¿Las capas que hay después de ', ex('9 dobleces'), ' forman un cuadrado perfecto o un cubo perfecto? ¿Y las de ', ex('10 dobleces'), '?'],
+      datos: [D1.cuenta, D1.cuadrado, D1.cubo],
       solucion: [
-        { texto: '64 = 2⁶, y 6 es par y también múltiplo de 3.', ecuacion: [nu(64), ' = ', px(2, 6)] },
-        { texto: 'La raíz cuadrada lleva la mitad del exponente, 3, y la raíz cúbica lleva un tercio, 2.', ecuacion: [px(2, 6), ' = ', alK(8), SEP, px(2, 6), ' = ', alK(4, 3)] },
+        { texto: ['Cada doblez multiplica por 2 las capas que había, así que después de varios dobleces se multiplicó por 2 tantas veces como dobleces hubo. La base se queda en 2 y el ', ex('exponente'), ' es el número de dobleces: un doblez más solo lo sube en 1.'], ecuacion: [px(2, 9), ' = ', nu(512), SEP, px(2, 10), ' = ', nu(1024)] },
+        { texto: ['Con un solo primo basta mirar su exponente. El ', ex(9), ' es múltiplo de 3, pero es impar, así que 512 es cubo y no cuadrado; el ', ex(10), ' es par, pero no es múltiplo de 3, así que 1 024 es cuadrado y no cubo.'], ecuacion: [px(2, 9), ' = ', alK(8, 3), SEP, px(2, 10), ' = ', alK(32)] },
+        { texto: 'Para que las capas fueran cuadrado y cubo a la vez, el número de dobleces tendría que ser par y múltiplo de 3, es decir, múltiplo de 6.' },
       ],
-      respuesta: ['Las dos: 64 = ', alK(8), ' = ', alK(4, 3)] },
+      respuesta: ['Con 9 dobleces, cubo: ', alK(8, 3), '; con 10, cuadrado: ', alK(32)] },
     { nivel: 3, titulo: 'Completar 540',
       enunciado: '¿Por qué número mínimo hay que multiplicar 540 para obtener un cuadrado perfecto?',
       alternativas: ['15', '30', '5', '3', '540'],
