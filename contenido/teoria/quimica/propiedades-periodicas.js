@@ -319,6 +319,33 @@
       respuesta: [letra('E'), ', el ', Rr('potasio'), ' es el mayor'] },
   ];
 
+  // «En el mundo» de la idea 1 (28 nov; docs/teoria.md, 4k): los alcalinos y el agua, el caso de Gerson. Un nivel más
+  // por fila agranda el átomo, el electrón de afuera queda más lejos y se suelta antes: la reacción es más rápida.
+  // Fuentes: RSC (lección «How do alkali metals react with water?») y LibreTexts («Reactions of Group 1 Elements with
+  // Water»): el litio flota y burbujea, el sodio se funde en una bolita que corre, el potasio enciende el hidrógeno con
+  // llama lila y el rubidio reacciona de inmediato y con violencia. No usa números del juego ni de Predice.
+  const MUNDO_RADIO = {
+    hecho: 'El litio burbujea en el agua; el potasio arde',
+    parrafos: [
+      'Cuando se echa un trocito de litio al agua, el metal flota y suelta burbujas de hidrógeno sin apuro. El sodio, una fila más abajo en el grupo 1, se derrite en una bolita que corre sobre el agua. El potasio, una fila más abajo todavía, reacciona tan rápido que el hidrógeno se enciende con una llama lila.',
+      ['Los tres reaccionan de la misma forma: cada átomo le entrega al agua el único electrón de su último nivel. Cada fila hacia abajo suma un nivel, así que el átomo crece:',
+        { linea: [Rr('r'), ' (Li) < ', Rr('r'), ' (Na) < ', Rr('r'), ' (K)'] },
+        'En el potasio, ese electrón queda más lejos del núcleo que en el litio y está menos sujeto: se suelta antes y el calor sale de golpe.'],
+    ],
+    figura: ESF([3, 11, 19].map(z => atomoE(z)), { rotulo: 'Li, Na y K: cada fila, un nivel más' }),
+    pregunta: {
+      texto: '¿Qué esperas del rubidio, que está justo debajo del potasio en el grupo 1?',
+      opciones: [
+        { id: 'c', texto: 'Reacciona con el agua todavía más rápido que el potasio', correcta: true },
+        { id: 'igual', texto: 'Igual que el potasio: los dos tienen un solo electrón afuera', error: 'QM-MISMO-GRUPO',
+          siFuera: 'Es cierto que los dos tienen un solo electrón en su último nivel, y por eso reaccionan de la misma forma. Pero el rubidio tiene un nivel más, así que ese electrón queda más lejos y se suelta antes.' },
+        { id: 'protones', texto: 'Más lento: sus 37 protones retienen mejor el electrón', error: 'QM-EI-PROTONES',
+          siFuera: 'Es cierto que el rubidio tiene más protones que el potasio. Pero su electrón de afuera está un nivel más lejos, y los niveles de adentro tapan buena parte de esa carga: el núcleo lo sujeta con menos fuerza.' },
+      ],
+      porque: 'El rubidio tiene un nivel más que el potasio, así que es más grande y su electrón de afuera queda más lejos del núcleo: se suelta antes y la reacción es más violenta.',
+    },
+    fuente: 'Alcalinos en agua: Royal Society of Chemistry y LibreTexts; radios calculados de Clementi, Raimondi y Reinhardt (1967).',
+  };
   const radio = {
     id: 'radio-atomico-ionico',
     titulo: 'Radio atómico',
@@ -392,6 +419,7 @@
       voz: 'Niveles hacia abajo, protones hacia la derecha.',
       dibujo: tabla({ propiedad: { valores: valores(RADIO, TODOS), max: 245, forma: 'circulo', color: 'i', nombre: 'radio (pm)' }, rotulo: 'r: radio calculado (pm)' }),
     },
+    mundo: MUNDO_RADIO,
     resuelve: {
       pieza: 'quim-tabla',
       generar(s) {
@@ -631,6 +659,36 @@
       respuesta: [letra('A'), ', el ', Rr('Mg²⁺')] },
   ];
 
+  // «En el mundo» de la idea 2 (28 nov; docs/teoria.md, 4k): el oxígeno es cerca del 47 % de la masa de la corteza y
+  // más del 90 % de su volumen (Mason y Moore, Principles of Geochemistry, 4.ª ed., 1982: la corteza es «un empaque de
+  // aniones de oxígeno» con los cationes en los huecos). Lo explica la regla: el silicio y el aluminio pierden electrones
+  // y se achican; el oxígeno gana y crece. Si⁴⁺: Shannon (1976), NC 6, 40 pm. La pregunta va a otro ion (Al³⁺), que no
+  // está en el juego; los números de Predice (la serie de 10 electrones) no se escriben.
+  const SI4 = { s: 'Si⁴⁺', r: 40, p: 14, e: 10 };
+  const MUNDO_IONES = {
+    hecho: 'En una roca, casi todo el lugar es oxígeno',
+    parrafos: [
+      'Las piedras de un cerro y la arcilla de un adobe están hechas sobre todo de oxígeno y silicio, con algo de aluminio y de otros metales. El oxígeno aporta cerca del 47 % de la masa de la corteza terrestre, pero si se mide el lugar que ocupa cada elemento, llena más del 90 % de su volumen.',
+      ['En las rocas, el silicio y el aluminio no están como átomos sino como cationes, y el oxígeno está como anión. Cada silicio perdió los cuatro electrones de su nivel 3, y cada oxígeno ganó dos que se repelen con los suyos:',
+        { linea: [Rr('r'), ' (Si⁴⁺) < ', Rr('r'), ' (Si)', SEP, Rr('r'), ' (O²⁻) > ', Rr('r'), ' (O)'] }],
+      [`Por eso el radio del ion de oxígeno es más de ${Math.floor(ION['O²⁻'][2] / SI4.r)} veces el del ion de silicio, y una roca es, por dentro, un apilado de oxígenos con los cationes metidos en los huecos.`],
+    ],
+    figura: ESF([atomoE(14, { e: 14 }), SI4, atomoE(8, { e: 8 }), esfIon('O²⁻')], { rotulo: 'Cada átomo junto a su ion' }),
+    pregunta: {
+      texto: 'La arcilla del adobe también tiene iones de aluminio, Al³⁺. ¿Cómo es el Al³⁺ comparado con el átomo de aluminio?',
+      opciones: [
+        { id: 'c', texto: 'Menor: perdió los tres electrones de su nivel 3', correcta: true },
+        { id: 'carga', texto: 'Mayor: ahora tiene tres cargas positivas de más', error: 'QM-ION-RADIO',
+          siFuera: 'Es cierto que el Al³⁺ tiene tres cargas positivas, porque perdió tres electrones. Pero esas cargas no ocupan lugar: con un nivel menos, sus 13 protones jalan más cerca a los 10 electrones que le quedan.' },
+        { id: 'igual', texto: 'Igual: el núcleo del aluminio no cambió', error: 'QM-ION-IGUAL',
+          siFuera: 'Es cierto que el núcleo sigue con sus 13 protones. Pero el tamaño lo dan los electrones, y el aluminio perdió los tres de su nivel 3: su nube termina en el nivel 2, más cerca del núcleo.' },
+        { id: 'crece', texto: 'Mayor, como el oxígeno: los átomos crecen al volverse iones', error: 'QM-ION-CRECE',
+          siFuera: 'Es cierto que el oxígeno crece al volverse ion, porque gana electrones. El aluminio, en cambio, los pierde, y un catión siempre es menor que su propio átomo.' },
+      ],
+      porque: 'El aluminio pierde sus tres electrones del nivel 3, así que el Al³⁺ se queda con dos niveles y sus 13 protones jalan más cerca a los 10 electrones que le quedan.',
+    },
+    fuente: 'Oxígeno en la corteza: Mason y Moore, Principles of Geochemistry (1982); radios iónicos de Shannon (1976).',
+  };
   const radioIonico = {
     id: 'radio-ionico',
     titulo: 'Radio de iones e isoelectrónicos',
@@ -710,6 +768,7 @@
       voz: 'Mismos electrones: decide el núcleo.',
       dibujo: ESF(SERIES[18].map(k => esfIon(k)), { rotulo: '18 electrones: más protones, menor' }),
     },
+    mundo: MUNDO_IONES,
     resuelve: {
       pieza: 'quim-tira',
       generar(s) {
@@ -964,6 +1023,33 @@
       respuesta: [letra('B'), ', grupo 2; la mayor, la de ', Ei('X')] },
   ];
 
+  // «En el mundo» de la idea 3 (28 nov; docs/teoria.md, 4k): el argón de la soldadura TIG. Fronius y otros fabricantes:
+  // el argón es el gas de protección más usado en TIG (también el helio o mezclas), porque es inerte y evita que el baño
+  // de soldadura reaccione con el oxígeno del aire. Lo explica la regla: el argón cierra el periodo 3, con la EI más alta
+  // de su fila (NIST: Ar 1521, Fe 762 kJ/mol; la línea dice «≈ 2 ×», 1521 ÷ 762 = 2,0), y no libera energía al ganar un
+  // electrón. La pregunta va al helio: arriba en el grupo, la EI sube. Sin el fósforo ni el azufre (Predice).
+  const MUNDO_EI = {
+    hecho: 'El argón protege la soldadura del aire',
+    parrafos: [
+      'En la soldadura TIG, con la que se unen piezas de acero inoxidable y de aluminio, la boquilla sopla un chorro de argón sobre el metal fundido. Sin ese gas, el oxígeno del aire reaccionaría con el metal caliente y lo llenaría de óxidos que debilitan la unión.',
+      ['Para reaccionar, el metal tiene que soltar electrones y otro átomo tiene que recibirlos, como hace el oxígeno, que libera energía al ganar uno. El argón cierra el periodo 3, y su energía de ionización, EI, es la más alta de esa fila, muy por encima de la del hierro:',
+        { linea: [EIf, ' (Ar) ≈ 2 × ', EIf, ' (Fe)'] }],
+      ['El argón tampoco libera energía al ganar un electrón, porque su último nivel está lleno, así que ni le quita electrones al metal ni le entrega los suyos.'],
+    ],
+    figura: BARR([26, 18], [18], { rotulo: 'Energía de ionización (kJ/mol)' }),
+    pregunta: {
+      texto: 'En la soldadura TIG también se usa helio, que está en la cima de la columna del argón. ¿Qué esperas de la EI del helio?',
+      opciones: [
+        { id: 'c', texto: 'Es mayor que la del argón: sus electrones están en el nivel 1', correcta: true },
+        { id: 'protones', texto: 'Es menor: tiene 2 protones, y el argón tiene 18', error: 'QM-EI-PROTONES',
+          siFuera: 'Es cierto que el núcleo del helio tiene muchos menos protones. Pero sus dos electrones están en el nivel 1, pegados al núcleo y sin niveles de adentro que tapen su carga, así que arrancar uno cuesta más.' },
+        { id: 'grupo', texto: 'Es igual: los dos son gases nobles', error: 'QM-EI-GRUPO',
+          siFuera: 'Es cierto que los dos son gases nobles y casi no reaccionan. Pero estar en la misma columna no iguala la EI: hacia arriba, el electrón de afuera está más cerca del núcleo y cuesta más arrancarlo.' },
+      ],
+      porque: 'La EI sube hacia arriba en un grupo, porque el electrón de afuera está más cerca del núcleo. En el helio está en el nivel 1, así que arrancarlo cuesta más que en el argón.',
+    },
+    fuente: 'Gas de protección en la soldadura TIG: Fronius; energías de ionización: NIST Atomic Spectra Database.',
+  };
   const ionizacion = {
     id: 'energia-ionizacion',
     titulo: 'Energía de ionización y afinidad electrónica',
@@ -1040,6 +1126,7 @@
       voz: 'Ante la duda, mira el dato.',
       dibujo: barrasEI(TODOS),
     },
+    mundo: MUNDO_EI,
     resuelve: {
       pieza: 'quim-tabla',
       generar(s) {
@@ -1276,6 +1363,42 @@
       respuesta: [letra('C'), ', FVF'] },
   ];
 
+  // «En el mundo» de la idea 4 (28 nov; docs/teoria.md, 4k): el grupo 14, del diamante que no conduce al plomo que sí.
+  // LibreTexts («Group 14: General Properties»): el carbono es no metal, el silicio y el germanio son semiconductores
+  // (la base de diodos y transistores) y el estaño y el plomo, metales. La mina San Rafael (Minsur) está en Antauta,
+  // Melgar, Puno, y saca cerca del 10 % del estaño del mundo (Gestión, Energiminas). El plomo de las baterías de auto,
+  // de memoria (batería de plomo y ácido). La pregunta va al grupo 15 (N gas, Bi metal). Sin el flúor aislado (Predice).
+  const G14 = [['C', 'diamante: no conduce'], ['Si', 'semiconductor: chips'], ['Ge', 'semiconductor'], ['Sn', 'metal: conduce'], ['Pb', 'metal: conduce']];
+  const SVG_G14 = `<svg viewBox="0 0 400 330" width="400" height="330" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <text x="200" y="24" text-anchor="middle" font-size="19" font-weight="800" fill="currentColor">Grupo 14, de arriba abajo</text>
+    ${G14.map(([s, t], i) => `<rect x="70" y="${42 + i * 56}" width="64" height="46" rx="8" fill="currentColor" fill-opacity="${(0.06 + i * 0.07).toFixed(2)}" stroke="currentColor" stroke-width="2"/>
+    <text x="102" y="${72 + i * 56}" text-anchor="middle" font-size="22" font-weight="800" fill="currentColor">${s}</text>
+    <text x="150" y="${71 + i * 56}" font-size="17" style="fill:var(--muted)">${t}</text>`).join('')}
+    <path d="M40 48V306" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M31 292l9 16l9 -16" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <text x="26" y="180" text-anchor="middle" font-size="15" fill="currentColor" transform="rotate(-90 26 180)">más metálico</text>
+  </svg>`;
+  const MUNDO_EN = {
+    hecho: 'De arriba abajo, el grupo 14 se vuelve metal',
+    parrafos: [
+      'El grupo 14 empieza en el carbono, que como diamante no conduce la electricidad. Le siguen el silicio y el germanio, que conducen a medias, como lo piden los chips de tu celular. Abajo están el estaño de la mina San Rafael, en Antauta (Puno), y el plomo de las baterías de auto, dos metales que sí conducen.',
+      ['En un metal, cada átomo suelta con facilidad su electrón de afuera, y esos electrones sueltos son los que llevan la corriente. Hacia abajo en el grupo, cada átomo tiene un nivel más y su electrón de afuera queda más lejos del núcleo, así que el carácter metálico crece:',
+        { linea: ['carácter metálico: C < Si < Ge < Sn < Pb'] }],
+      ['Por eso la misma columna que empieza con un aislante termina con dos metales que se usan en la soldadura de los circuitos y en las baterías.'],
+    ],
+    figura: { svg: SVG_G14, alt: 'La columna del grupo 14 de arriba abajo: el carbono como diamante no conduce, el silicio y el germanio son semiconductores y el estaño y el plomo son metales que conducen. Una flecha hacia abajo dice «más metálico».' },
+    pregunta: {
+      texto: 'Arriba del grupo 15 está el nitrógeno, un gas que no conduce la electricidad. ¿Qué esperas del bismuto, el último elemento de esa columna?',
+      opciones: [
+        { id: 'c', texto: 'Es un metal y conduce la electricidad', correcta: true },
+        { id: 'igual', texto: 'Es un gas, como el nitrógeno de su columna', error: 'QM-MISMO-GRUPO',
+          siFuera: 'Es cierto que los elementos de una columna se parecen, porque tienen el mismo número de electrones en su último nivel. Pero hacia abajo crece el carácter metálico, y el bismuto está cuatro filas más abajo que el nitrógeno.' },
+        { id: 'protones', texto: 'Es un no metal: sus 83 protones retienen sus electrones', error: 'QM-EI-PROTONES',
+          siFuera: 'Es cierto que el bismuto tiene muchos más protones que el nitrógeno. Pero su electrón de afuera está cuatro niveles más lejos, y los electrones de adentro tapan buena parte de esa carga, así que se suelta con facilidad.' },
+      ],
+      porque: 'El carácter metálico crece hacia abajo en un grupo: el bismuto tiene cuatro niveles más que el nitrógeno, su electrón de afuera se suelta con facilidad y por eso es un metal.',
+    },
+    fuente: 'Propiedades del grupo 14: LibreTexts; mina de estaño San Rafael (Antauta, Puno): Minsur, en Gestión y Energiminas.',
+  };
   const electroneg = {
     id: 'electronegatividad',
     titulo: 'Electronegatividad y carácter metálico',
@@ -1361,6 +1484,7 @@
       voz: 'Electronegativo no es negativo: es quien jala más.',
       dibujo: barrasEN(TODOS),
     },
+    mundo: MUNDO_EN,
     resuelve: {
       pieza: 'quim-tabla',
       generar(s) {
