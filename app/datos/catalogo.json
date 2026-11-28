@@ -597,7 +597,7 @@
        "energia-y-rozamiento": "Energía con rozamiento",
        "potencia-y-eficiencia": "Potencia y eficiencia"
       },
-      "terminos": 57
+      "terminos": 59
      },
      "apertura": "/contenido/aperturas/fisica/trabajo-y-energia.js"
     },
@@ -1548,7 +1548,7 @@
        "energia-ionizacion": "Energía de ionización y afinidad electrónica",
        "electronegatividad": "Electronegatividad y carácter metálico"
       },
-      "terminos": 45
+      "terminos": 48
      },
      "apertura": "/contenido/aperturas/quimica/propiedades-periodicas.js"
     },
@@ -2756,7 +2756,7 @@
        "radicales-dobles": "Dos números que suman y multiplican",
        "racionalizar": "Racionalizar es multiplicar por uno"
       },
-      "terminos": 35
+      "terminos": 39
      },
      "apertura": "/contenido/aperturas/algebra/productos-notables.js"
     },
@@ -3818,7 +3818,7 @@
        "reparto": "Repartir según pesos",
        "compania": "Capital por tiempo"
       },
-      "terminos": 25
+      "terminos": 30
      },
      "apertura": "/contenido/aperturas/aritmetica/magnitudes-proporcionales.js"
     },
@@ -4990,7 +4990,7 @@
        "area-y-escala": "Áreas de figuras semejantes",
        "ceva-menelao": "Teoremas de Ceva y Menelao"
       },
-      "terminos": 56
+      "terminos": 60
      },
      "apertura": "/contenido/aperturas/geometria/proporcionalidad-y-semejanza.js"
     },
@@ -5790,7 +5790,7 @@
        "aproximados": "Los ángulos de 37° y 53°",
        "complementarias": "Complementarias y recíprocas"
       },
-      "terminos": 43
+      "terminos": 45
      },
      "apertura": "/contenido/aperturas/trigonometria/razones-trigonometricas-agudas.js"
     },
@@ -7037,7 +7037,7 @@
        "parejas": "Parejas y sumas",
        "llaves": "Llaves y candados"
       },
-      "terminos": 27
+      "terminos": 31
      },
      "apertura": "/contenido/aperturas/razonamiento-matematico/certezas.js"
     },
@@ -7638,7 +7638,7 @@
        "locuciones": "Varias palabras, un conector",
        "varios-espacios": "Varios espacios, una alternativa"
       },
-      "terminos": 27
+      "terminos": 28
      },
      "apertura": "/contenido/aperturas/razonamiento-verbal/conectores.js"
     },
