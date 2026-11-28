@@ -863,15 +863,19 @@
         { texto: ['«Ana quería estudiar Enfermería, pero no sabía qué preguntaban en el examen» cubre solo la 1: ', prop('muy estrecha'), '. «La orientación vocacional en Puno» ', prop('solo nombra'), '.'] },
         { texto: ['La tercera cubre ', cubre('las cuatro'), ': Ana es un caso de ella, porque su colegio pidió la charla.'] }],
       respuesta: [justo('Cada colegio puede pedir a la UGEL una charla de orientación gratuita')] },
-    { nivel: 2, titulo: 'Las colcas de los incas',
-      enunciado: '¿Cuál es la idea principal: «las colcas», «los incas guardaban comida en colcas hechas donde corre el viento frío» o «los incas fueron los mejores constructores de depósitos de toda América»?',
-      datos: [D_IDEA, 'Colca: depósito de piedra para guardar comida.'],
-      figura: fig({ soporte: 'cuaderno', lugar: 'Cuaderno de Diego', hojas: [{ id: 'h', titulo: 'Historia del Perú', de: 'Diego', para: 'estudiar para la práctica', oraciones: ora('h', [
-        'Los incas guardaban comida en depósitos de piedra llamados colcas.', 'Las colcas se hacían en lomas altas, donde corre el viento.', 'El viento frío ayudaba a que el maíz y el chuño no se malograran.']) }] }),
+    // Apertura (la zorra y las uvas; aperturas-para-la-teoria, 28 nov): una fábula propia con animales cuya idea
+    // principal habla de las personas, y el aviso de que quien está en todas las oraciones no siempre es el tema.
+    { nivel: 2, titulo: 'La vizcacha y su pasto',
+      enunciado: 'La vizcacha está en todas las oraciones de esta fábula. ¿Cuál es su idea principal: «la vizcacha y su pasto seco», «quien junta de más puede quedarse sin lo que buscaba» o «con la helada, la vizcacha durmió afuera»?',
+      datos: [D_IDEA, 'Fábula: relato corto con animales que actúan como personas.', 'Vizcacha: roedor de las alturas de los Andes, pariente de la chinchilla.'],
+      figura: fig({ soporte: 'cuaderno', lugar: 'Cuaderno de Kiara', hojas: [{ id: 'h', titulo: 'La vizcacha y el pasto', de: 'Kiara', para: 'el concurso de fábulas del colegio', oraciones: ora('h', [
+        'Una vizcacha juntaba pasto seco para abrigar su cueva en el invierno.', 'Juntó tanto que el pasto llenó la cueva hasta la entrada.',
+        'Las otras vizcachas le decían que ya tenía para dos inviernos, pero ella seguía juntando.', 'Cuando llegó la primera helada, no cabía en su cueva y durmió afuera, junto a su pasto.']) }] }),
       solucion: [
-        { texto: ['«Los incas fueron los mejores constructores de depósitos de toda América» ', prop('agrega'), ': ninguna oración compara a los incas con otros pueblos. «Las colcas» ', prop('solo nombra'), '.'] },
-        { texto: ['«Los incas guardaban comida en colcas hechas donde corre el viento frío» cubre ', cubre('la 1, la 2 y la 3'), ': qué eran, dónde y por qué allí.'] }],
-      respuesta: [justo('Los incas guardaban comida en colcas hechas donde corre el viento frío')] },
+        { texto: ['La vizcacha está en ', cubre('las cuatro oraciones'), ', pero eso no la vuelve el tema: una fábula usa animales para decir algo de lo que hacen las personas.'] },
+        { texto: ['«La vizcacha y su pasto seco» ', prop('solo nombra'), ', y «con la helada, la vizcacha durmió afuera» cubre solo la 4: ', prop('muy estrecha'), '.'] },
+        { texto: ['Juntó pasto para abrigarse y por juntar de más se quedó sin abrigo: la segunda frase cubre ', cubre('las cuatro'), ' y vale para cualquier persona.'] }],
+      respuesta: [justo('Quien junta de más puede quedarse sin lo que buscaba')] },
 
     { nivel: 3, titulo: 'El puente de la comunidad',
       enunciado: 'Pregunta 3 del simulacro: «¿Cuál es la idea principal del texto?». Ninguna oración la dice. ¿Qué alternativa es la correcta?',
