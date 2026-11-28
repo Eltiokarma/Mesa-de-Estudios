@@ -520,13 +520,15 @@ const D_THALES = ['Thales: paralelas que cortan una secante en A, B, C y otra en
       ${txt(165, Yp(0) + 38, 'La línea del arco, vista desde arriba', 'text-anchor="middle" style="fill:var(--muted)"')}
     </svg>`;
   })();
+  // Revisión del Escribidor Escribano (28 nov): «la línea del arquero» pasa a «la bisectriz», el nombre que usa la regla.
+  // Cuentas rehechas: 7,32 · 10/24 = 3,05; 3,66 − 3,05 = 0,61; 7,32 · 12/27 = 3,25.
   const MUNDO2 = {
     hecho: 'El arquero no se para frente al centro del arco',
     parrafos: [
       'Cuando el balón llega por un costado, los entrenadores de arqueros enseñan a pararse sobre la bisectriz del ángulo que forman el balón y los dos postes. Así el arquero queda a la misma distancia de los dos tiros que van pegados a los postes, y no deja más espacio libre de un lado que del otro.',
       [`Esa bisectriz llega a la línea del arco, que mide ${fm(ARCO)} m de poste a poste, en un punto que no es el centro. Si el balón está a ${ARQ.cerca} m de un poste y a ${ARQ.lejos} m del otro, los tramos del arco van en la misma razón que esas distancias:`,
         { linea: [{ frac: [dO(`${fm(ARQ.tc)} m`), dI(`${fm(ARQ.tl)} m`)] }, ' = ', { frac: [dO(`${ARQ.cerca} m`), dI(`${ARQ.lejos} m`)] }] }],
-      `Por eso la línea del arquero llega a ${fm(ARQ.tc)} m del poste cercano, ${fm(Math.round((ARCO / 2 - ARQ.tc) * 100))} cm más cerca de él que el centro del arco, y el arquero se corre hacia ese poste.`,
+      `Por eso la bisectriz llega a ${fm(ARQ.tc)} m del poste cercano, ${fm(Math.round((ARCO / 2 - ARQ.tc) * 100))} cm más cerca de él que el centro del arco, y el arquero se corre hacia ese poste.`,
     ],
     figura: { svg: svgArco,
       alt: `El arco visto desde arriba y un balón a ${ARQ.cerca} m de un poste y a ${ARQ.lejos} m del otro. La bisectriz del ángulo de tiro llega a la línea del arco a ${fm(ARQ.tc)} m del poste cercano y a ${fm(ARQ.tl)} m del lejano.` },
@@ -546,42 +548,54 @@ const D_THALES = ['Thales: paralelas que cortan una secante en A, B, C y otra en
     fuente: 'Arco de 7,32 m: IFAB, Reglas de Juego, regla 1. El arquero sobre la bisectriz del ángulo de tiro: guías de entrenamiento de arqueros.',
   };
 
-  // Idea 3: el eclipse total. Diámetros y distancias medias: NASA (NSSDCA, fichas del Sol y de la Luna).
-  const SOL = { d: 1391400, D: 149600000 }, LUNA = { d: 3475, D: 384400 }, MONEDA = 2.55;
-  const justo = LUNA.d * SOL.D / SOL.d;                      // a esta distancia la Luna tapa justo al Sol
-  const kLuna = LUNA.D / LUNA.d, aMoneda = MONEDA * kLuna;   // la moneda que tapa la Luna llena, en cm
-  const svgEclipse = `<svg viewBox="0 0 330 200" xmlns="http://www.w3.org/2000/svg" font-family="inherit" font-size="13">
-      <path d="M20 100 L300 30 L300 170 Z" style="fill:var(--c-i)" fill-opacity=".1"/>
-      <line x1="20" y1="100" x2="300" y2="30" style="stroke:var(--c-i)" stroke-width="2"/><line x1="20" y1="100" x2="300" y2="170" style="stroke:var(--c-i)" stroke-width="2"/>
-      <line x1="300" y1="30" x2="300" y2="170" style="stroke:var(--c-i)" stroke-width="4"/>
-      <line x1="110" y1="77.5" x2="110" y2="122.5" style="stroke:var(--c-o)" stroke-width="5"/>
-      <circle cx="110" cy="100" r="22.5" fill="none" style="stroke:var(--c-o)" stroke-width="2" stroke-dasharray="4 3"/>
-      <circle cx="20" cy="100" r="6" fill="currentColor"/>
-      ${txt(20, 126, 'ojo', 'text-anchor="middle" fill="currentColor"')}${txt(110, 70, 'Luna', 'text-anchor="middle" style="fill:var(--c-o)" font-weight="700"')}
-      ${txt(292, 100, 'Sol', 'text-anchor="end" style="fill:var(--c-i)" font-weight="700"')}
-      ${txt(165, 194, 'No está a escala.', 'text-anchor="middle" style="fill:var(--muted)"')}
+  // Revisión del Escribidor Escribano (28 nov): el eclipse total estaba también en trigonometria.razones-trigonometricas-
+  // agudas (idea 2) y se queda allá. Aquí, otro hecho de semejanza AA: la relación de proyección (throw ratio); no se
+  // llama «razón» para no chocar con la razón de semejanza k. Datos
+  // verificados en la web el 28 nov: relación de proyección = distancia a la pared ÷ ancho de la imagen (BenQ, «What is
+  // throw ratio for projectors?»; Wikipedia, «Throw (projector)»), fija para un lente sin zoom o con el zoom quieto; los
+  // valores comunes van de 1 a 2. El proyector de razón 1,5 a 3,6 m es un ejemplo propio. Sin los números de la Predice
+  // (4 m) ni de la misión (6 m).
+  const PROY = { razon: 1.5, d1: 3.6, d2: 4.8 };
+  PROY.w1 = PROY.d1 / PROY.razon; PROY.w2 = PROY.d2 / PROY.razon; PROY.k = PROY.d2 / PROY.d1;
+  PROY.mal = PROY.w1 / PROY.k; PROY.suma = PROY.w1 + (PROY.d2 - PROY.d1);
+  const svgProy = (() => {
+    const x0 = 40, y0 = 100, d = 240, w = d / PROY.razon;
+    return `<svg viewBox="0 0 330 245" xmlns="http://www.w3.org/2000/svg" font-family="inherit" font-size="13">
+      <path d="M${x0} ${y0} L${x0 + d} ${r1(y0 - w / 2)} L${x0 + d} ${r1(y0 + w / 2)} Z" style="fill:var(--c-o)" fill-opacity=".1"/>
+      <line x1="${x0}" y1="${y0}" x2="${x0 + d}" y2="${r1(y0 - w / 2)}" style="stroke:var(--c-o)" stroke-width="1.8"/>
+      <line x1="${x0}" y1="${y0}" x2="${x0 + d}" y2="${r1(y0 + w / 2)}" style="stroke:var(--c-o)" stroke-width="1.8"/>
+      <line x1="${x0 + d}" y1="${r1(y0 - w / 2)}" x2="${x0 + d}" y2="${r1(y0 + w / 2)}" style="stroke:var(--c-o)" stroke-width="5"/>
+      <line x1="${x0}" y1="${y0 + w / 2 + 14}" x2="${x0 + d}" y2="${y0 + w / 2 + 14}" style="stroke:var(--c-i)" stroke-width="2"/>
+      <rect x="${x0 - 30}" y="${y0 - 10}" width="30" height="20" rx="3" fill="currentColor" fill-opacity=".6"/>
+      ${txt(x0 - 15, y0 - 16, 'lente', 'text-anchor="middle" fill="currentColor"')}
+      ${txt(x0 + d + 10, y0 + 5, m_(PROY.w1), 'style="fill:var(--c-o)" font-weight="700"')}
+      ${txt(x0 + d / 2, y0 + w / 2 + 32, m_(PROY.d1), 'text-anchor="middle" style="fill:var(--c-i)" font-weight="700"')}
+      ${txt(165, 238, 'El proyector visto desde arriba. No está a escala.', 'text-anchor="middle" style="fill:var(--muted)"')}
     </svg>`;
+  })();
   const MUNDO3 = {
-    hecho: 'La Luna tapa justo al Sol en un eclipse total',
+    hecho: 'Al alejar el proyector, la imagen crece en la pared',
     parrafos: [
-      `El Sol mide unos ${fm(SOL.d)} km de ancho y la Luna, unos ${LUNA.d} km, así que el Sol es unas ${fd(SOL.d / LUNA.d, 0)} veces más ancho. También está unas ${fd(SOL.D / LUNA.D, 0)} veces más lejos de nosotros, y por eso en el cielo los dos se ven casi del mismo tamaño.`,
-      ['Cada astro forma un triángulo con un vértice en tu ojo y su diámetro como el lado de enfrente. Cuando la Luna tapa justo al Sol, los dos triángulos comparten el ángulo del ojo y tienen sus diámetros paralelos, así que son semejantes:',
-        { linea: [{ frac: [dO('diámetro de la Luna'), dO('diámetro del Sol')] }, ' = ', { frac: [dI('distancia de la Luna'), dI('distancia del Sol')] }] }],
-      `Con los datos del Sol y de la Luna, esa igualdad pide que la Luna esté a unos ${fm(Math.round(justo / 100) * 100)} km. Su distancia cambia entre unos 363 300 km y 405 500 km: más cerca, se ve más grande que el Sol y el eclipse es total; más lejos, queda un anillo de Sol alrededor de la Luna.`,
+      `La ficha de un proyector trae un número llamado relación de proyección, que dice cuántas veces cabe el ancho de la imagen en la distancia a la pared. Un proyector de relación ${fm(PROY.razon)}, puesto a ${m_(PROY.d1)} de la pared, da una imagen de ${m_(PROY.w1)} de ancho.`,
+      ['La luz sale del lente como un triángulo, con un vértice en el lente y la imagen como el lado de enfrente. Si alejas el proyector sin tocar el zoom, el ángulo del lente y los ángulos de los bordes de la imagen no cambian, así que el triángulo nuevo es semejante al de antes:',
+        { linea: [{ frac: [dO('ancho de la imagen'), dI('distancia a la pared')] }, ' = ', { frac: [dO(m_(PROY.w1)), dI(m_(PROY.d1))] }] }],
+      'Por eso la ficha trae un solo número: con él, quien instala el proyector sabe a qué distancia ponerlo para que la imagen llene la pizarra del aula.',
     ],
-    figura: { svg: svgEclipse, alt: 'Dos triángulos con el vértice en el ojo: uno llega a la Luna, cerca y chica, y otro al Sol, lejos y grande. Los diámetros son paralelos y la Luna cubre justo el ángulo del Sol.' },
+    figura: { svg: svgProy, alt: `El proyector visto desde arriba: la luz sale del lente como un triángulo y llega a la pared, a ${m_(PROY.d1)}, con una imagen de ${m_(PROY.w1)} de ancho.` },
     pregunta: {
-      texto: `Una moneda de un sol mide ${fm(MONEDA)} cm de ancho. ¿A qué distancia de tu ojo tapa justo la Luna llena, cuando está a ${fm(LUNA.D)} km?`,
+      texto: `El profesor aleja ese proyector hasta ${m_(PROY.d2)} de la pared, sin tocar el zoom. ¿Cuánto mide ahora el ancho de la imagen?`,
       opciones: [
-        { id: 'c', texto: `A unos ${fd(aMoneda / 100, 1)} m`, correcta: true },
-        { id: 'brazo', texto: 'Con el brazo estirado, a unos 60 cm', error: 'luna-grande',
-          siFuera: `Es cierto que la Luna llena parece grande en el cielo. Pero el triángulo de la moneda tiene que copiar el de la Luna, y su distancia es unas ${fd(kLuna, 0)} veces su ancho.` },
-        { id: 'invertida', texto: `A unos ${fd(MONEDA / kLuna * 10, 1)} mm, casi pegada al ojo`, error: 'k-al-reves',
-          siFuera: `Usar la razón de la Luna está bien. Pero se aplicó al revés: la distancia es unas ${fd(kLuna, 0)} veces el ancho, así que se multiplica ${fm(MONEDA)} cm por ${fd(kLuna, 0)}, no se divide.` },
+        { id: 'c', texto: m_(PROY.w2), correcta: true },
+        { id: 'igual', texto: `${m_(PROY.w1)}, porque el proyector es el mismo`, error: 'GE-SEM-igual',
+          siFuera: 'Es cierto que el lente y su ángulo no cambiaron. Pero con el mismo ángulo, un triángulo más largo también es más ancho: la imagen crece con la distancia.' },
+        { id: 'suma', texto: `${m_(PROY.suma)}, porque crece ${m_(PROY.d2 - PROY.d1)}, como la distancia`, error: 'GE-SEM1',
+          siFuera: `Ver que la imagen crece está bien. Pero en triángulos semejantes los lados se multiplican por el mismo k, no se les suma lo mismo: ${m_(PROY.d2)} son 4/3 de ${m_(PROY.d1)}.` },
+        { id: 'inversa', texto: `${m_(PROY.mal)}, con k = 3/4`, error: 'k-al-reves',
+          siFuera: `Usar la razón entre las distancias está bien. Pero se aplicó al revés: al alejarse, la imagen crece, así que ${m_(PROY.w1)} se multiplica por 4/3, no por 3/4.` },
       ],
-      porque: `Los dos triángulos tienen que ser semejantes: la distancia de la moneda es ${fd(kLuna, 1)} veces su ancho, como la de la Luna. ${fm(MONEDA)} cm × ${fd(kLuna, 1)} son unos ${fd(aMoneda / 100, 1)} m.`,
+      porque: `Los dos triángulos son semejantes con k = ${m_(PROY.d2)} ÷ ${m_(PROY.d1)} = 4/3, y el ancho se multiplica por el mismo k: ${m_(PROY.w1)} × 4/3 = ${m_(PROY.w2)}.`,
     },
-    fuente: 'Diámetros y distancias del Sol y de la Luna: NASA, fichas de datos (NSSDCA). Moneda de S/ 1 de 25,50 mm: BCRP, cono monetario.',
+    fuente: 'Relación de proyección (throw ratio): distancia a la pared entre ancho de la imagen (BenQ, «What is throw ratio for projectors?»).',
   };
 
   // Idea 4: la cámara oscura (cámara estenopeica). Triángulos cruzados en el agujero: la imagen sale de cabeza.
