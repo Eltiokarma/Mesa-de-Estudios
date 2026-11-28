@@ -271,6 +271,11 @@
       fuente: 'Las pulgadas de un televisor son su diagonal (guías de compra de LG y Samsung Perú); 1 pulgada = 2,54 cm.',
     };
 
+    // Revisión del Escribidor Escribano (28 nov): las dos tangentes muestran que a su distancia media la Luna se ve un
+    // poco más chica que el Sol (0,0045 contra 0,0047), y el texto decía que lo tapa «casi justo» sin decir cuándo es total:
+    // ahora lo dice (solo cuando pasa más cerca que su distancia media; si no, el eclipse es anular). El «porque» daba
+    // 221 cm dividiendo entre 0,0045, que da 222: ahora da los mismos 2,2 m de la opción. El eclipse se queda aquí y sale
+    // de geometria.proporcionalidad-y-semejanza.
     // 2. Eclipse total: radio entre distancia, para la Luna y para el Sol (fichas de la NASA).
     const LUNA = { r: 1737, d: 384400 }, SOL = { r: 696000, d: 149.6e6 };
     const tL = LUNA.r / LUNA.d, tS = SOL.r / SOL.d, MON = 1;   // la moneda: 1 cm de radio
@@ -282,7 +287,7 @@
         ['Desde tu ojo, el radio de cada disco y su distancia forman un triángulo rectángulo con un ángulo ', thN, ' muy pequeño. Su tangente divide el radio entre la distancia, y da casi lo mismo para los dos:',
           { linea: tanEc('Luna', '1 737 km', '384 400 km', tL) },
           { linea: tanEc('Sol', '696 000 km', '149,6 millones de km', tS) },
-          'Con casi la misma tangente, el ángulo también es casi el mismo, aunque el Sol sea muchísimo más grande.'],
+          'Como la de la Luna sale un poco menor, el eclipse es total solo si la Luna pasa más cerca que de costumbre.'],
       ],
       pregunta: {
         texto: `Una moneda de ${f(2 * MON)} cm de ancho tiene ${f(MON)} cm de radio. ¿A qué distancia de tu ojo tapa justo a la Luna llena?`,
@@ -295,7 +300,7 @@
           { id: 'nunca', texto: 'A ninguna, porque la moneda es mucho más chica', error: 'RAZ-TAMANO',
             siFuera: 'Es cierto que la moneda es muchísimo más chica que la Luna. Pero lo que ves en el cielo es el ángulo, y el ángulo depende del cociente entre el radio y la distancia, no del tamaño solo.' },
         ],
-        porque: `Para tapar justo a la Luna, la moneda necesita su mismo ángulo y, por eso, la misma tangente. Su distancia sale de dividir ${f(MON)} cm entre ${f(tL, 4)}: unos ${f(Math.round(MON / tL), 0)} cm.`,
+        porque: `Para tapar justo a la Luna, la moneda necesita su mismo ángulo y, por eso, la misma tangente. Su distancia sale de dividir ${f(MON)} cm entre ${f(tL, 4)}: unos ${f(MON / tL / 100, 1)} m.`,
       },
       fuente: 'El Sol, unas 400 veces más ancho y más lejos que la Luna (NASA Space Place; CfA Harvard); radios y distancias de NASA.',
     };
@@ -384,6 +389,8 @@
       fuente: 'Kefrén: base de 215,25 m, altura original de 143,5 m y cara de 53°10′ (Wikipedia; Pleiades; NOVA, PBS).',
     };
 
+    // Revisión del Escribidor Escribano (28 nov): «la dejaron con 3,97°» pasa a «hoy se inclina 3,97°»: la obra la dejó cerca
+    // de 3,99° y la cifra de 3,97° es posterior (por confirmar la fecha exacta). Cuenta rehecha: 56 · sen 3,97° ≈ 3,88 m.
     // 5. Torre de Pisa: 3,97° con la vertical y unos 56 m de largo; el ángulo con el suelo es el complemento.
     const TORRE = 56, INC = 3.97, SUELO = 90 - INC, DESP = TORRE * Math.sin(INC * RAD);
     const pisa = (() => {
@@ -405,7 +412,7 @@
     const complementarias = {
       hecho: 'La torre de Pisa se inclina casi 4 grados',
       parrafos: [
-        `La torre de Pisa, en Italia, mide unos ${TORRE} m de largo y se inclinó porque el suelo blando se hundió más de un lado. Entre 1993 y 2001, los ingenieros sacaron tierra de debajo del lado más alto, la enderezaron un poco y la dejaron con ${f(INC)}° de inclinación respecto de la vertical.`,
+        `La torre de Pisa, en Italia, mide unos ${TORRE} m de largo y se inclinó porque el suelo blando se hundió más de un lado. Entre 1993 y 2001, los ingenieros sacaron tierra de debajo del lado más alto, la enderezaron un poco, y hoy se inclina ${f(INC)}° respecto de la vertical.`,
         [`Desde los ${f(INC)}° de arriba, el desplazamiento queda enfrente; desde los ${f(SUELO)}° que la torre forma con el suelo, lo toca. Los dos ángulos suman 90°, así que la misma división tiene dos nombres:`,
           { linea: [junto([`sen ${f(INC)}° = cos ${f(SUELO)}° = `]), { frac: [[dI('desplazamiento')], [`${TORRE} m`]] }] },
           { linea: [junto([dI('desplazamiento'), ` = ${TORRE} m × sen ${f(INC)}° ≈ ${f(DESP, 1)} m`])] },
