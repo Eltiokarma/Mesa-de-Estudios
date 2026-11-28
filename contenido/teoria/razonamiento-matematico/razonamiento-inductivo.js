@@ -860,7 +860,7 @@
   // ---------- Ejemplos resueltos de «Cada caso con su lugar» ----------
   // Comprobados al cargar (RECT, tri) y aparte en scratchpad e8-rm/verificar.py, que arma cada figura chapita por chapita:
   // 1 → 42 · 2 → 80 · 3 → 10 · 4 → 64 · 5 → no: 4, después 6 · 6 → figura 8 · 7 → 56 · 8 → 55 · 9 → n × (n + 2) · 10 →
-  // figura 9 · 11 → 420 (C) · 12 → 135 (D) · 13 → 20 (E) · 14 → 33 (A) · 15 → 225 (B).
+  // 91 cuadrados (cuadrícula de 6 × 6) · 11 → 420 (C) · 12 → 135 (D) · 13 → 20 (E) · 14 → 33 (A) · 15 → 225 (B).
   function ejRect(nivel, titulo, forma, k, extra = {}) {
     const R = RECT[forma], v = [1, 2, 3].map(R.f);
     return ejemplo(Object.assign({ nivel, titulo, caso: kRect(forma, k),
@@ -871,6 +871,12 @@
       respuesta: [F(pl(R.f(k), CHAP))] }, extra));
   }
   const tang = n => 3 * tri(n - 1);
+  // Cuadrados de todos los tamaños en una cuadrícula de n × n, contados bloque por bloque (cada esquina y cada lado).
+  const CUAD_TODOS = n => { let c = 0; for (let k = 1; k <= n; k++) for (let x = 0; x + k <= n; x++) for (let y = 0; y + k <= n; y++) c++; return c; };
+  if (CUAD_TODOS(1) !== 1 || CUAD_TODOS(2) !== 5 || CUAD_TODOS(6) !== 91 || CUAD_TODOS(6) !== 36 + 25 + 16 + 9 + 4 + 1) throw new Error('ejemplo de la cuadrícula');
+  // Cuadrículas de fósforos de 1 × 1, 2 × 2…, una junto a otra (el planteamiento: sin contar nada).
+  const palitosCuad = n => { const ps = []; for (let i = 0; i <= n; i++) for (let j = 0; j < n; j++) ps.push([j, i, j + 1, i], [i, j, i, j + 1]); return ps; };
+  const figCuad = ns => ({ pieza: PZ, datos: { escena: 'fosforos', alto: Math.max(...ns), unidad: 30, figuras: ns.map(n => ({ titulo: `${n} × ${n}`, palitos: palitosCuad(n) })) }, estado: {} });
   if (RECT.rect1.f(20) !== 420 || tang(10) !== 135 || tri(20) !== 210 || RECT.rect2.f(16) - RECT.rect2.f(15) !== 33 || RECT.cuad1.f(14) !== 225
     || RECT.rect1.f(8) !== 72 || RECT.rect2.f(9) !== 99 || RECT.rect3.f(6) !== 56 || tri(10) !== 55) throw new Error('ejemplos de la idea 3');
   const EJEMPLOS_CADA = [
@@ -906,12 +912,18 @@
       solucion: [{ texto: 'Escribo cada caso como filas por columnas, con su lugar.', ecuacion: ['1 × 3, 2 × 4, 3 × 5, 4 × 6'] },
         { texto: 'Las filas son el lugar; las columnas, dos más.', ecuacion: [F('n × (n + 2)')] }],
       respuesta: [F('n × (n + 2)')] }),
-    ejemplo({ nivel: 2, titulo: 'La figura de 99 chapitas', caso: kRinv('rect2', 9),
-      enunciado: 'Con chapitas en filas iguales, las figuras 1, 2 y 3 tienen 3, 8 y 15 chapitas. ¿Qué figura tiene 99 chapitas?',
-      datos: [D_LUGAR], figura: figRect('rect2', [1, 2, 3]),
-      solucion: [{ texto: 'Las figuras son 1 × 3, 2 × 4 y 3 × 5: la figura n es n × (n + 2).' },
-        { texto: 'Busco dos números que se diferencien en 2 y den 99.', ecuacion: ['9 × 11 = 99'] }],
-      respuesta: [F('La figura 9')] }),
+    // Apertura (los cuadrados del tablero; aperturas-para-la-teoria, 28 nov): cuadrados de todos los tamaños en una
+    // cuadrícula de n × n, por casos chicos y con el porqué. No da el 3 × 3 de la pregunta de la apertura ni el 204, y
+    // evita el 4 × 4 (30) porque 30 es la misión de esta idea. CUAD_TODOS cuenta bloque por bloque, arriba se comprueba.
+    ejemplo({ nivel: 2, titulo: 'Cuadrados de todos los tamaños', caso: 'cuadricula|6',
+      enunciado: 'Con fósforos se arman cuadrículas de n × n, como las casillas de un tablero. Contando los cuadrados de todos los tamaños, la de 1 × 1 tiene 1 y la de 2 × 2 tiene 5. ¿Cuántos tiene la de 6 × 6?',
+      datos: ['Un cuadrado de la cuadrícula es una casilla o un bloque de k × k casillas.'], figura: figCuad([1, 2, 3]),
+      solucion: [{ texto: ['En la de 2 × 2, los 5 son ', O('4 casillas'), ' y ', I('1 bloque de 2 × 2'), ': cada tamaño se cuenta aparte, y los bloques grandes se montan sobre las casillas.'],
+        ecuacion: ['5 = ', O('2 × 2'), ' + ', I('1 × 1')] },
+        { texto: 'El porqué: en una cuadrícula de n × n, un bloque de k × k cabe en n − k + 1 lugares a lo ancho y en otros tantos a lo alto.' },
+        { texto: 'En la de 6 × 6 caben 6 × 6 casillas, 5 × 5 bloques de 2 × 2, y así hasta 1 bloque de 6 × 6:',
+          ecuacion: ['36 + 25 + 16 + 9 + 4 + 1 = ', F(f0(CUAD_TODOS(6)))] }],
+      respuesta: [F(`${f0(CUAD_TODOS(6))} cuadrados`)] }),
     // Nivel 3 (tipo examen), con alternativas por su valor. Letras: C, D, E, A, B.
     ejRect(3, 'La figura 20', 'rect1', 20, { alternativas: ['400 chapitas', '78 chapitas', '420 chapitas', '462 chapitas', '220 chapitas'], correcta: '420 chapitas',
       explica: '400 es 20 × 20, sin la columna de más; 78 suma siempre 4; 462 es la figura 21; 220 junta dos figuras 10.' }),

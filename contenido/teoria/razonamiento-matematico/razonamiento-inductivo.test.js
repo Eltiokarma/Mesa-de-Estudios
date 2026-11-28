@@ -62,6 +62,12 @@ function polinomio(t) {
 function resolver(t) {
   let m;
   t = t.replace(/[  ]/g, ' ').replace(/(\d) (?=\d{3}(?!\d))/g, '$1');
+  // Idea 3, la cuadrícula de la apertura: cuadrados de todos los tamaños, contados esquina por esquina.
+  if ((m = t.match(/cuadrículas de n × n.*¿Cuántos tiene la de (\d+) × \1\?/))) {
+    const n = +m[1]; let c = 0;
+    for (let k = 1; k <= n; k++) for (let x = 0; x + k <= n; x++) for (let y = 0; y + k <= n; y++) c++;
+    return c;
+  }
   // Idea 1
   const fo = formaDe(t);
   if (fo && /fósforos/.test(t)) {
