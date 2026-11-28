@@ -728,14 +728,19 @@
     pieza: 'alg-reparto',
     aprendizaje: 'Una diferencia de cuadrados, un cuadrado perfecto o dos cubos se factorizan leyendo al revés su producto, hasta que cada factor sea primo.',
     actividad: 'Elegir el lado de un piso cuadrado y cuántas tiras comprar para armarlo.',
-    // Lee: el piso cuadrado, el cuadrado de un binomio (de Productos notables) y qué mirar. No dice nada de una diferencia
-    // de cuadrados ni de cuándo se termina de factorizar (la predicción).
+    // Lee: el piso cuadrado, el cuadrado de un binomio (de Productos notables), el rearmado de la L (la suma por la
+    // diferencia, también de Productos notables) y qué mirar. No dice cuándo se termina de factorizar (la predicción).
     lee: {
       tarjetas: [
         { titulo: 'Un piso cuadrado', texto: 'Rubén tiene 1 loseta y 9 cuadraditos. Quiere un piso cuadrado, con el ancho igual al largo, y puede comprar las tiras que le falten.',
           pieza: 'alg-losetas', dibujo: LO({ objeto: 'pedido', filas: [{ nombre: 'Pedido', cuenta: [1, 0, 9] }] }) },
-        { titulo: 'Lo viste en Productos notables', texto: 'El cuadrado de un binomio son cuatro piezas: dos cuadrados y dos rectángulos iguales. Al revés, si reconoces esas piezas, escribes el producto sin buscarlo. Lo mismo con la suma por la diferencia: (a + b)(a − b) = a² − b².',
+        { titulo: 'Lo viste en Productos notables', texto: 'El cuadrado de un binomio son cuatro piezas: dos cuadrados y dos rectángulos iguales. Al revés, si reconoces esas piezas, escribes el producto sin buscarlo.',
           ecuacion: ['(a + b)² = a² + 2ab + b²'] },
+        // El rearmado de la L (28 nov, puente con la apertura del cuadrado mordido): el triplay de Productos notables, con
+        // letras y sin números, para que no responda la pregunta de la apertura (8 y 2) ni la predicción (x⁴ − 16).
+        { titulo: 'Una L que se vuelve rectángulo', texto: 'A un cuadrado de lado a le cortas una esquina cuadrada de lado b, y queda una L de área a² − b². Si cortas la tira de abajo, la giras y la pegas al costado, la L se vuelve un rectángulo de a + b de largo por a − b de ancho, sin perder nada.',
+          ecuacion: ['a² − b² = (a + b)(a − b)'],
+          pieza: 'alg-objeto', dibujo: { pieza: 'alg-objeto', datos: { objeto: 'triplay', a: 5, b: 2, f: 1, unidad: '', ladoB: 'b', largo: 'a + b', corto: 'a − b' }, estado: {} } },
         { titulo: 'Qué mirar al jugar', texto: 'Vas a elegir el lado y las tiras. Mira qué lado arman los 9 cuadraditos y cuántas tiras pide ese piso.' },
       ],
     },
@@ -2505,7 +2510,7 @@
     version: '0.3.1',
     calidad: 2,
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/alg-baldosas.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-losetas.js', '/nucleo/kit/piezas/alg-reparto.js'],
+    requiere: ['/nucleo/kit/piezas/alg-objeto.js', '/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/alg-baldosas.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-losetas.js', '/nucleo/kit/piezas/alg-reparto.js'],
     colores: COLORES,
     letras: LETRAS,
     laboratorio: LAB,
