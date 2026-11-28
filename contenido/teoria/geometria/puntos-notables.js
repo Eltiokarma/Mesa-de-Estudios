@@ -907,6 +907,8 @@
         { titulo: 'Tres casas y un tanque', texto: 'Una comunidad quiere un tanque de agua a la misma distancia de sus tres casas, para que los tres tubos midan igual. Las casas son A, B y C; el tanque es P.',
           pieza: GO, dibujo: figO(figCasas([50, 40])) },
         { titulo: 'La mediatriz, otra vez', texto: 'La mediatriz de un segmento es la recta perpendicular que pasa por su punto medio. Cada punto de la mediatriz de BC está igual de lejos de B que de C.' },
+        // Apertura (28 nov): el doblez de esquina sobre esquina es la mediatriz. No dice dónde se cruzan (la predicción).
+        { titulo: 'Doblar esquina sobre esquina', texto: 'Con papel puedes marcar una mediatriz sin regla: dobla el triángulo de modo que la esquina B caiga justo encima de la esquina C. Al desdoblar, la raya del doblez corta BC por su mitad y en ángulo recto, porque las dos mitades de BC quedaron una encima de la otra: es la mediatriz de BC.' },
         { titulo: 'Qué mirar al jugar', texto: 'Mueve el tanque P y compara las tres distancias PA, PB y PC. Busca el lugar donde las tres miden igual.' },
       ],
     },
@@ -1330,6 +1332,8 @@
         { titulo: 'Un parque y su pileta', texto: 'En un parque triangular se quiere la pileta redonda más grande posible, sin pisar ninguna vereda. P es su centro y r, su radio.',
           pieza: GO, dibujo: figO(figParque([5, 4], 2)) },
         { titulo: 'La distancia a un lado', texto: 'La distancia de un punto a una vereda se mide a escuadra, por el camino más corto. Además, cada punto de una bisectriz está igual de lejos de los dos lados de su ángulo.' },
+        // Apertura (28 nov): el doblez de lado sobre lado es la bisectriz. No dice cuánto mide una tangente (la predicción).
+        { titulo: 'Doblar lado sobre lado', texto: 'Con papel también puedes marcar una bisectriz: dobla el triángulo por la esquina A de modo que el lado AB quede a lo largo del lado AC. Al desdoblar, la raya del doblez parte el ángulo A en dos ángulos iguales, porque esas dos partes quedaron una encima de la otra: es la bisectriz de A.' },
         { titulo: 'Qué mirar al jugar', texto: 'Mueve el centro P y cambia el radio r. La lectura dice qué veredas toca la pileta y cuánto le falta para tocar la siguiente.' },
       ],
     },
