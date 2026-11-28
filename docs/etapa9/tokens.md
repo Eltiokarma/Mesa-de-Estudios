@@ -105,3 +105,4 @@ contra los límites semanales de los planes.
 | aperturas química y geometría (16) | coherencia con la unidad | 187 560 | 5 min 43 s | 40 herramientas |
 | aperturas RM y verbal (12) | coherencia con la unidad | 161 689 | 6 min 16 s | 43 herramientas |
 | aperturas física y trigonometría (17) | coherencia con la unidad | 207 399 | 7 min 19 s | 60 herramientas |
+| teoría RM y verbal (6 unidades) | ejemplo que responde la apertura | 297 537 | 17 min 53 s | 78 herramientas |
