@@ -256,8 +256,8 @@
 
   // ---------- Idea 1 (rehecha, 18 nov): partículas, isótopos e iones ----------
   // Propuesta aprobada: docs/etapa4/propuesta-quimica.md (§3 a §8, idea 1), con todas sus recomendaciones
-  // (docs/etapa4/decisiones.md). Objeto de la primera pantalla: el hueso de la llama del museo (el de la idea 6 de Materia
-  // y energía) y, por una lupa, dos átomos de su carbono (pieza quim-objeto, dibujo de prueba; los átomos con la paleta
+  // (docs/etapa4/decisiones.md). Objeto de la primera pantalla: el hueso de alpaca del museo (como el de la idea 6 de
+  // Materia y energía; aperturas, 28 nov: «llama» se cruzaba con la llama del fuego de la apertura) y, por una lupa, dos átomos de su carbono (pieza quim-objeto, dibujo de prueba; los átomos con la paleta
   // 'zne' de quim-atomo).
   // Cambia: protones (Z) y neutrones (N) del átomo que arma el alumno · Permanece: el carbono-12 del hueso, a la
   // izquierda, para comparar · Progresa: de nombrar el elemento por Z a contar A = Z + N · Se reserva: los electrones
@@ -271,7 +271,14 @@
   // N son los neutrones (A = Z + N, la notación de los libros): el nitrógeno va siempre por su nombre o con su número de
   // masa (¹⁴N), nunca como «N» suelto (decisiones del 18 nov, pregunta 7; estructura-atomica.test.js lo revisa).
   const ATOMO = o => ({ pieza: 'quim-atomo', datos: Object.assign({ paleta: 'zne' }, o), estado: {} });
-  const HUESO = (o, estado) => ({ pieza: 'quim-objeto', datos: Object.assign({ objeto: 'hueso' }, o), estado: estado || {} });
+  // Aperturas (28 nov): el hueso es de alpaca, no de llama (la apertura usa «llama» como fuego). La pieza quim-objeto trae
+  // «llama» en su título y su texto alternativo por omisión; aquí van los dos, con el mismo armado de quim-atomo.
+  const altAtomoHueso = a => {
+    const oc = k => (a.oculto || []).includes(k), e = a.e === undefined ? a.Z - (a.carga || 0) : a.e;
+    return `${a.titulo || 'átomo'}: ${oc('Z') ? 'protones sin contar («?»)' : `${f(a.Z)} protones`}${oc('N') ? ' y neutrones sin contar («?»)' : ` y ${f(a.N)} neutrones`} en el núcleo; afuera, ${oc('e') ? 'electrones sin contar («?»)' : `${f(e)} electrones`}`;
+  };
+  const altHueso = o => `Un hueso de alpaca sobre la repisa de un museo; una lupa baja a dos átomos de su carbono, con el núcleo contado y los electrones alrededor (modelo, no a escala). ${(o.atomos || []).map(altAtomoHueso).join('. ')}.`;
+  const HUESO = (o, estado) => ({ pieza: 'quim-objeto', datos: Object.assign({ objeto: 'hueso', titulo: 'Hueso de alpaca del museo', alt: altHueso(o) }, o), estado: estado || {} });
   const nuclido = (z, a, q = 0) => `${sup(a)}${SIMB[z]}${carga(q)}`;
   const DF1 = {
     masa: ['A = ', Z, ' + ', N],
@@ -561,7 +568,7 @@
     // Lee: el hueso, las tres partículas y los tres números. No dice qué le pasa a un átomo que pierde un electrón.
     lee: {
       tarjetas: [
-        { titulo: 'El hueso del museo', texto: 'En un museo hay un hueso de llama muy antiguo. Su carbono es de dos clases: casi todo es carbono-12, y hay un poco de carbono-14. Si las dos clases son carbono, ¿en qué se diferencian sus átomos?',
+        { titulo: 'El hueso del museo', texto: 'En un museo hay un hueso de alpaca muy antiguo. Su carbono es de dos clases: casi todo es carbono-12, y hay un poco de carbono-14. Si las dos clases son carbono, ¿en qué se diferencian sus átomos?',
           pieza: 'quim-objeto', dibujo: HUESO({ atomos: [{ Z: 6, N: 6, titulo: 'carbono-12', oculto: ['Z', 'N', 'e'] }, { Z: 6, N: 8, titulo: 'carbono-14', oculto: ['Z', 'N', 'e'] }] }) },
         { titulo: 'Tres partículas', texto: 'En el centro del átomo está el núcleo, con protones de carga positiva y neutrones sin carga. Alrededor se mueven los electrones, de carga negativa, que el núcleo atrae porque las cargas opuestas se atraen. Casi toda la masa del átomo está en el núcleo: un protón tiene unas 1836 veces la masa de un electrón.',
           pieza: 'quim-atomo', dibujo: ATOMO({ atomos: [{ Z: 2, N: 2, titulo: 'un átomo de helio' }] }) },
@@ -621,12 +628,12 @@
     // nombrar la radiactividad beta: decisiones del 18 nov, pregunta 13).
     mira: {
       pieza: 'quim-objeto',
-      datos: { objeto: 'hueso', lugares: 2, flecha: { desde: 3 }, atomos: [
+      datos: HUESO({ lugares: 2, flecha: { desde: 3 }, atomos: [
         { Z: 6, N: 6, titulo: 'carbono-12', rotulo: 'A = 12', lugar: 0, desde: 1, hasta: 2 },
         { Z: 6, N: 8, titulo: 'carbono-14', rotulo: 'A = 14', lugar: 1, desde: 1, hasta: 2 },
         { Z: 6, N: 8, titulo: 'carbono-14', rotulo: 'A = 14', lugar: 0, desde: 3 },
         { Z: 7, N: 7, titulo: 'nitrógeno-14', rotulo: 'A = 14', lugar: 1, desde: 3 },
-      ] },
+      ] }).datos,
       voz: 'Miremos los átomos del hueso hoy y miles de años después.',
       pasos: [
         { estado: { corte: 1 }, texto: 'En el hueso hay mucho carbono-12 y un poco de carbono-14, y los dos son carbono porque tienen 6 protones.', ecuacion: [Z, ' = ', Pz(6), ' en los dos: los dos son carbono'] },
@@ -897,14 +904,18 @@
         { texto: 'Son dos saltos distintos, con energías distintas: dos colores fijos.' },
       ],
       respuesta: 'Dos veces, cada una de un color fijo' },
-    { nivel: 2, titulo: 'Los modelos en orden',
-      enunciado: 'Ordena del más antiguo al más nuevo los modelos de Bohr, Dalton, Rutherford y Thomson.',
-      datos: [ANIOS],
+    // Apertura (28 nov, docs/etapa9/aperturas-para-la-teoria.md): cada elemento tiene sus propios niveles y por eso su propia
+    // luz (prueba de llama: sodio amarillo, estroncio rojo). Reemplaza al de «Los modelos en orden»: el orden por años
+    // sigue en Mira y en los de nivel 3.
+    { nivel: 2, titulo: 'La firma de cada elemento',
+      enunciado: 'En la prueba de llama, una sal de sodio pinta la llama de amarillo y una de estroncio, de rojo. Con los niveles de energía de Bohr, ¿cómo se explica que cada elemento dé su propio color?',
+      datos: ['Para Bohr, un nivel más alto tiene más energía', 'Cada salto hacia abajo suelta luz de un color fijo', 'El color de la luz depende de su energía'],
       solucion: [
-        { texto: 'Comparo los años: 1808 (Dalton), 1904 (Thomson), 1911 (Rutherford) y 1913 (Bohr).' },
-        { texto: 'Cada uno corrigió al anterior con una evidencia nueva, así que el orden de los años es también el orden de las ideas.' },
+        { texto: 'El calor de la llama sube algunos electrones a niveles más altos, y al bajar sueltan la diferencia de energía como luz.' },
+        { texto: 'Los niveles dependen del núcleo y de los electrones de cada átomo, así que el sodio y el estroncio tienen niveles distintos. Sus saltos sueltan energías distintas: dos colores distintos.' },
+        { texto: 'Como un átomo de sodio tiene siempre los mismos niveles, su luz sale siempre amarilla. Por eso el color sirve de firma para reconocer el elemento.' },
       ],
-      respuesta: 'Dalton, Thomson, Rutherford y Bohr' },
+      respuesta: 'Cada elemento tiene sus propios niveles de energía' },
     { nivel: 3, titulo: 'Verdadero o falso: Dalton',
       enunciado: 'Sobre el modelo de Dalton: I. Los átomos de un elemento son iguales. II. Tenía electrones adentro. III. Hoy se sabe que el átomo sí se divide.',
       alternativas: ['VVV', 'VFV', 'FFV', 'VFF', 'FVF'],
