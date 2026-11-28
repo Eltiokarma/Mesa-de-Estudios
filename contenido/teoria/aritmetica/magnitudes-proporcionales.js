@@ -144,6 +144,51 @@
       ecuacion: ['directa: ', { llave: [{ frac: [y, x] }], nota: 'cociente' }, ' = ', k, '   ·   ', 'inversa: ', { llave: [x, ' · ', y], nota: 'producto' }, ' = ', k],
       condicion: 'crecer juntas no basta: y = 2x + 3 crece y no es proporcional. En la inversa, x no puede ser 0.',
     },
+    // En el mundo (docs/teoria.md, 4k): la bicicleta con cambios. Dientes del piñón (x, naranja) por vueltas de la rueda
+    // (y, turquesa) dan siempre los dientes del plato (k, verde): una inversa que no repite obreros, tortuga, papa ni camión.
+    mundo: {
+      hecho: 'El piñón grande de la bicicleta sirve para subir',
+      parrafos: [
+        ['En una bicicleta con cambios, la cadena une el plato de los pedales con uno de los piñones de la rueda de atrás. ',
+          'Cada vez que los pedales dan una vuelta completa, el plato empuja la cadena tantos eslabones como dientes tiene; con un plato de ',
+          { v: 'c-d', t: '44 dientes' }, ', la cadena avanza 44 eslabones.'],
+        ['Esos 44 eslabones pasan también por el piñón, y cada vuelta de la rueda gasta tantos eslabones como dientes tiene el piñón, así que los dientes del piñón por las vueltas de la rueda dan siempre 44:',
+          { linea: [{ v: 'c-o', t: '11' }, ' · ', { v: 'c-i', t: '4' }, ' = ', { v: 'c-d', t: '44' }] },
+          { linea: [{ v: 'c-o', t: '32' }, ' · ', { v: 'c-i', t: '1,375' }, ' = ', { v: 'c-d', t: '44' }] }],
+        ['Con el piñón chico, de ', { v: 'c-o', t: '11 dientes' }, ', la rueda da ', { v: 'c-i', t: '4 vueltas' }, ' por cada vuelta de los pedales, y con el grande, de ',
+          { v: 'c-o', t: '32' }, ', no llega a ', { v: 'c-i', t: 'una vuelta y media' }, '. ',
+          'Por eso, en una calle empinada, conviene pasar la cadena al piñón grande: cada vuelta de los pedales mueve menos la bicicleta, pero se pedalea con menos fuerza.'],
+      ],
+      figura: {
+        pieza: 'ejes',
+        datos: {
+          x: { min: 0, max: 36, paso: 4, nombre: 'dientes del piñón', decimales: 0, color: 'o' },
+          y: { min: 0, max: 5, paso: 1, nombre: 'vueltas de la rueda', decimales: 0, color: 'i' },
+          curvas: [],
+          areas: [
+            { puntos: [[0, 4], [11, 4]], color: 'd', rotulo: '11 · 4 = 44' },
+            { puntos: [[0, 1.375], [32, 1.375]], color: 'd', rotulo: '32 · 1,375 = 44' },
+          ],
+          puntos: [
+            { x: 11, y: 4, color: 'i', rotulo: 'piñón chico' },
+            { x: 32, y: 1.375, color: 'i', rotulo: 'piñón grande' },
+          ],
+        },
+        estado: {},
+      },
+      pregunta: {
+        texto: 'Con el mismo plato de 44 dientes, ¿cuántas vueltas da la rueda por cada vuelta de los pedales si la cadena va en un piñón de 22 dientes?',
+        opciones: [
+          { id: 'c', texto: '2 vueltas', correcta: true },
+          { id: 'directa', texto: '8 vueltas', error: 'AR8',
+            siFuera: 'Es cierto que el piñón de 22 tiene el doble de dientes que el de 11. Pero cada vuelta de la rueda gasta ahora el doble de eslabones, así que la rueda da la mitad de vueltas.' },
+          { id: 'igual', texto: '4 vueltas, porque el plato no cambió', error: 'AT-NO-CAMBIA',
+            siFuera: 'Es cierto que el plato sigue empujando 44 eslabones por cada vuelta de los pedales. Pero esos eslabones pasan ahora por un piñón de 22, y cada vuelta de la rueda gasta 22 de ellos.' },
+        ],
+        porque: 'Los dientes del piñón por las vueltas de la rueda dan siempre los 44 del plato: son inversamente proporcionales. Con 22 dientes, la rueda da 2 vueltas, porque 22 por 2 da 44.',
+      },
+      fuente: 'Relación de transmisión: dientes del plato entre dientes del piñón (Sheldon Brown, «Gear Theory for Bicyclists»).',
+    },
     resuelve: {
       generar(s) {
         const r = azar(s + 900), c = CASOS_DI[s % 4];
@@ -269,6 +314,31 @@
       ecuacion: [{ llave: [{ sub: ['o', '1'] }, { sub: ['h', '1'] }, { sub: ['d', '1'] }], nota: 'la obra' }, ' = ', { llave: [{ sub: ['o', '2'] }, { sub: ['h', '2'] }, { sub: ['d', '2'] }], nota: 'la misma obra' }],
       condicion: 'todos rinden igual y la obra no cambia. Si la obra se duplica, los días se duplican: obra y días son directas.',
     },
+    // En el mundo: la jornada de 8 horas (Constitución, art. 25). Con las horas fijas por ley, para acortar los días solo
+    // quedan los obreros. Obreros en naranja y horas diarias en turquesa, como en el juego.
+    mundo: {
+      hecho: 'La jornada de 8 horas decide cuántos obreros contratar',
+      parrafos: [
+        'La Constitución del Perú, en su artículo 25, dice que la jornada ordinaria de trabajo dura como máximo 8 horas diarias o 48 semanales. Las horas extras existen, pero la ley dice que son voluntarias, así que, salvo una emergencia, nadie puede obligar a un obrero a quedarse más tiempo.',
+        ['Por eso una constructora que necesita entregar antes no puede alargar la jornada, y la obra tiene que salir igual con menos días:',
+          { linea: [{ v: 'c-o', t: 'obreros' }, ' · ', { v: 'c-i', t: '8 h' }, ' · días = obra'] },
+          'Con las horas de cada día fijas por ley, el único factor que puede crecer es el número de obreros: si los días bajan a la mitad, los obreros tienen que duplicarse.'],
+      ],
+      pregunta: {
+        texto: '10 obreros, en jornadas de 8 horas, tarrajean las paredes de un colegio en 24 días. Sin pasar de 8 horas diarias, ¿cuántos obreros hacen falta para terminar en 16 días?',
+        opciones: [
+          { id: 'c', texto: '15 obreros', correcta: true },
+          { id: 'directa', texto: 'Unos 7 obreros', error: 'AR8',
+            siFuera: 'Es cierto que el plazo baja de 24 a 16 días. Pero la obra es la misma, y si hay menos días de igual largo, el trabajo se reparte entre más obreros, no entre menos.' },
+          { id: 'resta', texto: '18 obreros, uno más por cada día menos', error: 'AR6',
+            siFuera: 'Es cierto que hacen falta más obreros. Pero la obra no se mide con restas: se mide multiplicando obreros, horas diarias y días, y ese producto tiene que salir igual.' },
+          { id: 'jornada', texto: 'Los mismos 10 obreros, en jornadas de 12 horas', error: 'AT-JORNADA',
+            siFuera: 'La cuenta sí cuadra, porque 10 por 12 por 16 da la misma obra. Pero la jornada ordinaria no puede pasar de 8 horas, y las horas extras son voluntarias.' },
+        ],
+        porque: 'La obra mide 1920 horas-obrero, que salen de 10 obreros por 8 horas por 24 días. En 16 jornadas de 8 horas, cada obrero aporta 128 horas, así que hacen falta 15 obreros.',
+      },
+      fuente: 'Constitución Política del Perú (1993), art. 25; sobretiempo voluntario: TUO del D. Leg. 854 (D. S. 007-2002-TR), art. 9.',
+    },
     resuelve: {
       generar(s) {
         const r = azar(s + 900), o1 = r.de([4, 6, 8, 10, 12]), h1 = r.de([4, 6, 8]), d1 = r.de([6, 9, 10, 12, 15]);
@@ -392,6 +462,42 @@
       texto: 'En el reparto directo, a cada uno le toca el total por su peso entre la suma de pesos. El reparto inverso usa como pesos los inversos.',
       ecuacion: [{ sub: ['x', 'i'] }, ' = ', { llave: [T], nota: 'total', color: 'c-d' }, ' · ', { llave: [{ frac: [wi, ['Σ', 'w']] }], nota: 'su fracción' }, '   ·   ', 'inverso: ', wi, ' → ', { frac: ['1', wi] }],
       condicion: 'los pesos son positivos. Multiplicar todos los pesos por el mismo número no cambia el reparto.',
+    },
+    // En el mundo: el quilate. Una joya reparte su masa en 24 partes, según 18 de oro y 6 de otros metales: un reparto
+    // directo de verdad. El oro en naranja, los otros metales en turquesa y el total en verde, como las partes y T.
+    mundo: {
+      hecho: 'Una joya de 18 quilates no es oro puro',
+      parrafos: [
+        'El oro puro es tan blando que se raya con facilidad, así que las joyas mezclan el oro con otros metales, como el cobre o la plata. El quilate dice cómo se reparte esa mezcla: el oro puro es de 24 quilates, y una joya de 18 quilates tiene 18 partes de oro por cada 24 partes de su masa.',
+        ['Las 6 partes que faltan son de otros metales, así que en una cadena de 18 quilates con ', { v: 'c-d', t: '8 g' }, ' de masa el oro se lleva 18 de las 24 partes:',
+          { linea: [{ v: 'c-o', t: 'oro' }, ' = ', { v: 'c-d', t: '8 g' }, ' · ', { frac: ['18', '24'] }, ' = ', { v: 'c-o', t: '6 g' }] },
+          { linea: [{ v: 'c-i', t: 'otros metales' }, ' = ', { v: 'c-d', t: '8 g' }, ' · ', { frac: ['6', '24'] }, ' = ', { v: 'c-i', t: '2 g' }] },
+          'Por eso muchas joyas de 18 quilates llevan grabado el número 750, que dice que de cada 1000 partes de su masa, 750 son de oro.'],
+      ],
+      figura: {
+        pieza: 'arit-tiras',
+        datos: {
+          max: 8, filas: 2,
+          tiras: [
+            { rotulo: 'cadena de 18 quilates: 8 g', color: 'd', tramos: [{ valor: 8, color: 'd', relleno: 0.12 }] },
+            { rotulo: '18 partes de oro y 6 de otros metales', color: 'o', sinContorno: true,
+              tramos: [{ valor: 6, color: 'o', relleno: 0.3, texto: 'oro: 6 g' }, { valor: 2, color: 'i', relleno: 0.3, texto: '2 g' }] },
+          ],
+        },
+        estado: {},
+      },
+      pregunta: {
+        texto: 'Un anillo de 14 quilates tiene una masa de 12 g. ¿Cuántos gramos de oro tiene?',
+        opciones: [
+          { id: 'c', texto: '7 g', correcta: true },
+          { id: 'igual', texto: '6 g', error: 'AT-REPARTE-IGUAL',
+            siFuera: 'Es cierto que el anillo mezcla oro con otros metales. Pero no van mitad y mitad: de cada 24 partes, el oro se lleva 14 y los otros metales, 10.' },
+          { id: 'inverso', texto: '5 g', error: 'AT-INVERSA',
+            siFuera: 'Es cierto que las partes son 14 y 10. Pero así el oro se queda con las 10 partes de los otros metales; en este reparto directo, el oro tiene más partes y se lleva la porción mayor.' },
+        ],
+        porque: 'Los 12 g se reparten en 24 partes de 0,5 g cada una, y el oro se lleva 14 de esas partes, que juntas suman 7 g.',
+      },
+      fuente: 'Quilate: partes de oro puro de cada 24; 18 quilates, 750 milésimas (StoneX Bullion, «Aleaciones de oro»; EcuRed, «Quilate»).',
     },
     resuelve: {
       generar(s) {
@@ -518,6 +624,44 @@
       texto: 'En la regla de compañía la ganancia se reparte en forma directa al producto de capital por tiempo de cada socio.',
       ecuacion: [{ sub: ['G', 'A'] }, ' = G · ', { llave: [{ frac: [[{ sub: ['C', 'A'] }, ' · ', { sub: ['t', 'A'] }], 'Σ C · t'] }], nota: 'peso de A' }],
       condicion: 'vale si así lo acordaron y los tiempos se miden en la misma unidad. Si el tiempo es igual, basta el capital.',
+    },
+    // En el mundo: la participación en las utilidades (D. Leg. 892). La mitad que va según lo cobrado en el año pesa
+    // sueldo por meses, como capital por tiempo. Una persona en naranja y la otra en turquesa, como A y B.
+    mundo: {
+      hecho: 'Las utilidades se reparten por sueldo y por meses',
+      parrafos: [
+        'En el Perú, las empresas con más de 20 trabajadores reparten entre ellos una parte de lo que ganaron en el año, del 5 % al 10 % según su actividad. Esa participación en las utilidades se parte en dos mitades: una se reparte según los días que trabajó cada uno y la otra, según lo que cobró en el año.',
+        ['Si nadie cambió de sueldo, lo que cobró cada trabajador crece con su sueldo y también con los meses que trabajó, como el capital y el tiempo de un socio. ',
+          { v: 'c-o', t: 'Rosa' }, ' ganó S/ 1200 al mes durante 12 meses y ', { v: 'c-i', t: 'Pedro' }, ', S/ 2400 al mes durante 6 meses:',
+          { linea: [{ v: 'c-o', t: 'Rosa' }, ': 1200 · 12 = 14 400'] },
+          { linea: [{ v: 'c-i', t: 'Pedro' }, ': 2400 · 6 = 14 400'] }],
+        'Aunque Pedro gana el doble cada mes, de esa segunda mitad los dos reciben lo mismo, porque Pedro trabajó la mitad del tiempo.',
+      ],
+      figura: {
+        pieza: 'arit-tiras',
+        datos: {
+          max: 14400, filas: 2,
+          tiras: [
+            { rotulo: 'Rosa cobró 1200 × 12', color: 'o', tramos: [{ valor: 14400, color: 'o', relleno: 0.3, texto: '14 400 soles' }] },
+            { rotulo: 'Pedro cobró 2400 × 6', color: 'i', tramos: [{ valor: 14400, color: 'i', relleno: 0.3, texto: '14 400 soles' }] },
+          ],
+        },
+        estado: {},
+      },
+      pregunta: {
+        texto: 'En otra empresa, la mitad que va según lo cobrado suma S/ 3300. Carmen ganó S/ 1500 al mes durante 12 meses y Luis, S/ 2500 al mes durante 6 meses. ¿Cuánto le toca a Carmen?',
+        opciones: [
+          { id: 'c', texto: 'S/ 1800', correcta: true },
+          { id: 'sueldo', texto: 'S/ 1237,50', error: 'AT-SOLO-CAPITAL',
+            siFuera: 'Es cierto que Luis gana más cada mes. Pero cobró solo 6 meses, y esta mitad se reparte según lo cobrado en el año, que junta el sueldo con los meses.' },
+          { id: 'igual', texto: 'S/ 1650', error: 'AT-REPARTE-IGUAL',
+            siFuera: 'Sería cierto si los dos hubieran cobrado lo mismo en el año. Pero Carmen cobró 18 000 soles y Luis, 15 000.' },
+          { id: 'meses', texto: 'S/ 2200', error: 'AT-SOLO-TIEMPO',
+            siFuera: 'Es cierto que Carmen trabajó el doble de meses. Pero Luis gana más cada mes, y eso también cuenta en lo que cobró.' },
+        ],
+        porque: 'Carmen cobró 1500 por 12, que da 18 000 soles, y Luis, 2500 por 6, que da 15 000. La mitad se reparte como 18 a 15, y a Carmen le tocan 18 de 33 partes.',
+      },
+      fuente: 'D. Leg. 892 (1996), art. 2: la mitad según los días laborados y la mitad según las remuneraciones; del 5 % al 10 % según la actividad.',
     },
     resuelve: {
       generar(s) {
