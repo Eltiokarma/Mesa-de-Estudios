@@ -210,6 +210,226 @@
   const t3 = (ra, rb, h) => ({ ra: { texto: ra }, rb: { texto: rb }, h: { texto: h } });
   // √(h² − c²): la hipotenusa en tinta y el cateto que se conoce con el color de su nombre (cc: 'o' o 'i'; sin cc, tinta).
   const raizDif = (h, c, cc) => ({ raiz: [[cuad(h), ' − ', cuad(cc ? { v: `c-${cc}`, t: c } : c)]] });
+  // «En el mundo» (Gerson, 28 nov; docs/teoria.md, 4k): un hecho real por idea, que su regla explica. No repiten la
+  // apertura (la rampa de 100 %) ni los objetos de los ejemplos y las Predice (escalera, rampa, poste, sombra, señal,
+  // loseta, estaca, techo). Las cuentas las hace el código; los datos medidos llevan su fuente.
+  //   1. El televisor: las pulgadas son la diagonal, la hipotenusa (lados en tinta, como en los ejercicios de la idea 1).
+  //   2. El eclipse total: el Sol y la Luna dan casi la misma tangente, radio entre distancia.
+  //   3. La tuerca: el hexágono es seis equiláteros; la esquina queda más lejos que la cara (cos 30°).
+  //   4. Kefrén: la mitad de la base y la altura van como 3k y 4k.
+  //   5. La torre de Pisa: el desplazamiento es opuesto a 3,97° y adyacente a 86,03° (cofunción).
+  const MUNDO = (() => {
+    const r1 = n => Math.round(n * 10) / 10;
+    const svg = (vb, cuerpo) => `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" font-family="inherit">${cuerpo}</svg>`;
+    const arco = (cx, cy, r, a0, a1) => {
+      const p = a => [r1(cx + r * Math.cos(a * RAD)), r1(cy - r * Math.sin(a * RAD))];
+      const [x0, y0] = p(a0), [x1, y1] = p(a1);
+      return `<path d="M${x0} ${y0}A${r} ${r} 0 0 ${a1 > a0 ? 0 : 1} ${x1} ${y1}" fill="none" style="stroke:var(--c-h)" stroke-width="3"/>`;
+    };
+    const rot = (x, y, s, d = 1) => `<path d="M${x - d * s} ${y}v${-s}h${d * s}" fill="none" stroke="currentColor" stroke-width="2"/>`;
+    const txt = (x, y, t, o = {}) => `<text x="${x}" y="${y}" text-anchor="${o.a || 'middle'}" font-size="${o.fs || 17}" font-weight="700" style="fill:${o.c ? `var(--c-${o.c})` : 'currentColor'};stroke:var(--card)" stroke-width="4" paint-order="stroke">${t}</text>`;
+
+    // 1. Televisor de 55 pulgadas, 16:9.
+    const PUL = 2.54, DIAG = 55 * PUL, R169 = Math.hypot(16, 9);
+    const ANCHO = DIAG * 16 / R169, ALTO = DIAG * 9 / R169;
+    const tv = (() => {
+      const x0 = 40, y1 = 214, w = 288, h = 162, y0 = y1 - h, a = Math.atan2(9, 16) * GRA;
+      return svg('0 0 420 280', `
+        <rect x="${x0}" y="${y0}" width="${w}" height="${h}" rx="6" fill="none" stroke="currentColor" stroke-width="4"/>
+        <line x1="${x0 + w / 2 - 30}" y1="${y1 + 30}" x2="${x0 + w / 2 + 30}" y2="${y1 + 30}" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+        <line x1="${x0 + w / 2}" y1="${y1}" x2="${x0 + w / 2}" y2="${y1 + 30}" stroke="currentColor" stroke-width="5"/>
+        <line x1="${x0}" y1="${y1}" x2="${x0 + w}" y2="${y0}" stroke="currentColor" stroke-width="3" stroke-dasharray="9 6"/>
+        ${arco(x0, y1, 48, 0, a)}${rot(x0 + w, y1, 16)}
+        ${txt(x0 + 64, y1 - 10, 'θ', { c: 'h', fs: 20, a: 'start' })}
+        ${txt(x0 + w / 2, y0 - 14, `diagonal: 55 pulgadas = ${f(DIAG, 1)} cm`, { fs: 15 })}
+        ${txt(x0 + w / 2, y1 + 54, `ancho ≈ ${f(ANCHO, 1)} cm`)}
+        ${txt(x0 + w + 8, y0 + h / 2 - 6, 'alto ≈', { a: 'start' })}${txt(x0 + w + 8, y0 + h / 2 + 16, `${f(ALTO, 1)} cm`, { a: 'start' })}`);
+    })();
+    const lados = {
+      hecho: 'Un televisor de 55 pulgadas no mide 55 de ancho',
+      parrafos: [
+        ['Cuando compras un televisor, las pulgadas que anuncia la caja no son el ancho de la pantalla: son su diagonal, medida de esquina a esquina. Como cada pulgada mide 2,54 cm, un televisor de 55 pulgadas tiene esta diagonal:',
+          { linea: ['55 × 2,54 cm = ', `${f(DIAG, 1)} cm`] }],
+        ['El ancho y el alto de la pantalla se juntan en una esquina en ángulo recto, así que con la diagonal forman un triángulo rectángulo. La diagonal queda frente al ángulo recto: es la hipotenusa, el lado más largo. En una pantalla común, de forma 16:9, los otros dos lados miden mucho menos:',
+          { linea: [`ancho ≈ ${f(ANCHO, 1)} cm`, SEP, `alto ≈ ${f(ALTO, 1)} cm`] }],
+        'Por eso, para saber si el televisor entra en tu mueble, comparas el mueble con el ancho de la pantalla y su marco, no con los 140 cm de la diagonal.',
+      ],
+      figura: { svg: tv, alt: `Una pantalla de televisor con su diagonal punteada de 55 pulgadas, ${f(DIAG, 1)} cm. El ancho mide unos ${f(ANCHO, 1)} cm y el alto, unos ${f(ALTO, 1)} cm; el ángulo θ está en la esquina de abajo, entre la diagonal y el borde de abajo.` },
+      pregunta: {
+        texto: ['Mira la pantalla desde ', thN, ', el ángulo entre la diagonal y el borde de abajo. ¿Qué es el alto de la pantalla para ', thN, '?'],
+        opciones: [
+          { id: 'co', texto: ['El cateto opuesto a ', thN], correcta: true },
+          { id: 'ca', texto: ['El cateto adyacente a ', thN], error: 'TR7',
+            siFuera: ['Ver que el alto es un cateto está bien, porque forma el ángulo recto con el ancho. Pero el alto no toca a ', thN, ': lo toca el ancho, y el alto queda al otro lado.'] },
+          { id: 'h', texto: 'La hipotenusa, porque es el lado que se levanta', error: 'LAD-HIPOTENUSA',
+            siFuera: 'Pensar en el lado que sube tiene sentido, porque en muchos dibujos la hipotenusa va inclinada hacia arriba. Pero la hipotenusa se reconoce por quedar frente al ángulo recto, y aquí esa es la diagonal.' },
+          { id: 'nada', texto: ['Ninguno, porque el alto no toca a ', thN], error: 'LAD-SOLO-PISO',
+            siFuera: ['Es cierto que el alto no toca a ', thN, '. Justo por eso tiene nombre: el cateto que no toca el ángulo que miras, y queda frente a él, es el opuesto.'] },
+        ],
+        porque: ['Desde ', thN, ', el ancho toca el ángulo y es el cateto adyacente; el alto queda frente a ', thN, ', sin tocarlo, y es el cateto opuesto. La diagonal, frente al ángulo recto, es la hipotenusa.'],
+      },
+      fuente: 'Las pulgadas de un televisor son su diagonal (guías de compra de LG y Samsung Perú); 1 pulgada = 2,54 cm.',
+    };
+
+    // 2. Eclipse total: radio entre distancia, para la Luna y para el Sol (fichas de la NASA).
+    const LUNA = { r: 1737, d: 384400 }, SOL = { r: 696000, d: 149.6e6 };
+    const tL = LUNA.r / LUNA.d, tS = SOL.r / SOL.d, MON = 1;   // la moneda: 1 cm de radio
+    const tanEc = (quien, r, d, t) => [junto(['tan ', thN, ` (${quien}) = `]), { frac: [[dO(r)], [dI(d)]] }, junto([' ≈ ', dF(f(t, 4))])];
+    const razon = {
+      hecho: 'La Luna tapa justo al Sol en un eclipse total',
+      parrafos: [
+        'El Sol es unas 400 veces más ancho que la Luna y, por casualidad, también está unas 400 veces más lejos de la Tierra. Por eso los dos se ven en el cielo casi del mismo tamaño, como discos de medio grado, y en un eclipse total la Luna tapa al Sol casi justo, sin que sobre ni falte.',
+        ['Desde tu ojo, el radio de cada disco y su distancia forman un triángulo rectángulo con un ángulo ', thN, ' muy pequeño. Su tangente divide el radio entre la distancia, y da casi lo mismo para los dos:',
+          { linea: tanEc('Luna', '1 737 km', '384 400 km', tL) },
+          { linea: tanEc('Sol', '696 000 km', '149,6 millones de km', tS) },
+          'Con casi la misma tangente, el ángulo también es casi el mismo, aunque el Sol sea muchísimo más grande.'],
+      ],
+      pregunta: {
+        texto: `Una moneda de ${f(2 * MON)} cm de ancho tiene ${f(MON)} cm de radio. ¿A qué distancia de tu ojo tapa justo a la Luna llena?`,
+        opciones: [
+          { id: 'c', texto: `A unos ${f(MON / tL / 100, 1)} m`, correcta: true },
+          { id: 'ancho', texto: `A unos ${f(2 * MON / tL / 100, 1)} m`, error: 'RAZ-ANCHO-RADIO',
+            siFuera: `Dividir entre ${f(tL, 4)} está bien, porque es la tangente de la Luna. Pero esa tangente es el radio entre la distancia, y para la moneda también va su radio, ${f(MON)} cm, no su ancho entero.` },
+          { id: 'lejos', texto: 'A 384 400 km, igual de lejos que la Luna', error: 'TR8',
+            siFuera: 'Es cierto que a esa distancia la Luna se ve de ese tamaño. Pero la moneda no necesita estar igual de lejos: le basta con tener el mismo cociente entre su radio y su distancia.' },
+          { id: 'nunca', texto: 'A ninguna, porque la moneda es mucho más chica', error: 'RAZ-TAMANO',
+            siFuera: 'Es cierto que la moneda es muchísimo más chica que la Luna. Pero lo que ves en el cielo es el ángulo, y el ángulo depende del cociente entre el radio y la distancia, no del tamaño solo.' },
+        ],
+        porque: `Para tapar justo a la Luna, la moneda necesita su mismo ángulo y, por eso, la misma tangente. Su distancia sale de dividir ${f(MON)} cm entre ${f(tL, 4)}: unos ${f(Math.round(MON / tL), 0)} cm.`,
+      },
+      fuente: 'El Sol, unas 400 veces más ancho y más lejos que la Luna (NASA Space Place; CfA Harvard); radios y distancias de NASA.',
+    };
+
+    // 3. Tuerca hexagonal: seis equiláteros; del centro a una cara (adyacente a 30°) y a una esquina (hipotenusa).
+    const C30 = Math.sqrt(3) / 2, M8 = 13, M6 = 10;
+    const tuerca = (() => {
+      const cx = 160, cy = 150, R = 135, ap = R * C30;
+      const pts = [0, 60, 120, 180, 240, 300].map(a => `${r1(cx + R * Math.cos(a * RAD))},${r1(cy - R * Math.sin(a * RAD))}`).join(' ');
+      const ex = cx + R * Math.cos(30 * RAD), ey = cy - R * Math.sin(30 * RAD);   // la esquina de arriba a la derecha
+      return svg('0 0 380 340', `
+        <polygon points="${pts.split(' ').map(p => { const [x, y] = p.split(','); const a = Math.atan2(cy - y, x - cx) + Math.PI / 6; return `${r1(cx + R * Math.cos(a))},${r1(cy - R * Math.sin(a))}`; }).join(' ')}" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+        <circle cx="${cx}" cy="${cy}" r="26" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 5"/>
+        <line x1="${cx}" y1="${cy}" x2="${r1(cx + ap)}" y2="${cy}" style="stroke:var(--c-i)" stroke-width="5" stroke-linecap="round"/>
+        <line x1="${r1(cx + ap)}" y1="${cy}" x2="${r1(ex)}" y2="${r1(ey)}" style="stroke:var(--c-o)" stroke-width="5" stroke-linecap="round"/>
+        <line x1="${cx}" y1="${cy}" x2="${r1(ex)}" y2="${r1(ey)}" stroke="currentColor" stroke-width="3"/>
+        ${arco(cx, cy, 44, 0, 30)}${rot(r1(cx + ap), cy, 12)}
+        ${txt(cx + 50, cy - 7, '30°', { c: 'h', fs: 15, a: 'start' })}
+        ${txt(r1(cx + ap / 2), cy + 22, `${f(M8 / 2, 1)} mm`, { c: 'i', fs: 16 })}
+        ${txt(r1(ex + 6), r1(ey - 10), 'esquina', { fs: 16, a: 'start' })}
+        ${txt(cx + 20, 328, `llave de ${M8}: ${M8} mm de cara a cara`, { fs: 17 })}`);
+    })();
+    const notables = {
+      hecho: 'Por qué la llave de 13 hace girar la tuerca',
+      parrafos: [
+        `En la llanta de una bicicleta o en el motor de una mototaxi, las tuercas son hexágonos, y el número de la llave es la distancia entre dos caras planas paralelas. Una tuerca M8, por ejemplo, se ajusta con la llave de ${M8} mm porque mide ${M8} mm de una cara a la otra.`,
+        ['Un hexágono se parte en seis triángulos equiláteros que se juntan en el centro, y la mitad de uno de ellos es media señal. Su ángulo de 30° está en el centro, el cateto que lo toca llega a una cara y la hipotenusa llega a una esquina:',
+          { linea: [junto(['cos 30° = ']), { frac: [[dI(`${f(M8 / 2, 1)} mm`)], ['hasta la esquina']] }] },
+          { linea: [junto(['hasta la esquina = ']), { frac: [[dI(`${f(M8 / 2, 1)} mm`)], ['cos 30°']] }, junto([` ≈ ${f(M8 / 2 / C30, 1)} mm`])] }],
+        `Por eso la tuerca mide unos ${f(M8 / C30, 0)} mm de esquina a esquina, más que la boca de la llave, y no puede girar dentro de ella: la llave la empuja por las esquinas. Si usas una llave más floja, las esquinas resbalan, se liman y la tuerca se barre.`,
+      ],
+      figura: { svg: tuerca, alt: `Una tuerca hexagonal vista de frente, con el centro unido a una cara por un segmento turquesa de ${f(M8 / 2, 1)} mm y a una esquina por la hipotenusa; el ángulo de 30° está en el centro y el ángulo recto, en la cara.` },
+      pregunta: {
+        texto: `Una tuerca M6 se ajusta con la llave de ${M6} mm. Si sus esquinas no están limadas, ¿cuánto mide de esquina a esquina?`,
+        opciones: [
+          { id: 'c', texto: `≈ ${f(M6 / C30, 1)} mm`, correcta: true },
+          { id: 'mismo', texto: `${M6} mm, lo mismo que la llave`, error: 'NOT-MISMO',
+            siFuera: `Es cierto que la llave mide ${M6} mm, porque abraza la tuerca entre dos caras. Pero de cara a cara van dos catetos, y de esquina a esquina van dos hipotenusas, que son más largas.` },
+          { id: 'cuadrado', texto: `≈ ${f(M6 * Math.SQRT2, 1)} mm, como la diagonal de un cuadrado`, error: 'NOT-45',
+            siFuera: 'Buscar una figura notable está bien. Pero la tuerca no es un cuadrado partido: es un hexágono, y su medio triángulo es media señal, de 30° y 60°, no media loseta de 45°.' },
+          { id: 'por', texto: `≈ ${f(M6 * C30, 1)} mm`, error: 'NOT-MULTIPLICA',
+            siFuera: 'Usar cos 30° está bien, porque del centro a una cara va el cateto que toca 30°. Pero la hipotenusa es más larga que ese cateto: sale de dividir entre cos 30°, no de multiplicar.' },
+        ],
+        porque: `Del centro a una cara hay ${f(M6 / 2)} mm, el cateto que toca 30°; la hipotenusa, hasta la esquina, es ese cateto entre cos 30°. Dos hipotenusas dan unos ${f(M6 / C30, 1)} mm.`,
+      },
+      fuente: `Llave de ${M8} mm para la tuerca M8 y de ${M6} mm para la M6, entre caras (norma ISO 4032); la medida entre esquinas se calcula aquí.`,
+    };
+
+    // 4. Kefrén: base de 215,25 m y altura original de 143,5 m; la mitad de la base y la altura van como 3 y 4.
+    const BASE = 215.25, ALT = 143.5, MB = BASE / 2, K = ALT / 4, MAQ = 36;
+    const piramide = (() => {
+      const x0 = 18, y0 = 230, s = 1.5, xm = x0 + MB * s, xt = x0 + 2 * MB * s, yt = y0 - ALT * s;
+      return svg('0 0 420 290', `
+        <polygon points="${x0},${y0} ${r1(xt)},${y0} ${r1(xm)},${r1(yt)}" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+        <line x1="${r1(xm)}" y1="${y0}" x2="${r1(xm)}" y2="${r1(yt)}" style="stroke:var(--c-o)" stroke-width="5" stroke-linecap="round"/>
+        <line x1="${r1(xm)}" y1="${y0}" x2="${r1(xt)}" y2="${y0}" style="stroke:var(--c-i)" stroke-width="5" stroke-linecap="round"/>
+        <line x1="${x0 - 14}" y1="${y0}" x2="${r1(xt + 14)}" y2="${y0}" style="stroke:var(--muted)" stroke-width="2"/>
+        ${arco(xt, y0, 34, 180, 180 - Math.atan2(4, 3) * GRA)}${rot(r1(xm), y0, 14, -1)}
+        ${txt(r1(xt - 46), y0 - 12, '≈ 53°', { c: 'h', fs: 16, a: 'end' })}
+        ${txt(r1(xm - 8), r1(y0 - ALT * s / 2), 'altura', { c: 'o', fs: 16, a: 'end' })}${txt(r1(xm - 8), r1(y0 - ALT * s / 2 + 20), `${f(ALT, 1)} m`, { c: 'o', fs: 16, a: 'end' })}
+        ${txt(r1((xm + xt) / 2), y0 + 24, `mitad de la base: ${f(MB, 1)} m`, { c: 'i', fs: 15 })}
+        ${txt(r1((xm + xt) / 2 + 30), r1((yt + y0) / 2 - 10), `cara: ${f(5 * K, 1)} m`, { fs: 15, a: 'start' })}`);
+    })();
+    const aproximados = {
+      hecho: 'La pirámide de Kefrén esconde un triángulo 3-4-5',
+      parrafos: [
+        `La pirámide de Kefrén, en Guiza, Egipto, tiene una base cuadrada de unos ${f(BASE)} m de lado y una altura original de unos ${f(ALT, 1)} m. Si la cortas por el centro, la altura, la mitad de la base y la línea que baja por el medio de una cara forman un triángulo rectángulo.`,
+        [`La mitad de la base, unos ${f(MB, 1)} m, y la altura van como 3 y 4, así que cada parte vale unos ${f(K, 1)} m:`,
+          { linea: [junto([dI('3k'), ` ≈ ${f(MB, 1)} m`]), SEP, junto([dO('4k'), ` ≈ ${f(ALT, 1)} m`]), SEP, junto([`5k ≈ ${f(5 * K, 1)} m`])] },
+          'Por eso cada cara se levanta unos 53° sobre el suelo, más empinada que la de Keops, su vecina, y quien suba por el medio de una cara recorre unos 179 m, cinco partes.'],
+      ],
+      figura: { svg: piramide, alt: `La pirámide de Kefrén cortada por el centro: la altura de ${f(ALT, 1)} m en naranja, la mitad de la base de ${f(MB, 1)} m en turquesa y la cara de ${f(5 * K, 1)} m, que forma unos 53° con el suelo.` },
+      pregunta: {
+        texto: `Armas una maqueta de Kefrén de ${MAQ} cm de altura, con la misma forma. ¿Cuánto debe medir la mitad de su base?`,
+        opciones: [
+          { id: 'c', texto: `${f(MAQ / 4 * 3)} cm`, correcta: true },
+          { id: 'cambia', texto: `${f(MAQ / 3 * 4)} cm`, error: 'APROX-ORDEN',
+            siFuera: `Usar 3 y 4 está bien. Pero la altura es la de 4 partes, la que queda frente al ángulo de 53°: si ${MAQ} cm fueran 3 partes, la maqueta saldría más chata que Kefrén.` },
+          { id: 'cara', texto: `${f(MAQ / 4 * 5)} cm`, error: 'APROX-HIPOTENUSA',
+            siFuera: `Hallar cuánto vale k está bien: ${f(MAQ / 4)} cm. Pero 5k es la línea de la cara, la hipotenusa; la mitad de la base es el cateto de 3 partes.` },
+          { id: 'resta', texto: `${f(MAQ - 3)} cm`, error: 'APROX-ADITIVO',
+            siFuera: 'Ver que la mitad de la base es menor que la altura está bien. Pero los lados no se diferencian en una cantidad fija: van como 3 y 4, multiplicados por la misma k.' },
+        ],
+        porque: `La altura son 4 partes: con ${MAQ} cm, cada parte vale ${f(MAQ / 4)} cm, y la mitad de la base, 3 partes, mide ${f(MAQ / 4 * 3)} cm. Así la maqueta guarda los mismos ángulos de Kefrén.`,
+      },
+      fuente: 'Kefrén: base de 215,25 m, altura original de 143,5 m y cara de 53°10′ (Wikipedia; Pleiades; NOVA, PBS).',
+    };
+
+    // 5. Torre de Pisa: 3,97° con la vertical y unos 56 m de largo; el ángulo con el suelo es el complemento.
+    const TORRE = 56, INC = 3.97, SUELO = 90 - INC, DESP = TORRE * Math.sin(INC * RAD);
+    const pisa = (() => {
+      const EXA = 6, bx = 130, by = 250, L = 210, a = (90 - INC * EXA) * RAD;   // la inclinación del dibujo, exagerada seis veces
+      const tx = bx + L * Math.cos(a), ty = by - L * Math.sin(a), w = 30;
+      const nx = Math.sin(a) * w / 2, ny = Math.cos(a) * w / 2;
+      return svg('0 0 360 290', `
+        <line x1="40" y1="${by}" x2="320" y2="${by}" style="stroke:var(--muted)" stroke-width="2"/>
+        <polygon points="${r1(bx - nx)},${r1(by - ny)} ${r1(bx + nx)},${r1(by + ny)} ${r1(tx + nx)},${r1(ty + ny)} ${r1(tx - nx)},${r1(ty - ny)}" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="2 6"/>
+        <line x1="${bx}" y1="${by}" x2="${r1(tx)}" y2="${r1(ty)}" stroke="currentColor" stroke-width="4"/>
+        <line x1="${r1(tx)}" y1="${r1(ty)}" x2="${r1(tx)}" y2="${by}" style="stroke:var(--c-o)" stroke-width="4" stroke-dasharray="8 5"/>
+        <line x1="${bx}" y1="${by}" x2="${r1(tx)}" y2="${by}" style="stroke:var(--c-i)" stroke-width="6" stroke-linecap="round"/>
+        ${arco(bx, by, 24, 0, 90 - INC * EXA)}${arco(tx, ty, 40, -90, -90 - INC * EXA)}${rot(r1(tx), by, 12)}
+        ${txt(bx + 26, by - 7, `${f(SUELO)}°`, { c: 'h', fs: 12, a: 'start' })}
+        ${txt(r1(tx + 8), r1(ty + 40), `${f(INC)}°`, { c: 'h', fs: 15, a: 'start' })}
+        ${txt(r1(bx - 6), r1((by + ty) / 2), `${TORRE} m`, { fs: 16, a: 'end' })}
+        ${txt(r1((bx + tx) / 2), by + 26, `desplazamiento ≈ ${f(DESP, 1)} m`, { c: 'i', fs: 15 })}`);
+    })();
+    const complementarias = {
+      hecho: 'La torre de Pisa se inclina casi 4 grados',
+      parrafos: [
+        `La torre de Pisa, en Italia, mide unos ${TORRE} m de largo y se inclinó porque el suelo blando se hundió más de un lado. Entre 1993 y 2001, los ingenieros sacaron tierra de debajo del lado más alto, la enderezaron un poco y la dejaron con ${f(INC)}° de inclinación respecto de la vertical.`,
+        [`Desde los ${f(INC)}° de arriba, el desplazamiento queda enfrente; desde los ${f(SUELO)}° que la torre forma con el suelo, lo toca. Los dos ángulos suman 90°, así que la misma división tiene dos nombres:`,
+          { linea: [junto([`sen ${f(INC)}° = cos ${f(SUELO)}° = `]), { frac: [[dI('desplazamiento')], [`${TORRE} m`]] }] },
+          { linea: [junto([dI('desplazamiento'), ` = ${TORRE} m × sen ${f(INC)}° ≈ ${f(DESP, 1)} m`])] },
+          `Por eso la punta queda unos ${f(DESP, 1)} m afuera de su base, una distancia que los ingenieros vigilan para que no vuelva a crecer.`],
+      ],
+      figura: { svg: pisa, alt: `La torre de Pisa dibujada como un segmento inclinado de ${TORRE} m; forma ${f(SUELO)}° con el suelo y ${f(INC)}° con la vertical, y su punta se sale unos ${f(DESP, 1)} m, marcados en turquesa sobre el suelo. La inclinación del dibujo está exagerada.` },
+      pregunta: {
+        texto: `Un topógrafo mide ${f(SUELO)}° entre la torre y el suelo. ¿Qué razón de ${f(SUELO)}° divide el desplazamiento entre el largo de la torre?`,
+        opciones: [
+          { id: 'c', texto: `cos ${f(SUELO)}°`, correcta: true },
+          { id: 'sen', texto: `sen ${f(SUELO)}°`, error: 'COMP-MISMO-ANG',
+            siFuera: `Recordar que con ${f(INC)}° es un seno está bien, porque desde arriba el desplazamiento queda enfrente. Pero desde ${f(SUELO)}°, en la base, el desplazamiento toca el ángulo: es el adyacente, y adyacente entre hipotenusa es coseno.` },
+          { id: 'tan', texto: `tan ${f(SUELO)}°`, error: 'TR9',
+            siFuera: 'Ver que entra el desplazamiento está bien. Pero la tangente divide los dos catetos, y aquí el desplazamiento se divide entre el largo de la torre, que es la hipotenusa.' },
+          { id: 'sec', texto: `sec ${f(SUELO)}°`, error: 'NOT-RECIPROCA',
+            siFuera: 'La secante sí usa el adyacente y la hipotenusa, pero al revés: divide el largo de la torre entre el desplazamiento. Aquí el desplazamiento va arriba.' },
+        ],
+        porque: `Desde ${f(SUELO)}°, el desplazamiento es el cateto adyacente y la torre, la hipotenusa: adyacente entre hipotenusa es el coseno. Es el mismo cociente que sen ${f(INC)}°, porque los dos ángulos suman 90°.`,
+      },
+      fuente: 'Torre de Pisa: unos 56 m, 3,97° de inclinación y unos 3,9 m fuera de la vertical tras la obra de 1993 a 2001 (Wikipedia; ICE).',
+    };
+    return { lados, razon, notables, aproximados, complementarias };
+  })();
+
   const EJEMPLOS_LADOS = [
     { nivel: 1, titulo: 'La escalera de la casa', figura: fig({ objeto: 'escalera', medidas: { ra: 1.5, rb: 2 }, lados: t3('1,5 m', '2 m', '2,5 m'), angulos: { a: { texto: 'θ' } } }),
       enunciado: ['Una escalera de 2,5 m se apoya en una pared: su pie queda a 1,5 m y llega a 2 m de alto. ', thN, ' es su ángulo con el piso. ¿Cuál es el cateto adyacente a ', thN, '?'],
@@ -522,6 +742,7 @@
         { estado: { paso: 4 }, texto: 'Cada cateto tiene dos nombres, uno por agudo. La hipotenusa sigue siendo la escalera.', ecuacion: [junto([dO('CO'), ' de ', thN, ' = ', dI('CA'), ' de ', al, ' = ', dO('4 m')])] },
       ],
     },
+    mundo: MUNDO.lados,
     regla: {
       texto: 'La hipotenusa es el lado frente al ángulo recto, el más largo. Desde un ángulo agudo, el cateto que lo toca es el adyacente; el de enfrente, el opuesto.',
       ecuacion: [junto(['Desde ', thN, ': ', dI('CA'), ' toca a ', thN]), SEP, junto([dO('CO'), ' queda frente a ', thN]), SEP, junto(['H queda frente a 90°'])],
@@ -953,6 +1174,7 @@
         { estado: { paso: 5 }, texto: 'Lados del poste: 4 veces los de tu primo. El cociente no cambia.', ecuacion: [{ frac: ['4 · 1,5', '4 · 2,5'] }, ' = ', { frac: ['1,5', '2,5'] }] },
       ],
     },
+    mundo: MUNDO.razon,
     regla: {
       texto: 'Desde un ángulo agudo θ, el seno divide el opuesto entre la hipotenusa; el coseno, el adyacente entre la hipotenusa; la tangente, el opuesto entre el adyacente.',
       ecuacion: [junto([...sen, ' = ', { frac: [op('CO'), 'H'] }]), '   ·   ', junto([...cos, ' = ', { frac: [ad('CA'), 'H'] }]), '   ·   ', junto([...tan, ' = ', { frac: [op('CO'), ad('CA')] }])],
@@ -1422,6 +1644,7 @@
         { estado: { paso: 5 }, texto: 'Desde 45°, los dos catetos miden igual.', ecuacion: [...sen_(45), ' = ', ...cos_(45), ' = ', { frac: [op('1'), '√2'] }, ' = ', { frac: ['√2', '2'] }, SEP, ...tan_(45), ' = 1'] },
       ],
     },
+    mundo: MUNDO.notables,
     regla: {
       texto: 'Los ángulos notables tienen razones exactas: 30° y 60° salen de media señal, con lados 1, √3 y 2; 45° sale de media loseta, con 1, 1 y √2.',
       // Las nueve razones (lector en frío, 17 nov: solo estaban los senos y «coseno y tangente salen de esos lados» no se
@@ -1832,6 +2055,7 @@
         { estado: { paso: 5 }, texto: 'El examen los redondea a 37°, 53°, 16° y 74°: es una convención.', ecuacion: ['sen 37° ≈ ', { frac: ['3', '5'] }, ';   sen 16° ≈ ', { frac: ['7', '25'] }] },
       ],
     },
+    mundo: MUNDO.aproximados,
     regla: {
       texto: 'Lados 3k, 4k y 5k (k: una parte): ángulos de 36,87° y 53,13°, que se llaman 37° y 53°. Lados 7k, 24k y 25k: 16° y 74°.',
       ecuacion: [junto(['sen 37° ≈ ', { frac: ['3', '5'] }]), SEP, junto(['cos 37° ≈ ', { frac: ['4', '5'] }]), '   ·   ', junto(['sen 16° ≈ ', { frac: ['7', '25'] }]), SEP, junto(['cos 16° ≈ ', { frac: ['24', '25'] }])],
@@ -2255,6 +2479,7 @@
         { estado: { paso: 5 }, texto: 'Dar vuelta el cociente da la recíproca: su producto es 1.', ecuacion: [junto(['csc 25° = ', { frac: ['calamina', op('poste')] }, ` = 1 ÷ sen 25° ≈ ${f(1 / Math.sin(25 * RAD))}`]), SEP, junto('sen 25° · csc 25° = 1')] },
       ],
     },
+    mundo: MUNDO.complementarias,
     regla: {
       // cot, sec y csc se definen en la regla misma (lector en frío, 17 nov: la regla los usaba sin definirlos).
       texto: 'cot, sec y csc dan vuelta a tan, cos y sen. Los agudos θ y 90° − θ comparten lados: el opuesto de uno es el adyacente del otro.',
