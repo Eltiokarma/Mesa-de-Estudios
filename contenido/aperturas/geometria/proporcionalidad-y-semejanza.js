@@ -5,15 +5,15 @@
  * agrandar sin deformar ni recortar, el ancho y el alto se multiplican por lo mismo. No se habla de áreas, para no
  * adelantar la Predice de la idea 5 (el terreno partido por los puntos medios) ni su misión (la foto de 9 veces el
  * área), ni de sombras y postes (idea 3), y no se escribe ningún número de las respuestas o misiones (50, 60, 75, 1,5,
- * 2,4, 4,5). Colores de la unidad (cabecera de contenido/teoria/geometria/proporcionalidad-y-semejanza.js): el ancho en
- * naranja (c-o) y el alto en turquesa (c-i), como el segmento de arriba y el de abajo de una razón; lo que se corta,
- * punteado en carmín (c-h).
+ * 2,4, 4,5). Colores de la idea 5 de la unidad (Gerson, 28 nov): la foto chica en naranja (c-o) y la grande en
+ * turquesa (c-i); lo que se corta, punteado en carmín (c-h).
  */
 (function (raiz, def) {
   if (typeof module === 'object' && module.exports) module.exports = def;
   else (raiz.Aperturas = raiz.Aperturas || {})[def.unidad] = def;
 })(typeof self !== 'undefined' ? self : this, (function () {
-  const ancho = t => ({ v: 'c-o', t }), alto = t => ({ v: 'c-i', t });
+  // Colores de la idea 5 de la unidad (Gerson, 28 nov): la foto chica en naranja (c-o) y la grande en turquesa (c-i).
+  const chica = t => ({ v: 'c-o', t }), grande = t => ({ v: 'c-i', t });
   const r1 = n => Math.round(n * 10) / 10;
 
   // La foto, en centímetros de la foto chica (10 de ancho por 15 de alto): cerros, sol y una persona de cuerpo entero,
@@ -32,8 +32,7 @@
   };
   const rotulo = (x, y, t, c, ancla = 'middle') => `<text x="${r1(x)}" y="${r1(y)}" text-anchor="${ancla}" font-size="18" font-weight="800" style="fill:var(${c})">${t}</text>`;
   const marco = (x, y, w, h) => `<rect x="${r1(x)}" y="${r1(y)}" width="${r1(w)}" height="${r1(h)}" style="fill:var(--card)"/>`;
-  const borde = (x, y, w, h) => `<path d="M${r1(x)} ${r1(y + h)}H${r1(x + w)}" style="stroke:var(--c-o)" stroke-width="4"/>
-      <path d="M${r1(x + w)} ${r1(y)}V${r1(y + h)}" style="stroke:var(--c-i)" stroke-width="4"/>
+  const borde = (x, y, w, h, c) => `<path d="M${r1(x)} ${r1(y + h)}H${r1(x + w)}V${r1(y)}" fill="none" style="stroke:var(${c})" stroke-width="4"/>
       <path d="M${r1(x)} ${r1(y + h)}V${r1(y)}H${r1(x + w)}" fill="none" stroke="currentColor" stroke-width="2"/>`;
 
   // Los dos paneles: arriba la foto chica (5 unidades por cm) y abajo la ampliación en papel de 20 por 25 (7 por cm).
@@ -44,20 +43,20 @@
     if (predice) {
       // Lo que se espera: la foto entera en el papel grande (dibujo sin escala, solo para mostrar la idea).
       const s = 25 / 15 * S;
-      grande = `${marco(px, py, W, H)}${escena(px + (W - 10 * s) / 2, py, s)}${borde(px, py, W, H)}`;
+      grande = `${marco(px, py, W, H)}${escena(px + (W - 10 * s) / 2, py, s)}${borde(px, py, W, H, '--c-i')}`;
     } else {
       // Lo que pasa: ampliada a 20 de ancho, mide 30 de alto; el estudio deja los 25 del medio y corta 2,5 arriba y abajo.
       const s = 2 * S, y0 = py - 2.5 * S;
       grande = `<g opacity=".28">${escena(px, y0, s)}</g>
         <rect x="${r1(px)}" y="${r1(y0)}" width="${W}" height="${30 * S}" fill="none" style="stroke:var(--c-h)" stroke-width="2.5" stroke-dasharray="6 5"/>
         <clipPath id="ap-prop-papel"><rect x="${r1(px)}" y="${r1(py)}" width="${W}" height="${H}"/></clipPath>
-        ${marco(px, py, W, H)}<g clip-path="url(#ap-prop-papel)">${escena(px, y0, s)}</g>${borde(px, py, W, H)}`;
+        ${marco(px, py, W, H)}<g clip-path="url(#ap-prop-papel)">${escena(px, y0, s)}</g>${borde(px, py, W, H, '--c-i')}`;
     }
     return `<text x="${cx}" y="32" text-anchor="middle" font-size="24" font-weight="800" fill="currentColor">${titulo}</text>
-      ${marco(fx, fy, 10 * C, 15 * C)}${escena(fx, fy, C)}${borde(fx, fy, 10 * C, 15 * C)}
-      ${rotulo(fx + 5 * C, fy + 15 * C + 20, '10 cm', '--c-o')}${rotulo(fx + 10 * C + 6, fy + 7.5 * C + 6, '15 cm', '--c-i', 'start')}
+      ${marco(fx, fy, 10 * C, 15 * C)}${escena(fx, fy, C)}${borde(fx, fy, 10 * C, 15 * C, '--c-o')}
+      ${rotulo(fx + 5 * C, fy + 15 * C + 20, '10 cm', '--c-o')}${rotulo(fx + 10 * C + 6, fy + 7.5 * C + 6, '15 cm', '--c-o', 'start')}
       ${grande}
-      ${rotulo(px + W / 2, py + H + (predice ? 22 : 40), '20 cm', '--c-o')}${rotulo(px + W + 6, py + H / 2 + 6, '25 cm', '--c-i', 'start')}
+      ${rotulo(px + W / 2, py + H + (predice ? 22 : 40), '20 cm', '--c-i')}${rotulo(px + W + 6, py + H / 2 + 6, '25 cm', '--c-i', 'start')}
       ${pie.map((l, i) => `<text x="${cx}" y="${410 + i * 26}" text-anchor="middle" font-size="21" style="fill:var(--muted)">${l}</text>`).join('')}`;
   };
   const svg = `<svg viewBox="0 0 520 452" width="520" height="452" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -70,12 +69,12 @@
     unidad: 'geometria.proporcionalidad-y-semejanza',
     titulo: '¿Por qué una foto de 10 por 15 sale recortada si la amplías a 20 por 25?',
     parrafos: [
-      ['En un estudio de fotografía, una foto de ', ancho('10 cm'), ' de ancho por ', alto('15 cm'), ' de alto se puede ampliar a ',
-        ancho('20 cm'), ' por ', alto('25 cm'), ', un tamaño común para cuadros. ',
+      ['En un estudio de fotografía, una foto de ', chica('10 cm'), ' de ancho por ', chica('15 cm'), ' de alto se puede ampliar a ',
+        grande('20 cm'), ' por ', grande('25 cm'), ', un tamaño común para cuadros. ',
         'Pero la ampliación no trae la foto entera: para llenar el papel, el estudio corta 5 cm de la imagen, y en una foto de cuerpo entero se pueden perder los zapatos.'],
       ['La cuenta que parece obvia es sumar lo mismo a los dos lados, 10 cm al ancho y 10 cm al alto:',
-        { linea: [ancho('10 cm'), ' + 10 cm = ', ancho('20 cm')] },
-        { linea: [alto('15 cm'), ' + 10 cm = ', alto('25 cm')] },
+        { linea: [chica('10 cm'), ' + 10 cm = ', grande('20 cm')] },
+        { linea: [chica('15 cm'), ' + 10 cm = ', grande('25 cm')] },
         'Con esa suma, la foto debería caber entera en el papel, solo que más grande. ',
         'La otra salida, estirarla hasta que llene el papel sin cortar nada, tampoco sirve, porque las caras salen más anchas y el sol redondo se vuelve ovalado.'],
       ['Sumarle lo mismo al ancho y al alto no conserva la forma de la foto, y al estudio solo le queda elegir entre deformar la imagen o cortarle un pedazo. ',
@@ -97,6 +96,7 @@
         'Los 5 cm salen del cálculo: a 20 cm de ancho, la foto mide 30 cm de alto, y el papel tiene 25. Se reparten como el estudio decida (aquí, 2,5 cm arriba y 2,5 abajo).',
       ],
       notas: [
+        'Colores (Gerson, 28 nov, «el de la unidad»): antes el ancho iba en naranja y el alto en turquesa; ahora, como en la idea 5, la foto chica (10 y 15) va en naranja y la grande (20 y 25) en turquesa, en el texto, las líneas y la figura.',
         'Tercera pasada (27 nov): la suma que estaba en prosa («al ancho le tocan 10 cm más y al alto también») sale a dos líneas, una por lado: 10 cm + 10 cm = 20 cm (ancho, naranja) y 15 cm + 10 cm = 25 cm (alto, turquesa). La oración de antes termina en dos puntos y la conclusión sigue debajo («Con esa suma, la foto debería caber entera…»). Sin palabras de doble sentido.',
         'La figura dibuja la misma foto chica en los dos paneles y el mismo papel de 20 por 25. En «Lo que predice», la foto entera está dibujada dentro del papel (con un poco de papel libre a los lados, que no se nota porque el fondo es del mismo color): es lo que se espera. En «Lo que se mide», la foto ampliada a 20 por 30 se ve punteada en carmín y tenue fuera del papel.',
         'No se habla de áreas en ninguna parte, para no tocar la idea 5 (razón de áreas). La pregunta compara pares de medidas, como pide el skill (2.5): 10 y 20, 15 y 30, frente a 10 y 20, 15 y 25.',
