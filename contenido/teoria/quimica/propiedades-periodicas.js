@@ -664,14 +664,17 @@
   // aniones de oxígeno» con los cationes en los huecos). Lo explica la regla: el silicio y el aluminio pierden electrones
   // y se achican; el oxígeno gana y crece. Si⁴⁺: Shannon (1976), NC 6, 40 pm. La pregunta va a otro ion (Al³⁺), que no
   // está en el juego; los números de Predice (la serie de 10 electrones) no se escriben.
+  // Revisión del Escribidor Escribano (28 nov): «lugar» pasa a «espacio» (una sola palabra para el volumen). El tercer
+  // párrafo abría con «Por eso», pero la regla solo da el sentido de cada cambio, no que la razón pase de 3: ahora
+  // dice que las dos cosas juntas llevan a esa razón (Shannon: O²⁻ 140 pm, Si⁴⁺ 40 pm con NC 6).
   const SI4 = { s: 'Si⁴⁺', r: 40, p: 14, e: 10 };
   const MUNDO_IONES = {
-    hecho: 'En una roca, casi todo el lugar es oxígeno',
+    hecho: 'En una roca, casi todo el espacio es oxígeno',
     parrafos: [
-      'Las piedras de un cerro y la arcilla de un adobe están hechas sobre todo de oxígeno y silicio, con algo de aluminio y de otros metales. El oxígeno aporta cerca del 47 % de la masa de la corteza terrestre, pero si se mide el lugar que ocupa cada elemento, llena más del 90 % de su volumen.',
+      'Las piedras de un cerro y la arcilla de un adobe están hechas sobre todo de oxígeno y silicio, con algo de aluminio y de otros metales. El oxígeno aporta cerca del 47 % de la masa de la corteza terrestre, pero si se mide el espacio que ocupa cada elemento, llena más del 90 % de su volumen.',
       ['En las rocas, el silicio y el aluminio no están como átomos sino como cationes, y el oxígeno está como anión. Cada silicio perdió los cuatro electrones de su nivel 3, y cada oxígeno ganó dos que se repelen con los suyos:',
         { linea: [Rr('r'), ' (Si⁴⁺) < ', Rr('r'), ' (Si)', SEP, Rr('r'), ' (O²⁻) > ', Rr('r'), ' (O)'] }],
-      [`Por eso el radio del ion de oxígeno es más de ${Math.floor(ION['O²⁻'][2] / SI4.r)} veces el del ion de silicio, y una roca es, por dentro, un apilado de oxígenos con los cationes metidos en los huecos.`],
+      [`Como uno se achica y el otro crece, el radio del ion de oxígeno llega a más de ${Math.floor(ION['O²⁻'][2] / SI4.r)} veces el del ion de silicio, y una roca es, por dentro, un apilado de oxígenos con los cationes metidos en los huecos.`],
     ],
     figura: ESF([atomoE(14, { e: 14 }), SI4, atomoE(8, { e: 8 }), esfIon('O²⁻')], { rotulo: 'Cada átomo junto a su ion' }),
     pregunta: {
@@ -1028,6 +1031,9 @@
   // de soldadura reaccione con el oxígeno del aire. Lo explica la regla: el argón cierra el periodo 3, con la EI más alta
   // de su fila (NIST: Ar 1521, Fe 762 kJ/mol; la línea dice «≈ 2 ×», 1521 ÷ 762 = 2,0), y no libera energía al ganar un
   // electrón. La pregunta va al helio: arriba en el grupo, la EI sube. Sin el fósforo ni el azufre (Predice).
+  // Revisión del Escribidor Escribano (28 nov): que el argón no libera energía al ganar un electrón estaba de memoria;
+  // es cierto (no hay anión de argón estable: Mayer y otros, PNAS, 2019, hablan de su afinidad electrónica negativa,
+  // es decir, desfavorable) y ahora va en la fuente. El texto no cambia.
   const MUNDO_EI = {
     hecho: 'El argón protege la soldadura del aire',
     parrafos: [
@@ -1048,7 +1054,7 @@
       ],
       porque: 'La EI sube hacia arriba en un grupo, porque el electrón de afuera está más cerca del núcleo. En el helio está en el nivel 1, así que arrancarlo cuesta más que en el argón.',
     },
-    fuente: 'Gas de protección en la soldadura TIG: Fronius; energías de ionización: NIST Atomic Spectra Database.',
+    fuente: 'Soldadura TIG: Fronius; energías de ionización: NIST; el argón no forma un anión estable: Mayer y otros, PNAS (2019).',
   };
   const ionizacion = {
     id: 'energia-ionizacion',
@@ -1368,6 +1374,12 @@
   // (la base de diodos y transistores) y el estaño y el plomo, metales. La mina San Rafael (Minsur) está en Antauta,
   // Melgar, Puno, y saca cerca del 10 % del estaño del mundo (Gestión, Energiminas). El plomo de las baterías de auto,
   // de memoria (batería de plomo y ácido). La pregunta va al grupo 15 (N gas, Bi metal). Sin el flúor aislado (Predice).
+  // Revisión del Escribidor Escribano (28 nov): el diamante como aislante (brecha de unos 5,5 eV) y las placas de plomo
+  // de la batería de auto son datos de manual, ciertos, que siguen sin fuente abierta en esta sesión: por confirmar en
+  // LibreTexts antes de publicar. «Como lo piden los chips» era vago: ahora dice que los chips se hacen de silicio (el
+  // germanio solo va en algunos chips de radio, y no se nombra). El grupo 14 tiene cuatro electrones de afuera, así que
+  // «su electrón de afuera» pasa a plural. El bismuto no es «el último elemento» del grupo 15 (debajo está el
+  // moscovio, sintético): ahora está «cuatro filas más abajo».
   const G14 = [['C', 'diamante: no conduce'], ['Si', 'semiconductor: chips'], ['Ge', 'semiconductor'], ['Sn', 'metal: conduce'], ['Pb', 'metal: conduce']];
   const SVG_G14 = `<svg viewBox="0 0 400 330" width="400" height="330" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <text x="200" y="24" text-anchor="middle" font-size="19" font-weight="800" fill="currentColor">Grupo 14, de arriba abajo</text>
@@ -1380,22 +1392,22 @@
   const MUNDO_EN = {
     hecho: 'De arriba abajo, el grupo 14 se vuelve metal',
     parrafos: [
-      'El grupo 14 empieza en el carbono, que como diamante no conduce la electricidad. Le siguen el silicio y el germanio, que conducen a medias, como lo piden los chips de tu celular. Abajo están el estaño de la mina San Rafael, en Antauta (Puno), y el plomo de las baterías de auto, dos metales que sí conducen.',
-      ['En un metal, cada átomo suelta con facilidad su electrón de afuera, y esos electrones sueltos son los que llevan la corriente. Hacia abajo en el grupo, cada átomo tiene un nivel más y su electrón de afuera queda más lejos del núcleo, así que el carácter metálico crece:',
+      'El grupo 14 empieza en el carbono, que como diamante no conduce la electricidad. Le siguen el silicio y el germanio, que conducen a medias, y por eso los chips del celular son de silicio. Abajo están el estaño de la mina San Rafael, en Antauta (Puno), y el plomo de las baterías de auto, dos metales que sí conducen.',
+      ['En un metal, cada átomo suelta con facilidad sus electrones de afuera, y esos electrones sueltos son los que llevan la corriente. Hacia abajo en el grupo, cada átomo tiene un nivel más y sus electrones de afuera quedan más lejos del núcleo, así que el carácter metálico crece:',
         { linea: ['carácter metálico: C < Si < Ge < Sn < Pb'] }],
       ['Por eso la misma columna que empieza con un aislante termina con dos metales que se usan en la soldadura de los circuitos y en las baterías.'],
     ],
     figura: { svg: SVG_G14, alt: 'La columna del grupo 14 de arriba abajo: el carbono como diamante no conduce, el silicio y el germanio son semiconductores y el estaño y el plomo son metales que conducen. Una flecha hacia abajo dice «más metálico».' },
     pregunta: {
-      texto: 'Arriba del grupo 15 está el nitrógeno, un gas que no conduce la electricidad. ¿Qué esperas del bismuto, el último elemento de esa columna?',
+      texto: 'En la cima del grupo 15 está el nitrógeno, un gas que no conduce la electricidad. ¿Qué esperas del bismuto, cuatro filas más abajo en esa columna?',
       opciones: [
         { id: 'c', texto: 'Es un metal y conduce la electricidad', correcta: true },
         { id: 'igual', texto: 'Es un gas, como el nitrógeno de su columna', error: 'QM-MISMO-GRUPO',
           siFuera: 'Es cierto que los elementos de una columna se parecen, porque tienen el mismo número de electrones en su último nivel. Pero hacia abajo crece el carácter metálico, y el bismuto está cuatro filas más abajo que el nitrógeno.' },
         { id: 'protones', texto: 'Es un no metal: sus 83 protones retienen sus electrones', error: 'QM-EI-PROTONES',
-          siFuera: 'Es cierto que el bismuto tiene muchos más protones que el nitrógeno. Pero su electrón de afuera está cuatro niveles más lejos, y los electrones de adentro tapan buena parte de esa carga, así que se suelta con facilidad.' },
+          siFuera: 'Es cierto que el bismuto tiene muchos más protones que el nitrógeno. Pero sus electrones de afuera están cuatro niveles más lejos, y los electrones de adentro tapan buena parte de esa carga, así que se sueltan con facilidad.' },
       ],
-      porque: 'El carácter metálico crece hacia abajo en un grupo: el bismuto tiene cuatro niveles más que el nitrógeno, su electrón de afuera se suelta con facilidad y por eso es un metal.',
+      porque: 'El carácter metálico crece hacia abajo en un grupo: el bismuto tiene cuatro niveles más que el nitrógeno, sus electrones de afuera se sueltan con facilidad y por eso es un metal.',
     },
     fuente: 'Propiedades del grupo 14: LibreTexts; mina de estaño San Rafael (Antauta, Puno): Minsur, en Gestión y Energiminas.',
   };
