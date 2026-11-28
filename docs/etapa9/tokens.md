@@ -109,3 +109,4 @@ contra los límites semanales de los planes.
 | teoría aritmética y álgebra (5 unidades) | ejemplo que responde la apertura | 311 751 | 18 min 18 s | 92 herramientas |
 | teoría geometría y trigonometría (4 unidades) | ejemplo o tarjeta que responde la apertura | 268 289 | 19 min 34 s | 69 herramientas |
 | teoría (infraestructura) | momento «En el mundo» | 242 651 | 13 min 20 s | 69 herramientas |
+| teoría física y química (7 unidades) | ejemplo o tarjeta que responde la apertura | 329 858 | 25 min 51 s | 85 herramientas |
