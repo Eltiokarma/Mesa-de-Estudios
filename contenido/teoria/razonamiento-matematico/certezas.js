@@ -295,6 +295,8 @@
     },
     // En el mundo (docs/teoria.md, 4k): la tanda de penales se corta cuando ni la peor suerte cambia el resultado
     // (IFAB, regla 10). No usa tómbolas ni la meta de 3 rojas (Predice); el caso de la pregunta es otro marcador.
+    // Revisión del Escribidor Escribano (28 nov): «A gana la tanda 4 a 2» se leía como tanda ya ganada, y eso
+    // respondía la pregunta; pasa a «A va ganando». Regla 10 de la IFAB cotejada: se corta cuando el otro no alcanza.
     mundo: {
       hecho: 'Una tanda de penales puede terminar antes del quinto tiro',
       parrafos: [
@@ -304,7 +306,7 @@
           'Ni con esos dos goles alcanza a tu equipo, que ya ganó con certeza, y la tanda termina ahí.'],
       ],
       pregunta: {
-        texto: 'Después de cuatro tiros por equipo, A gana la tanda 4 a 2. ¿Hace falta patear los quintos tiros?',
+        texto: 'Después de cuatro tiros por equipo, A va ganando la tanda 4 a 2. ¿Hace falta patear los quintos tiros?',
         opciones: [
           { id: 'no', texto: 'No: aunque B meta su quinto tiro, llega a 3', correcta: true },
           { id: 'cinco', texto: 'Sí: siempre se patean los cinco tiros de cada equipo', error: 'RMP152',
@@ -682,12 +684,17 @@
     },
     // En el mundo: el palomar con números de pelos en Lima (no cumpleaños: esos son la Predice y los ejemplos). Los
     // casilleros van del 0 al 999 999, porque nadie se acerca a un millón de pelos; la cuenta la hace el código.
+    // Revisión del Escribidor Escribano (28 nov): la cifra de pelos salía de un sitio comercial (Medihair) y se decía
+    // como hecho. Ahora sale de StatPearls (NCBI): «Anatomy, Hair» da 80 000 a 120 000 pelos terminales en personas
+    // sanas y «Hair Transplantation», 100 000 a 150 000 folículos; se dice como estimación y con el techo más alto.
+    // Lima: el INEI dio 10,1 millones en mayo de 2026 y 9,6 millones en los resultados por provincia (julio); con
+    // cualquiera de las dos pasa de 9 000 001, así que el texto dice «cerca de 10 millones».
     mundo: (() => {
       const C = 1000000, K = 10, peorL = (K - 1) * C + 1, CIUDAD = 3 * C + 1;
       return {
         hecho: `Al menos ${K === 10 ? 'diez' : f0(K)} limeños tienen el mismo número de pelos`,
         parrafos: [
-          `Una cabeza tiene en promedio unos ${f0(100000)} pelos, y en la mayoría de las personas sanas la cifra va de ${f0(80000)} a ${f0(120000)}, así que nadie se acerca a un millón. Lima Metropolitana, según los Censos Nacionales 2025, tiene unos 10 millones de habitantes, muchas más personas que números de pelos posibles.`,
+          `Los manuales de medicina calculan que una cabeza sana tiene entre ${f0(80000)} y ${f0(150000)} pelos, según la persona, así que nadie se acerca a un millón. Lima Metropolitana tiene cerca de 10 millones de habitantes según los Censos Nacionales 2025, muchas más personas que números de pelos posibles.`,
           [`Cada número de pelos, del 0 al ${f0(C - 1)}, es un casillero, y cada persona cae en el de su cabeza. La peor suerte pone ${f0(K - 1)} personas en cada casillero, y una más ya obliga a que diez compartan uno:`,
             { linea: [O(`${f0(K - 1)} × ${f0(C)}`), ` + 1 = ${f0(peorL)}`] },
             'Lima tiene más gente que esa cantidad, así que diez personas, por lo menos, tienen el mismo número de pelos.'],
@@ -705,7 +712,7 @@
           ],
           porque: `La peor suerte pone 3 personas en cada uno de los ${f0(C)} casilleros y así acomoda a ${f0(3 * C)}. La persona que sobra cae en un casillero que ya tiene 3, y lo deja con 4.`,
         },
-        fuente: 'Pelos por cabeza: Medihair, estadísticas capilares; población: INEI, Censos Nacionales 2025 (preliminar).',
+        fuente: 'Pelos: StatPearls (NCBI), «Anatomy, Hair» y «Hair Transplantation»; población: INEI, Censos Nacionales 2025.',
       };
     })(),
     ejemplos: null,
@@ -1025,11 +1032,14 @@
       voz: 'Lo que falta llega al final.',
     },
     // En el mundo: el robo de las 220 zapatillas del pie derecho en Huancayo (2023). Zapatillas y no guantes (Predice).
+    // Revisión del Escribidor Escribano (28 nov): Canal N, Correo y Semana dicen que se las llevaron en tres cajas
+    // grandes (no «en sus cajas», que hacía pensar en cajas de zapatillas). «Salió entera la clase» no le cuadraba a un
+    // robo; ahora se la llevaron. La izquierda que faltaba tenía que ser del mismo modelo y de la misma talla.
     mundo: {
       hecho: 'En Huancayo robaron 220 zapatillas, todas del pie derecho',
       parrafos: [
-        'En 2023, unos ladrones entraron de madrugada a una tienda de calzado de Huancayo y se llevaron unas 220 zapatillas en sus cajas. Las cajas solo tenían la zapatilla del pie derecho, así que el botín no formaba ni un par que se pudiera vender.',
-        ['Un par que se puede usar pide una zapatilla de cada pie, y el robo armó justo la peor suerte: salió entera la clase del pie derecho. Con 220 zapatillas los ladrones no lograron ni un par, y una sola izquierda del mismo modelo les habría bastado:',
+        'En 2023, unos ladrones entraron de madrugada a una tienda de calzado de Huancayo y se llevaron unas 220 zapatillas en tres cajas grandes. Todas eran del pie derecho, así que el botín no formaba ni un par que se pudiera vender.',
+        ['Un par que se puede usar pide una zapatilla de cada pie, y los ladrones se llevaron justo la peor suerte: la clase entera del pie derecho. Con 220 zapatillas no lograron ni un par, y les habría bastado una izquierda del mismo modelo y talla:',
           { linea: [O('220 derechas'), ' + ', I('1 izquierda'), ' = un par'] }],
       ],
       pregunta: {
@@ -1337,10 +1347,15 @@
       voz: 'Lo que no sirve se cuenta, no se adivina.',
     },
     // En el mundo: La Tinka (6 bolillas del 1 al 48, sin devolver). Lo seguro sale de contar las que no cumplen.
+    // Revisión del Escribidor Escribano (28 nov): el primer párrafo decía que una jugada puede salir sin ningún par, y
+    // eso descartaba de antemano la alternativa «Al menos un número par». Ahora el ejemplo de lo que no es seguro es
+    // otro (los 40 números del 1 al 40 alcanzan para llenar la jugada), que no responde ninguna alternativa y hace
+    // contraste con lo seguro: 40 que no cumplen no se agotan, 5 sí.
+    // «Los 6 números de la jugada»: la Boliyapa, que se sortea aparte, no entra en la cuenta.
     mundo: {
       hecho: 'En La Tinka siempre sale un número menor que 44',
       parrafos: [
-        'En cada sorteo de La Tinka salen 6 bolillas de un bolillero con los números del 1 al 48, una de cada número, y la que sale no vuelve. Con tan pocas bolillas casi nada es seguro: hay 24 números impares, y una jugada puede salir sin ningún número par.',
+        'En cada sorteo de La Tinka, los 6 números de la jugada salen de un bolillero con las bolillas del 1 al 48, y la que sale no vuelve. Con tan pocas bolillas casi nada es seguro: ni siquiera sale con certeza un número mayor que 40, porque los seis pueden salir del 1 al 40.',
         ['Contando las que no cumplen, la regla encuentra algo que sí es seguro. Si la meta es un número menor que 44, no sirven los del 44 al 48, y la peor suerte saca primero esas cinco:',
           { linea: [O('5'), ' + ', I('1'), ' = 6'] },
           'La sexta bolilla tiene que ser menor que 44, así que en todo sorteo sale por lo menos una.'],
@@ -1691,13 +1706,17 @@
     // En el mundo: las caras opuestas de un dado suman 7, y cada esquina junta una cara de cada pareja (el peor caso).
     // La pregunta pasa a un dado de 8 caras, con la regla dicha en el enunciado. Figura: la esquina del 1, el 2 y el 3,
     // en naranja (lo supuesto), sin violeta ni turquesa.
+    // Revisión del Escribidor Escribano (28 nov): «ya seguían dados de hace unos cuatro mil años» era falso: los dados
+    // de Egipto y Mesopotamia solían ponerse 1-2, 3-4 y 5-6, y en Europa la suma 7 se impuso hacia 1450 (Eerkens y de
+    // Voogt, Acta Archaeologica, 2017; nota de UC Davis, 2018). La línea «3 + 1 = 4» se leía como suma de los números
+    // de las caras; ahora termina en «4 caras». El cierre ya no dice «mal numerado», sino que no sigue la numeración de hoy.
     mundo: {
       hecho: 'Ninguna esquina del dado junta dos caras que sumen 7',
       parrafos: [
-        'En un dado de juego, las caras opuestas suman 7: el 1 está frente al 6, el 2 frente al 5 y el 3 frente al 4. Es una costumbre muy antigua, que ya seguían dados de hace unos cuatro mil años, y como dos caras opuestas nunca se tocan, cada esquina junta tres caras, una de cada pareja.',
+        'En un dado, las caras opuestas suman 7: el 1 está frente al 6, el 2 frente al 5 y el 3 frente al 4. Así se numeran los dados de hoy, una costumbre que en Europa se impuso hacia 1450. Como dos caras opuestas nunca se tocan, cada esquina junta tres caras, una de cada pareja.',
         ['Esa esquina es el peor caso de la regla, una cara de cada pareja, porque en el dado no hay caras sin pareja. Una cuarta cara es opuesta a una de las tres y completa una suma de 7:',
-          { linea: [O('3'), ' + ', I('1'), ' = 4'] },
-          'Por eso un dado se revisa de un vistazo: si una esquina junta dos caras que suman 7, está mal numerado.'],
+          { linea: [O('3'), ' + ', I('1'), ' = 4 caras'] },
+          'Por eso basta mirar una esquina: si junta dos caras que suman 7, el dado no sigue la numeración de hoy.'],
       ],
       figura: {
         svg: `<svg viewBox="0 0 320 190" width="320" height="190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1727,7 +1746,7 @@
         ],
         porque: 'Suman 9 el 1 y el 8, el 2 y el 7, el 3 y el 6, el 4 y el 5. La peor suerte muestra una cara de cada pareja, que son cuatro, y la quinta completa una.',
       },
-      fuente: 'Caras opuestas que suman 7 en dados antiguos y modernos (Wikipedia, «Dice»); dado de 8 caras, Wolfram Demonstrations.',
+      fuente: 'Numeración de los dados: Eerkens y de Voogt, Acta Archaeologica (2017); dado de 8 caras, Wolfram Demonstrations.',
     },
     ejemplos: null,
     resuelve: {
