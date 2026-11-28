@@ -37,7 +37,9 @@ test('seis ideas en el orden de la propuesta; los cinco ids publicados se conser
   for (const i of def.ideas) {
     for (const k of ['aprendizaje', 'actividad', 'pregunta', 'lee', 'resuelve']) assert.ok(i[k], `${i.id}: ${k}`);
     assert.ok(i.juega.mision && i.juega.leyenda && i.juega.resumen, i.id);
-    assert.deepEqual(Teoria.momentosDe(i), ['lee', 'juega', 'predice', 'mira', 'regla', 'resuelve', 'ahora-tu']);
+    // «En el mundo» (28 nov; docs/teoria.md, 4k): las seis ideas lo traen, con su fuente.
+    assert.deepEqual(Teoria.momentosDe(i), ['lee', 'juega', 'predice', 'mira', 'regla', 'mundo', 'resuelve', 'ahora-tu']);
+    assert.ok(i.mundo && i.mundo.fuente, `${i.id}: mundo con fuente`);
     for (const t of [i.regla.texto, i.regla.condicion, i.juega.mision.texto, i.titulo, i.pregunta, i.actividad]) assert.equal(typeof t, 'string', i.id);
     assert.match(i.regla.condicion, /^[a-záéíóúñμθ]/, `${i.id}: «Vale si» en minúscula`);
   }

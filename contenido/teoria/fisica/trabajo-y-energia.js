@@ -410,6 +410,199 @@
       fb: { Negativo: 'Que el pie se detenga después no cuenta: el trabajo se mide mientras empuja, y en ese tramo el pie empuja hacia donde sale la pelota, a favor del avance.', Cero: 'El contacto dura poco, pero en ese tiempo la pelota avanza unos centímetros empujada por el pie, a favor del avance, y ese tramo basta para darle su rapidez.' } },
   ];
   const TXT_SIGNOS = ['Positivo', 'Negativo', 'Cero'];
+  // ---- En el mundo (Gerson, 28 nov; docs/teoria.md, 4k): un hecho real por idea, que explica la regla de esa idea ----
+  // Contextos distintos entre sí y de la apertura (el camión que baja de Ticlio): un satélite peruano (1), el casco de
+  // bicicleta (2), la central del Mantaro (3), los clavados de altura (4), la frenada con lluvia (5) y el cuerpo al
+  // pedalear (6). Las cuentas las hace el código; los datos medidos van con su fuente.
+  const MUNDO = (() => {
+    // 1. PerúSAT-1 a unos 695 km de altura (Airbus, eoPortal): rapidez y vuelta con la gravitación de Newton.
+    const GM = 3.986004418e14, RT = 6371e3, rOrb = RT + 695e3;
+    const vSat = Math.sqrt(GM / rOrb), tSat = 2 * Math.PI * rOrb / vSat / 60;
+    // La órbita alargada del dibujo: elipse de centro (210, 112) y semiejes 170 y 96; la Tierra en un foco. El satélite va
+    // por la mitad de abajo, de izquierda a derecha, alejándose de la Tierra.
+    const cx = 210, cy = 112, ax = 170, ay = 96, fo = cx - Math.sqrt(ax * ax - ay * ay);
+    const t = rad(112), px = cx + ax * Math.cos(t), py = cy + ay * Math.sin(t);
+    const vx = ax * Math.sin(t), vy = -ay * Math.cos(t), nv = Math.hypot(vx, vy);
+    const gx = fo - px, gy = cy - py, ng = Math.hypot(gx, gy);
+    const flecha = (x1, y1, dx, dy, largo, estilo) => {
+      const x2 = x1 + dx * largo, y2 = y1 + dy * largo, a = Math.atan2(dy, dx), p = 12, s = 0.45;
+      const n = (v) => v.toFixed(1);
+      return `<line x1="${n(x1)}" y1="${n(y1)}" x2="${n(x2 - dx * 6)}" y2="${n(y2 - dy * 6)}" ${estilo} stroke-width="4" stroke-linecap="round"/>
+        <path d="M${n(x2)} ${n(y2)}L${n(x2 - p * Math.cos(a - s))} ${n(y2 - p * Math.sin(a - s))}L${n(x2 - p * Math.cos(a + s))} ${n(y2 - p * Math.sin(a + s))}Z" ${estilo.replace('stroke:', 'fill:')}/>`;
+    };
+    const ux = vx / nv, uy = vy / nv, wx = gx / ng, wy = gy / ng;
+    const svgOrbita = `<svg viewBox="0 0 420 262" width="420" height="262" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <ellipse cx="${cx}" cy="${cy}" rx="${ax}" ry="${ay}" fill="none" style="stroke:var(--muted)" stroke-width="2.5" stroke-dasharray="7 6"/>
+      <circle cx="${fo.toFixed(1)}" cy="${cy}" r="18" style="fill:var(--line)" stroke="currentColor" stroke-width="2.5"/>
+      <text x="${fo.toFixed(1)}" y="${cy + 42}" text-anchor="middle" font-size="17" font-weight="800" fill="currentColor">Tierra</text>
+      ${flecha(px, py, ux, uy, 78, 'style="stroke:currentColor"')}
+      ${flecha(px, py, wx, wy, 66, 'style="stroke:var(--c-h)"')}
+      <rect x="${(px - 9).toFixed(1)}" y="${(py - 9).toFixed(1)}" width="18" height="18" rx="3" style="fill:var(--card)" stroke="currentColor" stroke-width="2.5"/>
+      <text x="${(px + ux * 78 - 10).toFixed(1)}" y="${(py + uy * 78 + 24).toFixed(1)}" font-size="17" font-weight="800" fill="currentColor">avance</text>
+      <text x="${(px + wx * 66 + 10).toFixed(1)}" y="${(py + wy * 66 - 6).toFixed(1)}" font-size="17" font-weight="800" style="fill:var(--c-h)">gravedad</text>
+    </svg>`;
+
+    // 3. La central Santiago Antúnez de Mayolo (748 m de caída neta) y Restitución (257 m), por metro cúbico de agua.
+    const kgM3 = 1000, hSAM = 748, hRes = 257;
+    const eSAM = kgM3 * G * hSAM, eRes = kgM3 * G * hRes;
+    const eCuad = Math.round(eSAM * (hRes / hSAM) ** 2 / 1000) * 1000;
+
+    // 4. Clavados de altura: plataformas de 27 m y 21 m (Red Bull).
+    const v27 = Math.sqrt(2 * G * 27), v21 = Math.sqrt(2 * G * 21), vMitad = Math.sqrt(2 * G * 10.5);
+
+    // 6. Eficiencia bruta al pedalear: cerca del 20 % (Korff y otros, 2007).
+    const eta = 0.2, util1 = 100, util2 = 120;
+    const cons1 = util1 / eta, cons2 = util2 / eta;
+
+    return {
+      trabajo: {
+        hecho: 'La gravedad jala a PerúSAT-1, pero no lo frena',
+        parrafos: [
+          `PerúSAT-1, el satélite con que el Perú toma fotos de su territorio desde el espacio, fue lanzado en septiembre de 2016 y da vueltas a la Tierra a unos 695 km de altura. A esa altura avanza a unos ${f(vSat / 1000, 1)} km/s y completa cada vuelta en unos ${f(tSat, 0)} minutos, sin que nada lo empuje hacia adelante.`,
+          ['La gravedad de la Tierra tira del satélite todo el tiempo hacia el centro del planeta, y en una vuelta a la misma altura el satélite avanza de lado a ese tirón:',
+            { linea: [Wpeso, ' = ', ...MG, ' · d · cos 90° = 0'] },
+            'Por eso la gravedad, aunque jala muy fuerte, no lo ayuda ni lo frena: solo le dobla el camino, y el satélite sigue dando vueltas.'],
+        ],
+        figura: { svg: svgOrbita, alt: 'Una órbita alargada alrededor de la Tierra. En el tramo en que el satélite se aleja, su avance apunta hacia afuera y la gravedad apunta hacia la Tierra, con un ángulo de más de 90° entre las dos flechas.' },
+        pregunta: {
+          texto: 'Otro satélite sigue una órbita alargada, como la del dibujo, y en este tramo se aleja de la Tierra. ¿Qué signo tiene el trabajo de la gravedad en ese tramo?',
+          opciones: [
+            { id: 'c', texto: 'Negativo: la gravedad tira en parte contra el avance', correcta: true },
+            { id: 'lado', texto: 'Cero: en una órbita, la gravedad siempre va de lado', error: 'TR-ORBITA',
+              siFuera: 'Así pasa en una vuelta a la misma altura, como la de PerúSAT-1. Pero en este tramo el satélite se aleja de la Tierra, y el ángulo entre la gravedad y su avance pasa de 90°.' },
+            { id: 'necesaria', texto: 'Positivo: la gravedad es la que lo mantiene en órbita', error: 'TR-NECESARIA',
+              siFuera: 'Es cierto que sin la gravedad el satélite se iría en línea recta. Pero el signo del trabajo no dice si una fuerza hace falta: dice si ayuda o frena el avance, y aquí tira hacia atrás.' },
+            { id: 'vacio', texto: 'Cero: en el espacio ya no hay gravedad', error: 'TR-SIN-GRAVEDAD',
+              siFuera: 'Es cierto que en el espacio casi no hay aire, pero sí hay gravedad: es la que dobla el camino del satélite. Sin ella, el satélite se iría en línea recta y no daría vueltas.' },
+          ],
+          porque: 'Mientras el satélite se aleja, la gravedad apunta hacia la Tierra y su avance apunta hacia afuera. El ángulo entre las dos pasa de 90°, su coseno es negativo y la gravedad lo frena.',
+        },
+        fuente: 'Lanzamiento y altura de PerúSAT-1: Airbus Defence and Space y eoPortal, 2016; rapidez y vuelta calculadas con la gravitación de Newton.',
+      },
+
+      teorema: {
+        hecho: 'La espuma del casco se aplasta para cuidar tu cabeza',
+        parrafos: [
+          'Para venderse en Estados Unidos, un casco de bicicleta debe pasar una prueba: con una cabeza de prueba adentro, se deja caer contra un bloque plano, al que debe llegar a 6,2 m/s. Según la propia norma, esa rapidez se alcanza con una caída de unos 2 m, como la de un ciclista que sale volando.',
+          ['Al llegar, la cabeza trae energía cinética, y para detenerla algo tiene que hacer sobre ella un trabajo neto negativo que la quite toda:',
+            { linea: [Wneto, ' = 0 − ', EC, ' = −', EC] },
+            'Sin casco, el bloque la detendría en muy poco camino y con una fuerza enorme. La espuma, al aplastarse, alarga ese camino, y con más camino basta menos fuerza para el mismo trabajo.'],
+        ],
+        pregunta: {
+          texto: 'Dos cascos reciben el mismo golpe, pero la espuma de uno se aplasta el doble de centímetros que la del otro. ¿Qué fuerza hace, en promedio, la espuma que más se aplasta?',
+          opciones: [
+            { id: 'c', texto: 'La mitad de la fuerza que hace la otra', correcta: true },
+            { id: 'igual', texto: 'La misma: las dos quitan la misma energía', error: 'TE-FUERZA-ENERGIA',
+              siFuera: 'Es cierto que las dos espumas quitan la misma energía, porque las cabezas llegan con la misma rapidez. Pero ese trabajo es la fuerza por el camino, y con el doble de camino alcanza la mitad de fuerza.' },
+            { id: 'doble', texto: 'El doble: se aplasta más porque recibe más fuerza', error: 'TE-APLASTA',
+              siFuera: 'Aplastarse más parece señal de un golpe más fuerte, pero aquí el golpe es el mismo para los dos cascos. Repartir el mismo trabajo en el doble de camino pide la mitad de fuerza, no el doble.' },
+            { id: 'cuarta', texto: 'La cuarta parte: el camino va al cuadrado', error: 'TE-CUADRADO',
+              siFuera: 'El cuadrado está en la rapidez, dentro de la energía cinética, no en el camino. El trabajo es la fuerza por el camino, así que el doble de camino reparte la fuerza en dos, no en cuatro.' },
+          ],
+          porque: 'Las dos espumas hacen el mismo trabajo, el que quita la energía cinética de la cabeza. Como ese trabajo es la fuerza por el camino, el doble de camino deja la mitad de fuerza.',
+        },
+        fuente: 'Norma de cascos de bicicleta de la CPSC de Estados Unidos (16 CFR 1203, 1998): golpe contra el yunque plano a 6,2 m/s.',
+      },
+
+      potencial: {
+        hecho: 'El agua del Mantaro cae 748 m hasta sus turbinas',
+        parrafos: [
+          `En Tayacaja, Huancavelica, la central Santiago Antúnez de Mayolo toma agua del río Mantaro y la hace bajar por una tubería hasta sus turbinas, ${hSAM} m más abajo. Con sus siete turbinas puede entregar unos 798 MW, y después la misma agua pasa a la central Restitución, donde cae otros ${hRes} m.`,
+          ['Mientras baja, el peso del agua hace un trabajo que las turbinas recogen, y ese trabajo vale lo que baja su energía potencial. Para cada metro cúbico, que tiene 1000 kg:',
+            { linea: [Wpeso, ' = ', ...MG, ` · h = 1000 · 10 · ${hSAM} = ${J_(eSAM)}`] },
+            'Cuantos más metros cae el agua, más energía da cada litro, y por eso las centrales de los Andes buscan lugares donde pueda caer cientos de metros.'],
+        ],
+        pregunta: {
+          texto: `En la central Restitución, cada metro cúbico de esa agua cae otros ${hRes} m. ¿Cuánta energía potencial pierde allí?`,
+          opciones: [
+            { id: 'c', texto: J_(eRes), correcta: true },
+            { id: 'masa', texto: J_(eSAM), error: 'EP-MASA',
+              siFuera: `Es cierto que es la misma agua, con la misma masa. Pero la energía potencial depende también de la altura que baja, y en Restitución baja ${hRes} m, no ${hSAM} m.` },
+            { id: 'suma', texto: J_(eSAM + eRes), error: 'EP-TOTAL',
+              siFuera: 'Sumar las dos caídas da lo que pierde el agua en todo su camino, desde la toma hasta la salida de Restitución. La pregunta pide solo lo de Restitución, donde el agua baja menos.' },
+            { id: 'cuad', texto: J_(eCuad), error: 'EP-CUADRADO',
+              siFuera: 'El cuadrado está en la energía cinética, con la rapidez. La energía potencial va con la altura sin elevarla, así que una caída más corta da una parte proporcional de la energía.' },
+          ],
+          porque: `La energía potencial que pierde el agua es su peso por la altura que baja: 1000 · 10 · ${hRes} da ${J_(eRes)}, algo más de un tercio de lo que da en la primera central.`,
+        },
+        fuente: 'Caídas netas de 748 m y 257 m y 798 MW: tesis de la UNI sobre el Complejo Mantaro y Global Energy Monitor.',
+      },
+
+      conservacion: {
+        hecho: 'Un clavado de 27 m termina a 85 km/h',
+        parrafos: [
+          'En la Serie Mundial de Red Bull Cliff Diving, los hombres saltan desde una plataforma de 27 m, más alta que un edificio de ocho pisos, y las mujeres desde una de 21 m. En menos de tres segundos dan vueltas y giros en el aire, y entran al agua de pie a unos 85 km/h.',
+          ['Mientras cae, el clavadista cambia energía potencial por energía cinética, y como el aire casi no lo frena en tan poco tiempo, la suma de las dos no cambia:',
+            { linea: [...MG, ' · h = ½ · m · v²'] },
+            { linea: ['v = √(2 · ', g, ` · h) = √(2 · 10 · 27) ≈ ${f(v27, 1)} m/s ≈ ${f(v27 * 3.6, 0)} km/h`] },
+            'Es casi lo que se mide, y no depende de su masa ni de las vueltas que dé en el aire, sino de la altura de la plataforma.'],
+        ],
+        pregunta: {
+          texto: 'Una clavadista salta desde la plataforma de 21 m. ¿Qué rapidez lleva cuando ya bajó la mitad, 10,5 m?',
+          opciones: [
+            { id: 'c', texto: `Unos ${MS(Math.round(vMitad * 10) / 10)}`, correcta: true },
+            { id: 'mitad', texto: `Unos ${MS(Math.round(v21 / 2 * 10) / 10)}: la mitad de su rapidez final`, error: 'CE-MITAD',
+              siFuera: 'Es cierto que a la mitad de la altura ya cambió la mitad de su energía potencial por cinética. Pero la energía cinética va con v², así que la mitad de la energía no es la mitad de la rapidez.' },
+            { id: 'raiz', texto: `Unos ${MS(2 * G * 10.5)}`, error: 'CE-RAIZ',
+              siFuera: 'Igualar las dos energías está bien, pero 2 · g · h da v², no v. Falta sacar la raíz cuadrada; sin ella, la rapidez sale de cientos de metros por segundo.' },
+            { id: 'masa', texto: 'Depende de su masa: si pesa más, va más rápido', error: 'CE-MASA',
+              siFuera: 'Una clavadista con más masa tiene más energía potencial, pero también necesita más energía cinética para cada m/s. La masa está en los dos lados de la igualdad y se cancela.' },
+          ],
+          porque: `A la mitad de la caída cambió la mitad de su energía potencial por cinética: v² vale 2 · 10 · 10,5 = 210, y v es unos ${MS(Math.round(vMitad * 10) / 10)}, más de la mitad de su rapidez final.`,
+        },
+        fuente: 'Red Bull Cliff Diving World Series: plataformas de 27 m y de 21 m; entrada al agua a unos 85 km/h en menos de 3 s.',
+      },
+
+      rozamiento: {
+        hecho: 'Con lluvia, un auto necesita más metros para frenar',
+        parrafos: [
+          'La Dirección General de Tráfico de España calcula que, a 90 km/h, un auto que frena sobre asfalto mojado necesita unos 32 m más que sobre asfalto seco para detenerse. En Juliaca o en Puno pasa lo mismo en época de lluvias, porque el agua entre la llanta y la pista hace que rocen menos.',
+          ['Al frenar hasta detenerse, el auto se queda sin energía cinética, y el trabajo del rozamiento es el que se la quita y la vuelve calor:',
+            { linea: ['0 = ', EC, ' + ', Wf, '   ;   ', Wf, ' = −', fk, ' · d'] },
+            'Con la pista mojada, el rozamiento es más débil, y por eso el auto necesita más metros, d, para quedarse quieto.'],
+        ],
+        pregunta: {
+          texto: 'El mismo auto frena desde 90 km/h hasta detenerse, una vez en pista seca y otra en pista mojada. ¿En cuál de las dos frenadas se vuelve más energía en calor?',
+          opciones: [
+            { id: 'c', texto: 'Se vuelve la misma energía en calor en las dos', correcta: true },
+            { id: 'mojada', texto: 'En la mojada: el rozamiento actúa durante más metros', error: 'RZ-METROS',
+              siFuera: 'Es cierto que en la mojada el rozamiento actúa durante más metros. Pero ahí es más débil, y su trabajo, la fuerza por los metros, da lo mismo: toda la energía cinética que traía el auto.' },
+            { id: 'seca', texto: 'En la seca: ahí la llanta roza con más fuerza', error: 'RZ-FUERZA',
+              siFuera: 'Es cierto que en la seca el rozamiento es más fuerte. Pero actúa durante menos metros, y su trabajo, la fuerza por los metros, alcanza justo para quitar la energía cinética que traía el auto.' },
+            { id: 'agua', texto: 'En ninguna de las dos: el agua enfría las llantas', error: 'RZ-AGUA',
+              siFuera: 'El agua puede llevarse parte del calor después, pero no evita que se produzca. La energía cinética del auto no desaparece al frenar: el rozamiento la vuelve calor en las dos pistas.' },
+          ],
+          porque: 'En las dos frenadas el auto pasa de 90 km/h a quedarse quieto, así que el rozamiento le quita la misma energía cinética. En la mojada la quita con menos fuerza y durante más metros.',
+        },
+        fuente: 'Dirección General de Tráfico de España, «Todo lo que necesitas saber para circular bajo la lluvia»: a 90 km/h, unos 32 m más en mojado.',
+      },
+
+      potencia: {
+        hecho: 'Al pedalear, cuatro de cada cinco joules se vuelven calor',
+        parrafos: [
+          `Cuando pedaleas, tu cuerpo gasta la energía de lo que comiste, pero solo una parte llega a los pedales como trabajo. Los estudios con ciclistas, que miden el oxígeno que respiran, encuentran que la eficiencia del cuerpo entero ronda el ${f(eta * 100, 0)} %, así que de cada cinco joules que gastas, uno mueve la bicicleta.`,
+          [`Los otros cuatro joules se vuelven calor dentro de tus músculos, y por eso sudas: el sudor se evapora y se lleva ese calor. Si entregas ${W_(util1)} a los pedales:`,
+            { linea: [Pcons, ' = ', frac(Putil, 'η'), ' = ', frac(W_(util1), f(eta)), ` = ${W_(cons1)}`] },
+            `Así, tu cuerpo consume unos ${W_(cons1)}, y ${W_(cons1 - util1)} se vuelven calor, tanto como cuatro focos antiguos de 100 W encendidos.`],
+        ],
+        pregunta: {
+          texto: `Una ciclista sube una cuesta entregando ${W_(util2)} a los pedales, con la misma eficiencia del ${f(eta * 100, 0)} %. ¿Cuánta potencia se vuelve calor en su cuerpo?`,
+          opciones: [
+            { id: 'c', texto: W_(cons2 - util2), correcta: true },
+            { id: 'por', texto: W_(util2 * eta), error: 'PO-EFIC',
+              siFuera: `Usar el ${f(eta * 100, 0)} % está bien, pero lo multiplicaste por lo que entrega. Los ${W_(util2)} son el ${f(eta * 100, 0)} % de lo que consume su cuerpo, y el calor es lo que consume menos lo que entrega.` },
+            { id: 'ochenta', texto: W_(util2 * (1 - eta)), error: 'PO-CALOR',
+              siFuera: `Es cierto que el calor es el ${f((1 - eta) * 100, 0)} %, pero de lo que consume, no de los ${W_(util2)} que entrega. Primero halla lo que consume su cuerpo y después quítale la parte útil.` },
+            { id: 'consume', texto: W_(cons2), error: 'PO-CONSUMO',
+              siFuera: `Los ${W_(cons2)} son todo lo que consume su cuerpo, pero ${W_(util2)} de ellos sí llegan a los pedales como trabajo. Lo que se vuelve calor es el resto.` },
+          ],
+          porque: `Los ${W_(util2)} son el ${f(eta * 100, 0)} % de lo que consume: ${util2} entre ${f(eta)} da ${W_(cons2)}. De esos, ${W_(util2)} mueven la bicicleta y los otros ${W_(cons2 - util2)} se vuelven calor.`,
+        },
+        fuente: 'Eficiencia bruta al pedalear de 19 % a 20 %: Korff y otros (2007), Medicine & Science in Sports & Exercise 39(6), 991-995.',
+      },
+    };
+  })();
+
   const trabajo = {
     id: 'trabajo-y-angulo',
     titulo: 'Trabajo de una fuerza',
@@ -485,6 +678,7 @@
       voz: 'Una fuerza de lado al camino no trabaja, por grande que sea. Mira primero el ángulo.',
       dibujo: est(figJalon({ ang: 37, tF: 'F = 40 N', tC: '32 N', d: 'd = 5 m', alt: 'La maleta jalada con 40 N a 37°: 32 N van a lo largo del piso, durante 5 m.' })),
     },
+    mundo: MUNDO.trabajo,
     // Así se resuelve: el trabajo de una cuerda inclinada (otra lista que «Ahora tú») y, en las semillas impares, el del
     // rozamiento con la cuerda inclinada, que cambia la normal.
     resuelve: {
@@ -914,6 +1108,7 @@
       voz: 'El doble de rapidez pide cuatro veces la energía: v va al cuadrado.',
       dibujo: plano(grafica([[0, 0], [2, 20], [5, 20]], { nombre: 'F neta', areas: [{ puntos: [[0, 0], [2, 20]], rotulo: '20 J' }, { puntos: [[2, 20], [5, 20]], rotulo: '60 J' }] })),
     },
+    mundo: MUNDO.teorema,
     // Así se resuelve: empujar contra el rozamiento hasta una rapidez (semillas pares) o el trabajo neto entre dos
     // rapideces (impares), con otros objetos que «Ahora tú».
     resuelve: {
@@ -1326,6 +1521,7 @@
       voz: 'La energía del resorte es el área bajo su F–x: un triángulo, por eso el ½.',
       dibujo: plano(REGLA3),
     },
+    mundo: MUNDO.potencial,
     // Así se resuelve: la energía con una referencia que no es el piso (semillas pares) o la de un resorte (impares).
     resuelve: {
       pieza: 'fis-estatica',
@@ -1731,6 +1927,7 @@
       voz: 'Sin rozamiento, lo que pierde la altura lo gana la rapidez, por cualquier camino.',
       dibujo: est(REVELA4),
     },
+    mundo: MUNDO.conservacion,
     // Así se resuelve: la rapidez al pie de una rampa (semillas pares) o la altura de lo que se lanza hacia arriba
     // (impares), con otros objetos que «Ahora tú».
     resuelve: {
@@ -2142,6 +2339,7 @@
       voz: 'La energía no desaparece: lo que falta abajo está en el calor.',
       dibujo: est(REVELA5),
     },
+    mundo: MUNDO.rozamiento,
     // Así se resuelve: la rapidez al pie de una rampa áspera de 53° (semillas pares) o los botes (impares), con otros
     // números que «Ahora tú» (que usa la rampa de 37°).
     resuelve: {
@@ -2533,6 +2731,7 @@
       voz: 'Para hallar lo que consume, divide lo útil entre la eficiencia: siempre sale más.',
       dibujo: est(REVELA6),
     },
+    mundo: MUNDO.potencia,
     // Así se resuelve: la potencia útil de un montacargas (semillas pares) o lo que consume una bomba con su eficiencia
     // (impares), con otros números que «Ahora tú».
     resuelve: {
