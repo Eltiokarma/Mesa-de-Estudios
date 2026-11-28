@@ -1979,7 +1979,8 @@
 
   // Ejemplos de la idea 6 (cuentas aparte en e6-algebra/scripts/cuentas-ejemplos.py): (x⁷ − a⁷) ÷ (x − a): 7 términos;
   // (x⁵ − 32) ÷ (x − 2) empieza con x⁴; t₃ de (x⁵ − y⁵) ÷ (x − y) = x²y²; el último de (x⁴ − 81) ÷ (x − 3) es 27;
-  // (x³ + 8) ÷ (x + 2) = x² − 2x + 4; t₄ de (x⁵ + y⁵) ÷ (x + y) = −xy³; (x⁴ − 16) ÷ (x − 2) = x³ + 2x² + 4x + 8;
+  // (x³ + 8) ÷ (x + 2) = x² − 2x + 4; t₄ de (x⁵ + y⁵) ÷ (x + y) = −xy³; (x⁴ − 1) ÷ (x − 1) = x³ + x² + x + 1, con x = 5:
+  // 125 + 25 + 5 + 1 = 624 ÷ 4 = 156 (28 nov, puente con la apertura de la estafa piramidal; reemplaza a (x⁴ − 16) ÷ (x − 2));
   // (x¹² − y⁸) ÷ (x³ − y²): 4 términos, t₂ = x⁶y²; 9919 ÷ 7 = 1417; (x³⁵ − y²¹) ÷ (x⁵ − y³): t₄ = x¹⁵y⁹, grado 24;
   // x⁸y⁹ con x² − y³: k = 4, N = 8, m + n = 40; (x⁴² − y²¹) ÷ (x² − y): 21 términos, 10 antes del central;
   // t₅ de (x⁷ + 128) ÷ (x + 2) = 16x²; exactas: solo (x⁵ + 32) ÷ (x + 2).
@@ -2017,14 +2018,15 @@
         { texto: 'El lugar 4 es par: signo −.', ecuacion: [{ sub: ['t', '4'] }, ' = ', QC('−xy³')] },
       ],
       respuesta: [QC('−xy³')] },
-    { nivel: 2, titulo: 'Escribir el cociente entero',
-      enunciado: ['Escribe el cociente de (x⁴ − 16) ÷ (', DV('x − 2'), ') sin dividir.'],
-      datos: ['(xⁿ − aⁿ) ÷ (x − a) tiene n términos; en el de lugar k, x lleva n − k y a lleva k − 1', '16 = 2⁴'],
+    { nivel: 2, titulo: 'Sin dividir, con x − 1',
+      enunciado: ['Escribe sin dividir el cociente de (x⁴ − 1) ÷ (', DV('x − 1'), '). Después úsalo para contar a la gente de una cadena en la que cada persona invita a 5: 1 + 5 + 25 + 125.'],
+      datos: ['(xⁿ − aⁿ) ÷ (x − a) tiene n términos; en el de lugar k, x lleva n − k y a lleva k − 1', 'Una potencia de 1 siempre vale 1: 1⁴ = 1'],
       solucion: [
-        { texto: 'Cuatro términos: x baja de 3 a 0 y el 2 sube de 0 a 3.', ecuacion: ['x³ · 1 + x² · 2 + x · 4 + 8'] },
-        { texto: 'Compruebo con Ruffini: 1, 2, 4, 8 y resto 0.', ecuacion: [QC('x³ + 2x² + 4x + 8')] },
+        { texto: 'El 1 del dividendo es 1⁴, así que hace el papel de a, con a = 1. Hay cuatro términos: x baja de 3 a 0, y cada potencia de 1 que acompaña a x vale 1.', ecuacion: ['x³ · 1 + x² · 1 + x · 1 + 1 = ', QC('x³ + x² + x + 1')] },
+        { texto: 'El cociente es la suma de todas las potencias de x, desde x³ hasta 1. Se comprueba multiplicándolo por el divisor: los términos del medio se cancelan de dos en dos y solo quedan x⁴ y −1.', ecuacion: ['x⁴ + x³ + x² + x − x³ − x² − x − 1 = x⁴ − 1'] },
+        { texto: 'Con x = 5, cada término es una ronda de la cadena: 5³ = 125 entran en la tercera, 5² = 25 en la segunda, 5 en la primera, y el 1 es quien empieza. El total sale de una resta y una división.', ecuacion: ['125 + 25 + 5 + 1 = (5⁴ − 1) ÷ (', DV('5 − 1'), ') = 624 ÷ 4 = ', QC('156')] },
       ],
-      respuesta: [QC('x³ + 2x² + 4x + 8')] },
+      respuesta: [QC('x³ + x² + x + 1'), '; con x = 5, la cadena junta ', QC('156'), ' personas'] },
     { nivel: 2, titulo: 'Con potencias en el divisor',
       enunciado: ['¿Cuántos términos tiene el cociente de (x¹² − y⁸) ÷ (', DV('x³ − y²'), ')?'],
       datos: ['(xⁿ − aⁿ) ÷ (x − a) tiene n términos', 'Si el divisor es x³ − y², el dividendo debe ser (x³)ⁿ − (y²)ⁿ'],
