@@ -223,16 +223,22 @@
         { texto: 'En ese tiempo avanzó 2 m de lado; la rapidez es esa distancia entre el tiempo:', ecuacion: [Mv0, ' = ', { frac: [px('2'), pt('0,5')] }, ' = ', pv('4 m/s')] },
       ],
       respuesta: ['El agua sale a ', pv('4 m/s')] },
-    { nivel: 2, titulo: 'Sale rodando, en km/h',
-      figura: fig({ plataforma: 'azotea', objeto: 'pelota', alto: 20, ancho: 14, v0: 5, flecha: { texto: '18 km/h' }, cotaAlto: { texto: '20 m' }, cotaAlcance: { texto: '?', hasta: 10 } }),
-      enunciado: ['Una pelota rueda por una azotea de ', ph('20 m'), ' de altura y sale de lado por el borde a ', pv('18 km/h'), '. ¿A qué distancia del pie del edificio cae?'],
-      datos: [DA.lado, DA.cae, DA.g, DA.kmh],
+    // Apertura (28 nov, docs/etapa9/aperturas-para-la-teoria.md): algo lanzado dentro de un vehículo, visto desde adentro
+    // (sube y baja) y desde afuera (avanza en curva), con la velocidad relativa de movimiento-rectilineo, idea 5. Números
+    // propios (no los 18 km/h ni los 3,2 m del bus): 4/10 = 0,4 s de subida, 0,8 s de vuelo y 6 · 0,8 = 4,8 m. Reemplaza al
+    // de «Sale rodando, en km/h»; el paso de km/h a m/s sigue en «Soltar el paquete a tiempo».
+    { nivel: 2, titulo: 'La pelota dentro del tren',
+      figura: fig({ plataforma: 'piso', objeto: 'pelota', ancho: 6, vx: 6, vy: 4, flecha: false, flechas: { en: [0], kv: 8, v: false, vx: false, textos: { vy: '4 m/s' } },
+        cotaAlcance: { texto: '?', hasta: 4.8 }, alt: 'La pelota sale de la mano de la pasajera con 4 m/s hacia arriba. Bajo el piso, con «?», lo que avanza vista desde el andén.' }),
+      enunciado: ['Un tren avanza recto a ', pv('6 m/s'), ', sin frenar ni acelerar. Una pasajera lanza una pelota hacia arriba, a ', pv('4 m/s'), ', y la recibe en la mano. ¿Qué ve ella y cuánto avanza la pelota desde el andén?'],
+      datos: [DA.lado, 'Lanzada hacia arriba, la pelota pierde 10 m/s de rapidez vertical en cada segundo', DA.g],
       solucion: [
-        { texto: 'Primero se pasa la rapidez a m/s:', ecuacion: [pv('18 km/h'), ' = ', { frac: ['18 000 m', '3600 s'] }, ' = ', pv('5 m/s')] },
-        { texto: 'El tiempo de vuelo sale de la altura:', ecuacion: [ph('20'), ' = ½ · ', pa('10'), ' · ', Mt2, '   →   ', Mt, ' = ', pt('2 s')] },
-        { texto: 'En esos 2 s avanza de lado:', ecuacion: [Mx, ' = ', pv('5'), ' · ', pt('2'), ' = ', px('10 m')] },
+        { texto: 'Desde su asiento, la pasajera ve la pelota subir recto y bajar recto. Sube hasta perder sus 4 m/s hacia arriba, y como pierde 10 m/s cada segundo, tarda:', ecuacion: [{ frac: [pv('4'), pa('10')] }, ' = ', pt('0,4 s')] },
+        { texto: 'Tarda lo mismo en bajar hasta la mano, así que el vuelo dura el doble:', ecuacion: [Mt, ' = 2 · ', pt('0,4'), ' = ', pt('0,8 s')] },
+        { texto: 'Desde el andén, la pelota lleva además los 6 m/s del tren, como en la velocidad relativa del MRU: de lado, la del tren más cero.', ecuacion: [Mx, ' = ', pv('6'), ' · ', pt('0,8'), ' = ', px('4,8 m')] },
+        { texto: 'La mano también avanza esos 4,8 m con el tren, y por eso la pelota vuelve a ella. Visto desde el andén, su camino es una curva.' },
       ],
-      respuesta: ['Cae a ', px('10 m'), ' del pie del edificio'] },
+      respuesta: ['Ella la ve subir y bajar; desde el andén avanza ', px('4,8 m'), ' en curva'] },
     { nivel: 3, titulo: 'Dos esferas, dos rapideces',
       figura: fig({ plataforma: 'mesa', objeto: 'canica', alto: 1.25, ancho: 2.4, v0: 4, flecha: { texto: '2 m/s o 4 m/s' }, cotaAlto: { texto: '1,25 m' } }),
       enunciado: ['Del borde de una repisa de ', ph('1,25 m'), ' salen de lado dos esferas: una lenta, a ', pv('2 m/s'), ', y una rápida, a ', pv('4 m/s'), '. ¿Cuánto tarda cada una en llegar al piso y a qué distancia cae?'],

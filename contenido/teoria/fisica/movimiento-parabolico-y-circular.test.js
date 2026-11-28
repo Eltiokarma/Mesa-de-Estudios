@@ -300,7 +300,7 @@ test('A1: los 15 ejemplos cuadran con el cálculo aparte (también el valor de c
   dice(7, /a ([\d,]+) m/, caidaEn(12 / 6), '12 m a 6 m/s');
   dice(8, /a ([\d,]+) cm/, 100 * 2 * tiempoDe(0.8), 'la canica, en cm');
   dice(9, /a ([\d,]+) m\/s/, 2 / tiempoDe(1.25), 'el caño');
-  dice(10, /a ([\d,]+) m/, (18 * 1000 / 3600) * tiempoDe(20), '18 km/h desde 20 m');
+  dice(10, /avanza ([\d,]+) m/, 6 * (2 * 4 / 10), 'la pelota lanzada a 4 m/s hacia arriba en el tren a 6 m/s');
   // Nivel 3: la alternativa de la respuesta es la del cálculo aparte, y las otras son las de su error.
   const alt = (k, letra) => ej(k).alternativas['ABCDE'.indexOf(letra)];
   const t11 = tiempoDe(1.25);
