@@ -91,6 +91,7 @@
         'Pruébalo con una copia del mismo triángulo: dobla de modo que una esquina quede encima de otra, y repite con cada par de esquinas. ' +
         'Los tres dobleces nuevos también se cruzan en un solo punto, pero ese punto no es el mismo: queda en otro sitio.',
       'Un mismo triángulo tiene por lo menos dos puntos que podrían llamarse su centro, y cada uno sale de una clase distinta de doblez. ' +
+        'Fíjate en cada raya: la de lado sobre lado parte una esquina en dos ángulos iguales, y la de esquina sobre esquina cruza un lado por su mitad, en ángulo recto. ' +
         'Esos puntos, dónde caen y qué tiene de especial cada uno, son el tema de esta unidad: los puntos notables del triángulo.',
     ],
     figura: {
@@ -109,6 +110,7 @@
         'Que los dobleces de esquina sobre esquina (las mediatrices) se crucen en un punto: en un triángulo con una esquina abierta (obtusa), ese punto queda fuera del papel y hay que prolongar las rayas. El texto dice «en otro sitio», sin «del papel», porque el alumno recorta un triángulo cualquiera; no dice dentro ni fuera, para no adelantar la Predice de la idea 2, que pregunta justo eso. El triángulo de la figura tiene las tres esquinas agudas.',
       ],
       notas: [
+        'Coherencia con la unidad (28 nov): la unidad responde el choque (idea 3, incentro, cruce de las bisectrices; idea 2, circuncentro, cruce de las mediatrices) y la pregunta (idea 6: «en el equilátero, los cuatro centros coinciden», y el ejemplo «El triángulo equilátero»). Pero ninguna idea habla de doblar papel, así que el alumno no tenía cómo saber que el doblez de lado sobre lado es una bisectriz y el de esquina sobre esquina, una mediatriz. Se agregó al párrafo 3 una oración que describe cada raya con las palabras de la unidad (dos ángulos iguales; la mitad del lado, en ángulo recto) sin nombrar los centros ni enunciar la regla.',
         'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido.',
         'La figura es el mismo triángulo en los dos paneles, con las esquinas partidas por la mitad (dos arcos iguales en carmín) y los dobleces de lado sobre lado en raya. Los de esquina sobre esquina van en puntos grises: en «Lo que predice» se dibujan yendo al mismo punto (lo que se espera, no lo que pasa); en «Lo que se mide» son las mediatrices de verdad y se cruzan en el circuncentro, un punto hueco aparte del incentro.',
         'Doble revisión (27 nov): la versión anterior ponía como predicción que tres dobleces a mano dejarían un triangulito, como tres rectas cualesquiera. Nadie que dobla un triángulo espera eso: lo que espera es que se crucen en el centro, y eso pasa. El choque honesto es el otro, que ya estaba en el párrafo 3: hay más de un centro. Ahora el título, la figura, el párrafo 2 y la ficha cuentan ese choque, con el mismo triángulo y solo la clase de doblez cambiada. Se quitó «aunque los dobleces se hagan a mano», que prometía un cruce exacto que un doblez a mano no da.',

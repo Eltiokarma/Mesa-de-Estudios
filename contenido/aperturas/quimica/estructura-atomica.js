@@ -54,7 +54,8 @@
         'Con esa firma, un laboratorio reconoce qué elementos lleva una muestra acercándola a una llama, y los astrónomos encontraron el helio en la luz del Sol casi treinta años antes de hallarlo en la Tierra. ',
         'El color no es el del polvo que se echa al fuego, porque la sal es blanca y la llama sale amarilla.'],
       ['Si un elemento da siempre los mismos colores y otro elemento da otros, algo fijo y distinto tiene que haber dentro de cada átomo. ',
-        'Esta unidad trata de eso que no se ve con ningún microscopio del colegio: cómo está armado el átomo por dentro, su estructura atómica.'],
+        'Esta unidad trata de eso que no se ve con ningún microscopio del colegio: cómo está armado el átomo por dentro, su estructura atómica. ',
+        'Verás qué distingue a los átomos de un elemento de los de otro y cómo se acomodan sus electrones, que es de donde sale esa luz, aunque el cálculo de cada color queda para el curso de física.'],
     ],
     figura: {
       antes: 2,
@@ -74,6 +75,7 @@
         'Que la prueba de llama sirva en el laboratorio para reconocer elementos (es una prueba escolar clásica).',
       ],
       notas: [
+        'Coherencia con la unidad (28 nov): la unidad no explica los espectros ni la prueba de llama. Lo más cerca está en la regla de la idea 2 (modelos atómicos): «en Bohr, el electrón que baja de nivel suelta luz de un color», con la condición de que Bohr solo explicaba bien el hidrógeno; la idea 1 da lo que distingue a un elemento (sus protones, Z) y las ideas 3 y 4, cómo se acomodan los electrones. Ninguna idea dice que cada elemento tiene sus propios niveles y por eso sus propios colores. Se agregó al párrafo 3 una oración que dice qué responde la unidad (qué distingue a los átomos y cómo se acomodan sus electrones, de donde sale la luz) y que el cálculo del color es de física, para no prometer la explicación completa de la firma. La pregunta se puede responder al terminar: tienen distinto número de protones y de electrones, y sus electrones se acomodan distinto.',
         'Tercera pasada (27 nov): sin ecuaciones en la oración ni palabras de doble sentido.',
         'Doble revisión (27 nov): reescrita. Antes: «¿Por qué el cobre pinta de verde la llama azul, si no la calienta más?», con la predicción de que el color de la llama marca su temperatura, como el fierro del herrero. Gerson la puso de ejemplo de muñeco de paja: nadie cree que el cobre colorea la llama porque la calienta más. Después: la idea es intuitiva y útil, así que la apertura la muestra aplicada (el pirotécnico elige el elemento para elegir el color; la luz es una firma que delata al elemento) y «Lo que predice» es la intuición correcta, con la llama punteada que la medición confirma.',
         'Doble revisión (27 nov): se quitó el cobre de esta unidad porque aparece también en «Mol y composición» (63,55 u), la unidad que sigue; ahí el cobre hace falta por su proporción de isótopos (69 % y 31 %). Aquí lo reemplaza el sodio de la sal, que el alumno ve en su cocina.',

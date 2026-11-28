@@ -59,8 +59,8 @@
         'Con la parafina de una vela pasa así: un trozo de vela sólida se hunde en la parafina derretida, y el hielo tendría que hundirse igual en el fondo del vaso. ',
         'Tampoco sirve decir que el hielo flota por el aire que tiene atrapado, porque un hielo transparente, sin una sola burbuja, también flota.'],
       ['El agua se comporta al revés que la parafina por la forma de su molécula. ',
-        'Al congelarse, las moléculas de agua se enganchan unas con otras en un orden fijo que deja huecos entre ellas, y ese orden lo decide la forma de cada molécula. ',
-        'Esta unidad trata de esa forma, la geometría molecular, y de cómo la forma de una molécula cambia lo que hace una sustancia.'],
+        'Al congelarse, las moléculas de agua se enganchan unas con otras en un orden fijo que deja huecos entre ellas, y ese orden lo deciden la forma de cada molécula y la manera en que cada una atrae a sus vecinas. ',
+        'Esta unidad trata de esa forma, la geometría molecular, de las atracciones entre moléculas y de cómo la forma de una molécula cambia lo que hace una sustancia.'],
     ],
     figura: {
       antes: 2,
@@ -80,6 +80,7 @@
         'La red del hielo: cada molécula se une a cuatro vecinas por puentes de hidrógeno en un arreglo tetraédrico que deja huecos; el texto lo dice como «un orden fijo que deja huecos», sin los nombres.',
       ],
       notas: [
+        'Coherencia con la unidad (28 nov): la unidad responde la pregunta (la regla de la idea 1 dice que el agua es angular) y da las piezas del porqué del hielo (la forma, idea 1; el puente de hidrógeno, idea 4), pero ninguna idea, ejemplo ni misión habla del hielo, de sus huecos ni de por qué flota. El párrafo 3 decía que el orden con huecos «lo decide la forma de cada molécula»; ahora dice que lo deciden la forma y la manera en que cada molécula atrae a sus vecinas, y nombra las atracciones entre moléculas como parte del tema, para que el alumno las reconozca en la idea 4. No se nombra el puente de hidrógeno, que es la respuesta de la Predice de esa idea.',
         'Tercera pasada (27 nov): la equivalencia «cada litro de agua da unos 1,09 L de hielo» sale a una línea sola (1 L de agua → 1,09 L de hielo), con la oración de antes terminada en dos puntos y la consecuencia («Por eso un cubito flota…») debajo. Sin palabras de doble sentido.',
         'Doble revisión (27 nov): sin cambios (piloto aprobado). Cuentas rehechas: 1 / 0,917 = 1,09 L de hielo por litro y 1 − 0,917 = 8 % afuera, «casi la décima parte». Para Gerson: el alumno sabe que el hielo flota, así que el párrafo 2 no le atribuye la creencia contraria; la deduce de la regla general («casi todo sólido se hunde en su líquido», con la parafina como caso visto), y la pregunta del título es por qué el agua es la excepción. No es un muñeco de paja, pero si se quisiera la versión del punto 7, la apertura mostraría el hielo que flota aplicado (los lagos que se congelan por arriba y no por abajo).',
         'El párrafo 3 dice que la forma decide el orden del hielo y no explica cómo: ni las regiones de electrones, ni los pares libres, ni los puentes de hidrógeno. Eso queda para las ideas 1, 3 y 4.',
