@@ -273,8 +273,12 @@ test('B2: los 15 ejemplos cuadran contando vueltas con un reloj que avanza de a 
   assert.equal(letra(B, 12), 'E'); cerca(numAlt(alt(B, 12, 'E')), encuentro(30, 40, false), '12', 1e-3); cerca(numAlt(alt(B, 12, 'C')), encuentro(30, 40, true), '12 C', 1e-3);
   cerca(numAlt(alt(B, 12, 'A')), 70, '12 A'); cerca(numAlt(alt(B, 12, 'B')), 10, '12 B'); cerca(numAlt(alt(B, 12, 'D')), 35, '12 D');
   assert.equal(letra(B, 13), 'C'); cerca(numAlt(alt(B, 13, 'C')), encuentro(60, 720, false), '13', 1e-3); cerca(numAlt(alt(B, 13, 'B')), encuentro(60, 720, true), '13 B', 1e-3);
-  assert.equal(letra(B, 14), 'A'); cerca(piAlt(alt(B, 14, 'A')), 45 / 60 * vuelta(1), '14'); cerca(piAlt(alt(B, 14, 'B')), 45 * vuelta(1), '14 B');
-  cerca(numAlt(alt(B, 14, 'C')), 0.75, '14 C'); cerca(piAlt(alt(B, 14, 'D')), 0.75 * PI_, '14 D'); cerca(piAlt(alt(B, 14, 'E')), 45 * 60 * vuelta(1), '14 E');
+  // 14: la llanta de 12 rayos a 2 vueltas por segundo, filmada a 24 fotos por segundo: entre fotos gira justo lo que separa
+  // dos rayos (por eso parece quieta).
+  const gira14 = girar(2 * vuelta(1), 0, 1 / 24)[0];
+  assert.equal(letra(B, 14), 'A'); cerca(piAlt(alt(B, 14, 'A')), gira14, '14'); cerca(gira14, vuelta(1) / 12, '14: lo que separa dos rayos');
+  cerca(piAlt(alt(B, 14, 'D')), gira14, '14 D: el mismo ángulo, mal leído'); cerca(piAlt(alt(B, 14, 'B')), 2 * vuelta(1) * 24, '14 B: por 24');
+  assert.match(alt(B, 14, 'C'), /^1\/12 rad/, '14 C: vueltas sin pasar a radianes'); cerca(2 / 24, 1 / 12, '14 C'); cerca(numAlt(alt(B, 14, 'E')), 24 / 2, '14 E: 24 entre 2');
   // 15: el primer instante en que los dos están otra vez en la salida, con el reloj; vueltas del rápido en ese tiempo.
   let tj = NaN; for (let t = 1; t < 1000; t += 1) if (t % 30 === 0 && t % 45 === 0) { tj = t; break; }
   assert.equal(letra(B, 15), 'D'); cerca(numAlt(alt(B, 15, 'D')), tj / 30, '15');
