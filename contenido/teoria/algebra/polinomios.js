@@ -1015,7 +1015,8 @@
 
   // Ejemplos de la idea 3. Cuentas rehechas aparte (e5-algebra/cuentas-fase3.py): 4x³y² grado 5; x⁴y − 3x²y⁵: GR(x) =
   // 4, GR(y) = 5; 7 grado 0 y 7x grado 1; −2³x⁴y grado 5; 5x³ − 2x + 1 grado 3; x³y² + 4x⁴y − 2xy⁵: 5, 5, 6 → 6;
-  // 2x⁵ − xy³ + 4y: GR(y) = 3; 100x²y + x³y³ − 9: 6; solo 3x² − x + 5 es polinomio; 5x^(n+2)y³ grado 9 → n = 4;
+  // 2x⁵ − xy³ + 4y: GR(y) = 3; 100x²y + x³y³ − 9: 6 (con x = y = 2,
+  // 800 y 64; con x = y = 10, 100 000 y 1 000 000: el de mayor grado crece más; 28 nov, puente con la apertura); solo 3x² − x + 5 es polinomio; 5x^(n+2)y³ grado 9 → n = 4;
   // n + 5, n + 6, n + 4 con GA 11 → n = 5 (errores 6, 7, 11 y 8); m = 4, n = 6, GA 13 (errores 15, 10, 12 y 24); n de 2 a
   // 6: 5 valores (errores 3, 4, 6 e infinitos); 2a = 8, 3a + b = 13 → b = 1 (errores 4, 5, 9 y −11); m = 5, grados 9, 9
   // y 10 → 10 (errores 9, 7, 12 y 28).
@@ -1069,6 +1070,8 @@
       solucion: [
         { texto: 'El 100 es un coeficiente: no cambia el grado. Los grados son 2 + 1, 3 + 3 y 0.', ecuacion: ['3,   6,   0'] },
         { texto: 'El mayor es el de x³y³, aunque su coeficiente sea 1.', ecuacion: ['GA = ', RES('6')] },
+        { texto: 'El grado dice qué término crece más: con x = y = 2, 100x²y vale 800 y x³y³, 64; con x = y = 10, el primero vale 100 000 y el segundo, 1 000 000. Al crecer las letras, el término de mayor grado termina valiendo más, porque multiplica más letras.',
+          ecuacion: ['x = y = 10:   100 · 10² · 10 = 100 000,   10³ · 10³ = 1 000 000'] },
       ],
       respuesta: ['GA = ', RES('6')] },
     { nivel: 2, titulo: '¿Es un polinomio?',
