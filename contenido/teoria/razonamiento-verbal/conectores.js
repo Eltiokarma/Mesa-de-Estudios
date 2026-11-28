@@ -420,14 +420,19 @@
         { texto: [cubre('«Por eso»'), ' anuncia lo esperado tras la subida: comprar menos.'] },
         { texto: [prop('«Compramos más papa»'), ' lo rompe; ', prop('«la papa viene de Lampa»'), ' es otra cosa aparte.'] }],
       respuesta: [justo('«Compramos menos papa»')] },
-    { nivel: 2, titulo: 'El concierto con lluvia',
-      enunciado: '¿Qué completa el aviso: «el público se fue a su casa», «el público se quedó a bailar» o «la plaza tenía luces nuevas de colores»?',
+    // Apertura (la cevichería; aperturas-para-la-teoria, 28 nov): en un contraste con «pero», pesa más lo que va
+    // después. Los mismos dos datos en otro orden recomiendan cosas distintas.
+    { nivel: 2, titulo: 'Lo que va después del «pero»',
+      enunciado: 'Maribel pregunta en el grupo si se matricula en la academia del jirón Lima. ¿Qué mensaje la anima a ir: «el de Nilo», «el de Fiorella» o «los dos por igual»?',
       datos: D_IDEA1,
-      figura: fig(papel('cartel', 'Cartel de la municipalidad', 'Gracias, vecinos', 'la municipalidad', 'los vecinos', ors('k', ['Llovió durante todo el concierto en la plaza;', '[p:sin embargo,] [w:¿…?].']))),
+      figura: fig({ soporte: 'mensaje', lugar: 'Promoción 2026', hojas: [
+        { id: 'k', de: 'Nilo', para: 'Maribel', oraciones: ors('k', ['Sus profesores explican muy bien, [w:pero] [p:la academia queda lejos].']) },
+        { id: 'm', de: 'Fiorella', para: 'Maribel', oraciones: ors('m', ['La academia queda lejos, [w:pero] [p:sus profesores explican muy bien].']) }] }),
       solucion: [
-        { texto: ['La lluvia hace esperar que la gente se vaya, y ', cubre('«sin embargo»'), ' anuncia lo contrario.'] },
-        { texto: [prop('«Se fue a su casa»'), ' cumple lo esperado; ', prop('las luces'), ' son otra cosa aparte.'] }],
-      respuesta: [justo('«El público se quedó a bailar»')] },
+        { texto: ['Los dos mensajes traen los mismos datos, la distancia y los buenos profesores, y solo cambia el orden alrededor del «pero».'] },
+        { texto: ['Con «pero», pesa más lo que va después, porque corrige lo dicho antes: Fiorella termina en ', cubre('«explican muy bien»'), ' y Nilo, en ', prop('«queda lejos»'), '.'] },
+        { texto: ['Fiorella recomienda ir aunque quede lejos, y Nilo advierte que la distancia pesa más. ', prop('«Los dos por igual»'), ' no mira el orden.'] }],
+      respuesta: [justo('«El de Fiorella»')] },
 
     { nivel: 3, titulo: 'El puente viejo',
       enunciado: 'Pregunta 21 del simulacro. Elige el conector que, puesto en el espacio, da al texto un sentido coherente y preciso.',
