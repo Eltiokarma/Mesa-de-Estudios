@@ -114,3 +114,4 @@ contra los límites semanales de los planes.
 | trigonometria.razones-trigonometricas-agudas | piloto «En el mundo» (5 ideas) | 212 220 | 19 min 31 s | 47 herramientas |
 | quimica.propiedades-periodicas | piloto «En el mundo» (4 ideas) | 274 278 | 20 min 38 s | 61 herramientas |
 | razonamiento-matematico.certezas | piloto «En el mundo» (6 ideas) | 270 836 | 20 min 46 s | 64 herramientas |
+| algebra.productos-notables | piloto «En el mundo» (5 ideas) | 267 166 | 21 min 20 s | 66 herramientas |
