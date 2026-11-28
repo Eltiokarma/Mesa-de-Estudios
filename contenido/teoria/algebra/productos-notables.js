@@ -363,8 +363,8 @@
   //   1. Fibrosis quística entre personas de origen europeo: 1 de cada 2500 nacidos la tiene y 1 de cada 25 es portador
   //      (CDC, validez clínica del tamizaje de fibrosis quística; la cuenta de Hardy y Weinberg da 2pq = 0,0392). La
   //      condición de 1 en 10 000 de la pregunta es un caso supuesto, no un dato.
-  //   2. Distancia al horizonte: d² = (R + h)² − R², R ≈ 6371 km; sin la refracción del aire, que la alarga un 6 %
-  //      (Scientific American, «How far away is the horizon?»; Wikipedia, «Horizon»: 3,57√h km con h en metros).
+  //   2. (Cambiado el 28 nov: el horizonte repetía geometria.circunferencia; ahora es el método de Fermat, con sus
+  //      fuentes encima de MUNDO_SXD.)
   //   3. Dilatación: aluminio, 25 y 75 millonésimas por °C (lineal y de volumen); acero, 12 y 35; β ≈ 3α (OpenStax,
   //      College Physics, 13.2, tabla 13.2).
   //   4. Lado del dodecágono regular: 2R sen 15° = R(√6 − √2)/2 ≈ 0,5176 R (MathWorld, «Regular Dodecagon»).
@@ -372,6 +372,9 @@
   //      Automotor del MTC, RD 26-2024-MTC/18). POR VERIFICAR en el manual mismo: la forma se confirmó en fuentes
   //      secundarias (Interseguro; la lista de señales peruanas de OpenStreetMap) porque el PDF no abrió desde esta
   //      sesión. La plancha de 60 cm es un supuesto, no la medida oficial de la señal.
+  // Revisión del Escribidor Escribano (28 nov): «enfermedad de los pulmones» pasa a «que daña sobre todo los pulmones»
+  // (también daña el páncreas y el intestino), y «la esquina» se presenta como q² antes de usarla. Cuentas rehechas:
+  // q = 0,02, 2pq = 0,0392 ≈ 1/25, 2pq/q² = 98; con q = 0,01, 2pq = 0,0198 ≈ 198 q².
   const MUNDO_CUADRADO = (() => {
     const q = 0.02, p = 1 - q, por = 2 * p * q;
     // El cuadro de Punnett de toda la población: lado p + q = 1, con q agrandada (0,25 del lado) para que se vea.
@@ -394,11 +397,11 @@
     return {
       hecho: 'Por qué hay tantos portadores sanos de la fibrosis quística',
       parrafos: [
-        'La fibrosis quística es una enfermedad hereditaria de los pulmones que solo aparece en quien recibe dos copias del gen alterado, una de su madre y otra de su padre. Entre las personas de origen europeo nace con ella 1 de cada 2500 bebés, mientras que 1 de cada 25 personas lleva una sola copia y está sana.',
-        ['Las copias se juntan como en el cuadro de Punnett, con cada lado partido en copias sanas, ', T1('p'), ', y copias alteradas, ', T2('q'), '. Si la esquina vale 1 entre 2500, ', T2('q'), ` vale ${f(q)} y `, T1('p'), ` vale ${f(p)}:`,
+        'La fibrosis quística es una enfermedad que daña sobre todo los pulmones y solo aparece en quien recibe dos copias del gen alterado, una de su madre y otra de su padre. Entre las personas de origen europeo nace con ella 1 de cada 2500 bebés, mientras que 1 de cada 25 personas lleva una sola copia y está sana.',
+        ['Las copias se juntan como en el cuadro de Punnett, con cada lado partido en copias sanas, ', T1('p'), ', y alteradas, ', T2('q'), '. Si ', T2('q'), '², la esquina de los enfermos, vale 1 entre 2500, ', T2('q'), ` vale ${f(q)} y `, T1('p'), ` vale ${f(p)}:`,
           { linea: ['(', T1('p'), ' + ', T2('q'), ')² = ', T1('p'), '² + ', DP('2pq'), ' + ', T2('q'), '² = 1'] },
           { linea: [DP('2pq'), ` = 2 · ${f(p)} · ${f(q)} ≈ ${f(por, 3)}`] },
-          `Las dos franjas, los portadores, son ${f(por / (q * q), 0)} veces la esquina, así que casi todas las copias alteradas viajan escondidas en personas sanas.`],
+          `Las dos franjas de portadores suman ${f(por / (q * q), 0)} veces la esquina: casi todas las copias alteradas están en personas sanas.`],
       ],
       figura: { svg, alt: 'Un cuadrado de lado p + q, como un cuadro de Punnett: el cuadrado grande p² son las personas sin el gen alterado, las dos franjas pq son los portadores sanos y la esquina q² son quienes tienen la enfermedad.' },
       pregunta: {
@@ -414,54 +417,61 @@
     };
   })();
 
+  // Revisión del Escribidor Escribano (28 nov): el horizonte del Titicaca (con el bote a 10 km) repetía la apertura de
+  // geometria.circunferencia y su ejemplo del faro; se cambia el hecho por el método de Fermat, que parte un número en
+  // (a + b)(a − b). Datos verificados en la web el 28 nov: H. Böck, «Fermat Factorization in the Wild» (IACR ePrint
+  // 2023/026) y CVE-2022-26320: impresoras Canon (imageRUNNER, imagePROGRAF) y Fujifilm (Apeos, DocuCentre, DocuPrint)
+  // generaban claves RSA con dos primos demasiado cercanos, por la biblioteca SafeZone de Rambus; Fermat lo describió en
+  // 1643 (los «379 años» de la nota de 2022). Las claves de juguete 2491 = 53 · 47 y 4087 = 67 · 61 son ejemplos propios;
+  // las claves reales tienen cientos de cifras. Sin repetir el 31 · 29 = 899 de la Predice.
   const MUNDO_SXD = (() => {
-    const R = 6371, h = 0.0016, d2 = (2 * R + h) * h, h2 = 0.02, d22 = (2 * R + h2) * h2;
-    // Dibujo sin escala: la Tierra como un arco, el ojo a una altura exagerada y la recta de la vista tangente.
-    const svg = `<svg viewBox="0 0 320 260" width="320" height="260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M16 72 A170 170 0 0 1 200 182" fill="none" stroke="currentColor" stroke-width="3"/>
-      <text x="196" y="150" font-size="14" style="fill:var(--muted)">el agua del lago</text>
-      <line x1="40" y1="240" x2="40" y2="40" style="stroke:var(--c-o)" stroke-width="3"/>
-      <line x1="40" y1="240" x2="130" y2="96" style="stroke:var(--c-i)" stroke-width="3"/>
-      <line x1="40" y1="40" x2="180" y2="127" stroke="currentColor" stroke-width="2" stroke-dasharray="6 5"/>
-      <line x1="40" y1="40" x2="130" y2="96" stroke="currentColor" stroke-width="3"/>
-      <path d="M124 104 L116 99 L121 90" fill="none" stroke="currentColor" stroke-width="1.5"/>
-      <circle cx="40" cy="40" r="6" fill="currentColor"/><circle cx="40" cy="240" r="4" fill="currentColor"/>
-      <text x="52" y="36" font-size="14" fill="currentColor">tus ojos</text>
-      <text x="86" y="58" font-size="20" font-weight="800" fill="currentColor">d</text>
-      <text x="47" y="112" font-size="17" font-weight="800" style="fill:var(--c-o)">R + h</text>
-      <text x="92" y="180" font-size="18" font-weight="800" style="fill:var(--c-i)">R</text>
-      <text x="138" y="92" font-size="14" fill="currentColor">horizonte</text>
-      <text x="160" y="250" font-size="13" style="fill:var(--muted)">dibujo sin escala</text>
+    const a = 50, b = 3, N = a * a - b * b, a2 = 64, b2 = 3, N2 = a2 * a2 - b2 * b2;
+    // El cuadrado de 50 al que le falta la esquina de 3 (la esquina, agrandada para que se vea).
+    const X = 50, Y = 30, L = 200, E = 30;
+    const svg = `<svg viewBox="0 0 300 290" width="300" height="290" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M${X} ${Y} H${X + L} V${Y + L - E} H${X + L - E} V${Y + L} H${X} Z" style="fill:var(--c-o);stroke:var(--c-o)" fill-opacity=".18" stroke-width="2"/>
+      <rect x="${X + L - E}" y="${Y + L - E}" width="${E}" height="${E}" fill="none" style="stroke:var(--c-i)" stroke-width="2" stroke-dasharray="5 4"/>
+      <text x="${X + L / 2}" y="${Y - 10}" text-anchor="middle" font-size="18" font-weight="800" style="fill:var(--c-o)">${a}</text>
+      <text x="${X - 16}" y="${Y + L / 2 + 6}" text-anchor="middle" font-size="18" font-weight="800" style="fill:var(--c-o)">${a}</text>
+      <text x="${X + L - E / 2}" y="${Y + L + 22}" text-anchor="middle" font-size="17" font-weight="800" style="fill:var(--c-i)">${b}</text>
+      <text x="${X + L / 2 - 10}" y="${Y + L / 2 + 8}" text-anchor="middle" font-size="22" font-weight="800" fill="currentColor">${N}</text>
+      <text x="150" y="${Y + L + 50}" text-anchor="middle" font-size="12" style="fill:var(--muted)">un cuadrado de ${a} sin la esquina de ${b} (agrandada)</text>
     </svg>`;
     return {
-      hecho: 'Hasta dónde llega tu vista sobre el lago Titicaca',
+      hecho: 'Una resta de cuadrados rompió claves de impresoras',
       parrafos: [
-        ['Si miras el lago desde la orilla, el agua se curva con la Tierra y tu vista la toca en un solo punto, el horizonte. Ahí la recta de tu vista forma un ángulo recto con el radio de la Tierra, así que Pitágoras da la distancia d hasta ese punto:',
-          { linea: ['d² = (', T1('R + h'), ')² − ', T2('R'), '²'] }],
-        ['El radio ', T2('R'), ' mide unos 6371 km, y si tus ojos están a 1,6 m del agua, ', T1('h'), ' es 0,0016 km. Elevar 6371,0016 al cuadrado es una cuenta enorme, pero la suma por diferencia la acorta:',
-          { linea: ['d² = (', LT('R + h + R'), ')(', LT('R + h − R'), `) = ${f(2 * R + h, 4)} · ${f(h, 4)} ≈ ${f(d2, 1)} km²`] },
-          `Ves hasta unos ${f(Math.sqrt(d2), 1)} km, y el casco de un bote a 10 km ya queda escondido tras la curva del agua.`],
+        'Muchas claves de seguridad de internet son un número enorme que sale de multiplicar dos números primos secretos, y quien descubre esos dos primos puede romper la clave. En 2022, el investigador Hanno Böck encontró impresoras de Canon y Fujifilm que fabricaban sus claves con dos primos demasiado cercanos entre sí.',
+        ['Dos primos cercanos son un número más algo y el mismo número menos algo, así que su producto es una resta de cuadrados. Con una clave de juguete, ', String(N), `, basta mirar el cuadrado siguiente, ${a * a}, que le lleva otro cuadrado:`,
+          { linea: [`${a * a} − ${N} = ${b * b} = `, T2(b), '²'] },
+          { linea: [`${N} = `, T1(a), '² − ', T2(b), '² = (', LT(`${a} + ${b}`), ')(', LT(`${a} − ${b}`), `) = ${a + b} · ${a - b}`] },
+          'Así salen los dos primos sin probar divisores: es el método que Pierre de Fermat describió en 1643.'],
       ],
-      figura: { svg, alt: 'La Tierra dibujada como un arco. Desde tus ojos, a una altura h sobre el agua, sale la recta de la vista d, que toca el arco en el horizonte formando un ángulo recto con el radio R; del centro a tus ojos hay R + h.' },
+      figura: { svg, alt: `Un cuadrado de ${a} por ${a} al que le falta una esquina de ${b} por ${b}; lo que queda mide ${N}, y se puede rearmar como un rectángulo de ${a + b} por ${a - b}.` },
       pregunta: {
-        texto: 'Desde un mirador a 20 m sobre el agua, la altura h es 0,02 km. ¿Qué producto da d²?',
+        texto: `Otra clave de juguete, ${N2}, queda ${b2 * b2} por debajo de ${a2}², que es ${a2 * a2}. ¿Cuáles son sus dos factores primos?`,
         opciones: [
-          { id: 'c', texto: `${f(2 * R + h2, 2)} km por 0,02 km`, correcta: true },
-          { id: 'h2', texto: '0,02 km por 0,02 km', error: 'AL8', siFuera: 'Bien que el R² de afuera se vaya. Pero (R + h)² no es R² + h²: le faltan las dos franjas 2Rh, que son casi todo.' },
-          { id: 'uno', texto: '6371,02 km por 0,02 km', error: 'TAL-DIFCUAD-SUMA', siFuera: 'Bien el factor 0,02 km, la resta R + h − R. Pero el otro factor es la suma de los dos, R + h + R: lleva el radio dos veces.' },
+          { id: 'c', texto: `${a2 + b2} y ${a2 - b2}`, correcta: true },
+          { id: 'nueve', texto: `${a2 + b2 * b2} y ${a2 - b2 * b2}`, error: 'TAL-DIFCUAD-RAIZ',
+            siFuera: `Bien partir de ${a2} y del ${b2 * b2} que falta. Pero ${b2 * b2} es el cuadrado de lo que se suma y se resta: se usa ${b2}, y ${a2 + b2 * b2} · ${a2 - b2 * b2} da ${(a2 + b2 * b2) * (a2 - b2 * b2)}.` },
+          { id: 'primo', texto: `Ninguno: ${N2} es primo`, error: 'TAL-DIFCUAD-PRIMO',
+            siFuera: `Es cierto que ${N2} no se divide entre 2, 3 ni 5. Pero es ${a2}² − ${b2}², y una resta de cuadrados se parte en la suma por la diferencia.` },
         ],
-        porque: `Es una resta de cuadrados: la resta de los dos números, 0,02 km, por su suma, ${f(2 * R + h2, 2)} km. Da unos ${f(d22, 0)} km², así que se ve hasta unos ${f(Math.sqrt(d22), 0)} km.`,
+        porque: `Como ${N2} es ${a2}² − ${b2}², la suma por diferencia lo parte en ${a2} + ${b2} por ${a2} − ${b2}, y ${a2 + b2} · ${a2 - b2} da ${N2}.`,
       },
-      fuente: 'Distancia al horizonte sin la refracción del aire, R ≈ 6371 km (Scientific American, «How far away is the horizon?»).',
+      fuente: 'H. Böck, «Fermat Factorization in the Wild» (IACR ePrint 2023/026), CVE-2022-26320: claves débiles de Canon y Fujifilm.',
     };
   })();
 
+  // Revisión del Escribidor Escribano (28 nov): «el acero repite la cuenta con 12 y unas 35» decía una igualdad que no es
+  // (35 no es 3 · 12); ahora «casi el triple». Cuentas rehechas: b = 0,025 cm, 3a²b = 7,5 cm³ (0,75 %), 3ab² = 0,01875.
+  // Nota para Gerson: el hecho es de física (coeficiente de dilatación); lo explica la regla del cubo, pero se siente de
+  // física y no de la vida diaria.
   const MUNDO_CUBO = (() => {
     const a = 10, b = a * 25e-6 * 100, v1 = 3 * a * a * b, v2 = 3 * a * b * b, v3 = b ** 3;
     return {
       hecho: 'El calor agranda el volumen el triple que el largo',
       parrafos: [
-        'Las tablas de física dicen cuánto se alarga cada centímetro de un metal por cada grado que se calienta, y para el aluminio son 25 millonésimas. La misma tabla da para su volumen 75 millonésimas por grado, justo el triple, y el acero repite la cuenta con 12 y unas 35.',
+        'Las tablas de física dicen cuánto se alarga cada centímetro de un metal por cada grado que se calienta, y para el aluminio son 25 millonésimas. La misma tabla da para su volumen 75 millonésimas por grado, justo el triple, y para el acero da 12 y 35, casi el triple.',
         ['Un cubo de aluminio de ', T1(`${a} cm`), ` de arista que se calienta 100 °C alarga cada arista `, T2(`${f(b, 3)} cm`), ', y el cubo nuevo se parte en las ocho piezas:',
           { linea: ['(', T1(a), ' + ', T2(f(b, 3)), ')³ = ', T1('1000'), ' + ', PM(f(v1, 1)), ' + ', f(v2, 5), ' + ', T2(f(v3, 9))] },
           `Las tres piezas a²b, placas delgadas, suman ${f(v1, 1)} cm³, el ${f(v1 / 10, 2)} % del cubo, mientras la arista creció el ${f(b * 10, 2)} %; las demás piezas son tan finas que las tablas no las cuentan.`],
