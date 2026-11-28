@@ -965,14 +965,17 @@
         { texto: ['La 3 calla quién recetó; justo antes, quien hizo algo fue ', cubre('el doctor'), '.'] },
         { texto: [prop('«Sofía»'), ' es la atendida; ', prop('la enfermera'), ' no está en el texto.'] }],
       respuesta: [justo('«El doctor»')] },
-    { nivel: 2, titulo: 'La carretera a Arequipa',
-      enunciado: '¿Qué va en el espacio para no repetir «La carretera»: «Este río», «Esta vía» o «Esta ciudad»?',
+    // Apertura (el aviso del DNI; aperturas-para-la-teoria, 28 nov): el caso contrario al de repetir de más. Dos
+    // candidatos femeninos y en singular, y limpiar cualquiera de los dos tiene sentido: aquí sí se repite el nombre.
+    { nivel: 2, titulo: 'La olla o la cocina',
+      enunciado: '¿Qué va en el espacio para que se sepa que Joel limpió la olla: «la», «la olla» o nada?',
       datos: D_IDEA3,
-      figura: fig(papel('folleto', 'Folleto de una empresa de buses', 'Viaje a Arequipa', 'la empresa', 'los pasajeros', ors('k', ['[p:La carretera] de Puno a Arequipa es muy larga.', '[w:¿…?] cruza varios pueblos de la sierra.']))),
+      figura: fig(papel('mensaje', 'Familia Quispe', null, 'Joel', 'su mamá', ors('k', ['Ya saqué [p:la olla] de [p:la cocina].', 'Después [w:¿…?] limpié con un trapo.']))),
       solucion: [
-        { texto: ['Una carretera es una vía: ', cubre('«esta vía»'), ' la nombra de forma más general.'] },
-        { texto: [prop('«Este río»'), ' y ', prop('«esta ciudad»'), ' nombrarían otra cosa.'] }],
-      respuesta: [justo('«Esta vía»')] },
+        { texto: ['Antes hay dos nombres femeninos y en singular, la olla y la cocina, y limpiar cualquiera de los dos tiene sentido: con ', prop('«la»'), ', la mamá no sabe cuál fue.'] },
+        { texto: ['Cuando el sentido no decide, se repite el nombre: ', cubre('«la olla»'), '. ', prop('Callar'), ' tampoco sirve, porque la oración no diría qué se limpió.'] },
+        { texto: 'Repetir sobra cuando el sentido elige a uno, como en «Saqué la olla de la cocina y la puse en la mesa»: nadie pone la cocina sobre la mesa.' }],
+      respuesta: [justo('«La olla»'), ': con «la», también podría ser la cocina'] },
 
     { nivel: 3, titulo: 'Elena llegó tarde',
       enunciado: 'Pregunta 21 del simulacro. Según la oración 3, ¿quién pidió que avisara?',
