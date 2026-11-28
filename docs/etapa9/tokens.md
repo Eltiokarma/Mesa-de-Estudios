@@ -102,3 +102,4 @@ contra los límites semanales de los planes.
 | aperturas física y trigonometría (17) | tercera pasada (líneas y palabras) | 140 371 | 6 min 29 s | 37 herramientas |
 | aperturas álgebra y aritmética (15) | tercera pasada (líneas, palabras, estafa piramidal) | 189 865 | 7 min 42 s | 30 herramientas |
 | aperturas álgebra y aritmética (15) | coherencia con la unidad | 167 910 | 5 min | 39 herramientas |
+| aperturas química y geometría (16) | coherencia con la unidad | 187 560 | 5 min 43 s | 40 herramientas |
