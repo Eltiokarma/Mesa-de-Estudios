@@ -303,7 +303,7 @@
   };
   const v = (g, rzs = ['sen', 'cos']) => valores(g, rzs);
   // Ejemplos resueltos de la idea 1 (molde §3). Cuentas rehechas con un script aparte que no usa este archivo (scratchpad
-  // e7-trigonometria/cuentas-ejemplos.js): 6·√3/2; 4·1/2; 4·1/2 (tobogán); 30·√2/2; 10·3/5; 20·1/2 + 20·√3/2; 12·√3/2 − 12·1/2;
+  // e7-trigonometria/cuentas-ejemplos.js): 6·√3/2; 4·1/2; 4·1/2 (tobogán); 30·√2/2; 10·3/5; 6·sen 30°, 45° y 60° (la barrera); 12·√3/2 − 12·1/2;
   // 2,5·4/5; (6 · 6√3)/2; 5·cos 37° desde la pared; a·cos θ·sen θ; 3·(30 + 40 + 50); 10·4/5 − 10·3/5; 2(a sen θ + a cos θ);
   // 50·24/25 − 6 − 12, y el valor de cada alternativa equivocada.
   // La figura muestra el planteamiento: lo que se pide va con «?» en tinta o no se dibuja.
@@ -341,14 +341,29 @@
       datos: [D1.regla, v(37)],
       solucion: [{ texto: ['Opuesto: hipotenusa por el seno, con la convención del examen.'], ecuacion: junto([CO, ' = 10 · sen 37° = 10 · ', frac('3', '5'), ' = ', dO('6 cm')]) }],
       respuesta: [dO('6 cm')] },
-    { nivel: 2, titulo: 'Los dos catetos', figura: fig(triFig(10, 10 * Math.sqrt(3), { h: '20 cm', t: '30°', co: '?', ca: '?' })),
-      enunciado: jN('La hipotenusa de un triángulo rectángulo mide 20 cm y uno de sus ángulos, 30°. ¿Cuánto suman sus dos catetos?' + NO_ESC),
-      datos: [D1.regla, v(30)],
+    // La barrera (apertura, 28 nov, que usa un brazo de 4 m y la mitad del giro): con 6 m, 6 · 1/2 = 3; 6 · √2/2 = 3√2
+    // ≈ 4,24; 6 · √3/2 = 3√3 ≈ 5,20; parada, 6. Los primeros 30° suben 3 m y los últimos 30°, 6 − 5,20 ≈ 0,80 m (rehecho
+    // aparte). Reemplaza «Los dos catetos» (20 cm y 30°). A escala y sin «?»: se ve que la punta sube cada vez menos.
+    { nivel: 2, titulo: 'La barrera que se levanta', figura: fig((() => {
+        const P = [30, 45, 60].map(g => pol(6, g));
+        return { suelo: false,
+          lados: P.map(([x, y], k) => ({ de: [0, 0], a: [x, y], texto: k === 0 ? '6 m' : undefined, lado: 1, rol: 'H' }))
+            .concat([{ de: [0, 0], a: [0, 6], rol: 'H' }])
+            .concat(P.map(([x, y]) => ({ de: [x, 0], a: [x, y], como: 'punteada', color: null, lado: 1, rol: 'CO' }))),
+          // Tres ángulos en el mismo vértice no dejan lugar a sus rótulos: los arcos van sin texto y cada punta lleva su ángulo.
+          angulos: P.map(([x, y], k) => ({ en: [0, 0], de: [1, 0], a: [x, y], ref: k === 0, radio: [30, 44, 58][k] })),
+          puntos: P.map(([x, y], k) => ({ en: [x, y], texto: `${[30, 45, 60][k]}°`, dir: [0.6, -1] })).concat([{ en: [0, 6], texto: '90°', dir: [1, 0] }]),
+          rectos: [{ en: [0, 0], de: [1, 0], a: [0, 1] }] };
+      })()),
+      enunciado: jN('El brazo de una barrera mide 6 m y gira sobre su eje, desde echado hasta parado. ¿A qué altura sobre el eje queda su punta a 30°, 45°, 60° y 90°?'),
+      datos: [D1.regla, v(30, ['sen']), v(45, ['sen']), v(60, ['sen'])],
       solucion: [
-        { texto: ['Cada cateto, con su razón:'], ecuacion: [junto([CO, ' = 20 · ', frac('1', '2'), ' = ', dO('10')]), SEP, junto([CA, ' = 20 · ', frac('√3', '2'), ' = ', dI('10√3')])] },
-        { texto: ['La suma, con √3 ≈ 1,732:'], ecuacion: junto([dO('10'), ' + ', dI('10√3'), ' ≈ 27,32 cm']) },
+        { texto: ['Con el brazo inclinado, el eje, la punta y el pie de su altura forman un triángulo rectángulo: el brazo es la hipotenusa y la altura, el opuesto al ángulo.'], ecuacion: junto([CO, ' = 6 · sen ', th]) },
+        { texto: ['Se reemplaza cada ángulo, con √2 ≈ 1,414 y √3 ≈ 1,732:'], ecuacion: [junto(['30°: 6 · ', frac('1', '2'), ' = ', dO('3 m')]), SEP, junto(['45°: 6 · ', frac('√2', '2'), ' ≈ ', dO('4,24 m')]), SEP, junto(['60°: 6 · ', frac('√3', '2'), ' ≈ ', dO('5,20 m')])] },
+        { texto: ['A 90°, el brazo está parado y la punta queda a 6 m, el largo entero. Las alturas no crecen a la par del ángulo.'] },
+        { texto: ['Los primeros 30° suben la punta 3 m, y los últimos 30°, solo 0,8 m, porque con el brazo casi parado la punta se mueve casi de costado.'], ecuacion: junto([dO('6 m'), ' − ', dO('5,20 m'), ' ≈ ', dO('0,80 m')]) },
       ],
-      respuesta: ['10 + 10√3 cm ≈ 27,32 cm'] },
+      respuesta: [dO('3 m'), '; ', dO('4,24 m'), '; ', dO('5,20 m'), ' y ', dO('6 m')] },
     { nivel: 2, titulo: 'El poste y su cable', figura: fig(posteCable(12, 60, { H: '12 m', t: '60°', h: '?', d: '?' })),
       enunciado: jN('Un cable de 12 m va de la punta de un poste a una estaca y forma 60° con el suelo. ¿Cuánto más mide el poste que el suelo hasta la estaca?' + NO_ESC),
       datos: [D1.regla, v(60)],
