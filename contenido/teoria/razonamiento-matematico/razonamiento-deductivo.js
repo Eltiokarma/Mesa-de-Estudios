@@ -1970,14 +1970,17 @@
         { texto: 'Si nadie es ciclista y nadador a la vez, tampoco hay un nadador que sea ciclista.' },
       ],
       respuesta: [F('Sí es seguro')] },
-    { nivel: 1, titulo: '«Algunos» también al revés', figura: figV(aro('músicos', 'primero', 3.6, 3.2, 2.1), aro('pintores', 'segundo', 6.4, 3.2, 2.1)),
-      enunciado: 'Algunos músicos son pintores. ¿Es seguro que algunos pintores son músicos?',
+    // Apertura (Rosa, banco y robótica; aperturas-para-la-teoria, 28 nov): «A y B» frente a «A». Quien está en el pedazo
+    // compartido está también en cada aro, así que «músico y pintor» nunca tiene más casos que «músico»; empatan solo si
+    // el aro de músicos cabe entero en el de pintores. La prueba de la unidad lo comprueba con la geometría de los aros.
+    { nivel: 1, titulo: 'Con «y», nunca hay más', figura: figV(aro('músicos', 'primero', 3.6, 3.2, 2.1), aro('pintores', 'segundo', 6.4, 3.2, 2.1)),
+      enunciado: 'Algunos músicos del colegio son pintores. ¿Puede haber más alumnos que son músicos y pintores que alumnos músicos?',
       datos: [D_V.algunos],
       solucion: [
-        { texto: 'Los dos aros comparten un pedazo con alguien adentro: es músico y pintor a la vez.' },
-        { texto: 'Esa misma persona es un pintor que es músico. Vale en todo dibujo que cumple la premisa.' },
+        { texto: 'Los músicos que pintan están en el pedazo que comparten los dos aros, y ese pedazo queda entero dentro del aro de músicos.' },
+        { texto: ['Cada alumno que es músico y pintor se cuenta también entre los músicos, así que ', F('no puede haber más'), ': como mucho son los mismos, si todos los músicos pintan.'] },
       ],
-      respuesta: [F('Sí es seguro')] },
+      respuesta: [F('No'), ': «músico y pintor» nunca tiene más alumnos que «músico»'] },
     { nivel: 1, titulo: '«Algunos» no dice «solo algunos»', figura: figV(aro('lectores', 'primero', 3.6, 3.2, 2.1), aro('nadadores', 'segundo', 6.4, 3.2, 2.1)),
       enunciado: 'Algunos lectores son nadadores. ¿Es seguro que algún lector no es nadador?',
       datos: [D_V.algunos],

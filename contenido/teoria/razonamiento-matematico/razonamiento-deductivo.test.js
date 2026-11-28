@@ -468,7 +468,7 @@ test('idea 3, ejemplos: cada respuesta vale en todos los dibujos, y las otras al
   const EJ3 = [
     [['Todos los quenistas son banda'], 'Todos los banda son quenistas', false],
     [['Ningún ciclista es nadador'], 'Ningún nadador es ciclista', true],
-    [['Algunos músicos son pintores'], 'Algunos pintores son músicos', true],
+    null,   // ejemplo 3: «A y B» frente a «A» (apertura); se comprueba aparte, abajo
     [['Algunos lectores son nadadores'], 'Algunos lectores no son nadadores', false],
     [['Todos los coristas son músicos'], 'Algunos coristas son músicos', true],
     [['Todos los ajedrecistas son lectores', 'Todos los lectores son puntuales'], 'Todos los ajedrecistas son puntuales', true],
@@ -478,11 +478,20 @@ test('idea 3, ejemplos: cada respuesta vale en todos los dibujos, y las otras al
     [['Ningún pintor es ciclista', 'Todos los nadadores son ciclistas'], 'Ningún nadador es pintor', true],
   ];
   const I = ID['conclusion-necesaria'];
-  EJ3.forEach(([ps, af, segura], k) => {
+  EJ3.forEach((fila, k) => {
+    if (!fila) return;
+    const [ps, af, segura] = fila;
     const grupos = [], prem = ps.map(p => afirmacion(p, grupos)), a = afirmacion(af, grupos);
     assert.equal(modelos(grupos.length, prem).every(a), segura, `ejemplo ${k + 1}`);
     assert.equal(/^(No es seguro)/.test(plano(I.ejemplos[k].respuesta)), !segura, `ejemplo ${k + 1}: ${plano(I.ejemplos[k].respuesta)}`);
   });
+  // Ejemplo 3 («A y B» frente a «A»): los dos aros se cruzan, el pedazo compartido queda dentro del aro de músicos (todo
+  // punto del cruce está en los dos aros) y la respuesta dice que no puede haber más.
+  {
+    const e = I.ejemplos[2], [m, pz] = e.figura.datos.diagramas[0].aros;
+    assert.ok(Math.hypot(m.x - pz.x, m.y - pz.y) < m.r + pz.r, 'ejemplo 3: los aros se cruzan');
+    assert.match(plano(e.respuesta), /^No: /, 'ejemplo 3: la respuesta es que no');
+  }
   // Nivel 2 y 3: la figura dibuja un aro por cada grupo de las premisas, y cada dibujo cumple las premisas (auditoría M2).
   const sing = t => t.replace(/(es|s)$/, '');
   I.ejemplos.forEach((e, k) => {
