@@ -355,6 +355,214 @@
     {}, { costado: true, piezas: true }, { costado: true, fondo: true, esquina: 'doble' },
     { costado: true, fondo: true, esquina: 'devuelta' }, { costado: true, fondo: true, esquina: 'devuelta', resto: '25 m²' },
   ] };
+  // ---------- «En el mundo» de las cinco ideas (Gerson, 28 nov; docs/teoria.md, 4k) ----------
+  // Un hecho real que la regla de cada idea explica, con su fuente, y una pregunta que se responde con esa regla en otro
+  // caso. Ninguno repite la mayólica de la apertura ni los objetos de los ejemplos (terreno, triplay, taco, mesa, cometa),
+  // y ninguno trae la respuesta de una Predice (Teoria.problemas, regla mundo-predice). Las cuentas las hace el código.
+  // Datos verificados en la web el 28 nov:
+  //   1. Fibrosis quística entre personas de origen europeo: 1 de cada 2500 nacidos la tiene y 1 de cada 25 es portador
+  //      (CDC, validez clínica del tamizaje de fibrosis quística; la cuenta de Hardy y Weinberg da 2pq = 0,0392). La
+  //      condición de 1 en 10 000 de la pregunta es un caso supuesto, no un dato.
+  //   2. Distancia al horizonte: d² = (R + h)² − R², R ≈ 6371 km; sin la refracción del aire, que la alarga un 6 %
+  //      (Scientific American, «How far away is the horizon?»; Wikipedia, «Horizon»: 3,57√h km con h en metros).
+  //   3. Dilatación: aluminio, 25 y 75 millonésimas por °C (lineal y de volumen); acero, 12 y 35; β ≈ 3α (OpenStax,
+  //      College Physics, 13.2, tabla 13.2).
+  //   4. Lado del dodecágono regular: 2R sen 15° = R(√6 − √2)/2 ≈ 0,5176 R (MathWorld, «Regular Dodecagon»).
+  //   5. La señal PARE (R-1) es octogonal, de fondo rojo y letras blancas (Manual de Dispositivos de Control de Tránsito
+  //      Automotor del MTC, RD 26-2024-MTC/18). POR VERIFICAR en el manual mismo: la forma se confirmó en fuentes
+  //      secundarias (Interseguro; la lista de señales peruanas de OpenStreetMap) porque el PDF no abrió desde esta
+  //      sesión. La plancha de 60 cm es un supuesto, no la medida oficial de la señal.
+  const MUNDO_CUADRADO = (() => {
+    const q = 0.02, p = 1 - q, por = 2 * p * q;
+    // El cuadro de Punnett de toda la población: lado p + q = 1, con q agrandada (0,25 del lado) para que se vea.
+    const L = 200, X = 56, Y = 34, Q = 50, P = L - Q;
+    const caja = (x, y, w, h, c, t1, t2) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" style="fill:var(--${c});stroke:var(--${c})" fill-opacity=".22" stroke-width="2"/>
+      <text x="${x + w / 2}" y="${y + h / 2 + (t2 ? -4 : 7)}" text-anchor="middle" font-size="19" font-weight="800" style="fill:var(--${c})">${t1}</text>${t2 ? `
+      <text x="${x + w / 2}" y="${y + h / 2 + 18}" text-anchor="middle" font-size="13" fill="currentColor">${t2}</text>` : ''}`;
+    const svg = `<svg viewBox="0 0 300 290" width="300" height="290" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <text x="${X + P / 2}" y="${Y - 10}" text-anchor="middle" font-size="18" font-weight="800" style="fill:var(--c-o)">p</text>
+      <text x="${X + P + Q / 2}" y="${Y - 10}" text-anchor="middle" font-size="18" font-weight="800" style="fill:var(--c-i)">q</text>
+      <text x="${X - 14}" y="${Y + P / 2 + 6}" text-anchor="middle" font-size="18" font-weight="800" style="fill:var(--c-o)">p</text>
+      <text x="${X - 14}" y="${Y + P + Q / 2 + 6}" text-anchor="middle" font-size="18" font-weight="800" style="fill:var(--c-i)">q</text>
+      ${caja(X, Y, P, P, 'c-o', 'p²', 'sin el gen alterado')}
+      ${caja(X + P, Y, Q, P, 'c-f', 'pq')}
+      ${caja(X, Y + P, P, Q, 'c-f', 'pq', 'portadores sanos')}
+      ${caja(X + P, Y + P, Q, Q, 'c-i', 'q²')}
+      <text x="150" y="${Y + L + 26}" text-anchor="middle" font-size="12" style="fill:var(--muted)">arriba, la copia de la madre; al lado, la del padre</text>
+      <text x="150" y="${Y + L + 46}" text-anchor="middle" font-size="12" style="fill:var(--muted)">la franja q va más ancha para que se vea</text>
+    </svg>`;
+    return {
+      hecho: 'Por qué hay tantos portadores sanos de la fibrosis quística',
+      parrafos: [
+        'La fibrosis quística es una enfermedad hereditaria de los pulmones que solo aparece en quien recibe dos copias del gen alterado, una de su madre y otra de su padre. Entre las personas de origen europeo nace con ella 1 de cada 2500 bebés, mientras que 1 de cada 25 personas lleva una sola copia y está sana.',
+        ['Las copias se juntan como en el cuadro de Punnett, con cada lado partido en copias sanas, ', T1('p'), ', y copias alteradas, ', T2('q'), '. Si la esquina vale 1 entre 2500, ', T2('q'), ` vale ${f(q)} y `, T1('p'), ` vale ${f(p)}:`,
+          { linea: ['(', T1('p'), ' + ', T2('q'), ')² = ', T1('p'), '² + ', DP('2pq'), ' + ', T2('q'), '² = 1'] },
+          { linea: [DP('2pq'), ` = 2 · ${f(p)} · ${f(q)} ≈ ${f(por, 3)}`] },
+          `Las dos franjas, los portadores, son ${f(por / (q * q), 0)} veces la esquina, así que casi todas las copias alteradas viajan escondidas en personas sanas.`],
+      ],
+      figura: { svg, alt: 'Un cuadrado de lado p + q, como un cuadro de Punnett: el cuadrado grande p² son las personas sin el gen alterado, las dos franjas pq son los portadores sanos y la esquina q² son quienes tienen la enfermedad.' },
+      pregunta: {
+        texto: 'Una condición recesiva aparece en 1 de cada 10 000 recién nacidos, así que q vale 0,01. ¿Qué parte de la población es portadora?',
+        opciones: [
+          { id: 'c', texto: 'Casi el 2 %', correcta: true },
+          { id: 'q', texto: 'El 1 %', error: 'TAL-2AB', siFuera: 'Bien que q sea 0,01, la parte de copias alteradas. Pero un portador es una franja pq, y hay dos franjas: 2 · 0,99 · 0,01.' },
+          { id: 'q2', texto: 'El 0,01 %', error: 'AL8', siFuera: 'Ese 0,01 % es la esquina q², quienes tienen la condición. Los portadores son las dos franjas pq, mucho más grandes que esa esquina.' },
+        ],
+        porque: `Los portadores son el doble producto: 2 · 0,99 · 0,01 = ${f(2 * 0.99 * 0.01, 4)}, casi el 2 %, unas 200 veces más que quienes tienen la condición.`,
+      },
+      fuente: 'CDC, tamizaje de fibrosis quística (origen europeo): 1 de cada 2500 nacidos la tiene y 1 de cada 25 es portador.',
+    };
+  })();
+
+  const MUNDO_SXD = (() => {
+    const R = 6371, h = 0.0016, d2 = (2 * R + h) * h, h2 = 0.02, d22 = (2 * R + h2) * h2;
+    // Dibujo sin escala: la Tierra como un arco, el ojo a una altura exagerada y la recta de la vista tangente.
+    const svg = `<svg viewBox="0 0 320 260" width="320" height="260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M16 72 A170 170 0 0 1 200 182" fill="none" stroke="currentColor" stroke-width="3"/>
+      <text x="196" y="150" font-size="14" style="fill:var(--muted)">el agua del lago</text>
+      <line x1="40" y1="240" x2="40" y2="40" style="stroke:var(--c-o)" stroke-width="3"/>
+      <line x1="40" y1="240" x2="130" y2="96" style="stroke:var(--c-i)" stroke-width="3"/>
+      <line x1="40" y1="40" x2="180" y2="127" stroke="currentColor" stroke-width="2" stroke-dasharray="6 5"/>
+      <line x1="40" y1="40" x2="130" y2="96" stroke="currentColor" stroke-width="3"/>
+      <path d="M124 104 L116 99 L121 90" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="40" cy="40" r="6" fill="currentColor"/><circle cx="40" cy="240" r="4" fill="currentColor"/>
+      <text x="52" y="36" font-size="14" fill="currentColor">tus ojos</text>
+      <text x="86" y="58" font-size="20" font-weight="800" fill="currentColor">d</text>
+      <text x="47" y="112" font-size="17" font-weight="800" style="fill:var(--c-o)">R + h</text>
+      <text x="92" y="180" font-size="18" font-weight="800" style="fill:var(--c-i)">R</text>
+      <text x="138" y="92" font-size="14" fill="currentColor">horizonte</text>
+      <text x="160" y="250" font-size="13" style="fill:var(--muted)">dibujo sin escala</text>
+    </svg>`;
+    return {
+      hecho: 'Hasta dónde llega tu vista sobre el lago Titicaca',
+      parrafos: [
+        ['Si miras el lago desde la orilla, el agua se curva con la Tierra y tu vista la toca en un solo punto, el horizonte. Ahí la recta de tu vista forma un ángulo recto con el radio de la Tierra, así que Pitágoras da la distancia d hasta ese punto:',
+          { linea: ['d² = (', T1('R + h'), ')² − ', T2('R'), '²'] }],
+        ['El radio ', T2('R'), ' mide unos 6371 km, y si tus ojos están a 1,6 m del agua, ', T1('h'), ' es 0,0016 km. Elevar 6371,0016 al cuadrado es una cuenta enorme, pero la suma por diferencia la acorta:',
+          { linea: ['d² = (', LT('R + h + R'), ')(', LT('R + h − R'), `) = ${f(2 * R + h, 4)} · ${f(h, 4)} ≈ ${f(d2, 1)} km²`] },
+          `Ves hasta unos ${f(Math.sqrt(d2), 1)} km, y el casco de un bote a 10 km ya queda escondido tras la curva del agua.`],
+      ],
+      figura: { svg, alt: 'La Tierra dibujada como un arco. Desde tus ojos, a una altura h sobre el agua, sale la recta de la vista d, que toca el arco en el horizonte formando un ángulo recto con el radio R; del centro a tus ojos hay R + h.' },
+      pregunta: {
+        texto: 'Desde un mirador a 20 m sobre el agua, la altura h es 0,02 km. ¿Qué producto da d²?',
+        opciones: [
+          { id: 'c', texto: `${f(2 * R + h2, 2)} km por 0,02 km`, correcta: true },
+          { id: 'h2', texto: '0,02 km por 0,02 km', error: 'AL8', siFuera: 'Bien que el R² de afuera se vaya. Pero (R + h)² no es R² + h²: le faltan las dos franjas 2Rh, que son casi todo.' },
+          { id: 'uno', texto: '6371,02 km por 0,02 km', error: 'TAL-DIFCUAD-SUMA', siFuera: 'Bien el factor 0,02 km, la resta R + h − R. Pero el otro factor es la suma de los dos, R + h + R: lleva el radio dos veces.' },
+        ],
+        porque: `Es una resta de cuadrados: la resta de los dos números, 0,02 km, por su suma, ${f(2 * R + h2, 2)} km. Da unos ${f(d22, 0)} km², así que se ve hasta unos ${f(Math.sqrt(d22), 0)} km.`,
+      },
+      fuente: 'Distancia al horizonte sin la refracción del aire, R ≈ 6371 km (Scientific American, «How far away is the horizon?»).',
+    };
+  })();
+
+  const MUNDO_CUBO = (() => {
+    const a = 10, b = a * 25e-6 * 100, v1 = 3 * a * a * b, v2 = 3 * a * b * b, v3 = b ** 3;
+    return {
+      hecho: 'El calor agranda el volumen el triple que el largo',
+      parrafos: [
+        'Las tablas de física dicen cuánto se alarga cada centímetro de un metal por cada grado que se calienta, y para el aluminio son 25 millonésimas. La misma tabla da para su volumen 75 millonésimas por grado, justo el triple, y el acero repite la cuenta con 12 y unas 35.',
+        ['Un cubo de aluminio de ', T1(`${a} cm`), ` de arista que se calienta 100 °C alarga cada arista `, T2(`${f(b, 3)} cm`), ', y el cubo nuevo se parte en las ocho piezas:',
+          { linea: ['(', T1(a), ' + ', T2(f(b, 3)), ')³ = ', T1('1000'), ' + ', PM(f(v1, 1)), ' + ', f(v2, 5), ' + ', T2(f(v3, 9))] },
+          `Las tres piezas a²b, placas delgadas, suman ${f(v1, 1)} cm³, el ${f(v1 / 10, 2)} % del cubo, mientras la arista creció el ${f(b * 10, 2)} %; las demás piezas son tan finas que las tablas no las cuentan.`],
+      ],
+      pregunta: {
+        texto: 'El acero se alarga unas 12 millonésimas por cada grado. ¿Cuánto crece su volumen por grado, más o menos?',
+        opciones: [
+          { id: 'c', texto: 'Unas 36 millonésimas', correcta: true },
+          { id: 'igual', texto: 'Unas 12 millonésimas, lo mismo que el largo', error: 'TAL-CUBO-IGUAL', siFuera: 'Bien que el volumen crezca con el largo. Pero crecen las tres aristas, y cada una aporta su placa: son tres placas, no una.' },
+          { id: 'dos', texto: 'Unas 24 millonésimas', error: 'TAL-CUBO-AREA', siFuera: 'Bien que crezca más que el largo. Pero el doble es lo que crece un área, con sus dos franjas; un cubo tiene tres placas.' },
+          { id: 'cubo', texto: 'Unas 1728 millonésimas, 12 al cubo', error: 'AL8', siFuera: 'Bien pensar en el cubo. Pero se eleva al cubo la arista entera, 1 más lo que crece, y casi todo sale en las tres placas.' },
+        ],
+        porque: 'Con arista 1 + b, el cubo es 1 + 3b + 3b² + b³, y con b tan chico solo pesan las tres placas: 3 · 12 = 36 millonésimas (las tablas dan 35).',
+      },
+      fuente: 'OpenStax, College Physics, sección 13.2 y tabla 13.2: aluminio 25 y 75, acero 12 y 35 millonésimas por °C.',
+    };
+  })();
+
+  const MUNDO_RD = (() => {
+    const s6 = Math.sqrt(6), s2 = Math.sqrt(2), d = s6 - s2, D = s6 + s2;
+    // El reloj: 12 marcas en un círculo de radio 2 dm (90 px), y la cuerda entre las 12 y la 1.
+    const cx = 150, cy = 140, r = 100, pt = (k, rr) => [cx + rr * Math.sin(k * Math.PI / 6), cy - rr * Math.cos(k * Math.PI / 6)].map(n => Math.round(n * 10) / 10);
+    const marcas = Array.from({ length: 12 }, (_, k) => { const [x1, y1] = pt(k, r - 12), [x2, y2] = pt(k, r); return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="currentColor" stroke-width="3"/>`; }).join('');
+    const [ax, ay] = pt(0, r), [bx, by] = pt(1, r);
+    const svg = `<svg viewBox="0 0 300 280" width="300" height="280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="currentColor" stroke-width="2"/>
+      ${marcas}
+      <line x1="${cx}" y1="${cy}" x2="${ax}" y2="${ay}" style="stroke:var(--muted)" stroke-width="2"/>
+      <line x1="${cx}" y1="${cy}" x2="${bx}" y2="${by}" style="stroke:var(--muted)" stroke-width="2"/>
+      <line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" style="stroke:var(--c-f)" stroke-width="4"/>
+      <circle cx="${cx}" cy="${cy}" r="4" fill="currentColor"/>
+      <text x="${cx - 46}" y="${cy - 40}" font-size="15" fill="currentColor">2 dm</text>
+      <text x="${cx + 14}" y="${cy - 52}" font-size="14" fill="currentColor">30°</text>
+      <text x="${(ax + bx) / 2 + 8}" y="${ay - 6}" font-size="20" font-weight="800" style="fill:var(--c-f)">d</text>
+      <text x="${cx}" y="270" text-anchor="middle" font-size="13" style="fill:var(--muted)">doce marcas, una cada 30°</text>
+    </svg>`;
+    return {
+      hecho: 'La distancia entre dos marcas seguidas de un reloj',
+      parrafos: [
+        ['Las doce marcas de las horas de un reloj de pared reparten la vuelta en partes iguales de 30°. En un reloj de 2 dm de radio, Pitágoras y la mitad de un triángulo equilátero dan la distancia d entre dos marcas seguidas, y sale con una raíz dentro de otra:',
+          { linea: ['d = ', { raiz: ['8 − 2', { raiz: ['12'] }] }, ' dm'] }],
+        ['Para calcularla con raíces conocidas sirve la regla: ', T1('6'), ' y ', T2('2'), ' suman 8 y multiplican 12, así que se abre en dos raíces simples:',
+          { linea: [{ raiz: ['8 − 2', { raiz: ['12'] }] }, ' = ', T1('√6'), ' − ', T2('√2'), ` ≈ ${f(s6, 3)} − ${f(s2, 3)} ≈ ${f(d, 3)} dm`] },
+          `Dos marcas seguidas quedan a unos ${f(d * 10, 2)} cm, un poco más que la mitad del radio, y con esa abertura un compás recorre el borde en doce pasos iguales.`],
+      ],
+      figura: { svg, alt: 'Un reloj de 2 dm de radio con sus doce marcas, una cada 30°. Dos radios van a la marca de las 12 y a la de la 1, y entre esas dos marcas está la distancia d.' },
+      pregunta: {
+        texto: [
+          'En el mismo reloj, la marca de las 12 y la de las 5 están a ', { raiz: ['8 + 2', { raiz: ['12'] }] }, ' dm. ¿A qué es igual esa distancia?'],
+        opciones: [
+          { id: 'c', texto: '√6 + √2', correcta: true },
+          { id: 'reparte', texto: '√8 + √12', error: 'AL9', siFuera: 'Bien buscar dos raíces simples. Pero la raíz grande no se reparte sobre la suma: √8 + √12 da casi 6,3 dm, más que el diámetro del reloj.' },
+          { id: 'par', texto: '√7 + 1', error: 'TAL-RD-PRODUCTO', siFuera: 'Bien: 7 + 1 = 8. Pero 7 · 1 = 7, no 12; los dos números tienen que sumar 8 y también multiplicar 12.' },
+          { id: 'signo', texto: '√6 − √2', error: 'TAL-RD-SIGNO', siFuera: 'Bien 6 y 2, que suman 8 y multiplican 12. Pero adentro hay un más, y el signo de afuera es el mismo.' },
+        ],
+        porque: `Se buscan dos números que sumen 8 y multipliquen 12: 6 y 2. Con más adentro va más afuera, √6 + √2 ≈ ${f(D, 2)} dm, casi el diámetro.`,
+      },
+      fuente: 'Lado del dodecágono regular de radio R: 2R sen 15° = R(√6 − √2)/2, unos 0,5176 R (MathWorld, Regular Dodecagon).',
+    };
+  })();
+
+  const MUNDO_RAC = (() => {
+    const W = 60, r2 = Math.SQRT2, c = W / (2 + r2), s = W / (1 + r2);
+    // La plancha cuadrada de W y el octágono que queda al cortarle las cuatro esquinas (a escala: 200 px son 60 cm).
+    const X = 50, Y = 30, L = 200, k = L * c / W;
+    const oct = [[X + k, Y], [X + L - k, Y], [X + L, Y + k], [X + L, Y + L - k], [X + L - k, Y + L], [X + k, Y + L], [X, Y + L - k], [X, Y + k]]
+      .map(([x, y]) => `${Math.round(x * 10) / 10},${Math.round(y * 10) / 10}`).join(' ');
+    const r1 = n => Math.round(n * 10) / 10;
+    const svg = `<svg viewBox="0 0 300 290" width="300" height="290" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="${X}" y="${Y}" width="${L}" height="${L}" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 5"/>
+      <polygon points="${oct}" style="fill:var(--c-f);stroke:var(--c-f)" fill-opacity=".2" stroke-width="3"/>
+      <text x="${X + L / 2}" y="${Y + L / 2 + 10}" text-anchor="middle" font-size="30" font-weight="800" style="fill:var(--c-f)">PARE</text>
+      <line x1="${X}" y1="${Y - 12}" x2="${r1(X + k)}" y2="${Y - 12}" stroke="currentColor" stroke-width="2"/>
+      <text x="${r1(X + k / 2)}" y="${Y - 18}" text-anchor="middle" font-size="16" font-weight="800" fill="currentColor">c</text>
+      <text x="${X + L / 2}" y="${Y + L + 26}" text-anchor="middle" font-size="15" fill="currentColor">plancha de 60 cm de lado</text>
+      <text x="${X + L / 2}" y="${Y + L + 48}" text-anchor="middle" font-size="12" style="fill:var(--muted)">cada esquina es medio cuadrado de lado c</text>
+    </svg>`;
+    return {
+      hecho: 'La señal de PARE se corta de una plancha cuadrada',
+      parrafos: [
+        ['La señal de PARE es un octágono regular, y se puede cortar de una plancha cuadrada quitándole cuatro esquinas iguales en forma de triángulo. Cada esquina es medio cuadrado de lado c, así que su borde inclinado, que es un lado del octágono, mide c por √2, y el ancho de la plancha queda así:',
+          { linea: ['ancho = c + c√2 + c = c(2 + √2)'] }],
+        ['Para saber cuánto cortar en una plancha de 60 cm hay que dividir entre 2 + √2, un número cuyas cifras no terminan. Al multiplicar arriba y abajo por su conjugado, abajo queda 4 − 2 = 2:',
+          { linea: ['c = ', { frac: ['60', '2 + √2'] }, ' · ', { frac: [[F1('2 − √2')], [F1('2 − √2')]] }, ' = ', { frac: ['60(2 − √2)', '2'] }, ` = 30(2 − √2) ≈ ${f(c, 1)} cm`] },
+          `Basta marcar unos ${f(c, 1)} cm desde cada esquina de la plancha, y para hallarlos solo se resta √2 de 2 y se multiplica por 30.`],
+      ],
+      figura: { svg, alt: 'Una plancha cuadrada de 60 cm de lado, en línea punteada, y dentro el octágono de la señal de PARE que queda al cortarle cuatro esquinas; cada esquina cortada es medio cuadrado de lado c.' },
+      pregunta: {
+        texto: ['El lado de ese octágono mide ', { frac: ['60', '1 + √2'] }, ' cm. ¿Cómo se escribe sin raíz en el denominador?'],
+        opciones: [
+          { id: 'c', texto: '60(√2 − 1) cm', correcta: true },
+          { id: 'neg', texto: '60(1 − √2) cm', error: 'TAL-RAC-SIGNO', siFuera: 'Bien el conjugado 1 − √2. Pero abajo queda 1 − 2 = −1, y dividir entre −1 cambia el signo: un lado no es negativo.' },
+          { id: 'mismo', texto: '60(√2 + 1) cm', error: 'TAL-RAC-MISMO', siFuera: 'Bien multiplicar arriba y abajo. Pero por el mismo 1 + √2 abajo queda 3 + 2√2, que sigue con raíz; va el conjugado.' },
+          { id: 'reparte', texto: '60 + 60/√2 cm', error: 'TAL-RAC-REPARTE', siFuera: 'Bien separar arriba de abajo. Pero una fracción no se reparte sobre la suma de abajo: 60/(1 + √2) no es 60/1 + 60/√2.' },
+        ],
+        porque: `Con el conjugado √2 − 1 arriba y abajo, abajo queda (√2 + 1)(√2 − 1) = 2 − 1 = 1, así que el lado mide 60(√2 − 1) ≈ ${f(s, 1)} cm.`,
+      },
+      fuente: 'MTC, Manual de Dispositivos de Control de Tránsito Automotor (RD 26-2024-MTC/18): la señal R-1 PARE es octogonal.',
+    };
+  })();
+
   const notables = {
     id: 'cuadrado-suma',
     titulo: 'El cuadrado de una suma',
@@ -446,6 +654,8 @@
       condicion: 'a y b son cualquier número, también negativos o con letras; el terreno solo muestra lados positivos.',
       voz: 'Dos cuadrados y dos franjas: no se olvida ninguna.',
     },
+    // En el mundo (28 nov): el hecho real que esta regla explica; el bloque «En el mundo», antes de la idea 1.
+    mundo: MUNDO_CUADRADO,
     // Así se resuelve: cuántos m² compra Juan (las dos franjas y la esquina). «Ahora tú» pide otra cosa: desarrollar,
     // un cuadrado con resta, un número al cuadrado, a² + b² con la suma y el producto, o el lado de un terreno partido.
     resuelve: {
@@ -831,6 +1041,8 @@
       condicion: 'a, b, p y q son cualquier número, también negativos; p y q son los que se suman a x.',
       voz: 'Las piezas del medio se anulan: queda la resta de los cuadrados.',
     },
+    // En el mundo (28 nov): el hecho real que esta regla explica; el bloque «En el mundo», antes de la idea 1.
+    mundo: MUNDO_SXD,
     // Así se resuelve: el tablero que se arma con una plancha (largo, ancho y área). «Ahora tú» pide otra cosa: un producto
     // de números cercanos, desarrollar, (x + p)(x + q), ab con la suma y la diferencia, o a⁴ − b⁴.
     resuelve: {
@@ -1218,6 +1430,8 @@
       condicion: 'a y b son cualquier número, también negativos; el taco solo muestra tramos positivos.',
       voz: 'Ocho piezas: no te olvides de las seis del medio.',
     },
+    // En el mundo (28 nov): el hecho real que esta regla explica; el bloque «En el mundo», antes de la idea 1.
+    mundo: MUNDO_CUBO,
     // Así se resuelve: la madera de las seis piezas del medio de un taco. «Ahora tú» pide otra cosa: desarrollar (con suma
     // o resta), un número al cubo, a³ + b³ con la suma y el producto, o factorizar una suma o diferencia de cubos.
     resuelve: {
@@ -1585,6 +1799,8 @@
       condicion: 'x mayor que y, los dos positivos. Si la raíz chica no tiene el 2 delante, se lo pone: √40 = 2√10.',
       voz: 'Suman lo de afuera y multiplican lo de adentro.',
     },
+    // En el mundo (28 nov): el hecho real que esta regla explica; el bloque «En el mundo», antes de la idea 1.
+    mundo: MUNDO_RD,
     // Así se resuelve: las dos planchas y el lado de una mesa. «Ahora tú» pide otra cosa: radicales dobles con +, con −,
     // sin el 2, con un número delante, o la suma o resta de dos de ellos.
     resuelve: {
@@ -1952,6 +2168,8 @@
       condicion: 'a y b positivos; en la segunda, además distintos, para que abajo no quede cero. El valor no cambia.',
       voz: 'Multiplicar por 1 no cambia el valor, solo la forma.',
     },
+    // En el mundo (28 nov): el hecho real que esta regla explica; el bloque «En el mundo», antes de la idea 1.
+    mundo: MUNDO_RAC,
     // Así se resuelve: el lado de una cometa. «Ahora tú» pide otra cosa: racionalizar una raíz, dos raíces o una raíz y un
     // entero (conjugado), una raíz cúbica, o sumar y restar fracciones conjugadas.
     resuelve: {
