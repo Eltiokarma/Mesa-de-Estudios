@@ -327,7 +327,7 @@
        "altura-y-alcance": "Altura máxima y alcance",
        "ecuaciones-en-el-plano": "Ecuaciones del movimiento en el plano"
       },
-      "terminos": 35
+      "terminos": 37
      },
      "apertura": "/contenido/aperturas/fisica/movimiento-parabolico-y-circular.js"
     },
@@ -1548,7 +1548,7 @@
        "energia-ionizacion": "Energía de ionización y afinidad electrónica",
        "electronegatividad": "Electronegatividad y carácter metálico"
       },
-      "terminos": 44
+      "terminos": 45
      },
      "apertura": "/contenido/aperturas/quimica/propiedades-periodicas.js"
     },
@@ -1655,7 +1655,7 @@
        "forma-polaridad": "Polaridad de la molécula",
        "fuerzas-intermoleculares": "Fuerzas entre moléculas"
       },
-      "terminos": 39
+      "terminos": 41
      },
      "apertura": "/contenido/aperturas/quimica/geometria-molecular.js"
     },
@@ -3050,6 +3050,7 @@
      "teoria": {
       "archivo": "/contenido/teoria/algebra/factorizacion.js",
       "requiere": [
+       "/nucleo/kit/piezas/alg-objeto.js",
        "/nucleo/kit/piezas/alg-tabla.js",
        "/nucleo/kit/piezas/alg-baldosas.js",
        "/nucleo/kit/piezas/ejes.js",
@@ -4937,7 +4938,7 @@
        "interior-exterior": "Ángulos interior y exterior",
        "cuadrilatero-inscrito": "Cuadrilátero inscrito"
       },
-      "terminos": 60
+      "terminos": 61
      },
      "apertura": "/contenido/aperturas/geometria/circunferencia.js"
     },
@@ -5789,7 +5790,7 @@
        "aproximados": "Los ángulos de 37° y 53°",
        "complementarias": "Complementarias y recíprocas"
       },
-      "terminos": 42
+      "terminos": 43
      },
      "apertura": "/contenido/aperturas/trigonometria/razones-trigonometricas-agudas.js"
     },
@@ -6907,7 +6908,7 @@
        "cuenta-larga": "Casos chicos de una cuenta larga",
        "lo-que-se-repite": "Lo que se repite"
       },
-      "terminos": 32
+      "terminos": 33
      },
      "apertura": "/contenido/aperturas/razonamiento-matematico/razonamiento-inductivo.js"
     },
